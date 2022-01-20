@@ -1,0 +1,10 @@
+.footer-item {
+    text-align: center;
+}
+
+.footer-item p :nth-child(even) {
+    color: orange;
+}
+.footer-item p :nth-child(odd) {
+    color: blue;
+}

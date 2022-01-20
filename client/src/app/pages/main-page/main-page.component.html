@@ -4,19 +4,17 @@
     <section id="server-message">
         <p>Petit message du serveur : {{ message.getValue() }}</p>
         <div class="justified">
-            <button class="button" (click)="getMessagesFromServer()">Récupérer un message du serveur</button>
+            <!-- <button class="button" (click)="getMessagesFromServer()">Récupérer un message du serveur</button>
             <button class="button" (click)="sendTimeToServer()">Envoyer un message au serveur</button>
             <button class="button" routerLink="/material">Voir la page démo Angular Material</button>
+            <button class="button" routerLink="/test">test</button> -->
+            <app-button name="Scrabble Classique" routing="/game"></app-button>
+            <app-button name="Scrabble LOG2990" routing="/material"></app-button>
+            <app-button name="Meilleur Score " routing="/bonsoir"></app-button>
         </div>
     </section>
 
-    <button class="button" routerLink="/game">Jouer!</button>
+   
 
-    <div class="footer-item">
-        <h4 class="team-name">Équipe 211</h4>
-        <p>
-            <span>Coéquipier #1</span>, <span>Coéquipier #2</span>, <span>Coéquipier #3</span>, <span>Coéquipier #4</span>,
-            <span>Coéquipier #5</span>, <span>Coéquipier #6</span>
-        </p>
-    </div>
+    <app-footer></app-footer>
 </div>
