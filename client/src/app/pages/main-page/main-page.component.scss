@@ -1,35 +1,21 @@
 .container {
     min-height: 100vh;
     height: auto;
+    margin-top: 20rm;
+    background-color: rgb(216, 200, 200);
+   
 }
 
 .justified {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
 }
 
-.button {
-    margin-top: 10px;
-    text-align: center;
-}
-
-.team-name {
-    margin-top: 0.25em;
-    margin-bottom: 0.25em;
-    color: green;
-}
-
-.header-item {
-    justify-content: center;
-    text-align: center;
-}
 
 
-
-.server-message {
-    justify-content: center;
-    width: 20%;
-    min-width: min-content;
+img{
+    
+    margin-bottom: 10rem;
 }
