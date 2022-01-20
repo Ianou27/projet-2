@@ -21,19 +21,19 @@ export class GridService {
         this.gridContext.lineWidth = 1;
 
         for (let i = 1; i < NUMBER_OF_CASES; i++) {
-            this.gridContext.moveTo(0, (this.height * i) / 15);
-            this.gridContext.lineTo(DEFAULT_WIDTH, (this.height * i) / 15);
+            this.gridContext.moveTo(0, (this.height * i) / NUMBER_OF_CASES);
+            this.gridContext.lineTo(DEFAULT_WIDTH, (this.height * i) / NUMBER_OF_CASES);
         }
         for (let i = 1; i < NUMBER_OF_CASES; i++) {
-            this.gridContext.moveTo((this.width * i) / 15, 0);
-            this.gridContext.lineTo((this.width * i) / 15, DEFAULT_HEIGHT);
+            this.gridContext.moveTo((this.width * i) / NUMBER_OF_CASES, 0);
+            this.gridContext.lineTo((this.width * i) / NUMBER_OF_CASES, DEFAULT_HEIGHT);
         }
 
         this.gridContext.stroke();
     }
 
     drawWord(word: string) {
-        const startPosition: Vec2 = { x: 175, y: 100 };
+        const startPosition: Vec2 = { x: 220, y: 280 };
         const step = 20;
         this.gridContext.font = '20px system-ui';
         for (let i = 0; i < word.length; i++) {
