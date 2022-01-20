@@ -13,6 +13,7 @@ import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { MaterialPageComponent } from '@app/pages/material-page/material-page.component';
 import { ButtonComponent } from './components/button/button.component';
 import { FooterComponent } from './components/footer/footer.component';
+import { ScrabbleClassicPageComponent } from './pages/scrabble-classic-page/scrabble-classic-page.component';
 
 /**
  * Main module that is used in main.ts.
@@ -21,7 +22,7 @@ import { FooterComponent } from './components/footer/footer.component';
  * Otherwise Angular Cli will not know in which module to put new component
  */
 @NgModule({
-    declarations: [AppComponent, GamePageComponent, MainPageComponent, MaterialPageComponent, PlayAreaComponent, SidebarComponent, ButtonComponent, FooterComponent],
+    declarations: [AppComponent, GamePageComponent, MainPageComponent, MaterialPageComponent, PlayAreaComponent, SidebarComponent, ButtonComponent, FooterComponent, ScrabbleClassicPageComponent],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule],
     providers: [],
     bootstrap: [AppComponent],
