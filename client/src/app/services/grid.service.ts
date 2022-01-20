@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 
 // TODO : Avoir un fichier séparé pour les constantes et ne pas les répéter!
-export const DEFAULT_WIDTH = 500;
-export const DEFAULT_HEIGHT = 500;
+export const DEFAULT_WIDTH = 750;
+export const DEFAULT_HEIGHT = 750;
+export const NUMBER_OF_CASES = 15;
 
 @Injectable({
     providedIn: 'root',
@@ -17,19 +18,16 @@ export class GridService {
     drawGrid() {
         this.gridContext.beginPath();
         this.gridContext.strokeStyle = 'black';
-        this.gridContext.lineWidth = 3;
+        this.gridContext.lineWidth = 1;
 
-        this.gridContext.moveTo((this.width * 3) / 10, (this.height * 4) / 10);
-        this.gridContext.lineTo((this.width * 7) / 10, (this.height * 4) / 10);
-
-        this.gridContext.moveTo((this.width * 3) / 10, (this.height * 6) / 10);
-        this.gridContext.lineTo((this.width * 7) / 10, (this.height * 6) / 10);
-
-        this.gridContext.moveTo((this.width * 4) / 10, (this.height * 3) / 10);
-        this.gridContext.lineTo((this.width * 4) / 10, (this.height * 7) / 10);
-
-        this.gridContext.moveTo((this.width * 6) / 10, (this.height * 3) / 10);
-        this.gridContext.lineTo((this.width * 6) / 10, (this.height * 7) / 10);
+        for (let i = 1; i < NUMBER_OF_CASES; i++) {
+            this.gridContext.moveTo(0, (this.height * i) / 15);
+            this.gridContext.lineTo(DEFAULT_WIDTH, (this.height * i) / 15);
+        }
+        for (let i = 1; i < NUMBER_OF_CASES; i++) {
+            this.gridContext.moveTo((this.width * i) / 15, 0);
+            this.gridContext.lineTo((this.width * i) / 15, DEFAULT_HEIGHT);
+        }
 
         this.gridContext.stroke();
     }
