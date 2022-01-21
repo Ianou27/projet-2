@@ -1,1 +1,7 @@
-<button class="button" routerLink={{routing}}>{{name}}</button>
+<div *ngIf="name === 'Retour'">
+    <button class="button-retour "class="button" routerLink={{routing}}>{{name}}</button>
+</div>
+<div *ngIf="name !== 'Retour'">
+    <button class="button-retour "class="button" routerLink={{routing}}>{{name}}</button>
+</div>
+

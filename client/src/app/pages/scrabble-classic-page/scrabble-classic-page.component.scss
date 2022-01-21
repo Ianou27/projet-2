@@ -1,0 +1,30 @@
+.container {
+    min-height: 100vh;
+    height: auto;
+    margin-top: 20rm;
+    background-color: #361e0c;
+   
+}
+
+.justified {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+img{
+    
+    margin-bottom: 10rem;
+}
+
+.multiplayer{
+    display:flex;
+}
+.retour{
+    margin-top: 1.5rem;
+    margin-top: 6rem;
+
+}
