@@ -41,7 +41,7 @@ export class PlayAreaComponent implements AfterViewInit {
         this.gridService.drawWordTimesTwoTiles();
         this.gridService.drawLetterTimesThreeTiles();
         this.gridService.drawLetterTimesTwoTiles();
-        // this.gridService.drawWord('MOT x3');
+        this.gridService.drawStar(0.5, 24, 5);
         this.gridCanvas.nativeElement.focus();
     }
 
