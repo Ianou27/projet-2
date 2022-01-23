@@ -4,8 +4,11 @@
 }
 
 .play-area-container {
+    position: absolute;
     overflow: auto;
     flex: 1 1 auto;
+    left: 500px;
+    top: 50px;
 }
 
 .play-area {
