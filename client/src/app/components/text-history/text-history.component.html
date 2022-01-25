@@ -1,3 +1,6 @@
 <div class='history-container'>
-    <p></p>
+    <ul>
+        <li *ngFor='let text of history'> {{text}} </li>
+    </ul>
+    <app-text-input (newTextEvent)=(addMessage($event))></app-text-input>
 </div>

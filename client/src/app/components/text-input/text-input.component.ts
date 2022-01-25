@@ -6,13 +6,21 @@ import { AfterViewInit, Component, EventEmitter, Output } from '@angular/core';
   styleUrls: ['./text-input.component.scss']
 })
 export class TextInputComponent implements AfterViewInit {
-
+  text: string = '';
   constructor() { }
 
   @Output() newTextEvent = new EventEmitter<string>();
   
+  clear(){
+    this.text = ' ';
+  }
   addNewText(text: string){
-    this.newTextEvent.emit(text);
+    if(text != ' '){
+      if(text != ''){        
+        this.newTextEvent.emit(text);
+      }
+    }
+
   }
 
   ngAfterViewInit(): void {

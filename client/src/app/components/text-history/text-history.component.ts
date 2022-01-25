@@ -6,7 +6,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./text-history.component.scss']
 })
 export class TextHistoryComponent implements OnInit {
-  
+  history: Array<string> = [];
+
+  addMessage(message: string){
+    this.history.push(message);
+  }
   constructor() { }
 
   ngOnInit(): void {
