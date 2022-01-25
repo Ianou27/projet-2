@@ -1,4 +1,4 @@
-.rectangle {
+#tile-holder {
     margin-top: 25px;
     margin-left: 55px;
     height: 75px;
@@ -7,4 +7,8 @@
     background-color: #9a7b4f;
     border-style: solid;
     border-color: #795c34;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
 }

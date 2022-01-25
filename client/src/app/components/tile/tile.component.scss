@@ -1,0 +1,32 @@
+#tile {
+    height: 60px;
+    width: 60px;
+    border-radius: 4px;
+    background-color: #f7d8b5;
+    display: grid;
+    grid-template-rows: 40px 20px;
+
+    border-style: solid;
+    border-top-width: 2px;
+    border-bottom-width: 5px;
+    border-left-width: 2px;
+    border-right-width: 2px;
+
+    border-color: #c8ad7e;
+}
+
+#value {
+    font-family: 'Courier New';
+    display: flex;
+    justify-content: end;
+    margin-right: 2px;
+    margin-bottom: 0px;
+}
+
+#letter {
+    font-family: 'Courier New';
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 0px;
+}
