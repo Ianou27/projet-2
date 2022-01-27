@@ -1,12 +1,47 @@
 .container {
     width:300px;
-    height: auto;
+    height: 80vh;
     min-height: 98vh;
     border: 1px solid black;
     padding: 0 5px 0 5px;
     margin-right: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+  
+
+}
+#serverBroadcastList{
+  list-style-type: none;
+}
+.messageContainer{
+    width:280px;
+    height: 100%;
+    display: flex;
+    flex-direction: column-reverse;
+    overflow-y: auto;
+    
+    
+
+}
+#broadcastMessage{
+ 
+ width: 100%;
+ 
+margin-bottom: 0.25rem;
+
+ 
+ 
+  
+  
 }
 
-.text-zone{
-    width:280px;
+.messageContainer{
+    
+    word-wrap: break-word;
+    
+}
+.inputMessage{
+    display: flex;
+    justify-content: center;
 }
