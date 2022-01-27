@@ -1,0 +1,30 @@
+<div class="right">
+    <button mat-button (click)="onCancel()">X</button>
+</div>
+<div class="center" mat-dialog-title>Paramètres de la partie</div>
+<div mat-dialog-content>
+    <mat-divider></mat-divider>
+    <div>
+        <h2>Nom des joueurs :</h2>
+        <mat-form-field>
+            <input matInput [(ngModel)]="name" placeholder="Joueur #1" />
+        </mat-form-field>
+        <h2>Minuterie</h2>
+        <mat-form-field>
+            <mat-select placeholder="Temps">
+                <mat-option value="1">1</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <h2>Dictionnaire:</h2>
+        <mat-form-field>
+            <mat-select placeholder="Choisir un dictionnaire">
+                <mat-option *ngFor="let option of options" [value]="option">
+                    {{ option }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <div mat-dialog-actions>
+            <button class="button" mat-button [mat-dialog-close]="time" cdkFocusInitial>Confirmer</button>
+        </div>
+    </div>
+</div>
