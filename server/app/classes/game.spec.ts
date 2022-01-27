@@ -1,45 +1,45 @@
 import { expect } from 'chai';
-import { Game } from './game';
+import { GameService } from './game';
 
 describe('Validated Word', () => {
-    const game: Game = new Game();
+    const game: GameService = new GameService();
     it('method validatedWord should return True when a word is in the dictionary', () => {
-        let result = game.validatedWord("ourson");
+        let result = game.validatedWordDictionary("ourson");
         expect(result).to.equals(true);
     });
 
     it('method validatedWord should return False when a word is not in the dictionary', () => {
-        let result = game.validatedWord("aaaaaaa");
+        let result = game.validatedWordDictionary("aaaaaaa");
         expect(result).to.equals(false);
     });
 
     it('method validatedWord should return False when a word is smaller than 2 letters', () => {
-        let result = game.validatedWord("a");
+        let result = game.validatedWordDictionary("a");
         expect(result).to.equals(false);
     });
 
     it('method validatedWord should return False if a word contains an apostrophe', () => {
-        let result = game.validatedWord("aujourd'hui");
+        let result = game.validatedWordDictionary("aujourd'hui");
         expect(result).to.equals(false);
     });
 
     it('method validatedWord should return False if a word contains an hyphen', () => {
-        let result = game.validatedWord("arc-en-ciel");
+        let result = game.validatedWordDictionary("arc-en-ciel");
         expect(result).to.equals(false);
     });
 
     it('method validatedWord should return true if the word is in the dictionary even if it contains an accent', () => {
-        let result = game.validatedWord("éléphant");
+        let result = game.validatedWordDictionary("éléphant");
         expect(result).to.equals(true);
     });
 
     it('method validatedWord should return true if the word is in the dictionary even if it contains an cedilla', () => {
-        let result = game.validatedWord("garçon");
+        let result = game.validatedWordDictionary("garçon");
         expect(result).to.equals(true);
     });
 
     it('method validatedWord should return true if the word is in the dictionary even if it contains an diaeresis', () => {
-        let result = game.validatedWord("noël");
+        let result = game.validatedWordDictionary("noël");
         expect(result).to.equals(true);
     });
 });

@@ -1,24 +1,30 @@
+import { PlayerService } from '@app/../../client/src/app/classes/playerService/playerService';
 declare var require: any
 const fs = require('fs');
 
-export class Game  {
-    turnPlayerOne: boolean;
+export class GameService  {
+    players:Array<PlayerService>;
     dictionary: string;
+    lettersInReserve:Array<String>;
+
 
     constructor(){
-        this.turnPlayerOne = true;
         this.dictionary = "Mon dictionnaire";
+        
 
     }
 
-/*     changeTurn(){
-        this.turnPlayerOne = !this.turnPlayerOne;
-    } */
+    changeTurnTwoPlayers(){
+        for(let i = 0; i < this.players.length; i++){
+            this.players[i].changeTurn();
+        }
+    }
+
 
 /*     To be implemented
     changeDictionary(){} */
 
-    validatedWord(word:string) : boolean {
+    validatedWordDictionary(word:string) : boolean {
         if(word.length < 2 || word.includes("-") || word.includes("'"))
             return false;
 
