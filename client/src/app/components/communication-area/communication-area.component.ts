@@ -1,4 +1,5 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { OnInit, Component } from '@angular/core';
+import { ChatService } from '@app/services/chat.service';
 
 @Component({
   selector: 'app-communication-area',
@@ -7,16 +8,16 @@ import { AfterViewInit, Component } from '@angular/core';
 })
 
 
-export class CommunicationAreaComponent implements AfterViewInit {
-
-  
-
-  constructor() { }
-  
+export class CommunicationAreaComponent implements OnInit {
 
 
-  ngAfterViewInit(): void {
-      
+
+  constructor( public chatService:ChatService) {}
+
+
+  ngOnInit(): void {
+    this.chatService.ngOnInit();
+
   }
-
+ 
 }

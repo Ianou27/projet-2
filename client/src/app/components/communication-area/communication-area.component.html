@@ -1,5 +1,19 @@
 <div class='container'>
     <p>Outil de communication (à effacer plus tard)</p>
     <app-text-history></app-text-history>
+    <section>
+  <h1>Communication avec tous les clients connectés au serveur</h1>
+  <label for="broadcastMessage">Message à envoyer à tous </label>
+  <input
+    id="broadcastMessage"
+    [(ngModel)]="this.chatService.broadcastMessage"
+    (keydown.enter)="this.chatService.broadcastMessageToAll()"
+    type="text"
+  />
+  <button (click)="this.chatService.broadcastMessageToAll()">Envoyer à tous!</button>
+  <ul id="serverBroadcastList">
+    <li *ngFor="let message of this.chatService.serverMessages">{{ message }}</li>
+  </ul>
+</section>
 
 </div>
