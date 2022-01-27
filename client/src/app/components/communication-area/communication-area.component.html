@@ -7,10 +7,10 @@
   <input
     id="broadcastMessage"
     [(ngModel)]="this.chatService.broadcastMessage"
-    (keydown.enter)="this.chatService.broadcastMessageToAll()"
+    (keydown.enter)="this.chatService.sendWordValidation()"
     type="text"
   />
-  <button (click)="this.chatService.broadcastMessageToAll()">Envoyer à tous!</button>
+  <button (click)="this.chatService.sendWordValidation()">Envoyer à tous!</button>
   <ul id="serverBroadcastList">
     <li *ngFor="let message of this.chatService.serverMessages">{{ message }}</li>
   </ul>

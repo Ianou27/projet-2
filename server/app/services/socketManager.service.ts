@@ -19,8 +19,9 @@ export class SocketManager {
             socket.on('message', (message: string) => {
                 console.log(message);
             });
-            socket.on('validate', (word: string) => {
-                const isValid = word.length > 5;
+            socket.on('validate', (message: string) => {
+
+                const isValid = this.lenghtVerification(message) && this.characterVerification(message);
                 socket.emit('wordValidated', isValid);
             })
 
@@ -57,4 +58,17 @@ export class SocketManager {
     private emitTime() {
         this.sio.sockets.emit('clock', new Date().toLocaleTimeString());
     }
+    private lenghtVerification(message: string){
+        if (message === undefined) return false;
+        if (message.length > 512) return false;
+        return true;
+
+    }
+    private characterVerification(message: string):boolean{
+        
+        return message.trim().length === 0? false : true; 
+        
+    }
+
+  
 }

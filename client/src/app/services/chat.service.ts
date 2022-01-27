@@ -54,8 +54,8 @@ export class ChatService {
 
     // Gérer l'événement envoyé par le serveur : afficher le résultat de validation
     this.socketService.on('wordValidated', (isValid: boolean) => {
-      const validationString = `Le mot est ${isValid ? "valide" : "invalide"}`;
-      this.serverValidationResult = validationString;
+      isValid ?  this.broadcastMessageToAll():'dfsfsdf';
+     
     });
 
     // Gérer l'événement envoyé par le serveur : afficher le message envoyé par un client connecté
@@ -70,8 +70,8 @@ export class ChatService {
   }
 
   sendWordValidation() {
-    this.socketService.send('validate', this.wordInput);
-    this.wordInput = "";
+    this.socketService.send('validate', this.broadcastMessage);
+    
   }
 
   sendToServer() {
