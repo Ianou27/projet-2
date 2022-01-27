@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
+import { CASE_SIZE, DEFAULT_HEIGHT, DEFAULT_WIDTH, NUMBER_OF_CASES } from '@app/constants/board';
+import { LETTER_2X, LETTER_3X, WORD_2X, WORD_3X } from '@app/constants/tile-information';
 
 // TODO : Avoir un fichier séparé pour les constantes et ne pas les répéter!
-export const DEFAULT_WIDTH = 750;
-export const DEFAULT_HEIGHT = 750;
+/* export const DEFAULT_WIDTH = 500;
+export const DEFAULT_HEIGHT = 500;
 export const NUMBER_OF_CASES = 15;
+export const CASE_SIZE = DEFAULT_HEIGHT / NUMBER_OF_CASES; */
 
 @Injectable({
     providedIn: 'root',
@@ -32,47 +35,52 @@ export class GridService {
         this.gridContext.stroke();
     }
 
-    drawWordTimesThreeTiles() {
-        this.gridContext.fillStyle = '#F51919FA';
-        this.gridContext.fillRect(0, 0, 49, 49);
-        this.gridContext.fillRect(351, 0, 48, 49);
-        this.gridContext.fillRect(701, 0, 49, 49);
-        this.gridContext.fillRect(0, 351, 49, 48);
-        this.gridContext.fillRect(701, 351, 49, 48);
-        this.gridContext.fillRect(0, 701, 49, 49);
-        this.gridContext.fillRect(351, 701, 48, 49);
-        this.gridContext.fillRect(701, 701, 49, 49);
+    drawTilesColor(color: string, bonusType: Vec2[]) {
+        this.gridContext.fillStyle = color;
+        for (const tiles of bonusType) {
+            this.gridContext.fillRect(tiles.x * CASE_SIZE, tiles.y * CASE_SIZE, CASE_SIZE, CASE_SIZE);
+        }
+    }
 
+    writeBonusTypes(word: string, bonusType: Vec2[]) {
+        const wordOffset = CASE_SIZE / 2;
+        const xOffset = 2;
+        this.gridContext.fillStyle = 'black';
+        this.gridContext.font = '14px Arial';
+        for (const tiles of bonusType) {
+            if (!(tiles.x === 7 && tiles.y === 7)) {
+                this.gridContext.fillText(word, tiles.x * CASE_SIZE + xOffset, tiles.y * CASE_SIZE + wordOffset, CASE_SIZE - 4);
+            }
+        }
+    }
+
+    drawTiles() {
+        this.drawTilesColor('#F51919FA', WORD_3X);
+        this.drawTilesColor('#B33754F0', WORD_2X);
+        this.drawTilesColor('#0320FC96', LETTER_3X);
+        this.drawTilesColor('#4A97EE5F', LETTER_2X);
+        this.writeBonusTypes('MOT', WORD_3X);
+        this.writeBonusTypes('MOT', WORD_2X);
+        this.writeBonusTypes('LETTRE', LETTER_3X);
+        this.writeBonusTypes('LETTRE', LETTER_2X);
+    }
+
+    drawWordTimesThreeTiles() {
         this.gridContext.fillStyle = 'black';
         this.gridContext.font = '14px system-ui';
-
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
-                this.gridContext.fillText('MOT x3', 1 + 351 * i, 30 + 351 * j, 46);
+                this.gridContext.fillText('MOT', 1 + CASE_SIZE * i * 7, CASE_SIZE / 2 + CASE_SIZE * j * 7, CASE_SIZE);
+                this.gridContext.fillText('X3', CASE_SIZE / 2 + CASE_SIZE * i * 7, CASE_SIZE - 1 + CASE_SIZE * j * 7);
             }
         }
     }
 
     drawWordTimesTwoTiles() {
-        this.gridContext.fillStyle = '#B33754F0';
-        this.gridContext.fillRect(51, 51, 48, 48);
-        this.gridContext.fillRect(101, 101, 48, 48);
-        this.gridContext.fillRect(151, 151, 48, 48);
-        this.gridContext.fillRect(201, 201, 48, 48);
-        this.gridContext.fillRect(651, 651, 48, 48);
-        this.gridContext.fillRect(601, 601, 48, 48);
-        this.gridContext.fillRect(551, 551, 48, 48);
-        this.gridContext.fillRect(501, 501, 48, 48);
-        this.gridContext.fillRect(351, 351, 48, 48);
-        this.gridContext.fillRect(651, 51, 48, 48);
-        this.gridContext.fillRect(601, 101, 48, 48);
-        this.gridContext.fillRect(551, 151, 48, 48);
-        this.gridContext.fillRect(501, 201, 48, 48);
-        this.gridContext.fillRect(51, 651, 48, 48);
-        this.gridContext.fillRect(101, 601, 48, 48);
-        this.gridContext.fillRect(151, 551, 48, 48);
-        this.gridContext.fillRect(201, 501, 48, 48);
+        this.writeWordTimesTwo();
+    }
 
+    writeWordTimesTwo() {
         this.gridContext.fillStyle = 'black';
         this.gridContext.font = '14px system-ui';
 
@@ -83,7 +91,8 @@ export class GridService {
                     j = 9;
                 }
                 if (i === j) {
-                    this.gridContext.fillText('MOT x2', 51 + 50 * i, 81 + 50 * j, 47);
+                    this.gridContext.fillText('MOT', 1 + CASE_SIZE + CASE_SIZE * i, CASE_SIZE + CASE_SIZE / 2 + CASE_SIZE * j, CASE_SIZE);
+                    this.gridContext.fillText('X2', CASE_SIZE + CASE_SIZE * i, CASE_SIZE * 2 - 1 + CASE_SIZE * j, CASE_SIZE);
                 }
             }
         }
@@ -101,20 +110,6 @@ export class GridService {
     }
 
     drawLetterTimesThreeTiles() {
-        this.gridContext.fillStyle = '#0320FC96';
-        this.gridContext.fillRect(251, 51, 48, 48);
-        this.gridContext.fillRect(451, 51, 48, 48);
-        this.gridContext.fillRect(51, 251, 48, 48);
-        this.gridContext.fillRect(251, 251, 48, 48);
-        this.gridContext.fillRect(451, 251, 48, 48);
-        this.gridContext.fillRect(651, 251, 48, 48);
-        this.gridContext.fillRect(51, 451, 48, 48);
-        this.gridContext.fillRect(251, 451, 48, 48);
-        this.gridContext.fillRect(451, 451, 48, 48);
-        this.gridContext.fillRect(651, 451, 48, 48);
-        this.gridContext.fillRect(251, 651, 48, 48);
-        this.gridContext.fillRect(451, 651, 48, 48);
-
         this.gridContext.fillStyle = 'black';
         this.gridContext.font = '13px system-ui';
         for (let i = 0; i < 4; i++) {
@@ -130,36 +125,6 @@ export class GridService {
     }
 
     drawLetterTimesTwoTiles() {
-        this.gridContext.fillStyle = '#4A97EE5F';
-        this.gridContext.fillRect(151, 0, 48, 49);
-        this.gridContext.fillRect(551, 0, 48, 49);
-        this.gridContext.fillRect(301, 101, 48, 48);
-        this.gridContext.fillRect(351, 151, 48, 48);
-        this.gridContext.fillRect(401, 101, 48, 48);
-
-        this.gridContext.fillRect(0, 151, 49, 48);
-        this.gridContext.fillRect(0, 551, 49, 48);
-        this.gridContext.fillRect(101, 301, 48, 48);
-        this.gridContext.fillRect(151, 351, 48, 48);
-        this.gridContext.fillRect(101, 401, 48, 48);
-
-        this.gridContext.fillRect(151, 701, 48, 49);
-        this.gridContext.fillRect(551, 701, 48, 49);
-        this.gridContext.fillRect(301, 601, 48, 48);
-        this.gridContext.fillRect(351, 551, 48, 48);
-        this.gridContext.fillRect(401, 601, 48, 48);
-
-        this.gridContext.fillRect(701, 151, 49, 48);
-        this.gridContext.fillRect(701, 551, 49, 48);
-        this.gridContext.fillRect(601, 301, 48, 48);
-        this.gridContext.fillRect(551, 351, 48, 48);
-        this.gridContext.fillRect(601, 401, 48, 48);
-
-        this.gridContext.fillRect(301, 301, 49, 48);
-        this.gridContext.fillRect(301, 401, 49, 48);
-        this.gridContext.fillRect(401, 301, 48, 48);
-        this.gridContext.fillRect(401, 401, 48, 48);
-
         this.gridContext.fillStyle = 'black';
         this.gridContext.font = '13px system-ui';
         for (let i = 0; i < 2; i++) {
