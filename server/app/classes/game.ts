@@ -19,7 +19,7 @@ export class Game  {
     changeDictionary(){} */
 
     validatedWord(word:string) : boolean {
-        if(word.length < 2)
+        if(word.length < 2 || word.includes("-") || word.includes("'"))
             return false;
 
         let dictionaryArray: string[] = JSON.parse(fs.readFileSync("./assets/dictionnary.json")).words;
@@ -29,7 +29,7 @@ export class Game  {
             let middleLimit = leftLimit + Math.floor((rightLimit - leftLimit) / 2);
             
             //localeCompare helps us know if the word is before(-1), equivalent(0) or after(1)
-            let comparisonResult = word.localeCompare(dictionaryArray[middleLimit]);
+            let comparisonResult = word.localeCompare(dictionaryArray[middleLimit], 'en', {sensitivity: 'base'});
 
             if (comparisonResult < 0) {
                 rightLimit = middleLimit - 1;
