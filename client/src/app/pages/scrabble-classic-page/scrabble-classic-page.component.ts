@@ -15,6 +15,14 @@ export class ScrabbleClassicPageComponent {
     constructor(public dialog: MatDialog) {}
 
     openDialog(): void {
+        // const dialogConfig = new MatDialogConfig();
+        // dialogConfig.disableClose = true;
+        // dialogConfig.autoFocus = true;
+        // dialogConfig.data = {
+        //    id: 1,
+        //    title: 'Testtest',
+        // };
+        // this.dialog.open(MultiplayerPageComponent, dialogConfig);
         const dialogRef = this.dialog.open(MultiplayerPageComponent, {
             height: '600px',
             width: '500px',

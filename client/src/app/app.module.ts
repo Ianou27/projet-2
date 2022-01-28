@@ -15,6 +15,7 @@ import { MaterialPageComponent } from '@app/pages/material-page/material-page.co
 import { ButtonComponent } from './components/button/button.component';
 import { MultiplayerPageComponent } from './pages/multiplayer-page/multiplayer-page.component';
 import { ScrabbleClassicPageComponent } from './pages/scrabble-classic-page/scrabble-classic-page.component';
+import { WaitingMultiplayerPageComponent } from './pages/waiting-multiplayer-page/waiting-multiplayer-page.component';
 
 /**
  * Main module that is used in main.ts.
@@ -33,6 +34,7 @@ import { ScrabbleClassicPageComponent } from './pages/scrabble-classic-page/scra
         ButtonComponent,
         MultiplayerPageComponent,
         ScrabbleClassicPageComponent,
+        WaitingMultiplayerPageComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule],
     providers: [],

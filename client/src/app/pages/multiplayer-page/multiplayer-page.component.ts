@@ -15,4 +15,7 @@ export class MultiplayerPageComponent {
     onCancel(): void {
         this.dialogRef.close();
     }
+    save(): void {
+        this.dialogRef.close(this.options.values);
+    }
 }
