@@ -27,61 +27,16 @@ export class GridService {
         this.gridContext.stroke();
     }
 
-    drawTilesColor(color: string, bonusType: Vec2[]) {
-        this.gridContext.fillStyle = color;
-        for (const tiles of bonusType) {
-            this.gridContext.fillRect(tiles.x * CASE_SIZE, tiles.y * CASE_SIZE, CASE_SIZE, CASE_SIZE);
-        }
-    }
-
-    writeBonusTypes(word: string, bonusType: Vec2[]) {
-        const wordHeightOffset = CASE_SIZE / 2;
-        const xOffset = 2;
-        const letterWidthOffset = 4;
-        const middleTile = 7;
-        this.gridContext.fillStyle = 'black';
-        this.gridContext.font = '14px Arial';
-        for (const tiles of bonusType) {
-            if (!(tiles.x === middleTile && tiles.y === middleTile)) {
-                this.gridContext.fillText(word, tiles.x * CASE_SIZE + xOffset, tiles.y * CASE_SIZE + wordHeightOffset, CASE_SIZE - letterWidthOffset);
-            }
-        }
-    }
-
-    writeMultiplier(word: string, bonusType: Vec2[]) {
-        const wordHeightOffset = CASE_SIZE / 2;
-        const xOffset = 8;
-        const letterWidthOffset = 4;
-        const middleTile = 7;
-        const yOffset = 2;
-        this.gridContext.fillStyle = 'black';
-        this.gridContext.font = '14px Arial';
-        for (const tiles of bonusType) {
-            if (!(tiles.x === middleTile && tiles.y === middleTile)) {
-                this.gridContext.fillText(
-                    word,
-                    tiles.x * CASE_SIZE + xOffset,
-                    tiles.y * CASE_SIZE + wordHeightOffset * 2 - yOffset,
-                    CASE_SIZE - letterWidthOffset,
-                );
-            }
-        }
-    }
-
     drawTiles() {
         this.drawTilesColor('#8080805A', NORMAL);
         this.drawTilesColor('#F51919CA', WORD_3X);
         this.drawTilesColor('#B33754C0', WORD_2X);
         this.drawTilesColor('#0320FC96', LETTER_3X);
         this.drawTilesColor('#4A97EE5F', LETTER_2X);
-        this.writeBonusTypes('MOT', WORD_3X);
-        this.writeMultiplier('X3', WORD_3X);
-        this.writeBonusTypes('MOT', WORD_2X);
-        this.writeMultiplier('X2', WORD_2X);
-        this.writeBonusTypes('LETTRE', LETTER_3X);
-        this.writeMultiplier('X3', LETTER_3X);
-        this.writeBonusTypes('LETTRE', LETTER_2X);
-        this.writeMultiplier('X3', LETTER_2X);
+        this.writeBonusTypes('MOT', 'X3', WORD_3X);
+        this.writeBonusTypes('MOT', 'X2', WORD_2X);
+        this.writeBonusTypes('LETTRE', 'X3', LETTER_3X);
+        this.writeBonusTypes('LETTRE', 'X2', LETTER_2X);
     }
 
     drawStar(innerRadius: number, outerRadius: number) {
@@ -99,6 +54,43 @@ export class GridService {
         }
         this.gridContext.closePath();
         this.gridContext.fill();
+    }
+
+    drawTilesColor(color: string, bonusType: Vec2[]) {
+        const reg = /^#([0-9a-f]{6,8})$/i;
+        this.gridContext.fillStyle = color;
+        if (reg.test(color)) {
+            for (const tiles of bonusType) {
+                this.gridContext.fillRect(tiles.x * CASE_SIZE, tiles.y * CASE_SIZE, CASE_SIZE, CASE_SIZE);
+            }
+        }
+    }
+
+    writeBonusTypes(firstWord: string, secondWord: string, bonusType: Vec2[], xOffset: number = 2, yOffset: number = 2) {
+        const wordHeightOffset = CASE_SIZE / 2;
+        const secondWordOffset = 8;
+        const letterWidthOffset = 4;
+        const middleTile = 7;
+        this.gridContext.fillStyle = 'black';
+        this.gridContext.font = '14px Arial';
+        if (firstWord && secondWord) {
+            for (const tiles of bonusType) {
+                if (!(tiles.x === middleTile && tiles.y === middleTile)) {
+                    this.gridContext.fillText(
+                        firstWord,
+                        tiles.x * CASE_SIZE + xOffset,
+                        tiles.y * CASE_SIZE + wordHeightOffset,
+                        CASE_SIZE - letterWidthOffset,
+                    );
+                    this.gridContext.fillText(
+                        secondWord,
+                        tiles.x * CASE_SIZE + secondWordOffset,
+                        tiles.y * CASE_SIZE + wordHeightOffset * 2 - yOffset,
+                        CASE_SIZE - letterWidthOffset,
+                    );
+                }
+            }
+        }
     }
 
     get width(): number {
