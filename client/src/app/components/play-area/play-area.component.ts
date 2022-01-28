@@ -1,11 +1,7 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
-import { CASE_SIZE, DEFAULT_HEIGHT, DEFAULT_WIDTH } from '@app/constants/board';
+import { CASE_SIZE, DEFAULT_HEIGHT, DEFAULT_WIDTH, RADIUS_MULTIPLIER } from '@app/constants/board';
 import { GridService } from '@app/services/grid.service';
-
-// TODO : Avoir un fichier séparé pour les constantes!
-/* export const DEFAULT_WIDTH = 500;
-export const DEFAULT_HEIGHT = 500; */
 
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
 export enum MouseButton {
@@ -39,7 +35,7 @@ export class PlayAreaComponent implements AfterViewInit {
         this.gridService.gridContext = this.gridCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.gridService.drawGrid();
         this.gridService.drawTiles();
-        this.gridService.drawStar(0.6, CASE_SIZE / 2, 5);
+        this.gridService.drawStar(RADIUS_MULTIPLIER, CASE_SIZE / 2);
         this.gridCanvas.nativeElement.focus();
     }
 
