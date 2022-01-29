@@ -16,22 +16,20 @@
 }
 
 #value {
+    display: flex;
     font-family: 'Courier New';
+    font-size: 14px;
+    font-weight: bold;
     position: relative;
-    left: 22px;
-    /* display: flex;
-    justify-content: end;
-    margin-right: 2px;
-    margin-bottom: 0px; */
+    justify-content: right;
+    right: 2px;
 }
 
 #letter {
     font-family: 'Courier New';
+    font-size: 25px;
+    font-weight: bold;
     position: relative;
     top: 5px;
     left: 10px;
-    /* display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 0px; */
 }

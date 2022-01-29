@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Tile } from '@app/classes/tile';
 
 @Component({
@@ -6,8 +6,6 @@ import { Tile } from '@app/classes/tile';
     templateUrl: './tile.component.html',
     styleUrls: ['./tile.component.scss'],
 })
-export class TileComponent implements OnInit {
-    tile: Tile = { letter: 'e', value: 1 };
-    constructor() {}
-    ngOnInit(): void {}
+export class TileComponent {
+    tile: Tile = { letter: 'e', value: 10 };
 }
