@@ -1,5 +1,10 @@
 import { Vec2 } from '@app/classes/vec2';
 
+export const DEFAULT_LETTER_SIZE = 21;
+export const MAX_LETTER_SIZE = 28;
+export const MIN_LETTER_SIZE = 18;
+export const DEFAULT_VALUE_SIZE = 12;
+
 export const WORD_3X: Vec2[] = [
     { x: 0, y: 0 },
     { x: 7, y: 0 },
