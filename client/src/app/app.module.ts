@@ -14,6 +14,7 @@ import { MaterialPageComponent } from '@app/pages/material-page/material-page.co
 import { InformationBoardComponent } from './components/information-board/information-board.component';
 import { TileHolderComponent } from './components/tile-holder/tile-holder.component';
 import { TileComponent } from './components/tile/tile.component';
+import { SizeSelectorComponent } from './components/size-selector/size-selector.component';
 
 /**
  * Main module that is used in main.ts.
@@ -32,6 +33,7 @@ import { TileComponent } from './components/tile/tile.component';
         TileHolderComponent,
         TileComponent,
         InformationBoardComponent,
+        SizeSelectorComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule],
     providers: [],

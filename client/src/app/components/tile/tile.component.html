@@ -1,4 +1,4 @@
 <div id="tile">
-    <p id="letter">{{ tile.letter | uppercase }}</p>
-    <p id="value">{{ tile.value }}</p>
+    <p id="letter" [style.font-size.px]="letterFontSize">{{ tile.letter | uppercase }}</p>
+    <p id="value" [style.font-size.px]="valueFontSize">{{ tile.value }}</p>
 </div>
