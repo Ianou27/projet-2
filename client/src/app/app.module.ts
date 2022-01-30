@@ -15,6 +15,7 @@ import { InformationBoardComponent } from './components/information-board/inform
 import { TileHolderComponent } from './components/tile-holder/tile-holder.component';
 import { TileComponent } from './components/tile/tile.component';
 import { SizeSelectorComponent } from './components/size-selector/size-selector.component';
+import { FormatTimePipe } from './pipes/format-time.pipe';
 
 /**
  * Main module that is used in main.ts.
@@ -34,6 +35,7 @@ import { SizeSelectorComponent } from './components/size-selector/size-selector.
         TileComponent,
         InformationBoardComponent,
         SizeSelectorComponent,
+        FormatTimePipe,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule],
     providers: [],
