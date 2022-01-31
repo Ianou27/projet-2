@@ -54,6 +54,10 @@ export class ChatService {
             isValid ? this.broadcastMessageToAll() : this.messageLengthError();
         });
 
+        this.socketService.on('commandValidated', (isValid: boolean) => {
+            isValid ? this.broadcastMessageToAll() : this.commandError();
+        });
+
         // Gérer l'événement envoyé par le serveur : afficher le message envoyé par un client connecté
         this.socketService.on('massMessage', (broadcastMessage: string) => {
             this.serverMessages.push(broadcastMessage);
@@ -90,6 +94,11 @@ export class ChatService {
 
     messageLengthError() {
         this.serverMessages.push('Votre message est trop long');
+        this.broadcastMessage = '';
+    }
+
+    commandError(): void {
+        this.serverMessages.push('Commande non reconnue');
         this.broadcastMessage = '';
     }
 }

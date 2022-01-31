@@ -4,6 +4,9 @@ import * as io from 'socket.io';
 export class SocketManager {
     private sio: io.Server;
     private room: string = 'serverRoom';
+    // commandsList et exclamationIndex à mettre dans un fichier de constantes
+    private commandsList: string[] = ['placer', 'echanger', 'passer', 'indice'];
+    private exclamationIndex: number = 1;
     constructor(server: http.Server) {
         this.sio = new io.Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
     }
@@ -18,9 +21,12 @@ export class SocketManager {
                 console.log(message);
             });
             socket.on('validate', (message: string) => {
-                // const isValid = message[0] === '!' ? this.commandVerification(message) : this.lengthVerification(message) && this.characterVerification(message);
-                const isValid = this.lenghtVerification(message) && this.characterVerification(message);
-                socket.emit('wordValidated', isValid);
+                if (message[0] === '!') {
+                    socket.emit('commandValidated', this.commandVerification(message));
+                } else {
+                    const isValid = this.lengthVerification(message) && this.characterVerification(message);
+                    socket.emit('wordValidated', isValid);
+                }
             });
 
             socket.on('broadcastAll', (message: string) => {
@@ -53,7 +59,7 @@ export class SocketManager {
     private emitTime() {
         this.sio.sockets.emit('clock', new Date().toLocaleTimeString());
     }
-    private lenghtVerification(message: string) {
+    private lengthVerification(message: string) {
         if (message === undefined) return false;
         if (message.length > 512) return false;
         return true;
@@ -62,7 +68,7 @@ export class SocketManager {
         return message.trim().length === 0 ? false : true;
     }
 
-    /* private commandVerification(message: string): boolean{
-        Verifier si le mot après le point d'exclamation est une commande dans la liste de commande
-    }*/
-    
+    private commandVerification(message: string): boolean {
+        return this.commandsList.includes(message.slice(this.exclamationIndex, message.indexOf(' '))) ? true : false;
+    }
+}
