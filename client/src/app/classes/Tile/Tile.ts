@@ -1,12 +1,13 @@
 
 export class Tile{
-    letter:Object;
-    position:Array<Number>;
-    specialProperty:caseProperty;
+    private letter:Object;
+    private position:Array<Number>;
+    private specialProperty:caseProperty;
 
-    constructor(letter:Object, position:Array<Number>, specialProperty:caseProperty){
-        this.letter = letter;
+    constructor(position:Array<Number>, specialProperty:caseProperty){
         this.position = position;
-        this.specialProperty = specialProperty; 
+        this.specialProperty = specialProperty;
     }
+
+    
 }
