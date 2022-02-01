@@ -18,8 +18,4 @@ export class PlayerService{
         this.hisTurn = !this.hisTurn;
     }
 
-    validatedWord(word:string){
-        //todo verify if the 
-    }
-
 }

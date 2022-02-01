@@ -1,5 +1,5 @@
 import { PlayerService } from '@app/../../client/src/app/classes/playerService/playerService';
-declare var require: any
+declare var require: any;
 const fs = require('fs');
 
 export class GameService  {
@@ -11,7 +11,6 @@ export class GameService  {
     constructor(){
         this.dictionary = "Mon dictionnaire";
         
-
     }
 
     changeTurnTwoPlayers(){

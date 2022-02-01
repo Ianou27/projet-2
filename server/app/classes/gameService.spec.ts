@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { GameService } from './game';
+import { GameService } from './gameService';
 
 describe('Validated Word', () => {
     const game: GameService = new GameService();
