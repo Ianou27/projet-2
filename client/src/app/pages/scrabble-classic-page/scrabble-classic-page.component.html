@@ -6,7 +6,11 @@
             <div class="multiplayer">
                 <button class="button" mat-raised-button (click)="openDialog()">Créer partie multijoueur</button>
                 <br />
+                <span *ngIf="options">
+                    Tu as choisi: <i>{{ options }}</i>
+                </span>
                 <app-button name="Joindre une partir multijoueur"></app-button>
+                <app-button name="Temporaire pour salle d'attente" routing="/waiting"></app-button>
             </div>
 
             <app-button ngClass="retour" name="Retour" routing="/home"></app-button>

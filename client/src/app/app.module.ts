@@ -1,4 +1,4 @@
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 // import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -12,10 +12,12 @@ import { AppComponent } from '@app/pages/app/app.component';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { MaterialPageComponent } from '@app/pages/material-page/material-page.component';
+import { LoadingScreenInterceptor } from './classes/http-interceptor';
 import { ButtonComponent } from './components/button/button.component';
 import { MultiplayerPageComponent } from './pages/multiplayer-page/multiplayer-page.component';
 import { ScrabbleClassicPageComponent } from './pages/scrabble-classic-page/scrabble-classic-page.component';
 import { WaitingMultiplayerPageComponent } from './pages/waiting-multiplayer-page/waiting-multiplayer-page.component';
+// import { LoadingScreenService } from './services/loading-screen/loading-screen.service';
 
 /**
  * Main module that is used in main.ts.
@@ -37,7 +39,13 @@ import { WaitingMultiplayerPageComponent } from './pages/waiting-multiplayer-pag
         WaitingMultiplayerPageComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule],
-    providers: [],
+    providers: [
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: LoadingScreenInterceptor,
+            multi: true,
+        },
+    ],
     bootstrap: [AppComponent],
 })
 export class AppModule {}
