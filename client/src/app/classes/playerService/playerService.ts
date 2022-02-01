@@ -1,15 +1,8 @@
-enum playerTypeEnum{
-    Bot,
-    Human,
-}
-
 export class PlayerService{
-    playerType: playerTypeEnum;
-    letters: Array<String>;
-    hisTurn: boolean;
+    private letters: Array<String>;
+    private hisTurn: boolean;
 
-    constructor(playerType:playerTypeEnum, letters:Array<String>, hisTurn:boolean){
-        this.playerType = playerType;
+    constructor(letters:Array<String>, hisTurn:boolean){
         this.letters = letters;
         this.hisTurn = hisTurn; 
     }

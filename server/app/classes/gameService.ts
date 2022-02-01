@@ -1,15 +1,21 @@
+import { GameBoardService } from '@app/../../client/src/app/classes/gameBoardService/gameBoardService';
 import { PlayerService } from '@app/../../client/src/app/classes/playerService/playerService';
+
 declare var require: any;
 const fs = require('fs');
 
 export class GameService  {
-    players:Array<PlayerService>;
-    dictionary: string;
-    lettersInReserve:Array<String>;
+    private players:Array<PlayerService>;
+    private dictionary: string;
+    private gameBoard:GameBoardService;
 
 
     constructor(){
         this.dictionary = "Mon dictionnaire";
+        this.gameBoard = new GameBoardService();
+        this.players.push(new PlayerService());
+        this.players.push(new PlayerService());
+        
         
     }
 
