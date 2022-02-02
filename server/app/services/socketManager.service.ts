@@ -5,8 +5,8 @@ export class SocketManager {
     private sio: io.Server;
     private room: string = 'serverRoom';
     // commandsList et exclamationIndex à mettre dans un fichier de constantes
-    private commandsList: string[] = ['placer', 'echanger', 'passer', 'indice'];
-    private exclamationIndex: number = 1;
+    private commandsList: string[] = ['!placer', '!echanger', '!passer', '!indice'];
+    private commandIndex: number = 0;
     constructor(server: http.Server) {
         this.sio = new io.Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
     }
@@ -69,6 +69,7 @@ export class SocketManager {
     }
 
     private commandVerification(message: string): boolean {
-        return this.commandsList.includes(message.slice(this.exclamationIndex, message.indexOf(' '))) ? true : false;
+        const messageArray = message.split(' ');
+        return this.commandsList.includes(messageArray[this.commandIndex]) ? true : false;
     }
 }
