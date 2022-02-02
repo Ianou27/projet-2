@@ -1,6 +1,12 @@
+import { caseProperty } from '@app/../assets/caseProperty';
+import { GameBoardService } from '@app/classes/gameBoardService/gameBoardService';
 
 describe('GameBoard', () => {
-/*     const gameBoard: GameBoardService = new GameBoardService();
+    let gameBoard: GameBoardService; 
+
+    beforeEach(() => {
+        gameBoard = new GameBoardService()
+    });
     it('constructor should construct a gameBoard of 15x15 tiles ', () => {
         let result = 0;
         for(let colonne of gameBoard.cases){
@@ -22,7 +28,7 @@ describe('GameBoard', () => {
         let result = 0;
         for(let colonne of gameBoard.cases){
             for(let tile of colonne){
-                if(tile.getSpecialProperty() === caseProperty.wordTriple){
+                if(tile.getSpecialProperty() == caseProperty.wordTriple){
                     result += 1;
                 }
             }
@@ -30,23 +36,23 @@ describe('GameBoard', () => {
         expect(result).toEqual(8);
     });
 
-    it('gameBoard should contains 18 tiles with the property wordDouble', () => {
+    it('gameBoard should contains 17 tiles with the property wordDouble', () => {
         let result = 0;
         for(let colonne of gameBoard.cases){
             for(let tile of colonne){
-                if(tile.getSpecialProperty() === caseProperty.wordDouble){
+                if(tile.getSpecialProperty() == caseProperty.wordDouble){
                     result += 1;
                 }
             }
         }
-        expect(result).toEqual(18);
+        expect(result).toEqual(17);
     });
 
     it('gameBoard should contains 12 tiles with the property letterTriple', () => {
         let result = 0;
         for(let colonne of gameBoard.cases){
             for(let tile of colonne){
-                if(tile.getSpecialProperty() === caseProperty.letterTriple){
+                if(tile.getSpecialProperty() == caseProperty.letterTriple){
                     result += 1;
                 }
             }
@@ -58,7 +64,7 @@ describe('GameBoard', () => {
         let result = 0;
         for(let colonne of gameBoard.cases){
             for(let tile of colonne){
-                if(tile.getSpecialProperty() === caseProperty.letterDouble){
+                if(tile.getSpecialProperty() == caseProperty.letterDouble){
                     result += 1;
                 }
             }
@@ -78,5 +84,5 @@ describe('GameBoard', () => {
         gameBoard.addLetterTile(position, letter);
         let result = gameBoard.tileContainsLetter(position);
         expect(result).toEqual(true);
-    }); */
+    });
 });

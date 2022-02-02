@@ -6,38 +6,39 @@ const fs = require('fs'); */
 
 export class GameBoardService{
     private lettersReserve:Object;
-    public cases:Tile[][];
+    public cases:Tile[][] = new Array(15);
     constructor(){
         for (let i = 0; i < 15; i++){
+            this.cases[i] = new Array(15);
             for (let j = 0; j < 15; j++){
-                let array = [i, j];
-                if(array == [0,0] || array == [0,7] || array == [0,14] || array == [7,0] ||
-                   array == [7,14] || array == [14,0]|| array == [14,7] || array == [14,14])
+                let array = [0, 0];
+                if((i == 0 && j == 0) || (i == 0 && j == 7) || (i == 0 && j == 14) || (i == 7 && j == 0) ||
+                (i == 7 && j == 14) || (i == 14 && j == 0)|| (i == 14 && j == 7) || (i == 14 && j == 14))
                 {
                     this.cases[i][j] = new Tile(array, caseProperty.wordTriple);
                 }
 
-                else if(array == [1,1] || array == [2,2] || array == [3,3] || array == [4,4] ||
-                        array == [7,7]|| array == [10,10] || array == [11,11] || array == [12,12] || array == [13,13] ||
-                        array == [1,13] || array == [2,12] || array == [3,11] || array == [4,10] ||
-                        array == [7,7]|| array == [10,4] || array == [11,3] || array == [12,2] || array == [13,1])
+                else if((i == 1 && j == 1) || (i == 2 && j == 2) || (i == 3 && j == 3) || (i == 4 && j == 4) ||
+                        (i == 7 && j == 7)|| (i == 10 && j == 10) || (i == 11 && j == 11) || (i == 12 && j == 12) || (i == 13 && j == 13) ||
+                        (i == 1 && j == 13) || (i == 2 && j == 12) || (i == 3 && j == 11) || (i == 4 && j == 10) ||
+                        (i == 10 && j == 4) || (i == 11 && j == 3) || (i == 12 && j == 2) || (i == 13 && j == 1))
                 {
                     this.cases[i][j] = new Tile(array, caseProperty.wordDouble);
                 }
 
-                else if(array == [5,1] || array == [9,1] || array == [1,5] || array == [5,5] ||
-                        array == [9,5]|| array == [13,5] || array == [1,9] || array == [5,9] ||
-                        array == [9,9] || array == [13,9] || array == [5,13] || array == [9,13])
+                else if((i == 5 && j == 1) || (i == 9 && j == 1) || (i == 1 && j == 5) || (i == 5 && j == 5) ||
+                        (i == 9 && j == 5)|| (i == 13 && j == 5) || (i == 1 && j == 9) || (i == 5 && j == 9) ||
+                        (i == 9 && j == 9) || (i == 13 && j == 9) || (i == 5 && j == 13) || (i == 9 && j == 13))
                 {
                     this.cases[i][j] = new Tile(array, caseProperty.letterTriple);
                 }
 
-                else if (array == [3,0] || array == [11,0] || array == [6,2] || array == [7,3] ||
-                    array == [8,2]|| array == [0,3] || array == [14,3] || array == [2,6] ||
-                    array == [6,6] || array == [8,6] || array == [12,6] || array == [3,7] ||
-                    array == [11,7] || array == [2,8] || array == [6,8] || array == [8,8] ||
-                    array == [12,8]|| array == [0,11] || array == [7,11] || array == [14,11] ||
-                    array == [6,12] || array == [8,12] || array == [3,14] || array == [11,14])
+                else if ((i == 3 && j == 0) || (i == 11 && j == 0) || (i == 6 && j == 2) || (i == 7 && j == 3) ||
+                        (i == 8 && j == 2)|| (i == 0 && j == 3) || (i == 14 && j == 3) || (i == 2 && j == 6) ||
+                        (i == 6 && j == 6) || (i == 8 && j == 6) || (i == 12 && j == 6) || (i == 3 && j == 7) ||
+                        (i == 11 && j == 7) || (i == 2 && j == 7) || (i == 6 && j == 8) || (i == 8 && j == 8) ||
+                        (i == 12 && j == 8)|| (i == 0 && j == 11) || (i == 7 && j == 11) || (i == 14 && j == 11) ||
+                        (i == 6 && j == 12) || (i == 8 && j == 12) || (i == 3 && j == 14) || (i == 11 && j == 14))
                 {
                     this.cases[i][j] = new Tile(array, caseProperty.letterDouble);
                 }
@@ -48,8 +49,7 @@ export class GameBoardService{
                 
             }
         }
-
-/*         this.lettersReserve = JSON.parse(fs.readFileSync("./src/assets/reserveLetters.json")); */
+        /* this.lettersReserve = JSON.parse(fs.readFileSync("./src/assets/reserveLetters.json")); */
     }
 
     tileContainsLetter(position:Array<number>) : boolean{
