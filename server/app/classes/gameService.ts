@@ -5,7 +5,8 @@ declare var require: any;
 const fs = require('fs');
 
 export class GameService  {
-    private players:Array<PlayerService>;
+    private player1:PlayerService;
+    private player2:PlayerService;
     private dictionary: string;
     private gameBoard:GameBoardService;
 
@@ -13,21 +14,32 @@ export class GameService  {
     constructor(){
         this.dictionary = "Mon dictionnaire";
         this.gameBoard = new GameBoardService();
-        this.players.push(new PlayerService());
-        this.players.push(new PlayerService());
+        this.player1 = new PlayerService(this.randomShuffleLetters(), true);
+        this.player2 = new PlayerService(this.randomShuffleLetters(), true);
         
         
     }
 
     changeTurnTwoPlayers(){
-        for(let i = 0; i < this.players.length; i++){
-            this.players[i].changeTurn();
-        }
+        this.player1.changeTurn();
+        this.player2.changeTurn();   
     }
 
+    randomShuffleLetters() : Array<String>{
+        return [];
+    }
 
-/*     To be implemented
-    changeDictionary(){} */
+    validatedWord(newLettersPositions: Array<{"position" : Array<Number>, "letter" : string}>) : boolean {
+
+        for(let letter of newLettersPositions){
+            if(this.gameBoard.tileContainsLetter(letter.position)){
+                return false;
+            }
+            
+        }
+
+        return false;
+    }
 
     validatedWordDictionary(word:string) : boolean {
         if(word.length < 2 || word.includes("-") || word.includes("'"))

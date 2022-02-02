@@ -4,7 +4,7 @@ const fs = require('fs');
 
 export class GameBoardService{
     private lettersReserve:Object;
-    private cases:Array<Tile>;
+    public cases:Array<Tile>;
     constructor(){
         for (let i = 0; i < 15; i++){
             for (let j = 0; j < 15; j++){
@@ -50,4 +50,13 @@ export class GameBoardService{
         this.lettersReserve = JSON.parse(fs.readFileSync("./src/assets/reserveLetters.json"));
     }
 
+    tileContainsLetter(position:Array<Number>) : boolean{
+        
+        for(let i = 0; i < this.cases.length; i++){
+            if(this.cases[i].position == position){
+                return true;
+            }
+        }
+        return false;
+    }
 }
