@@ -7,7 +7,7 @@
     <div>
         <h2>Nom des joueurs :</h2>
         <mat-form-field>
-            <input matInput [(ngModel)]="name" placeholder="Joueur #1" />
+            <input matInput placeholder="Joueur #1" />
         </mat-form-field>
         <h2>Minuterie</h2>
         <mat-form-field>
@@ -18,9 +18,11 @@
         <h2>Dictionnaire:</h2>
         <mat-form-field>
             <mat-select placeholder="Choisir un dictionnaire">
-                <mat-option *ngFor="let option of options" [value]="option">
-                    {{ option }}
-                </mat-option>
+                <!-- <mat-option *ngFor="let options of options" [value]="options">
+                    {{ options }}
+                </mat-option> -->
+                <mat-option value="dico">Dictionnaire par défaut</mat-option>
+                <mat-option value="autre" disabled>Dictionnaire 2 (Indisponible)</mat-option>
             </mat-select>
         </mat-form-field>
         <div mat-dialog-actions>

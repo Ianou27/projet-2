@@ -9,7 +9,7 @@ import { MultiplayerPageComponent } from '@app/pages/multiplayer-page/multiplaye
 })
 export class ScrabbleClassicPageComponent {
     name: string;
-    time: string; // number;
+    time: number;
     options: string[] = ['Dictionnaire par défaut', 'Dictionnaire qui n`est pas la'];
 
     constructor(public dialog: MatDialog) {}
