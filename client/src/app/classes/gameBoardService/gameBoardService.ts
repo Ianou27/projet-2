@@ -1,5 +1,5 @@
-import { caseProperty } from '@app/../assets/caseProperty';
-import { Tile } from '@app/classes/Tile/Tile';
+import { caseProperty } from './../../../assets/caseProperty';
+import { Tile } from './../Tile/Tile';
 
 /* declare var require: any;
 const fs = require('fs'); */

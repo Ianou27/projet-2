@@ -7,12 +7,12 @@ const fs = require('fs');
 export class GameService  {
     private player1:PlayerService;
     private player2:PlayerService;
-    private dictionary: string;
+    /* private dictionary: string; */
     private gameBoard:GameBoardService;
 
 
     constructor(){
-        this.dictionary = "Mon dictionnaire";
+        /* this.dictionary = "Mon dictionnaire"; */
         this.gameBoard = new GameBoardService();
         this.player1 = new PlayerService(this.randomShuffleLetters(), true);
         this.player2 = new PlayerService(this.randomShuffleLetters(), true);
