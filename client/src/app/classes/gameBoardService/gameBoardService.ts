@@ -6,7 +6,7 @@ const fs = require('fs'); */
 
 export class GameBoardService{
     private lettersReserve:Object;
-    public cases:Array<Array<Tile>>;
+    public cases:Tile[][];
     constructor(){
         for (let i = 0; i < 15; i++){
             for (let j = 0; j < 15; j++){

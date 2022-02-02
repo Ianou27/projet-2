@@ -4,7 +4,12 @@ import { Tile } from './Tile';
 describe('Tile', () => {
     let position = [0,0];
     let property = caseProperty.wordDouble;
-    const tile: Tile = new Tile(position, property);
+    let tile:Tile;
+    
+    beforeEach(() => {
+        tile = new Tile(position, property);
+    });
+
     it('constructor should construct a tile with a position ', () => {
         let tilePosition = tile.getPosition();
         expect(position).toEqual(tilePosition);
