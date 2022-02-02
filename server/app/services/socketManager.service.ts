@@ -21,7 +21,7 @@ export class SocketManager {
                 console.log(message);
             });
             socket.on('validate', (message: string) => {
-                if (message[0] === '!') {
+                if (message.charAt(0) === '!') {
                     socket.emit('commandValidated', this.commandVerification(message));
                 } else {
                     const isValid = this.lengthVerification(message) && this.characterVerification(message);
