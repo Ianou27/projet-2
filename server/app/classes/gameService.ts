@@ -17,7 +17,6 @@ export class GameService  {
         this.player1 = new PlayerService(this.randomShuffleLetters(), true);
         this.player2 = new PlayerService(this.randomShuffleLetters(), true);
         
-        
     }
 
     changeTurnTwoPlayers(){
@@ -29,16 +28,33 @@ export class GameService  {
         return [];
     }
 
-    validatedWord(newLettersPositions: Array<{"position" : Array<Number>, "letter" : string}>) : boolean {
-
+    validatedWord(newLettersPositions: Array<{"position" : Array<number>, "letter" : string}>) : boolean {
         for(let letter of newLettersPositions){
-            if(this.gameBoard.tileContainsLetter(letter.position)){
+            let position = letter.position;
+            if(this.gameBoard.tileContainsLetter(position)){
                 return false;
             }
-            
+
+            let positionUp = [];
+            positionUp[0] = letter.position[0];
+            positionUp[1] = letter.position[0] - 1;
+
+            let positionDown = [];
+            positionDown[0] = letter.position[0];
+            positionDown[1] = letter.position[0] + 1;
+
+            let positionLeft = [];
+            positionLeft[0] = letter.position[0] - 1;
+            positionLeft[1] = letter.position[0];
+
+            let positionRight = [];
+            positionRight[0] = letter.position[0] + 1;
+            positionRight[1] = letter.position[0];
+
+
         }
 
-        return false;
+        return true;
     }
 
     validatedWordDictionary(word:string) : boolean {
