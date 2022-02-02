@@ -1,3 +1,4 @@
+import { caseProperty } from '@app/../assets/caseProperty';
 
 export class Tile{
     private letter:string = '';

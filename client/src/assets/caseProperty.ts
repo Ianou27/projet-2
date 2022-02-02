@@ -1,4 +1,4 @@
-enum caseProperty{
+export enum caseProperty{
     normal,
     wordDouble,
     wordTriple,

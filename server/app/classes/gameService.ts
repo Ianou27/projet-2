@@ -24,7 +24,7 @@ export class GameService  {
         this.player2.changeTurn();   
     }
 
-    randomShuffleLetters() : Array<String>{
+    randomShuffleLetters() : Array<string>{
         return [];
     }
 

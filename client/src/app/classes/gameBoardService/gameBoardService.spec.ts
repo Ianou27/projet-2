@@ -1,3 +1,4 @@
+import { caseProperty } from '@app/../assets/caseProperty';
 import { GameBoardService } from './gameBoardService';
 
 describe('GameBoard', () => {

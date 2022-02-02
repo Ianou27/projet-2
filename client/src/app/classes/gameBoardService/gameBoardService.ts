@@ -1,6 +1,8 @@
+import { caseProperty } from '@app/../assets/caseProperty';
 import { Tile } from '@app/classes/Tile/Tile';
-declare var require: any;
-const fs = require('fs');
+
+/* declare var require: any;
+const fs = require('fs'); */
 
 export class GameBoardService{
     private lettersReserve:Object;
@@ -47,7 +49,7 @@ export class GameBoardService{
             }
         }
 
-        this.lettersReserve = JSON.parse(fs.readFileSync("./src/assets/reserveLetters.json"));
+/*         this.lettersReserve = JSON.parse(fs.readFileSync("./src/assets/reserveLetters.json")); */
     }
 
     tileContainsLetter(position:Array<number>) : boolean{
