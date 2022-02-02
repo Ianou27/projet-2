@@ -59,16 +59,16 @@ export class SocketManager {
     private emitTime() {
         this.sio.sockets.emit('clock', new Date().toLocaleTimeString());
     }
-    private lengthVerification(message: string) {
+    lengthVerification(message: string) {
         if (message === undefined) return false;
         if (message.length > 512) return false;
         return true;
     }
-    private characterVerification(message: string): boolean {
+    characterVerification(message: string): boolean {
         return message.trim().length === 0 ? false : true;
     }
 
-    private commandVerification(message: string): boolean {
+    commandVerification(message: string): boolean {
         const messageArray = message.split(' ');
         return this.commandsList.includes(messageArray[this.commandIndex]) ? true : false;
     }

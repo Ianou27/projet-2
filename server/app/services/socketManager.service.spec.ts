@@ -1,10 +1,9 @@
-import { Server } from "app/server";
-import { SocketManager } from "./socketManager.service";
+import { Server } from 'app/server';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
 import { io as ioClient, Socket } from 'socket.io-client';
 import { Container } from 'typedi';
-
+import { SocketManager } from './socketManager.service';
 
 const RESPONSE_DELAY = 200;
 describe('SocketManager service tests', () => {
@@ -32,26 +31,32 @@ describe('SocketManager service tests', () => {
         clientSocket.emit('message', testMessage);
         setTimeout(() => {
             assert(spy.called);
-            assert(spy.calledWith(testMessage))
+            assert(spy.calledWith(testMessage));
             done();
         }, RESPONSE_DELAY);
-
     });
 
-    it('should handle a validate event and return true if word if longer than 5 letters', (done) => {
-        const testMessage = 'Hello World';
+    it('should handle a validate event and call lengthVerification and characterVerification when the message is not a command', (done) => {
+        let testMessage: string = 'ABCDEFGHIJKLMNOP';
+        const spyLength = sinon.spy(service, 'lengthVerification');
+        const spyCharacters = sinon.spy(service, 'characterVerification');
         clientSocket.emit('validate', testMessage);
-        clientSocket.on('wordValidated', (result: boolean) => {
-            expect(result).to.be.true;
+        clientSocket.on('wordValidated', () => {
+            assert(spyLength.called);
+            assert(spyLength.calledWith(testMessage));
+            assert(spyCharacters.called);
+            assert(spyCharacters.calledWith(testMessage));
             done();
         });
     });
 
-    it('should handle a validate event and return false if word if less than 5 letters', (done) => {
-        const testMessage = 'Hello';
+    it('should handle a validate event and call commandVerification when message is a command', (done) => {
+        const testMessage = '!abcde';
+        const spyCommand = sinon.spy(service, 'commandVerification');
         clientSocket.emit('validate', testMessage);
-        clientSocket.on('wordValidated', (result: boolean) => {
-            expect(result).to.be.false;
+        clientSocket.on('commandValidated', () => {
+            assert(spyCommand.called);
+            assert(spyCommand.calledWith(testMessage));
             done();
         });
     });
@@ -100,7 +105,6 @@ describe('SocketManager service tests', () => {
         });
     });
 
-
     it('should broadcast to all sockets when emiting time', () => {
         const spy = sinon.spy(service['sio'].sockets, 'emit');
         service['emitTime']();
@@ -114,4 +118,4 @@ describe('SocketManager service tests', () => {
             done();
         }, RESPONSE_DELAY * 5); // 1 seconde
     });
-})
+});
