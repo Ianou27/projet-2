@@ -21,6 +21,7 @@ export class SocketManager {
                 console.log(message);
             });
             socket.on('validate', (message: string) => {
+                if (message === undefined || message === null) return;
                 if (message.charAt(0) === '!') {
                     socket.emit('commandValidated', this.commandVerification(message));
                 } else {
@@ -60,9 +61,7 @@ export class SocketManager {
         this.sio.sockets.emit('clock', new Date().toLocaleTimeString());
     }
     lengthVerification(message: string) {
-        if (message === undefined) return false;
-        if (message.length > 512) return false;
-        return true;
+        return message.length > 512 ? false : true;
     }
     characterVerification(message: string): boolean {
         return message.trim().length === 0 ? false : true;

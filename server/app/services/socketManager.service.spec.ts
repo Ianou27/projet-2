@@ -49,6 +49,19 @@ describe('SocketManager service tests', () => {
             done();
         });
     });
+    it('should handle a validate event and not call any function if message is undefined', (done) => {
+        const testMessageUndefined = undefined;
+        const testMessageEmpty = '';
+        const testMessageNull = null;
+        const spyLength = sinon.spy(service, 'lengthVerification');
+        const spyCharacters = sinon.spy(service, 'characterVerification');
+        clientSocket.emit('validate', testMessageUndefined);
+        clientSocket.emit('validate', testMessageEmpty);
+        clientSocket.emit('validate', testMessageNull);
+        assert(spyCharacters.notCalled);
+        assert(spyLength.notCalled);
+        done();
+    });
 
     it('should handle a validate event and call commandVerification when message is a command', (done) => {
         const testMessage = '!abcde';
@@ -59,6 +72,29 @@ describe('SocketManager service tests', () => {
             assert(spyCommand.calledWith(testMessage));
             done();
         });
+    });
+
+    it('should verify if the command exists and return true if it exists', (done) => {
+        const testCommand = '!placer';
+        const testCommandFalse = 'abcde';
+        expect(service.commandVerification(testCommand)).to.be.true;
+        expect(service.commandVerification(testCommandFalse)).to.be.false;
+        done();
+    });
+
+    it('should verify if the message contains only spaces and return false', (done) => {
+        const testMessageSpaces = '          ';
+        expect(service.characterVerification(testMessageSpaces)).to.be.false;
+        done();
+    });
+
+    it('should verify if the message is longer than 512 characters or empty and return false if it is, else return true', (done) => {
+        let testMessageLong = 'ABCDEFGHIJKLMNOP';
+        for (let i = 0; i < 47; i++) {
+            testMessageLong += 'ABCDEFGHIJKLMNOP';
+        }
+        expect(service.lengthVerification(testMessageLong)).to.be.false;
+        done();
     });
 
     it('should add the socket to the room after a join event', (done) => {
