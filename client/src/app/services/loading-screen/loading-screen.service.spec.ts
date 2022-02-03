@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+/*import { TestBed } from '@angular/core/testing';
 
 import { LoadingScreenService } from './loading-screen.service';
 
@@ -13,4 +13,4 @@ describe('LoadingScreenService', () => {
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
-});
+});*/
