@@ -1,0 +1,35 @@
+
+.button {
+
+    background-color: #23501f; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 30px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 32px;
+    transition: all 250ms;
+    user-select: none;
+    -webkit-user-select: none;
+    margin-bottom:1.5rem;
+    margin-left: 1.5rem;
+    width: 25rem;
+    border-radius: 15px;
+    border: 1px solid black;
+    border-color: black;
+    
+   
+}
+
+
+
+.button:hover {
+  transform: translateY(-1px);
+  background-color: #324d2f;
+  cursor: pointer;
+}
+
+*{
+    font-family:Arial, Helvetica, sans-serif;
+}
