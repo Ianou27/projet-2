@@ -46,14 +46,7 @@ import { WaitingMultiplayerPageComponent } from './pages/waiting-multiplayer-pag
         TextHistoryComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule, MatDialogModule],
-    providers: [
-        //     {
-        //         provide: HTTP_INTERCEPTORS,
-        //         useClass: LoadingScreenInterceptor,
-        //         multi: true,
-        //     },
-    ],
+    providers: [],
     bootstrap: [AppComponent],
-    entryComponents: [MultiplayerPageComponent],
 })
 export class AppModule {}
