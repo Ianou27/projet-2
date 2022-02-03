@@ -10,13 +10,11 @@ export class ResizerService {
     startValueSize = DEFAULT_VALUE_SIZE;
     letterFontSize = new BehaviorSubject<number>(this.startLetterSize);
     valueFontSize = new BehaviorSubject<number>(this.startValueSize);
-    currentLetterSize = this.letterFontSize.asObservable();
-    currentValueSize = this.valueFontSize.asObservable();
     changeFont(operator: string) {
-        if (operator === '+' && this.startLetterSize < MAX_LETTER_SIZE) {
-            this.changeValue(this.startLetterSize++, this.startValueSize++);
-        } else if (operator === '-' && this.startLetterSize > MIN_LETTER_SIZE) {
-            this.changeValue(this.startLetterSize--, this.startValueSize--);
+        if (operator === '+' && this.letterFontSize.value < MAX_LETTER_SIZE) {
+            this.changeValue(this.letterFontSize.value + 1, this.valueFontSize.value + 1);
+        } else if (operator === '-' && this.letterFontSize.value > MIN_LETTER_SIZE) {
+            this.changeValue(this.letterFontSize.value - 1, this.valueFontSize.value - 1);
         }
     }
     changeValue(letterSize: number, valueSize: number) {

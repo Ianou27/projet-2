@@ -13,19 +13,25 @@ describe('ResizerService', () => {
         expect(service).toBeTruthy();
     });
 
-    it('changeFont should call changeValue', () => {
+    it('changeFont should call changeValue if param is valid', () => {
         const changeValueSpy = spyOn(service, 'changeValue').and.callThrough();
         service.changeFont('+');
         expect(changeValueSpy).toHaveBeenCalled();
     });
 
-    it('changeFont should call changeValue', () => {
+    it('changeFont should call changeValue if param is valid', () => {
         const changeValueSpy = spyOn(service, 'changeValue').and.callThrough();
         service.changeFont('-');
         expect(changeValueSpy).toHaveBeenCalled();
     });
 
-    it('changeFont should not call changeValue it param is empty', () => {
+    it('changeFont should not call changeValue if param not valid', () => {
+        const changeValueSpy = spyOn(service, 'changeValue').and.callThrough();
+        service.changeFont('a');
+        expect(changeValueSpy).toHaveBeenCalledTimes(0);
+    });
+
+    it('changeFont should not call changeValue if param is empty', () => {
         const changeValueSpy = spyOn(service, 'changeValue').and.callThrough();
         service.changeFont('');
         expect(changeValueSpy).toHaveBeenCalledTimes(0);

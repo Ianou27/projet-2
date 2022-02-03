@@ -56,7 +56,7 @@ export class GridService {
         this.gridContext.fill();
     }
 
-    drawTilesColor(color: string, bonusType: Vec2[]) {
+    private drawTilesColor(color: string, bonusType: Vec2[]) {
         const reg = /^#([0-9a-f]{6,8})$/i;
         this.gridContext.fillStyle = color;
         if (reg.test(color)) {
@@ -66,29 +66,28 @@ export class GridService {
         }
     }
 
-    writeBonusTypes(firstWord: string, secondWord: string, bonusType: Vec2[], xOffset: number = 2, yOffset: number = 2) {
+    private writeBonusTypes(firstWord: string, secondWord: string, bonusType: Vec2[], xOffset: number = 2, yOffset: number = 2) {
         const wordHeightOffset = CASE_SIZE / 2;
         const secondWordOffset = 8;
         const letterWidthOffset = 4;
         const middleTile = 7;
         this.gridContext.fillStyle = 'black';
         this.gridContext.font = '14px Arial';
-        if (firstWord && secondWord) {
-            for (const tiles of bonusType) {
-                if (!(tiles.x === middleTile && tiles.y === middleTile)) {
-                    this.gridContext.fillText(
-                        firstWord,
-                        tiles.x * CASE_SIZE + xOffset,
-                        tiles.y * CASE_SIZE + wordHeightOffset,
-                        CASE_SIZE - letterWidthOffset,
-                    );
-                    this.gridContext.fillText(
-                        secondWord,
-                        tiles.x * CASE_SIZE + secondWordOffset,
-                        tiles.y * CASE_SIZE + wordHeightOffset * 2 - yOffset,
-                        CASE_SIZE - letterWidthOffset,
-                    );
-                }
+        if (!firstWord || !secondWord) return;
+        for (const tiles of bonusType) {
+            if (!(tiles.x === middleTile && tiles.y === middleTile)) {
+                this.gridContext.fillText(
+                    firstWord,
+                    tiles.x * CASE_SIZE + xOffset,
+                    tiles.y * CASE_SIZE + wordHeightOffset,
+                    CASE_SIZE - letterWidthOffset,
+                );
+                this.gridContext.fillText(
+                    secondWord,
+                    tiles.x * CASE_SIZE + secondWordOffset,
+                    tiles.y * CASE_SIZE + wordHeightOffset * 2 - yOffset,
+                    CASE_SIZE - letterWidthOffset,
+                );
             }
         }
     }
