@@ -16,9 +16,11 @@ import { TileHolderComponent } from './components/tile-holder/tile-holder.compon
 import { TileComponent } from './components/tile/tile.component';
 import { SizeSelectorComponent } from './components/size-selector/size-selector.component';
 import { FormatTimePipe } from './pipes/format-time.pipe';
+import { CommunicationAreaComponent } from './components/communication-area/communication-area.component';
+import { TextHistoryComponent } from './components/text-history/text-history.component';
+import { TextInputComponent } from './components/text-input/text-input.component';
 import { ButtonComponent } from './components/button/button.component';
 import { ScrabbleClassicPageComponent } from './pages/scrabble-classic-page/scrabble-classic-page.component';
-
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -38,6 +40,9 @@ import { ScrabbleClassicPageComponent } from './pages/scrabble-classic-page/scra
         InformationBoardComponent,
         SizeSelectorComponent,
         FormatTimePipe,
+        CommunicationAreaComponent,
+        TextHistoryComponent,
+        TextInputComponent,
         ButtonComponent,
         ScrabbleClassicPageComponent
     ],
