@@ -1,22 +1,19 @@
 <div class="container justified">
-       
-
-
     <img src="https://bit.ly/3m206ss" width="800" height="160" alt="Logo Scrabble" />
     <section id="server-message">
         <div class="justified">
             <app-button name="Jouer une partie en solo" routing="/game"></app-button>
             <div class="multiplayer">
-                <app-button disable="true" name="Créer une partie multijoueur"></app-button>
-                <app-button disable="true" name="Joindre une partie multijoueur"></app-button>
+                <button class="button" mat-raised-button (click)="openDialog()">Créer partie multijoueur</button>
+                <br />
+                <span *ngIf="name">
+                    Tu t'appels: <i>{{ name }}</i>
+                </span>
+                <app-button name="Joindre une partir multijoueur" routing="/game"></app-button>
+                <app-button name="Temporaire pour salle d'attente" routing="/waiting"></app-button>
             </div>
-            
+
             <app-button ngClass="retour" name="Retour" routing="/home"></app-button>
         </div>
-       
     </section>
-   
-       
-
 </div>
-
