@@ -14,7 +14,11 @@ export class GridService {
         if (this.gridContext) {
             this.clear();
             this.drawGrid();
-            this.drawTiles(fontSize);
+            this.drawTiles();
+            this.writeBonusTypes(WORD_3X, fontSize);
+            this.writeBonusTypes(WORD_2X, fontSize);
+            this.writeBonusTypes(LETTER_3X, fontSize);
+            this.writeBonusTypes(LETTER_2X, fontSize);
             this.drawStar(RADIUS_MULTIPLIER, CASE_SIZE / 2);
         }
     }
@@ -40,16 +44,12 @@ export class GridService {
         this.gridContext.stroke();
     }
 
-    private drawTiles(fontSize: number) {
+    private drawTiles() {
         this.drawTilesColor('#8080805A', NORMAL);
         this.drawTilesColor('#F51919CA', WORD_3X);
         this.drawTilesColor('#B33754C0', WORD_2X);
         this.drawTilesColor('#0320FC96', LETTER_3X);
         this.drawTilesColor('#4A97EE5F', LETTER_2X);
-        this.writeBonusTypes('MOT', 'X3', WORD_3X, fontSize);
-        this.writeBonusTypes('MOT', 'X2', WORD_2X, fontSize);
-        this.writeBonusTypes('LETTRE', 'X3', LETTER_3X, fontSize);
-        this.writeBonusTypes('LETTRE', 'X2', LETTER_2X, fontSize);
     }
 
     private drawStar(innerRadius: number, outerRadius: number) {
@@ -80,13 +80,20 @@ export class GridService {
         }
     }
 
-    private writeBonusTypes(firstWord: string, secondWord: string, bonusType: Vec2[], fontSize: number, xOffset: number = 2, yOffset: number = 2) {
-        const wordHeightOffset = CASE_SIZE / 2;
-        const secondWordOffset = 8;
+    private writeBonusTypes(bonusType: Vec2[], fontSize: number) {
+        const wordHeightOffset = 5;
         const letterWidthOffset = 4;
         const middleTile = 7;
+        const xOffset = 17;
+        const yOffset = 18;
+        let firstWord = 'MOT';
+        let secondWord = 'X3';
         this.gridContext.fillStyle = 'black';
+        this.gridContext.textBaseline = 'top';
+        this.gridContext.textAlign = 'center';
         this.gridContext.font = fontSize + 'px Arial';
+        if (bonusType === LETTER_3X || bonusType === LETTER_2X) firstWord = 'LETTRE';
+        if (bonusType === WORD_2X || bonusType === LETTER_2X) secondWord = 'X2';
         if (!firstWord || !secondWord) return;
         for (const tiles of bonusType) {
             if (!(tiles.x === middleTile && tiles.y === middleTile)) {
@@ -96,12 +103,7 @@ export class GridService {
                     tiles.y * CASE_SIZE + wordHeightOffset,
                     CASE_SIZE - letterWidthOffset,
                 );
-                this.gridContext.fillText(
-                    secondWord,
-                    tiles.x * CASE_SIZE + secondWordOffset,
-                    tiles.y * CASE_SIZE + wordHeightOffset * 2 - yOffset,
-                    CASE_SIZE - letterWidthOffset,
-                );
+                this.gridContext.fillText(secondWord, tiles.x * CASE_SIZE + xOffset, tiles.y * CASE_SIZE + yOffset, CASE_SIZE - letterWidthOffset);
             }
         }
     }
