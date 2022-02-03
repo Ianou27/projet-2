@@ -16,6 +16,8 @@ import { TileHolderComponent } from './components/tile-holder/tile-holder.compon
 import { TileComponent } from './components/tile/tile.component';
 import { SizeSelectorComponent } from './components/size-selector/size-selector.component';
 import { FormatTimePipe } from './pipes/format-time.pipe';
+import { ButtonComponent } from './components/button/button.component';
+import { ScrabbleClassicPageComponent } from './pages/scrabble-classic-page/scrabble-classic-page.component';
 
 /**
  * Main module that is used in main.ts.
@@ -36,6 +38,8 @@ import { FormatTimePipe } from './pipes/format-time.pipe';
         InformationBoardComponent,
         SizeSelectorComponent,
         FormatTimePipe,
+        ButtonComponent,
+        ScrabbleClassicPageComponent
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule],
     providers: [],
