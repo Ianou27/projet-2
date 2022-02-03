@@ -1,7 +1,8 @@
-import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
-import { CASE_SIZE, DEFAULT_HEIGHT, DEFAULT_WIDTH, RADIUS_MULTIPLIER } from '@app/constants/board';
+import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from '@app/constants/board';
 import { GridService } from '@app/services/grid.service';
+import { ResizerService } from '@app/services/resizer.service';
 
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
 export enum MouseButton {
@@ -17,26 +18,35 @@ export enum MouseButton {
     templateUrl: './play-area.component.html',
     styleUrls: ['./play-area.component.scss'],
 })
-export class PlayAreaComponent implements AfterViewInit {
+export class PlayAreaComponent implements AfterViewInit, OnInit, OnDestroy {
     @ViewChild('gridCanvas', { static: false }) private gridCanvas!: ElementRef<HTMLCanvasElement>;
-
+    letterFontSize: number;
     mousePosition: Vec2 = { x: 0, y: 0 };
     buttonPressed = '';
     private canvasSize = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
 
-    constructor(private readonly gridService: GridService) {}
+    constructor(private readonly gridService: GridService, private resizer: ResizerService) {}
 
     @HostListener('keydown', ['$event'])
     buttonDetect(event: KeyboardEvent) {
         this.buttonPressed = event.key;
     }
 
+    ngOnInit(): void {
+        this.resizer.letterFontSize.subscribe((letterFontSize) => {
+            this.letterFontSize = letterFontSize;
+            this.gridService.draw(letterFontSize);
+        });
+    }
+
     ngAfterViewInit(): void {
         this.gridService.gridContext = this.gridCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-        this.gridService.drawGrid();
-        this.gridService.drawTiles();
-        this.gridService.drawStar(RADIUS_MULTIPLIER, CASE_SIZE / 2);
+        this.gridService.draw(this.letterFontSize);
         this.gridCanvas.nativeElement.focus();
+    }
+
+    ngOnDestroy(): void {
+        this.resizer.letterFontSize.unsubscribe();
     }
 
     get width(): number {

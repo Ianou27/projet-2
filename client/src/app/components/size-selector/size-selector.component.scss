@@ -5,8 +5,8 @@ button:hover {
 #size-change-wrapper {
     gap: 5px;
     display: flex;
-    margin-top: 10px;
-    justify-content: center;
+    margin-top: 5px;
+    justify-content: right;
 }
 
 .size-change {
@@ -17,4 +17,5 @@ button:hover {
     border-color: black;
     border-width: 1px;
     background-color: #00000000;
+    align-items: center;
 }

@@ -1,13 +1,22 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ResizerService } from '@app/services/resizer.service';
+import { BehaviorSubject } from 'rxjs';
 import { TileComponent } from './tile.component';
+import SpyObj = jasmine.SpyObj;
 
 describe('TileComponent', () => {
+    let resizerServiceSpy: SpyObj<ResizerService>;
     let component: TileComponent;
     let fixture: ComponentFixture<TileComponent>;
 
     beforeEach(async () => {
+        resizerServiceSpy = jasmine.createSpyObj('ResizerService', ['changeFont'], {
+            letterFontSize: new BehaviorSubject<number>(20),
+            valueFontSize: new BehaviorSubject<number>(12),
+        });
         await TestBed.configureTestingModule({
             declarations: [TileComponent],
+            providers: [{ provide: ResizerService, useValue: resizerServiceSpy }],
         }).compileComponents();
     });
 
@@ -20,4 +29,16 @@ describe('TileComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
+
+    /*  it('should unsubscribe on init', () => {
+        const spy = spyOn(resizerServiceSpy.letterFontSize, 'subscribe');
+        component.ngOnInit();
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it('should unsubscribe on destroy', () => {
+        const spy = spyOn(resizerServiceSpy.letterFontSize, 'unsubscribe');
+        component.ngOnDestroy();
+        expect(spy).toHaveBeenCalled();
+    }); */
 });

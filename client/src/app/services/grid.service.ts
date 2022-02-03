@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
-import { CASE_SIZE, DEFAULT_HEIGHT, DEFAULT_WIDTH, NUMBER_OF_CASES } from '@app/constants/board';
+import { CASE_SIZE, DEFAULT_HEIGHT, DEFAULT_WIDTH, NUMBER_OF_CASES, RADIUS_MULTIPLIER } from '@app/constants/board';
 import { LETTER_2X, LETTER_3X, NORMAL, WORD_2X, WORD_3X } from '@app/constants/tile-information';
 
 @Injectable({
@@ -10,7 +10,20 @@ export class GridService {
     gridContext: CanvasRenderingContext2D;
     private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
 
-    drawGrid() {
+    draw(fontSize: number) {
+        if (this.gridContext) {
+            this.clear();
+            this.drawGrid();
+            this.drawTiles(fontSize);
+            this.drawStar(RADIUS_MULTIPLIER, CASE_SIZE / 2);
+        }
+    }
+
+    private clear() {
+        this.gridContext.clearRect(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+    }
+
+    private drawGrid() {
         this.gridContext.beginPath();
         this.gridContext.fillStyle = 'black';
         this.gridContext.lineWidth = 1;
@@ -27,19 +40,19 @@ export class GridService {
         this.gridContext.stroke();
     }
 
-    drawTiles() {
+    private drawTiles(fontSize: number) {
         this.drawTilesColor('#8080805A', NORMAL);
         this.drawTilesColor('#F51919CA', WORD_3X);
         this.drawTilesColor('#B33754C0', WORD_2X);
         this.drawTilesColor('#0320FC96', LETTER_3X);
         this.drawTilesColor('#4A97EE5F', LETTER_2X);
-        this.writeBonusTypes('MOT', 'X3', WORD_3X);
-        this.writeBonusTypes('MOT', 'X2', WORD_2X);
-        this.writeBonusTypes('LETTRE', 'X3', LETTER_3X);
-        this.writeBonusTypes('LETTRE', 'X2', LETTER_2X);
+        this.writeBonusTypes('MOT', 'X3', WORD_3X, fontSize);
+        this.writeBonusTypes('MOT', 'X2', WORD_2X, fontSize);
+        this.writeBonusTypes('LETTRE', 'X3', LETTER_3X, fontSize);
+        this.writeBonusTypes('LETTRE', 'X2', LETTER_2X, fontSize);
     }
 
-    drawStar(innerRadius: number, outerRadius: number) {
+    private drawStar(innerRadius: number, outerRadius: number) {
         const starPoints = 5;
         const offset = 5;
         this.gridContext.fillStyle = 'black';
@@ -54,6 +67,7 @@ export class GridService {
         }
         this.gridContext.closePath();
         this.gridContext.fill();
+        this.gridContext.translate(-DEFAULT_HEIGHT / 2, -DEFAULT_WIDTH / 2);
     }
 
     private drawTilesColor(color: string, bonusType: Vec2[]) {
@@ -66,13 +80,13 @@ export class GridService {
         }
     }
 
-    private writeBonusTypes(firstWord: string, secondWord: string, bonusType: Vec2[], xOffset: number = 2, yOffset: number = 2) {
+    private writeBonusTypes(firstWord: string, secondWord: string, bonusType: Vec2[], fontSize: number, xOffset: number = 2, yOffset: number = 2) {
         const wordHeightOffset = CASE_SIZE / 2;
         const secondWordOffset = 8;
         const letterWidthOffset = 4;
         const middleTile = 7;
         this.gridContext.fillStyle = 'black';
-        this.gridContext.font = '14px Arial';
+        this.gridContext.font = fontSize + 'px Arial';
         if (!firstWord || !secondWord) return;
         for (const tiles of bonusType) {
             if (!(tiles.x === middleTile && tiles.y === middleTile)) {

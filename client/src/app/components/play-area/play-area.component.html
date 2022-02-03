@@ -10,6 +10,7 @@
         </div> -->
     <canvas id="canvas" #gridCanvas (click)="mouseHitDetect($event)" [attr.width]="width" [attr.height]="height"> </canvas>
     <!-- </div> -->
+    <app-size-selector></app-size-selector>
     <app-tile-holder></app-tile-holder>
     <div id="mouse-position-display">
         <p>Cliquez sur la grille pour avoir la position de la souris</p>
