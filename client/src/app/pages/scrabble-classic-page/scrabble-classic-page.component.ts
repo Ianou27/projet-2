@@ -9,8 +9,8 @@ import { MultiplayerPageComponent } from '@app/pages/multiplayer-page/multiplaye
 })
 export class ScrabbleClassicPageComponent {
     name: string;
-    time: string; // number;
-    options: string[] = ['Dictionnaire par défaut', 'Dictionnaire qui n`est pas la'];
+    time: number;
+    options: string[];
 
     constructor(public dialog: MatDialog) {}
 
@@ -18,9 +18,12 @@ export class ScrabbleClassicPageComponent {
         const dialogRef = this.dialog.open(MultiplayerPageComponent, {
             height: '600px',
             width: '500px',
-            data: { name: this.name, time: this.time, options: this.options },
+            // data: { name: this.name, time: this.time, options: ['Dictionnaire par défaut', 'Dictionnaire qui n`est pas la'] },
         });
         dialogRef.afterClosed().subscribe((result) => {
+            // Affichage
+            this.name = result;
+            this.time = result;
             this.options = result;
         });
     }
