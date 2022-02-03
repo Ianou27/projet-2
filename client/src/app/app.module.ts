@@ -48,5 +48,6 @@ import { WaitingMultiplayerPageComponent } from './pages/waiting-multiplayer-pag
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule, MatDialogModule],
     providers: [],
     bootstrap: [AppComponent],
+    entryComponents: [MultiplayerPageComponent],
 })
 export class AppModule {}
