@@ -26,7 +26,7 @@
             </mat-select>
         </mat-form-field>
         <div mat-dialog-actions>
-            <button class="button" mat-button [disabled]="!name" [mat-dialog-close]="name" cdkFocusInitial>Confirmer</button>
+            <button class="button" routerLink="/waiting" mat-button [disabled]="!name" [mat-dialog-close]="name" cdkFocusInitial>Confirmer</button>
             <!-- [disabled]="!data.name" , formIsValid-->
             <button class="button" (click)="save()">Save</button>
         </div>

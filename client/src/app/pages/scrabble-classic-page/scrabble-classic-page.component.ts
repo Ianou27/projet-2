@@ -23,8 +23,6 @@ export class ScrabbleClassicPageComponent {
         dialogRef.afterClosed().subscribe((result) => {
             // Affichage
             this.name = result;
-            this.time = result;
-            this.options = result;
         });
     }
 }

@@ -15,8 +15,6 @@ import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { MaterialPageComponent } from '@app/pages/material-page/material-page.component';
 import { ButtonComponent } from './components/button/button.component';
 import { CommunicationAreaComponent } from './components/communication-area/communication-area.component';
-import { TextHistoryComponent } from './components/text-history/text-history.component';
-import { TextInputComponent } from './components/text-input/text-input.component';
 import { MultiplayerPageComponent } from './pages/multiplayer-page/multiplayer-page.component';
 import { ScrabbleClassicPageComponent } from './pages/scrabble-classic-page/scrabble-classic-page.component';
 import { WaitingMultiplayerPageComponent } from './pages/waiting-multiplayer-page/waiting-multiplayer-page.component';
@@ -41,9 +39,8 @@ import { WaitingMultiplayerPageComponent } from './pages/waiting-multiplayer-pag
         MultiplayerPageComponent,
         ScrabbleClassicPageComponent,
         WaitingMultiplayerPageComponent,
+        MultiplayerPageComponent,
         CommunicationAreaComponent,
-        TextInputComponent,
-        TextHistoryComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule, MatDialogModule],
     providers: [],
