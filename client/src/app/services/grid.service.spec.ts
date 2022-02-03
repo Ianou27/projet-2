@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
+import { WORD_2X } from '@app/constants/tile-information';
 import { GridService } from '@app/services/grid.service';
 
 describe('GridService', () => {
@@ -8,6 +9,7 @@ describe('GridService', () => {
 
     const CANVAS_WIDTH = 500;
     const CANVAS_HEIGHT = 500;
+    const fontSize = 14;
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
@@ -28,56 +30,84 @@ describe('GridService', () => {
         expect(service.width).toEqual(CANVAS_HEIGHT);
     });
 
-    it(' writeBonusTypes should call fillText on the canvas', () => {
+    it(' draw should call clear on the canvas', () => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const clearSpy = spyOn<any>(service, 'clear');
+        service.draw(fontSize);
+        expect(clearSpy).toHaveBeenCalled();
+    });
+
+    it(' draw should call drawGrid on the canvas', () => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const gridSpy = spyOn<any>(service, 'drawGrid');
+        service.draw(fontSize);
+        expect(gridSpy).toHaveBeenCalled();
+    });
+
+    it(' draw should call drawTiles on the canvas', () => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const drawTilesSpy = spyOn<any>(service, 'drawTiles');
+        service.draw(fontSize);
+        expect(drawTilesSpy).toHaveBeenCalled();
+    });
+
+    it(' draw should call drawStar on the canvas', () => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const drawStarSpy = spyOn<any>(service, 'drawStar');
+        service.draw(fontSize);
+        expect(drawStarSpy).toHaveBeenCalled();
+    });
+
+    it(' draw should call writeBonusTypes on the canvas', () => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const bonusTypeSpy = spyOn<any>(service, 'writeBonusTypes');
-        service.drawTiles();
+        service.draw(fontSize);
         expect(bonusTypeSpy).toHaveBeenCalled();
     });
 
     it(' writeBonusTypes should call fillText on the canvas', () => {
         const fillTextSpy = spyOn(service.gridContext, 'fillText');
-        service.drawTiles();
+        // eslint-disable-next-line dot-notation
+        service['writeBonusTypes'](WORD_2X, fontSize);
         expect(fillTextSpy).toHaveBeenCalled();
-    });
-
-    /* it(' writeBonusTypes should not call fillText if words are empty', () => {
-        const fillTextSpy = spyOn(service.gridContext, 'fillText').and.callThrough();
-        service.writeBonusTypes('', '', WORD_3X);
-        expect(fillTextSpy).toHaveBeenCalledTimes(0);
-    });
-
-    it(' writeBonusTypes should not call fillText if one word is empty', () => {
-        const fillTextSpy = spyOn(service.gridContext, 'fillText').and.callThrough();
-        service.writeBonusTypes('test', '', WORD_3X);
-        expect(fillTextSpy).toHaveBeenCalledTimes(0);
     });
 
     it(' writeBonusTypes should color pixels on the canvas', () => {
         let imageData = service.gridContext.getImageData(0, 0, service.width, service.height).data;
         const beforeSize = imageData.filter((x) => x !== 0).length;
-        service.writeBonusTypes('test', 'another test', WORD_3X);
+        // eslint-disable-next-line dot-notation
+        service['writeBonusTypes'](WORD_2X, fontSize);
         imageData = service.gridContext.getImageData(0, 0, service.width, service.height).data;
         const afterSize = imageData.filter((x) => x !== 0).length;
         expect(afterSize).toBeGreaterThan(beforeSize);
     });
 
     it(' drawTilesColor should call fillRect on the canvas', () => {
-        const fillRectSpy = spyOn(service.gridContext, 'fillRect').and.callThrough();
-        service.drawTilesColor('#FF0000', WORD_3X);
+        const fillRectSpy = spyOn(service.gridContext, 'fillRect');
+        // eslint-disable-next-line dot-notation
+        service['drawTilesColor']('#FF0000', WORD_2X);
         expect(fillRectSpy).toHaveBeenCalled();
     });
 
-    it(' drawTilesColor should not call fillRect if entry is not a hex code', () => {
-        const fillRectSpy = spyOn(service.gridContext, 'fillRect').and.callThrough();
-        service.drawTilesColor('test', WORD_3X);
+    it(' drawTilesColor should not call fillRect if color param is not a hex code', () => {
+        const fillRectSpy = spyOn(service.gridContext, 'fillRect');
+        // eslint-disable-next-line dot-notation
+        service['drawTilesColor']('test', WORD_2X);
+        expect(fillRectSpy).toHaveBeenCalledTimes(0);
+    });
+
+    it(' drawTilesColor should not call fillRect if color param is empty', () => {
+        const fillRectSpy = spyOn(service.gridContext, 'fillRect');
+        // eslint-disable-next-line dot-notation
+        service['drawTilesColor']('', WORD_2X);
         expect(fillRectSpy).toHaveBeenCalledTimes(0);
     });
 
     it(' drawTilesColor should color pixels on the canvas', () => {
         let imageData = service.gridContext.getImageData(0, 0, service.width, service.height).data;
         const beforeSize = imageData.filter((x) => x !== 0).length;
-        service.drawTilesColor('#FF0000', WORD_3X);
+        // eslint-disable-next-line dot-notation
+        service['drawTilesColor']('#FF0000', WORD_2X);
         imageData = service.gridContext.getImageData(0, 0, service.width, service.height).data;
         const afterSize = imageData.filter((x) => x !== 0).length;
         expect(afterSize).toBeGreaterThan(beforeSize);
@@ -87,7 +117,8 @@ describe('GridService', () => {
         const expectedCallTimes = 28;
         const moveToSpy = spyOn(service.gridContext, 'moveTo').and.callThrough();
         const lineToSpy = spyOn(service.gridContext, 'lineTo').and.callThrough();
-        service.drawGrid();
+        // eslint-disable-next-line dot-notation
+        service['drawGrid']();
         expect(moveToSpy).toHaveBeenCalledTimes(expectedCallTimes);
         expect(lineToSpy).toHaveBeenCalledTimes(expectedCallTimes);
     });
@@ -95,9 +126,9 @@ describe('GridService', () => {
     it(' drawGrid should color pixels on the canvas', () => {
         let imageData = service.gridContext.getImageData(0, 0, service.width, service.height).data;
         const beforeSize = imageData.filter((x) => x !== 0).length;
-        service.drawGrid();
+        service.draw(fontSize);
         imageData = service.gridContext.getImageData(0, 0, service.width, service.height).data;
         const afterSize = imageData.filter((x) => x !== 0).length;
         expect(afterSize).toBeGreaterThan(beforeSize);
-    }); */
+    });
 });

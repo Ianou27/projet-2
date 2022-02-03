@@ -94,7 +94,6 @@ export class GridService {
         this.gridContext.font = fontSize + 'px Arial';
         if (bonusType === LETTER_3X || bonusType === LETTER_2X) firstWord = 'LETTRE';
         if (bonusType === WORD_2X || bonusType === LETTER_2X) secondWord = 'X2';
-        if (!firstWord || !secondWord) return;
         for (const tiles of bonusType) {
             if (!(tiles.x === middleTile && tiles.y === middleTile)) {
                 this.gridContext.fillText(
