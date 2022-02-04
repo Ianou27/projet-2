@@ -1,5 +1,5 @@
 <div id="grid-container">
-    <!-- <div class="row-numbers">
+    <div class="row-numbers">
         <p class="number-text" *ngFor="let number of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]">{{ number }}</p>
     </div>
     <div class="wrapper">
@@ -7,9 +7,9 @@
             <p class="letters-text" *ngFor="let letter of ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O']">
                 {{ letter }}
             </p>
-        </div> -->
-    <canvas id="canvas" #gridCanvas (click)="mouseHitDetect($event)" [attr.width]="width" [attr.height]="height"> </canvas>
-    <!-- </div> -->
+        </div>
+        <canvas id="canvas" #gridCanvas (click)="mouseHitDetect($event)" [attr.width]="width" [attr.height]="height"> </canvas>
+    </div>
     <app-size-selector></app-size-selector>
     <app-tile-holder></app-tile-holder>
     <div id="mouse-position-display">
