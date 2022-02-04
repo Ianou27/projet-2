@@ -19,14 +19,14 @@
 
             <h2>Minuterie</h2>
             <mat-form-field>
-                <mat-select [(ngModel)]="selectedTime" placeholder="Temps">
-                    <mat-option value="time">1</mat-option>
+                <mat-select [(value)]="selectedTime" placeholder="Temps">
+                    <mat-option value="1">1</mat-option>
                 </mat-select>
             </mat-form-field>
             <h2>Dictionnaire:</h2>
             <mat-form-field>
-                <mat-select formControlName="time" placeholder="Choisir un dictionnaire">
-                    <mat-option value="Dictionnaire par defaut">Dictionnaire par défaut</mat-option>
+                <mat-select [(value)]="selectedDico" placeholder="Choisir un dictionnaire">
+                    <mat-option value="Dictionnaire par defaut">Dictionnaire par defaut</mat-option>
                     <mat-option value="Dictionnaire 2" disabled>Dictionnaire 2 (Indisponible)</mat-option>
                 </mat-select>
             </mat-form-field>

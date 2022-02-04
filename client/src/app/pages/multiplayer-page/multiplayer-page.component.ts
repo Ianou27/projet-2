@@ -12,7 +12,7 @@ export class MultiplayerPageComponent implements OnInit {
     time: string;
     form: FormGroup;
     alphaNumericRegex = /^[a-zA-Z]*$/;
-    selectedDico = 'Dictionnaire de base';
+    selectedDico = 'Dictionnaire par defaut';
     selectedTime = '1';
 
     constructor(public dialogRef: MatDialogRef<MultiplayerPageComponent>) {} // , @Inject(MAT_DIALOG_DATA) public data: unknown) {}
