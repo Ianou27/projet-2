@@ -21,6 +21,7 @@ import { TextHistoryComponent } from './components/text-history/text-history.com
 import { TextInputComponent } from './components/text-input/text-input.component';
 import { ButtonComponent } from './components/button/button.component';
 import { ScrabbleClassicPageComponent } from './pages/scrabble-classic-page/scrabble-classic-page.component';
+import { QuitGameDialogComponent } from './components/quit-game-dialog/quit-game-dialog.component';
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -44,7 +45,8 @@ import { ScrabbleClassicPageComponent } from './pages/scrabble-classic-page/scra
         TextHistoryComponent,
         TextInputComponent,
         ButtonComponent,
-        ScrabbleClassicPageComponent
+        ScrabbleClassicPageComponent,
+        QuitGameDialogComponent
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule],
     providers: [],
