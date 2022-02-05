@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { Tile } from '@app/classes/tile';
 
 @Component({
     selector: 'app-tile',
@@ -7,10 +6,14 @@ import { Tile } from '@app/classes/tile';
     styleUrls: ['./tile.component.scss'],
 })
 export class TileComponent /* implements OnInit, OnDestroy */ {
-    tile: Tile = { letter: 'e', value: 10 };
-    /* letterFontSize: number;
+    letter: string = '';
+    value: number = 0;
+    bonus: string = '';
+    positionX: string;
+    positionY: string;
+    letterFontSize: number;
     valueFontSize: number;
-    constructor(private resizer: ResizerService) {}
+    /* constructor(private resizer: ResizerService) {}
 
     ngOnInit(): void {
         this.resizer.letterFontSize.subscribe((letterFontSize) => (this.letterFontSize = letterFontSize));
@@ -20,5 +23,5 @@ export class TileComponent /* implements OnInit, OnDestroy */ {
     ngOnDestroy(): void {
         this.resizer.letterFontSize.unsubscribe();
         this.resizer.valueFontSize.unsubscribe();
-    } */
+    }*/
 }

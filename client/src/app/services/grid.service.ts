@@ -81,11 +81,11 @@ export class GridService {
     }
 
     private writeBonusTypes(bonusType: Vec2[], fontSize: number) {
-        const wordHeightOffset = 5;
+        const wordHeightOffset = 10;
         const letterWidthOffset = 4;
         const middleTile = 7;
-        const xOffset = 17;
-        const yOffset = 18;
+        const xOffset = 25;
+        const yOffset = 25;
         let firstWord = 'MOT';
         let secondWord = 'X3';
         this.gridContext.fillStyle = 'black';

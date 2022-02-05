@@ -4,15 +4,16 @@
 }
 
 .play-area-container {
-    position: absolute;
+    position: relative;
     overflow: auto;
     flex: 1 1 auto;
-    left: 500px;
-    top: 50px;
+    left: 100px;
+    top: 40px;
+    height: 100%;
 }
 
 .play-area {
     display: grid;
-    width: min-content;
+    width: 756px;
     outline: none;
 }

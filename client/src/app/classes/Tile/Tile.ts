@@ -1,35 +1,35 @@
 import { caseProperty } from './../../../assets/caseProperty';
 
-export class Tile{
-    private letter:string = '';
-    public position:Array<number>;
-    private specialProperty:caseProperty;
+export class Tile {
+    private letter: string = '';
+    private position: number[];
+    private specialProperty: caseProperty;
 
-    constructor(position:Array<number>, specialProperty:caseProperty){
+    constructor(position: number[], specialProperty: caseProperty) {
         this.position = position;
         this.specialProperty = specialProperty;
     }
 
-    tileContainsLetter() : boolean {
-        if(this.letter != ''){
+    tileContainsLetter(): boolean {
+        if (this.letter !== '') {
             return true;
         }
         return false;
     }
 
-    getSpecialProperty() : caseProperty {
+    getSpecialProperty(): caseProperty {
         return this.specialProperty;
     }
-    
-    addLetter(letter:string) : void {
+
+    addLetter(letter: string): void {
         this.letter = letter;
     }
 
-    getLetter() : string {
+    getLetter(): string {
         return this.letter;
     }
 
-    getPosition() : Array<number> {
+    getPosition(): number[] {
         return this.position;
     }
 }

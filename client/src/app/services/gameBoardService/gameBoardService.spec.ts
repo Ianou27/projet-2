@@ -1,15 +1,15 @@
 import { caseProperty } from '@app/../assets/caseProperty';
-import { GameBoardService } from '@app/classes/gameBoardService/gameBoardService';
+import { GameBoardService } from '@app/services/gameBoardService/gameBoardService';
 
 describe('GameBoard', () => {
-    let gameBoard: GameBoardService; 
+    let gameBoard: GameBoardService;
 
     beforeEach(() => {
-        gameBoard = new GameBoardService()
+        gameBoard = new GameBoardService();
     });
     it('constructor should construct a gameBoard of 15x15 tiles ', () => {
         let result = 0;
-        for(let colonne of gameBoard.cases){
+        for (const colonne of gameBoard.cases) {
             result += colonne.length;
         }
         expect(result).toEqual(225);
@@ -17,7 +17,7 @@ describe('GameBoard', () => {
 
     it('constructor should construct a gameBoard of 15x15 tiles ', () => {
         let result = 0;
-        for(let colonne of gameBoard.cases){
+        for (const colonne of gameBoard.cases) {
             result += colonne.length;
         }
         expect(result).toEqual(225);
@@ -26,9 +26,9 @@ describe('GameBoard', () => {
 
     it('gameBoard should contains 8 tiles with the property wordTriple', () => {
         let result = 0;
-        for(let colonne of gameBoard.cases){
-            for(let tile of colonne){
-                if(tile.getSpecialProperty() == caseProperty.wordTriple){
+        for (const colonne of gameBoard.cases) {
+            for (const tile of colonne) {
+                if (tile.getSpecialProperty() == caseProperty.wordTriple) {
                     result += 1;
                 }
             }
@@ -38,9 +38,9 @@ describe('GameBoard', () => {
 
     it('gameBoard should contains 17 tiles with the property wordDouble', () => {
         let result = 0;
-        for(let colonne of gameBoard.cases){
-            for(let tile of colonne){
-                if(tile.getSpecialProperty() == caseProperty.wordDouble){
+        for (const colonne of gameBoard.cases) {
+            for (const tile of colonne) {
+                if (tile.getSpecialProperty() == caseProperty.wordDouble) {
                     result += 1;
                 }
             }
@@ -50,9 +50,9 @@ describe('GameBoard', () => {
 
     it('gameBoard should contains 12 tiles with the property letterTriple', () => {
         let result = 0;
-        for(let colonne of gameBoard.cases){
-            for(let tile of colonne){
-                if(tile.getSpecialProperty() == caseProperty.letterTriple){
+        for (const colonne of gameBoard.cases) {
+            for (const tile of colonne) {
+                if (tile.getSpecialProperty() == caseProperty.letterTriple) {
                     result += 1;
                 }
             }
@@ -62,9 +62,9 @@ describe('GameBoard', () => {
 
     it('gameBoard should contains 24 tiles with the property letterDouble', () => {
         let result = 0;
-        for(let colonne of gameBoard.cases){
-            for(let tile of colonne){
-                if(tile.getSpecialProperty() == caseProperty.letterDouble){
+        for (const colonne of gameBoard.cases) {
+            for (const tile of colonne) {
+                if (tile.getSpecialProperty() == caseProperty.letterDouble) {
                     result += 1;
                 }
             }
@@ -73,16 +73,16 @@ describe('GameBoard', () => {
     });
 
     it('tileContainsLetter should return false if the tile doesnt contain a letter', () => {
-        let position = [0,0];
-        let result = gameBoard.tileContainsLetter(position);
+        const position = [0, 0];
+        const result = gameBoard.tileContainsLetter(position);
         expect(result).toEqual(false);
     });
 
     it('tileContainsLetter should return true if the tile contains a letter', () => {
-        let position = [0,0];
-        let letter = "a";
+        const position = [0, 0];
+        const letter = 'a';
         gameBoard.addLetterTile(position, letter);
-        let result = gameBoard.tileContainsLetter(position);
+        const result = gameBoard.tileContainsLetter(position);
         expect(result).toEqual(true);
     });
 });

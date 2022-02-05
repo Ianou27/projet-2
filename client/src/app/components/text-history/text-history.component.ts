@@ -1,19 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-text-history',
-  templateUrl: './text-history.component.html',
-  styleUrls: ['./text-history.component.scss']
+    selector: 'app-text-history',
+    templateUrl: './text-history.component.html',
+    styleUrls: ['./text-history.component.scss'],
 })
 export class TextHistoryComponent implements OnInit {
-  history: Array<string> = [];
+    history: string[] = [];
 
-  addMessage(message: string){
-    this.history.push(message);
-  }
-  constructor() { }
+    addMessage(message: string) {
+        this.history.push(message);
+    }
+    constructor() {}
 
-  ngOnInit(): void {
-  }
-
+    ngOnInit(): void {}
 }
