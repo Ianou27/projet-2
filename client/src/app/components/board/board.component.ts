@@ -1,5 +1,5 @@
 import { AfterViewInit, Component } from '@angular/core';
-import { GameBoardService } from '@app/services/gameBoardService/gameBoardService';
+import { GameBoardService } from '@app/services/game-board/game-board.service';
 
 @Component({
     selector: 'app-board',
@@ -8,6 +8,5 @@ import { GameBoardService } from '@app/services/gameBoardService/gameBoardServic
 })
 export class BoardComponent implements AfterViewInit {
     constructor(public gameBoardService: GameBoardService) {}
-
     ngAfterViewInit(): void {}
 }

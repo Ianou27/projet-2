@@ -1,5 +1,5 @@
 import { caseProperty } from '@app/../assets/caseProperty';
-import { GameBoardService } from '@app/services/gameBoardService/gameBoardService';
+import { GameBoardService } from '@app/services/game-board/game-board.service';
 
 describe('GameBoard', () => {
     let gameBoard: GameBoardService;

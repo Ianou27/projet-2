@@ -1,7 +1,7 @@
-export enum caseProperty{
+export enum caseProperty {
     normal,
     wordDouble,
     wordTriple,
     letterDouble,
-    letterTriple
+    letterTriple,
 }
