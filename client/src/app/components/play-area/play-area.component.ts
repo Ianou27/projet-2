@@ -2,16 +2,8 @@ import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, 
 import { Vec2 } from '@app/classes/vec2';
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from '@app/constants/board';
 import { GridService } from '@app/services/grid.service';
+import { MouseService } from '@app/services/mouse.service';
 import { ResizerService } from '@app/services/resizer.service';
-
-// TODO : Déplacer ça dans un fichier séparé accessible par tous
-export enum MouseButton {
-    Left = 0,
-    Middle = 1,
-    Right = 2,
-    Back = 3,
-    Forward = 4,
-}
 
 @Component({
     selector: 'app-play-area',
@@ -25,7 +17,7 @@ export class PlayAreaComponent implements AfterViewInit, OnInit, OnDestroy {
     buttonPressed = '';
     private canvasSize = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
 
-    constructor(private readonly gridService: GridService, private resizer: ResizerService) {}
+    constructor(private readonly gridService: GridService, private resizer: ResizerService, private mouseService: MouseService) {}
 
     @HostListener('keydown', ['$event'])
     buttonDetect(event: KeyboardEvent) {
@@ -57,10 +49,7 @@ export class PlayAreaComponent implements AfterViewInit, OnInit, OnDestroy {
         return this.canvasSize.y;
     }
 
-    // TODO : déplacer ceci dans un service de gestion de la souris!
     mouseHitDetect(event: MouseEvent) {
-        if (event.button === MouseButton.Left) {
-            this.mousePosition = { x: event.offsetX, y: event.offsetY };
-        }
+        this.mousePosition = this.mouseService.mouseHitDetect(event);
     }
 }
