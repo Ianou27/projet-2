@@ -9,7 +9,7 @@ export class MouseService {
     mousePosition: Vec2 = { x: 0, y: 0 };
     mouseHitDetect(event: MouseEvent): Vec2 {
         if (event.button === MouseButton.Left) {
-            return { x: event.offsetX, y: event.offsetY };
+            return (this.mousePosition = { x: event.offsetX, y: event.offsetY });
         }
         return this.mousePosition;
     }

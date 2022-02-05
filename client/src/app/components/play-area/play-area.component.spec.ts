@@ -1,11 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Vec2 } from '@app/classes/vec2';
 import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
+import { MouseService } from '@app/services/mouse.service';
 
 describe('PlayAreaComponent', () => {
     let component: PlayAreaComponent;
     let fixture: ComponentFixture<PlayAreaComponent>;
     let mouseEvent: MouseEvent;
+    let service: MouseService;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -15,12 +17,34 @@ describe('PlayAreaComponent', () => {
 
     beforeEach(() => {
         fixture = TestBed.createComponent(PlayAreaComponent);
+        service = TestBed.inject(MouseService);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('buttonDetect should modify the buttonPressed variable', () => {
+        const expectedKey = 'a';
+        const buttonEvent = {
+            key: expectedKey,
+        } as KeyboardEvent;
+        component.buttonDetect(buttonEvent);
+        expect(component.buttonPressed).toEqual(expectedKey);
+    });
+
+    it('mouseHitDetect should call service method', () => {
+        const mouseServiceSpy = spyOn(service, 'mouseHitDetect');
+        const expectedPosition: Vec2 = { x: 100, y: 200 };
+        mouseEvent = {
+            offsetX: expectedPosition.x,
+            offsetY: expectedPosition.y,
+            button: 0,
+        } as MouseEvent;
+        component.mouseHitDetect(mouseEvent);
+        expect(mouseServiceSpy).toHaveBeenCalled();
     });
 
     it('mouseHitDetect should assign the mouse position to mousePosition variable', () => {
@@ -45,14 +69,5 @@ describe('PlayAreaComponent', () => {
         component.mouseHitDetect(mouseEvent);
         expect(component.mousePosition).not.toEqual({ x: mouseEvent.offsetX, y: mouseEvent.offsetY });
         expect(component.mousePosition).toEqual(expectedPosition);
-    });
-
-    it('buttonDetect should modify the buttonPressed variable', () => {
-        const expectedKey = 'a';
-        const buttonEvent = {
-            key: expectedKey,
-        } as KeyboardEvent;
-        component.buttonDetect(buttonEvent);
-        expect(component.buttonPressed).toEqual(expectedKey);
     });
 });
