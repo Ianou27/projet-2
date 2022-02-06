@@ -1,5 +1,5 @@
-import { caseProperty } from '@app/../assets/caseProperty';
 import { GameBoardService } from '@app/services/game-board/game-board.service';
+import { CaseProperty } from './../../../assets/case-property';
 
 describe('GameBoard', () => {
     let gameBoard: GameBoardService;
@@ -28,7 +28,7 @@ describe('GameBoard', () => {
         let result = 0;
         for (const colonne of gameBoard.cases) {
             for (const tile of colonne) {
-                if (tile.getSpecialProperty() == caseProperty.wordTriple) {
+                if (tile.getSpecialProperty() === CaseProperty.WordTriple) {
                     result += 1;
                 }
             }
@@ -40,7 +40,7 @@ describe('GameBoard', () => {
         let result = 0;
         for (const colonne of gameBoard.cases) {
             for (const tile of colonne) {
-                if (tile.getSpecialProperty() == caseProperty.wordDouble) {
+                if (tile.getSpecialProperty() === CaseProperty.WordDouble) {
                     result += 1;
                 }
             }
@@ -52,7 +52,7 @@ describe('GameBoard', () => {
         let result = 0;
         for (const colonne of gameBoard.cases) {
             for (const tile of colonne) {
-                if (tile.getSpecialProperty() == caseProperty.letterTriple) {
+                if (tile.getSpecialProperty() === CaseProperty.LetterTriple) {
                     result += 1;
                 }
             }
@@ -64,7 +64,7 @@ describe('GameBoard', () => {
         let result = 0;
         for (const colonne of gameBoard.cases) {
             for (const tile of colonne) {
-                if (tile.getSpecialProperty() == caseProperty.letterDouble) {
+                if (tile.getSpecialProperty() === CaseProperty.LetterDouble) {
                     result += 1;
                 }
             }
@@ -73,16 +73,18 @@ describe('GameBoard', () => {
     });
 
     it('tileContainsLetter should return false if the tile doesnt contain a letter', () => {
-        const position = [0, 0];
-        const result = gameBoard.tileContainsLetter(position);
+        const positionX = 0;
+        const positionY = 0;
+        const result = gameBoard.tileContainsLetter(positionX, positionY);
         expect(result).toEqual(false);
     });
 
     it('tileContainsLetter should return true if the tile contains a letter', () => {
-        const position = [0, 0];
+        const positionX = 0;
+        const positionY = 0;
         const letter = 'a';
-        gameBoard.addLetterTile(position, letter);
-        const result = gameBoard.tileContainsLetter(position);
+        gameBoard.addLetterTile(positionX, positionY, letter);
+        const result = gameBoard.tileContainsLetter(positionX, positionY);
         expect(result).toEqual(true);
     });
 });

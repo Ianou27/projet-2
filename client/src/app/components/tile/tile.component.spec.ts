@@ -30,6 +30,16 @@ describe('TileComponent', () => {
         expect(component).toBeTruthy();
     });
 
+    it('tile with no letter should not be visible and assign with class tileEmpty', () => {
+        component.letter = '';
+        fixture.detectChanges();
+    });
+
+    it('disable not set to a value should not disabled the button ', () => {
+        component.letter = 'A';
+        fixture.detectChanges();
+    });
+
     /*  it('should unsubscribe on init', () => {
         const spy = spyOn(resizerServiceSpy.letterFontSize, 'subscribe');
         component.ngOnInit();

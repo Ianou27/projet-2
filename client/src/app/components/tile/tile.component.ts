@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, Input /* , OnInit, DoCheck*/ } from '@angular/core';
-// import { Tile } from './../../classes/tile/tile';
 
 @Component({
     selector: 'app-tile',

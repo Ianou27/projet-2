@@ -7,8 +7,8 @@ describe('GridService', () => {
     let service: GridService;
     let ctxStub: CanvasRenderingContext2D;
 
-    const CANVAS_WIDTH = 500;
-    const CANVAS_HEIGHT = 500;
+    const CANVAS_WIDTH = 750;
+    const CANVAS_HEIGHT = 750;
     const fontSize = 14;
 
     beforeEach(() => {
