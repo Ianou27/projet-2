@@ -8,6 +8,8 @@ export class SocketManager {
     roomMessages:any={
        
     };
+
+    rooms:string[]=[];
     // commandsList et exclamationIndex à mettre dans un fichier de constantes
     private commandsList: string[] = ['!placer', '!echanger', '!passer', '!indice'];
     private commandIndex: number = 0;
@@ -32,7 +34,7 @@ export class SocketManager {
             });
 
 
-            socket.on('joinRoom', (username,room) => {
+            socket.on('joinRoom', (username,room:string) => {
                 const user ={
                     username,
                     id:socket.id,
@@ -68,11 +70,15 @@ export class SocketManager {
                 if (roomSockets?.has(socket.id)) {
                     
                     this.roomMessages[currentRoom].push({username,message});
-                   
+                    
                     this.sio.to(currentRoom).emit('roomMessage', this.roomMessages[currentRoom]);
                 }
             });
+            socket.on('updateRoom', (a) => {
+                this.updateRoom();
+                socket.emit('rooms',this.rooms);
 
+            });
             socket.on('disconnect', (reason) => {
                 this.deleteUser(socket.id);
                 console.log(`Deconnexion par l'utilisateur avec id : ${socket.id}`);
@@ -106,6 +112,25 @@ export class SocketManager {
         })
         
     }
-}
 
+    updateRoom(){
+        let isIn=false;
+        this.users.forEach(user => {
+            this.rooms.forEach(room => {
+                if(user.room === room){
+                    isIn=true;
+                }
+            
+            })
+            if(!isIn){
+                this.rooms.push(user.room);
+            }
+        })
+ 
+
+        console.log(this.rooms);
+       
+       
+}
+}
   

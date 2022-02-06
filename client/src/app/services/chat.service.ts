@@ -8,7 +8,7 @@ export class ChatService {
     
     username ="";
     room="";
-  
+    allRooms="";
     roomMessage = '';
     currentRoom ='';
     roomMessages: any[] = [];
@@ -27,6 +27,8 @@ export class ChatService {
         if (!this.socketService.isSocketAlive()) {
             this.socketService.connect();
             this.configureBaseSocketFeatures();
+            this.updateRooms();
+            console.log("allRooms: ", this.allRooms);
         }
     }
 
@@ -53,6 +55,11 @@ export class ChatService {
             this.roomMessages =roomMessage;
             
         });
+
+        this.socketService.on('rooms', (rooms: any) => {
+            this.allRooms =rooms;
+            
+        });
     }
 
     sendWordValidation() {
@@ -61,10 +68,12 @@ export class ChatService {
 
     
 
-  
+    updateRooms(){
+        this.socketService.send('updateRoom',this.allRooms);
+    }
 
     joinRoom() {
-        console.log(this.room)
+       
         this.socketService.socket.emit('joinRoom',this.username,this.room);
         
     }
