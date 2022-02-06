@@ -14,10 +14,14 @@
 //     transform: translate(-50%, -50%);
 // }
 //////
+.waiting-buttons {
+    font-size: 30px;
+    height: 60px;
+}
+
 .container {
     min-height: 100vh;
     height: auto;
-    margin-top: 20rm;
     background-color: #361e0c;
 }
 
@@ -28,16 +32,32 @@
     align-items: center;
 }
 
-img {
-    margin-bottom: 10rem;
+h2 {
+    position: absolute;
+    top: 20%;
+    font-size: 30px;
+}
+
+mat-spinner {
+    position: relative;
+    top: 50%;
 }
 
 .multiplayer {
     display: flex;
 }
 .retour {
+    position: relative;
+    top: 240px;
+    font-size: 30px;
+    height: 50px;
     margin-top: 1.5rem;
     margin-top: 6rem;
+}
+
+#test {
+    position: relative;
+    right: 100px;
 }
 
 .button {
@@ -98,26 +118,7 @@ body {
 svg {
     width: 90%;
     fill: none;
-}
-
-.load {
-    transform-origin: 50% 50%;
-    stroke-dasharray: 570;
-    stroke-width: 20px;
-    &.one {
-        stroke: $color3;
-        animation: load 1.5s infinite;
-    }
-    &.two {
-        stroke: $color2;
-        animation: load 1.5s infinite;
-        animation-delay: 0.1s;
-    }
-    &.three {
-        stroke: $color1;
-        animation: load 1.5s infinite;
-        animation-delay: 0.2s;
-    }
+    z-index: -600;
 }
 
 .point {

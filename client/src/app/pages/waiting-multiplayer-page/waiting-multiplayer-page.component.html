@@ -5,31 +5,22 @@
 <!-- <span *ngIf="animal">
     You choose: <i>{{animal}}</i>
 <span> -->
-<div class="loader">
-    <br /><br />
+<!-- <div class="loader" *ngIf="!dialogShown">
     <svg viewBox="0 0 120 120" version="1.1" xmlns="http://www.w3.org/2000/svg">
-        <circle class="load one" cx="60" cy="60" r="40" />
-        <circle class="load two" cx="60" cy="60" r="40" />
-        <circle class="load three" cx="60" cy="60" r="40" />
         <g>
             <circle class="point one" cx="45" cy="70" r="5" />
             <circle class="point two" cx="60" cy="70" r="5" />
             <circle class="point three" cx="75" cy="70" r="5" />
         </g>
     </svg>
-</div>
+</div> -->
 <div class="container justified">
-    <img src="https://bit.ly/3m206ss" width="800" height="160" alt="Logo Scrabble" />
-    <h1>En attente d'un adversaire...</h1>
-    <br /><br /><br /><br /><br />
+    <h2>En attente d'un adversaire...</h2>
+    <mat-spinner></mat-spinner>
     <section id="server-message">
         <div class="justified">
-            <div class="multiplayer">
-                <app-button name="Démarer" routing="/game"></app-button>
-                <app-button name="Rejeter" routing="/waiting"></app-button>
-            </div>
-
-            <app-button ngClass="retour" name="Annuler" routing="/classic"></app-button>
+            <button id="test" (click)="openDialog()">Test</button>
+            <button mat-raised-button color="primary" ngClass="retour" routerLink="/classic">Annuler</button>
         </div>
     </section>
 </div>
