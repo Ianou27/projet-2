@@ -3,10 +3,11 @@ import * as io from 'socket.io';
 
 export class SocketManager {
     private sio: io.Server;
-    private room: string = 'serverRoom';
     users:any[]=[] ;
 
-    roomMessages:any[]=[];
+    roomMessages:any={
+       
+    };
     // commandsList et exclamationIndex à mettre dans un fichier de constantes
     private commandsList: string[] = ['!placer', '!echanger', '!passer', '!indice'];
     private commandIndex: number = 0;
@@ -18,11 +19,8 @@ export class SocketManager {
         this.sio.on('connection', (socket) => {
             console.log(`Connexion par l'utilisateur avec id : ${socket.id}`);
             // message initial
-            socket.emit('hello', 'Hello World!');
+            
 
-            socket.on('message', (message: string) => {
-                console.log(message);
-            });
             socket.on('validate', (message: string) => {
                 if (message === undefined || message === null) return;
                 if (message.charAt(0) === '!') {
@@ -33,40 +31,45 @@ export class SocketManager {
                 }
             });
 
-            socket.on('broadcastAll', (message: string) => {
-                this.sio.sockets.emit('massMessage', `${socket.id} : ${message}`);
-            });
 
-            socket.on('joinRoom', (username) => {
+            socket.on('joinRoom', (username,room) => {
                 const user ={
                     username,
                     id:socket.id,
+                    room
                 }
                 this.users.push(user);
                 console.log("----------");
                 this.users.forEach(element => console.log(element));
 
-                socket.join(this.room);
+                socket.join(room);
             });
 
             socket.on('roomMessage', (message: string) => {
-                const roomSockets = this.sio.sockets.adapter.rooms.get(this.room);
-                // Seulement un membre de la salle peut envoyer un message aux autres
-                if (roomSockets?.has(socket.id)) {
-                    let username ='';
+                let username ='';
+                    let currentRoom:any ='';
                     this.users.forEach(element => {
                         if(element.id ===socket.id){
                             username=element.username;
+                            currentRoom = element.room;
                         }
             
                         
-            
+                  
                     });
-                    this.roomMessages.push({
-                        username,
-                        message
-                    })
-                    this.sio.to(this.room).emit('roomMessage', `${username} : ${message}`);
+                    if(!(this.roomMessages.hasOwnProperty(currentRoom))){
+                     
+                        this.roomMessages[currentRoom]=[]; 
+
+                    }
+                    
+                const roomSockets = this.sio.sockets.adapter.rooms.get(currentRoom);
+                // Seulement un membre de la salle peut envoyer un message aux autres
+                if (roomSockets?.has(socket.id)) {
+                    
+                    this.roomMessages[currentRoom].push({username,message});
+                   
+                    this.sio.to(currentRoom).emit('roomMessage', this.roomMessages[currentRoom]);
                 }
             });
 
