@@ -1,4 +1,4 @@
-import { CaseProperty } from './../../../assets/case-property';
+import { CaseProperty } from '../../../assets/case-property';
 import { Tile } from './tile';
 
 describe('Tile', () => {
