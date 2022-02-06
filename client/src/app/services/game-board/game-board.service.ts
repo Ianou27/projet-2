@@ -16,14 +16,13 @@ export class GameBoardService {
         for (let i = 0; i < COLUMN_ROWS_NUMBER; i++) {
             this.cases[i] = new Array(COLUMN_ROWS_NUMBER);
             for (let j = 0; j < COLUMN_ROWS_NUMBER; j++) {
-                const positionVector: Vec2 = { x: i, y: j };
-                if (this.isSpecial(positionVector, WORD_3X)) {
+                if (this.verifyProperty(WORD_3X, i, j)) {
                     this.cases[i][j] = new Tile(CaseProperty.WordTriple);
-                } else if (this.isSpecial(positionVector, WORD_2X)) {
+                } else if (this.verifyProperty(WORD_2X, i, j)) {
                     this.cases[i][j] = new Tile(CaseProperty.WordDouble);
-                } else if (this.isSpecial(positionVector, LETTER_3X)) {
+                } else if (this.verifyProperty(LETTER_3X, i, j)) {
                     this.cases[i][j] = new Tile(CaseProperty.LetterTriple);
-                } else if (this.isSpecial(positionVector, LETTER_2X)) {
+                } else if (this.verifyProperty(LETTER_2X, i, j)) {
                     this.cases[i][j] = new Tile(CaseProperty.LetterDouble);
                 } else {
                     this.cases[i][j] = new Tile(CaseProperty.Normal);
@@ -41,9 +40,9 @@ export class GameBoardService {
         this.cases[positionX][positionY].addLetter(letter);
     }
 
-    isSpecial(position: Vec2, tileList: Vec2[]) {
-        for (let i = 0; i < tileList.length; i++) {
-            if (position.x === tileList[i].x && position.y === tileList[i].y) {
+    private verifyProperty(property: Vec2[], positionX: number, positionY: number): boolean {
+        for (const position of property) {
+            if (position.x === positionX && position.y === positionY) {
                 return true;
             }
         }
