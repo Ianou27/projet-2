@@ -4,6 +4,9 @@ import * as io from 'socket.io';
 export class SocketManager {
     private sio: io.Server;
     private room: string = 'serverRoom';
+    users:any[]=[] ;
+
+    roomMessages:any[]=[];
     // commandsList et exclamationIndex à mettre dans un fichier de constantes
     private commandsList: string[] = ['!placer', '!echanger', '!passer', '!indice'];
     private commandIndex: number = 0;
@@ -34,7 +37,15 @@ export class SocketManager {
                 this.sio.sockets.emit('massMessage', `${socket.id} : ${message}`);
             });
 
-            socket.on('joinRoom', () => {
+            socket.on('joinRoom', (username) => {
+                const user ={
+                    username,
+                    id:socket.id,
+                }
+                this.users.push(user);
+                console.log("----------");
+                this.users.forEach(element => console.log(element));
+
                 socket.join(this.room);
             });
 
@@ -42,24 +53,35 @@ export class SocketManager {
                 const roomSockets = this.sio.sockets.adapter.rooms.get(this.room);
                 // Seulement un membre de la salle peut envoyer un message aux autres
                 if (roomSockets?.has(socket.id)) {
-                    this.sio.to(this.room).emit('roomMessage', `${socket.id} : ${message}`);
+                    let username ='';
+                    this.users.forEach(element => {
+                        if(element.id ===socket.id){
+                            username=element.username;
+                        }
+            
+                        
+            
+                    });
+                    this.roomMessages.push({
+                        username,
+                        message
+                    })
+                    this.sio.to(this.room).emit('roomMessage', `${username} : ${message}`);
                 }
             });
 
             socket.on('disconnect', (reason) => {
+                this.deleteUser(socket.id);
                 console.log(`Deconnexion par l'utilisateur avec id : ${socket.id}`);
                 console.log(`Raison de deconnexion : ${reason}`);
+
             });
         });
 
-        setInterval(() => {
-            this.emitTime();
-        }, 1000);
+      
     }
 
-    private emitTime() {
-        this.sio.sockets.emit('clock', new Date().toLocaleTimeString());
-    }
+    
     lengthVerification(message: string) {
         return message.length > 512 ? false : true;
     }
@@ -71,4 +93,16 @@ export class SocketManager {
         const messageArray = message.split(' ');
         return this.commandsList.includes(messageArray[this.commandIndex]) ? true : false;
     }
+
+    deleteUser(socketId:any){
+        this.users.forEach(element => {
+            if(element.id ===socketId){
+                let index= this.users.indexOf(element);
+                this.users.splice(index, 1);
+            }
+        })
+        
+    }
 }
+
+  

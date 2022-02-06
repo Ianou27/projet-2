@@ -7,6 +7,7 @@ import { SocketClientService } from './socket-client.service';
 export class ChatService {
     serverMessage: string = '';
     serverClock: Date;
+    username ="";
 
     wordInput = '';
     serverValidationResult = '';
@@ -84,7 +85,8 @@ export class ChatService {
     }
 
     joinRoom() {
-        this.socketService.send('joinRoom');
+        this.socketService.send('joinRoom',this.username);
+        
     }
 
     sendToRoom() {
