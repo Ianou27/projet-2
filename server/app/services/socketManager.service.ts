@@ -1,7 +1,9 @@
+import { GameService } from '@app/classes/game.service';
 import * as http from 'http';
 import * as io from 'socket.io';
 
 export class SocketManager {
+    private game: GameService;
     private sio: io.Server;
     private room: string = 'serverRoom';
     // commandsList et exclamationIndex à mettre dans un fichier de constantes
@@ -9,6 +11,7 @@ export class SocketManager {
     private commandIndex: number = 0;
     constructor(server: http.Server) {
         this.sio = new io.Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
+        this.game = new GameService();
     }
 
     handleSockets(): void {
@@ -26,6 +29,7 @@ export class SocketManager {
                     const isValid = this.commandVerification(message);
                     socket.emit('commandValidated', isValid);
                     if (isValid) {
+                        this.game.placeWord('A', 2, 'h', 'allo');
                     }
                 } else {
                     const isValid = this.lengthVerification(message) && this.characterVerification(message);

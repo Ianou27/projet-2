@@ -1,5 +1,6 @@
 import { PlayerService } from '@app/../../client/src/app/classes/player/player.service';
-import { Row } from 'assets/row';
+import { GameBoardService } from '@app/../../client/src/app/services/game-board/game-board.service';
+import { RowTest } from 'assets/row';
 
 /* declare let require: unknown;
 const fs = require('fs'); */
@@ -8,13 +9,14 @@ export class GameService {
     private player1: PlayerService;
     private player2: PlayerService;
     /* private dictionary: string; */
-    /*     private gameBoard: GameBoardService; */
+    private gameBoard: GameBoardService;
 
     constructor() {
         /* this.dictionary = "Mon dictionnaire"; */
         /*         this.gameBoard = new GameBoardService(); */
         this.player1 = new PlayerService(this.randomShuffleLetters(), true);
         this.player2 = new PlayerService(this.randomShuffleLetters(), true);
+        this.gameBoard = new GameBoardService();
     }
 
     changeTurnTwoPlayers() {
@@ -44,6 +46,18 @@ export class GameService {
         }
     }
 
+    placeWord(row: string, column: number, orientation: string, word: string) {
+        const letters = word.split('');
+        switch (orientation) {
+            case 'h': {
+                for (let i = 0; i < letters.length; i++) {
+                    this.gameBoard.addLetterTile(column + i, RowTest[row], letters[i]);
+                }
+                break;
+            }
+        }
+    }
+
     validatedPlaceCommand(commandInformations: string[]): void {
         const positionOrientation = commandInformations[1].split('');
         const orientation = positionOrientation.pop();
@@ -53,7 +67,7 @@ export class GameService {
 
         const orientationValid: boolean = orientation === 'h' || orientation === 'v';
         const columnValid: boolean = 1 <= column && column <= 15;
-        const rowValid: boolean = Object.values(Row).includes(Number(row));
+        const rowValid: boolean = row === undefined ? false : RowTest[row] !== undefined;
         const oneLetterValid: boolean = numberLetters === 1 && columnValid && rowValid;
 
         const containsLineRowOrientation: boolean = (orientationValid && columnValid && rowValid) || oneLetterValid;
@@ -76,11 +90,11 @@ export class GameService {
         }
     }
 
-    private insideBoardGame(orientation: string, row: string, column: string, numberLetters: number): boolean {
+    /*private insideBoardGame(orientation: string, row: string, column: string, numberLetters: number): boolean {
         if (orientation === 'h') {
         }
         return true;
-    }
+    }*/
 
     private isUpperCase(letter: string): boolean {
         return letter === letter.toUpperCase();
