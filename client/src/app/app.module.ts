@@ -22,11 +22,12 @@ import { TextHistoryComponent } from './components/text-history/text-history.com
 import { TextInputComponent } from './components/text-input/text-input.component';
 import { TileHolderComponent } from './components/tile-holder/tile-holder.component';
 import { TileComponent } from './components/tile/tile.component';
+import { WaitingDialogComponent } from './components/waiting-dialog/waiting-dialog.component';
+import { JoinPageComponent } from './pages/join-page/join-page.component';
 import { MultiplayerPageComponent } from './pages/multiplayer-page/multiplayer-page.component';
 import { ScrabbleClassicPageComponent } from './pages/scrabble-classic-page/scrabble-classic-page.component';
 import { WaitingMultiplayerPageComponent } from './pages/waiting-multiplayer-page/waiting-multiplayer-page.component';
 import { FormatTimePipe } from './pipes/format-time.pipe';
-import { WaitingDialogComponent } from './components/waiting-dialog/waiting-dialog.component';
 
 // import { LoadingScreenService } from './services/loading-screen/loading-screen.service';
 
@@ -61,6 +62,7 @@ import { WaitingDialogComponent } from './components/waiting-dialog/waiting-dial
         MultiplayerPageComponent,
         CommunicationAreaComponent,
         WaitingDialogComponent,
+        JoinPageComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule, MatDialogModule],
     providers: [],

@@ -1,0 +1,55 @@
+#grid {
+    position: relative;
+    left: 100px;
+    width: 80%;
+}
+
+::ng-deep .mat-tooltip {
+    font-size: 16px;
+}
+
+.container {
+    height: 500px;
+    width: 1000px;
+}
+
+::ng-deep .mat-tab-group {
+    height: 90%;
+}
+
+::ng-deep .mat-tab-body-wrapper {
+    height: 100%;
+}
+
+.mat-dialog-content {
+    position: relative;
+    margin-top: 10px;
+    display: flex;
+    margin: 0px;
+    height: 100%;
+    justify-content: center;
+}
+
+#card button {
+    left: 15px;
+}
+
+#solo {
+    position: relative;
+    top: 50%;
+    left: 47%;
+}
+
+mat-expansion-panel {
+    left: 25px;
+    width: 95%;
+}
+
+mat-accordion {
+    position: relative;
+    top: 15px;
+}
+
+#confirm-button {
+    justify-content: center;
+}

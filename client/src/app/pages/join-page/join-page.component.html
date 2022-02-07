@@ -1,0 +1,94 @@
+<div class="container justified">
+    <button
+        mat-fab
+        mat-dialog-close
+        color="primary"
+        matTooltip="Retourner à la page d'accueil"
+        matTooltipPosition="right"
+        id="tooltip"
+        routerLink="/classic"
+    >
+        <mat-icon style="transform: rotate(180deg)">exit_to_app</mat-icon>
+    </button>
+    <mat-tab-group mat-stretch-tabs>
+        <mat-tab label="Partie solo">
+            <!-- <mat-toolbar>
+                <marquee direction="left"> Choisissez la difficulté du joueur vituel (bientôt disponible) </marquee>
+            </mat-toolbar> -->
+            <button mat-raised-button color="primary" mat-dialog-close="true" id="solo">Jouer</button>
+        </mat-tab>
+        <mat-tab label="Créer une partie multijoueur">
+            <!-- <mat-toolbar> </mat-toolbar> -->
+            <div mat-dialog-content [formGroup]="form" class="dialog">
+                <div>
+                    <h2>Nom du joueur :</h2>
+                    <form [formGroup]="form">
+                        <mat-card-content>
+                            <mat-form-field>
+                                <input matInput placeHolder="Votre nom" formControlName="name" />
+                                <mat-hint align="end">Minimum 3 lettres</mat-hint>
+                                <mat-error *ngIf="myError('name', 'required')">Veuillez entrer un nom</mat-error>
+                                <mat-error *ngIf="myError('name', 'minLength')">Veuillez entrer un nom d'au moins 3 lettre</mat-error>
+                                <mat-error *ngIf="myError('name', 'pattern')">Pas de chiffres et/ou caractères spéciaux</mat-error>
+                            </mat-form-field>
+                        </mat-card-content>
+                        <h2>Minuterie</h2>
+                        <mat-form-field>
+                            <mat-select [(value)]="selectedTime" placeholder="Temps">
+                                <mat-option value="1">1</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <h2>Dictionnaire:</h2>
+                        <mat-form-field>
+                            <mat-select [(value)]="selectedDico" placeholder="Choisir un dictionnaire">
+                                <mat-option value="Dictionnaire par defaut">Dictionnaire par defaut</mat-option>
+                                <mat-option value="Dictionnaire 2" disabled>Dictionnaire 2 (Indisponible)</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </form>
+                    <div mat-dialog-actions id="confirm-button">
+                        <button routerLink="/waiting" mat-raised-button color="primary" [disabled]="form.invalid" [mat-dialog-close] cdkFocusInitial>
+                            Confirmer
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </mat-tab>
+        <mat-tab label="Joindre une partie">
+            <mat-toolbar>
+                <marquee direction="left">
+                    Ici se trouve la liste des salles disponibles. S'il n'y a pas de salles affichées, veuillez attendre qu'une salle se créée ou
+                    allez créer une partie multijoueur pour que quelq'un vous rejoigne.
+                </marquee>
+            </mat-toolbar>
+            <div>
+                <mat-accordion multi>
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                <mat-icon>people</mat-icon>
+                                Room 1
+                            </mat-panel-title>
+                            <mat-panel-description> Nom utilisateur </mat-panel-description>
+                        </mat-expansion-panel-header>
+                        <h3>Détails de la salle:</h3>
+                        <p>Nom de l'adversaire:</p>
+                        <p>Durée des tours:</p>
+                        <p>Mode je jeu:</p>
+                        <p>Dictionnaire:</p>
+                        <mat-card id="card">
+                            <mat-form-field appearance="fill">
+                                <input matInput placeHolder="Votre nom" formControlName="name" />
+                                <mat-hint align="end">Minimum 3 lettres</mat-hint>
+                                <mat-error *ngIf="myError('name', 'required')">Veuillez entrer un nom</mat-error>
+                                <mat-error *ngIf="myError('name', 'minLength')">Veuillez entrer un nom d'au moins 3 lettre</mat-error>
+                                <mat-error *ngIf="myError('name', 'pattern')">Pas de chiffres et/ou caractères spéciaux</mat-error>
+                            </mat-form-field>
+                            <button mat-raised-button color="primary">Rejoindre</button>
+                        </mat-card>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</div>
