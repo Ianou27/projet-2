@@ -28,6 +28,7 @@ import { MultiplayerPageComponent } from './pages/multiplayer-page/multiplayer-p
 import { ScrabbleClassicPageComponent } from './pages/scrabble-classic-page/scrabble-classic-page.component';
 import { WaitingMultiplayerPageComponent } from './pages/waiting-multiplayer-page/waiting-multiplayer-page.component';
 import { FormatTimePipe } from './pipes/format-time.pipe';
+import { WaitingPlayerDialogComponent } from './components/waiting-player-dialog/waiting-player-dialog.component';
 
 // import { LoadingScreenService } from './services/loading-screen/loading-screen.service';
 
@@ -63,6 +64,7 @@ import { FormatTimePipe } from './pipes/format-time.pipe';
         CommunicationAreaComponent,
         WaitingDialogComponent,
         JoinPageComponent,
+        WaitingPlayerDialogComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule, MatDialogModule],
     providers: [],

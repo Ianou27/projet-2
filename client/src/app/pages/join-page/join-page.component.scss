@@ -52,4 +52,19 @@ mat-accordion {
 
 #confirm-button {
     justify-content: center;
+    padding: 0;
+}
+
+td {
+    padding-right: 8px;
+}
+
+form .center {
+    position: relative;
+    display: table;
+    margin: 0 auto;
+}
+.dialog h2 {
+    position: relative;
+    text-align: center;
 }

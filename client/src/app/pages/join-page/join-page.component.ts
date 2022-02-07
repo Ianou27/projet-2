@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { WaitingPlayerDialogComponent } from '@app/components/waiting-player-dialog/waiting-player-dialog.component';
 
 @Component({
     selector: 'app-join-page',
@@ -15,7 +16,7 @@ export class JoinPageComponent implements OnInit {
     selectedDico = 'Dictionnaire par defaut';
     selectedTime = '1';
 
-    constructor(public dialogRef: MatDialogRef<JoinPageComponent>) {}
+    constructor(public dialogRef: MatDialogRef<JoinPageComponent>, public waitDialog: MatDialog) {}
     ngOnInit(): void {
         this.form = new FormGroup({
             name: new FormControl('', [Validators.required, Validators.minLength(3), Validators.pattern(this.alphaNumericRegex)]),
@@ -25,4 +26,9 @@ export class JoinPageComponent implements OnInit {
         // eslint-disable-next-line no-invalid-this
         return this.form.controls[controlName].hasError(errorName);
     };
+    openWait() {
+        this.waitDialog.open(WaitingPlayerDialogComponent, {
+            disableClose: true,
+        });
+    }
 }
