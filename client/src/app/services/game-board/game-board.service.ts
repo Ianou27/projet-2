@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { CaseProperty } from 'src/assets/case-property';
-import { Tile } from '../../classes/tile/tile';
+import { CaseProperty } from './../../../assets/case-property';
+import { Tile } from './../../classes/tile/Tile';
 import { Vec2 } from './../../classes/vec2';
 import { COLUMN_ROWS_NUMBER } from './../../constants/general-constants';
 import { LETTER_2X, LETTER_3X, WORD_2X, WORD_3X } from './../../constants/tile-information';
