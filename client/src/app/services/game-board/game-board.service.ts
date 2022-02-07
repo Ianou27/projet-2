@@ -29,7 +29,6 @@ export class GameBoardService {
                 }
             }
         }
-        this.addLetterTile(6, 6, '*');
     }
 
     tileContainsLetter(positionX: number, positionY: number): boolean {

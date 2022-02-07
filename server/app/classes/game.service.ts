@@ -1,4 +1,5 @@
 import { PlayerService } from '@app/../../client/src/app/classes/player/player.service';
+import { Row } from 'assets/row';
 
 /* declare let require: unknown;
 const fs = require('fs'); */
@@ -24,35 +25,87 @@ export class GameService {
     randomShuffleLetters(): string[] {
         return [];
     }
+
     /*     !placer h8v bon */
-    validatedCommandFormat(commandInformations: string[]): boolean {
+    validatedCommandFormat(commandInformations: string[]) {
         const command = commandInformations[0];
         switch (command) {
             case '!placer': {
-                return this.validatedPlaceCommand(commandInformations);
+                this.validatedPlaceCommand(commandInformations);
+                break;
             }
-            case '!passer': {
+            /*             case '!passer': {
                 return this.validatedPassCommand(commandInformations);
             }
             case '!échanger': {
                 return this.validatedExchangeCommand(commandInformations);
-            }
+            } */
             // No default
         }
     }
 
-    validatedPlaceCommand(commandInformations: string[]): boolean {
+    validatedPlaceCommand(commandInformations: string[]): void {
         const positionOrientation = commandInformations[1].split('');
         const orientation = positionOrientation.pop();
         const row = positionOrientation.shift();
         const column = Number(positionOrientation.join(''));
+        const numberLetters = commandInformations[2].length;
+
         const orientationValid: boolean = orientation === 'h' || orientation === 'v';
         const columnValid: boolean = 1 <= column && column <= 15;
-        const rowValid: boolean = row.match([a - h]).length > 0;
-        if (orientationValid && columnValid && rowValid) {
+        const rowValid: boolean = Object.values(Row).includes(Number(row));
+        const oneLetterValid: boolean = numberLetters === 1 && columnValid && rowValid;
+
+        const containsLineRowOrientation: boolean = (orientationValid && columnValid && rowValid) || oneLetterValid;
+        const lettersTileHolder: boolean = this.tileHolderContains(commandInformations[2]);
+
+        if (containsLineRowOrientation && lettersTileHolder) {
+            // methode pour envoyer message chatService
+            // missingArgument();
+        } else {
+            // methode pour envoyer message chatService
+            // missingArgument();
+        }
+    }
+
+    playerTurn(): PlayerService {
+        if (this.player1.getHisTurn()) {
+            return this.player1;
+        } else {
+            return this.player2;
+        }
+    }
+
+    private insideBoardGame(orientation: string, row: string, column: string, numberLetters: number): boolean {
+        if (orientation === 'h') {
         }
         return true;
     }
+
+    private isUpperCase(letter: string): boolean {
+        return letter === letter.toUpperCase();
+    }
+
+    private tileHolderContains(word: string): boolean {
+        const letters = word.split('');
+        const player: PlayerService = this.playerTurn();
+        const lettersPlayer: string[] = player.getLetters();
+        for (const letter of letters) {
+            if (this.isUpperCase(letter)) {
+                if (!lettersPlayer.includes('*')) {
+                    return false;
+                }
+                lettersPlayer.splice(lettersPlayer.indexOf('*'), 1);
+            } else {
+                if (!lettersPlayer.includes(letter)) {
+                    return false;
+                }
+                lettersPlayer.splice(lettersPlayer.indexOf(letter), 1);
+            }
+        }
+        return true;
+    }
+
     /*     validatedWord(newLettersPositions: { position: number[]; letter: string }[]): boolean {
         for (const letter of newLettersPositions) {
             const position = letter.position;
