@@ -29,7 +29,7 @@ export class SocketManager {
                     socket.emit('commandValidated', isValid);
                     if (isValid) {
                         this.handleCommand(message.split(''));
-                        socket.emit('modification', this.gameManager.gameList.gameBoard);
+                        socket.emit('modification', this.gameManager.gameList.gameBoard.cases);
                     }
                 } else {
                     const isValid = this.lengthVerification(message) && this.characterVerification(message);
@@ -65,7 +65,8 @@ export class SocketManager {
     }
 
     handleCommand(command: string[]) {
-        this.gameManager.gameList.placeWord('A', 1, 'h', 'allo');
+        this.gameManager.gameList.placeWord('A', 0, 'h', 'Animal');
+        // console.log(this.gameManager.gameList.gameBoard.cases[0][1]);
 
         // this.gameManager.validatedCommandFormat(command);
     }

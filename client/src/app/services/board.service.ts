@@ -34,17 +34,19 @@ export class BoardService {
     }
 
     connect() {
-        this.socketService.connect();
-        this.configureBaseSocketFeatures();
+        if (!this.socketService.isSocketAlive()) {
+            console.log('xd');
+            this.socketService.connect();
+        }
     }
 
-    configureBaseSocketFeatures() {
+    /* configureFeatures() {
         console.log('configuration');
         this.socketService.on('modification', (updatedBoard: Tile[][]) => {
             console.log('Received');
             this.board = updatedBoard;
         });
-    }
+    }*/
     getBoard() {
         return this.board;
     }

@@ -2,9 +2,9 @@ import { CaseProperty } from './../assets/case-property';
 import { letterValue } from './../assets/reserve-letters';
 
 export class Tile {
-    private letter: string = '';
-    private value: number = 0;
-    private specialProperty: CaseProperty;
+    letter: string = '';
+    value: number = 0;
+    specialProperty: CaseProperty;
 
     constructor(specialProperty: CaseProperty) {
         this.specialProperty = specialProperty;
