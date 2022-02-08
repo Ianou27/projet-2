@@ -2,7 +2,6 @@ import { PlayerService } from '@app/../../client/src/app/classes/player/player.s
 import { RowTest } from 'assets/row';
 import { letterNumber } from './../../../common/assets/reserve-letters';
 import { GameBoardService } from './../services/gameBoard.service';
-import {} from ;
 
 export class GameService {
     private player1: PlayerService;
@@ -25,7 +24,7 @@ export class GameService {
     }
 
     randomShuffleLetters(): string[] {
-        let letters: string[] = [];
+        const letters: string[] = [];
         for (let i = 0; i < 7; i++) {
             const element = this.reserveLetters[Math.floor(Math.random() * this.reserveLetters.length)];
             const indexElement = this.reserveLetters.indexOf(element);

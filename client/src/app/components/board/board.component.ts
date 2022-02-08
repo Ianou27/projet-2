@@ -1,5 +1,5 @@
 import { AfterViewInit, Component } from '@angular/core';
-import { BoardService } from '@app/services/board.service';
+import { ChatService } from '@app/services/chat.service';
 
 @Component({
     selector: 'app-board',
@@ -7,6 +7,6 @@ import { BoardService } from '@app/services/board.service';
     styleUrls: ['./board.component.scss'],
 })
 export class BoardComponent implements AfterViewInit {
-    constructor(public boardService: BoardService) {}
+    constructor(public chatService: ChatService) {}
     ngAfterViewInit(): void {}
 }

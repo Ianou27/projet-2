@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { Tile } from './../../../../common/tile/Tile';
+import { BoardService } from './board.service';
 import { SocketClientService } from './socket-client.service';
 
 @Injectable({
@@ -18,7 +20,7 @@ export class ChatService {
     roomMessage = '';
     roomMessages: string[] = [];
 
-    constructor(public socketService: SocketClientService) {}
+    constructor(public socketService: SocketClientService, public boardService: BoardService) {}
 
     get socketId() {
         return this.socketService.socket.id ? this.socketService.socket.id : '';
@@ -61,6 +63,11 @@ export class ChatService {
         // Gérer l'événement envoyé par le serveur : afficher le message envoyé par un client connecté
         this.socketService.on('massMessage', (broadcastMessage: string) => {
             this.serverMessages.push(broadcastMessage);
+        });
+
+        this.socketService.on('modification', (updatedBoard: Tile[][]) => {
+            console.log('Received');
+            this.boardService.board = updatedBoard;
         });
 
         // Gérer l'événement envoyé par le serveur : afficher le message envoyé par un membre de la salle

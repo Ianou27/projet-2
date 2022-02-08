@@ -3,7 +3,9 @@ import { GameService } from '@app/classes/game.service';
 export class GameManager {
     gameList: GameService;
 
-    constructor() {}
+    constructor() {
+        this.gameList = new GameService();
+    }
 
     validatedCommandFormat(commandInformations: string[]) {
         const command = commandInformations[0];
