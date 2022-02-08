@@ -1,21 +1,22 @@
 import { PlayerService } from '@app/../../client/src/app/classes/player/player.service';
 import { RowTest } from 'assets/row';
+import { letterNumber } from './../../../common/assets/reserve-letters';
 import { GameBoardService } from './../services/gameBoard.service';
-
-/* declare let require: unknown;
-const fs = require('fs'); */
+import {} from ;
 
 export class GameService {
     private player1: PlayerService;
     private player2: PlayerService;
     /* private dictionary: string; */
     private gameBoard: GameBoardService;
+    private reserveLetters: string[];
 
     constructor() {
         /* this.dictionary = "Mon dictionnaire"; */
         this.player1 = new PlayerService(this.randomShuffleLetters(), true);
-        this.player2 = new PlayerService(this.randomShuffleLetters(), true);
+        this.player2 = new PlayerService(this.randomShuffleLetters(), false);
         this.gameBoard = new GameBoardService();
+        this.reserveLetters = this.initializeReserveLetters();
     }
 
     changeTurnTwoPlayers() {
@@ -24,7 +25,15 @@ export class GameService {
     }
 
     randomShuffleLetters(): string[] {
-        return [];
+        let letters: string[] = [];
+        for (let i = 0; i < 7; i++) {
+            const element = this.reserveLetters[Math.floor(Math.random() * this.reserveLetters.length)];
+            const indexElement = this.reserveLetters.indexOf(element);
+            letters.push(element);
+            this.reserveLetters.splice(indexElement, 1);
+        }
+        
+        return letters;
     }
 
     placeWord(row: string, column: number, orientation: string, word: string) {
@@ -58,10 +67,11 @@ export class GameService {
         const rowValid: boolean = row === undefined ? false : RowTest[row] !== undefined;
         const oneLetterValid: boolean = numberLetters === 1 && columnValid && rowValid;
 
-        const containsLineRowOrientation: boolean = (orientationValid && columnValid && rowValid) || oneLetterValid;
+        const validLineRowOrientation: boolean = (orientationValid && columnValid && rowValid) || oneLetterValid;
         const lettersTileHolder: boolean = this.tileHolderContains(commandInformations[2]);
+        const insideBoardGame: boolean = this.insideBoardGame(orientation, row, column, numberLetters);
 
-        if (containsLineRowOrientation && lettersTileHolder) {
+        if (validLineRowOrientation && lettersTileHolder && insideBoardGame) {
             this.placeWord(row, column, orientation, commandInformations[2]);
         } else {
             // methode pour envoyer message chatService
@@ -77,11 +87,34 @@ export class GameService {
         }
     }
 
-    /* private insideBoardGame(orientation: string, row: string, column: string, numberLetters: number): boolean {
+    private insideBoardGame(orientation: string, row: string, column: number, numberLetters: number): boolean {
+        const cases = this.gameBoard.cases;
+        let rowNumber = RowTest[row];
+        let columnNumber = column - 1;
+        let numberLettersToPlace = numberLetters;
         if (orientation === 'h') {
+            while (numberLettersToPlace > 0) {
+                if (!cases[rowNumber][columnNumber].tileContainsLetter()) {
+                    numberLettersToPlace--;
+                }
+                columnNumber++;
+            }
+            if (columnNumber > 15) {
+                return false;
+            }
+        } else if (orientation === 'v') {
+            while (numberLettersToPlace > 0) {
+                if (!cases[rowNumber][columnNumber].tileContainsLetter()) {
+                    numberLettersToPlace--;
+                }
+                rowNumber++;
+            }
+            if (rowNumber > 15) {
+                return false;
+            }
         }
         return true;
-    }*/
+    }
 
     private isUpperCase(letter: string): boolean {
         return letter === letter.toUpperCase();
@@ -105,6 +138,17 @@ export class GameService {
             }
         }
         return true;
+    }
+
+    private initializeReserveLetters(): string[] {
+        const reserveLetters = letterNumber;
+        const reserve: string[] = [];
+        for (const letter in reserveLetters) {
+            for (let i = 0; i < reserveLetters[letter]; i++) {
+                reserve.push(letter);
+            }
+        }
+        return reserve;
     }
 
     /*     validatedWord(newLettersPositions: { position: number[]; letter: string }[]): boolean {
