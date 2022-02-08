@@ -1,10 +1,10 @@
 <div class="tile-container">
-   <div *ngFor='let row of gameBoardService.cases'>
+   <div *ngFor='let row of this.boardService.board'>
       <div *ngFor='let tile of row'>
          <app-tile [letter]='tile.getLetter()' [value]='tile.getValue()'></app-tile>
       </div>
    </div>
 </div>
-<div>
+<!--<div>
    <button (click)='this.gameBoardService.addLetterTile(0, 0, "Z")'></button>
-</div>
+</div> -->

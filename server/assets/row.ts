@@ -1,21 +1,3 @@
-export enum Row {
-    A,
-    B,
-    C,
-    D,
-    E,
-    F,
-    G,
-    H,
-    I,
-    J,
-    K,
-    L,
-    M,
-    N,
-    O,
-}
-
 export const RowTest: { [letter: string]: number } = {
     A: 0,
     B: 1,

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DEFAULT_LETTER_SIZE, MAX_LETTER_SIZE, MIN_LETTER_SIZE } from '@app/constants/tile-information';
+import { DEFAULT_LETTER_SIZE, MAX_LETTER_SIZE, MIN_LETTER_SIZE } from '@app/../../../common/constants/tile-information';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({

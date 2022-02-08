@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Vec2 } from '@app/classes/vec2';
-import { CASE_SIZE, DEFAULT_HEIGHT, DEFAULT_WIDTH, NUMBER_OF_CASES, RADIUS_MULTIPLIER } from '@app/constants/board';
-import { LETTER_2X, LETTER_3X, NORMAL, WORD_2X, WORD_3X } from '@app/constants/tile-information';
+import { CASE_SIZE, DEFAULT_HEIGHT, DEFAULT_WIDTH, NUMBER_OF_CASES, RADIUS_MULTIPLIER } from '@app/../../../common/constants/board';
+import { LETTER_2X, LETTER_3X, NORMAL, WORD_2X, WORD_3X } from '@app/../../../common/constants/tile-information';
+import { Vec2 } from '@app/../../../common/vec2';
 
 @Injectable({
     providedIn: 'root',

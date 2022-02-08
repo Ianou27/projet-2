@@ -1,4 +1,4 @@
-import { Vec2 } from './../classes/vec2';
+import { Vec2 } from './../vec2';
 
 export const DEFAULT_LETTER_SIZE = 14;
 export const MAX_LETTER_SIZE = 18;

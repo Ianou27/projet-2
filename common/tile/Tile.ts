@@ -1,5 +1,5 @@
-import { CaseProperty } from './../../../assets/case-property';
-import { letterValue } from './../../../assets/reserve-letters';
+import { CaseProperty } from './../assets/case-property';
+import { letterValue } from './../assets/reserve-letters';
 
 export class Tile {
     private letter: string = '';

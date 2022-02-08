@@ -1,5 +1,6 @@
-import { CaseProperty } from '../../../assets/case-property';
-import { Tile } from './tile';
+/*import { CaseProperty } from './../assets/case-property';
+import { Tile } from './Tile';
+import { expect } from 'chai';
 
 describe('Tile', () => {
     let tile = new Tile(CaseProperty.Normal);
@@ -35,4 +36,4 @@ describe('Tile', () => {
         expect(tile.getLetter()).toEqual(emptyString);
         expect(tile.getValue()).toEqual(emptyValue);
     });
-});
+});*/

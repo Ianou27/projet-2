@@ -1,6 +1,6 @@
 import { PlayerService } from '@app/../../client/src/app/classes/player/player.service';
-import { GameBoardService } from '@app/../../client/src/app/services/game-board/game-board.service';
 import { RowTest } from 'assets/row';
+import { GameBoardService } from './../services/gameBoard.service';
 
 /* declare let require: unknown;
 const fs = require('fs'); */
@@ -13,7 +13,6 @@ export class GameService {
 
     constructor() {
         /* this.dictionary = "Mon dictionnaire"; */
-        /*         this.gameBoard = new GameBoardService(); */
         this.player1 = new PlayerService(this.randomShuffleLetters(), true);
         this.player2 = new PlayerService(this.randomShuffleLetters(), true);
         this.gameBoard = new GameBoardService();
@@ -26,24 +25,6 @@ export class GameService {
 
     randomShuffleLetters(): string[] {
         return [];
-    }
-
-    /*     !placer h8v bon */
-    validatedCommandFormat(commandInformations: string[]) {
-        const command = commandInformations[0];
-        switch (command) {
-            case '!placer': {
-                this.validatedPlaceCommand(commandInformations);
-                break;
-            }
-            /*             case '!passer': {
-                return this.validatedPassCommand(commandInformations);
-            }
-            case '!échanger': {
-                return this.validatedExchangeCommand(commandInformations);
-            } */
-            // No default
-        }
     }
 
     placeWord(row: string, column: number, orientation: string, word: string) {
@@ -60,10 +41,17 @@ export class GameService {
 
     validatedPlaceCommand(commandInformations: string[]): void {
         const positionOrientation = commandInformations[1].split('');
-        const orientation = positionOrientation.pop();
-        const row = positionOrientation.shift();
-        const column = Number(positionOrientation.join(''));
-        const numberLetters = commandInformations[2].length;
+        const row = positionOrientation[0];
+        const numberLetters = commandInformations[1].length;
+        let orientation = '';
+        let column = 0;
+        if (numberLetters === 3) {
+            orientation = positionOrientation[2];
+            column = Number(positionOrientation[1]);
+        } else if (numberLetters === 4) {
+            orientation = positionOrientation[3];
+            column = Number(positionOrientation[1] + positionOrientation[2]);
+        }
 
         const orientationValid: boolean = orientation === 'h' || orientation === 'v';
         const columnValid: boolean = 1 <= column && column <= 15;
@@ -74,8 +62,7 @@ export class GameService {
         const lettersTileHolder: boolean = this.tileHolderContains(commandInformations[2]);
 
         if (containsLineRowOrientation && lettersTileHolder) {
-            // methode pour envoyer message chatService
-            // missingArgument();
+            this.placeWord(row, column, orientation, commandInformations[2]);
         } else {
             // methode pour envoyer message chatService
             // missingArgument();
@@ -90,7 +77,7 @@ export class GameService {
         }
     }
 
-    /*private insideBoardGame(orientation: string, row: string, column: string, numberLetters: number): boolean {
+    /* private insideBoardGame(orientation: string, row: string, column: string, numberLetters: number): boolean {
         if (orientation === 'h') {
         }
         return true;
@@ -145,28 +132,5 @@ export class GameService {
         }
 
         return true;
-    }
-
-    validatedWordDictionary(word: string): boolean {
-        if (word.length < 2 || word.includes('-') || word.includes("'")) return false;
-
-        const dictionaryArray: string[] = JSON.parse(fs.readFileSync('./assets/dictionnary.json')).words;
-        let leftLimit = 0;
-        let rightLimit = dictionaryArray.length - 1;
-        while (leftLimit <= rightLimit) {
-            const middleLimit = leftLimit + Math.floor((rightLimit - leftLimit) / 2);
-
-            // localeCompare helps us know if the word is before(-1), equivalent(0) or after(1)
-            const comparisonResult = word.localeCompare(dictionaryArray[middleLimit], 'en', { sensitivity: 'base' });
-
-            if (comparisonResult < 0) {
-                rightLimit = middleLimit - 1;
-            } else if (comparisonResult > 0) {
-                leftLimit = middleLimit + 1;
-            } else {
-                return true;
-            }
-        }
-        return false;
-    } */
+    }*/
 }

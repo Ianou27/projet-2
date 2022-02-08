@@ -1,17 +1,16 @@
-import { GameService } from '@app/classes/game.service';
 import * as http from 'http';
 import * as io from 'socket.io';
+import { GameManager } from './gameManager.service';
 
 export class SocketManager {
-    private game: GameService;
     private sio: io.Server;
     private room: string = 'serverRoom';
+    private gameManager: GameManager;
     // commandsList et exclamationIndex à mettre dans un fichier de constantes
     private commandsList: string[] = ['!placer', '!echanger', '!passer', '!indice'];
     private commandIndex: number = 0;
     constructor(server: http.Server) {
         this.sio = new io.Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
-        this.game = new GameService();
     }
 
     handleSockets(): void {
@@ -29,7 +28,7 @@ export class SocketManager {
                     const isValid = this.commandVerification(message);
                     socket.emit('commandValidated', isValid);
                     if (isValid) {
-                        this.game.placeWord('A', 2, 'h', 'allo');
+                        this.handleCommand(message.split(''));
                     }
                 } else {
                     const isValid = this.lengthVerification(message) && this.characterVerification(message);
@@ -64,9 +63,14 @@ export class SocketManager {
         }, 1000);
     }
 
+    handleCommand(command: string[]) {
+        this.gameManager.validatedCommandFormat(command);
+    }
+
     private emitTime() {
         this.sio.sockets.emit('clock', new Date().toLocaleTimeString());
     }
+
     lengthVerification(message: string) {
         return message.length > 512 ? false : true;
     }

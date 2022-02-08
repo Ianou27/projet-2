@@ -1,15 +1,9 @@
-import { Injectable } from '@angular/core';
-import { CaseProperty } from './../../../assets/case-property';
-import { Tile } from './../../classes/tile/Tile';
-import { Vec2 } from './../../classes/vec2';
-import { COLUMN_ROWS_NUMBER } from './../../constants/general-constants';
-import { LETTER_2X, LETTER_3X, WORD_2X, WORD_3X } from './../../constants/tile-information';
+import { CaseProperty } from './../../../common/assets/case-property';
+import { COLUMN_ROWS_NUMBER } from './../../../common/constants/general-constants';
+import { LETTER_2X, LETTER_3X, WORD_2X, WORD_3X } from './../../../common/constants/tile-information';
+import { Tile } from './../../../common/tile/Tile';
+import { Vec2 } from './../../../common/vec2';
 
-/* declare var require: any;
-const fs = require('fs'); */
-@Injectable({
-    providedIn: 'root',
-})
 export class GameBoardService {
     cases: Tile[][] = new Array(COLUMN_ROWS_NUMBER);
     constructor() {

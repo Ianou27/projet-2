@@ -1,5 +1,6 @@
-import { GameBoardService } from '@app/services/game-board/game-board.service';
-import { CaseProperty } from './../../../assets/case-property';
+import { expect } from 'chai';
+import { CaseProperty } from './../../../common/assets/case-property';
+import { GameBoardService } from './gameBoard.service';
 
 describe('GameBoard', () => {
     let gameBoard: GameBoardService;
@@ -12,7 +13,7 @@ describe('GameBoard', () => {
         for (const colonne of gameBoard.cases) {
             result += colonne.length;
         }
-        expect(result).toEqual(225);
+        expect(result).equal(225);
     });
 
     it('constructor should construct a gameBoard of 15x15 tiles ', () => {
@@ -20,8 +21,8 @@ describe('GameBoard', () => {
         for (const colonne of gameBoard.cases) {
             result += colonne.length;
         }
-        expect(result).toEqual(225);
-        expect(gameBoard.cases.length).toEqual(15);
+        expect(result).equal(225);
+        expect(gameBoard.cases.length).equal(15);
     });
 
     it('gameBoard should contains 8 tiles with the property wordTriple', () => {
@@ -33,7 +34,7 @@ describe('GameBoard', () => {
                 }
             }
         }
-        expect(result).toEqual(8);
+        expect(result).equal(8);
     });
 
     it('gameBoard should contains 17 tiles with the property wordDouble', () => {
@@ -45,7 +46,7 @@ describe('GameBoard', () => {
                 }
             }
         }
-        expect(result).toEqual(17);
+        expect(result).equal(17);
     });
 
     it('gameBoard should contains 12 tiles with the property letterTriple', () => {
@@ -57,7 +58,7 @@ describe('GameBoard', () => {
                 }
             }
         }
-        expect(result).toEqual(12);
+        expect(result).equal(12);
     });
 
     it('gameBoard should contains 24 tiles with the property letterDouble', () => {
@@ -69,14 +70,14 @@ describe('GameBoard', () => {
                 }
             }
         }
-        expect(result).toEqual(24);
+        expect(result).equal(24);
     });
 
     it('tileContainsLetter should return false if the tile doesnt contain a letter', () => {
         const positionX = 0;
         const positionY = 0;
         const result = gameBoard.tileContainsLetter(positionX, positionY);
-        expect(result).toEqual(false);
+        expect(result).equal(false);
     });
 
     it('tileContainsLetter should return true if the tile contains a letter', () => {
@@ -85,6 +86,6 @@ describe('GameBoard', () => {
         const letter = 'a';
         gameBoard.addLetterTile(positionX, positionY, letter);
         const result = gameBoard.tileContainsLetter(positionX, positionY);
-        expect(result).toEqual(true);
+        expect(result).equal(true);
     });
 });
