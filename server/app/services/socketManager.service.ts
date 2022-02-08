@@ -65,7 +65,7 @@ export class SocketManager {
     }
 
     handleCommand(command: string[]) {
-        this.gameManager.gameList.placeWord('A', 0, 'h', 'Animal');
+        this.gameManager.gameList.placeWord('F', 5, 'h', 'Animal');
         // console.log(this.gameManager.gameList.gameBoard.cases[0][1]);
 
         // this.gameManager.validatedCommandFormat(command);

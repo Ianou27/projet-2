@@ -1,19 +1,19 @@
 import { PlayerService } from '@app/../../client/src/app/classes/player/player.service';
-import { RowTest } from 'assets/row';
 import { letterNumber } from './../../../common/assets/reserve-letters';
+import { RowTest } from './../../assets/row';
 import { GameBoardService } from './../services/gameBoard.service';
 
 export class GameService {
+    gameBoard: GameBoardService;
     private player1: PlayerService;
     private player2: PlayerService;
+    private reserveLetters: string[] = [];
     /* private dictionary: string; */
-    private gameBoard: GameBoardService;
-    private reserveLetters: string[];
 
     constructor() {
         /* this.dictionary = "Mon dictionnaire"; */
-        this.player1 = new PlayerService(this.randomShuffleLetters(), true);
-        this.player2 = new PlayerService(this.randomShuffleLetters(), false);
+        this.player1 = new PlayerService(this.randomLettersInitialisation(), true);
+        this.player2 = new PlayerService(this.randomLettersInitialisation(), false);
         this.gameBoard = new GameBoardService();
         this.reserveLetters = this.initializeReserveLetters();
     }
@@ -21,17 +21,6 @@ export class GameService {
     changeTurnTwoPlayers() {
         this.player1.changeTurn();
         this.player2.changeTurn();
-    }
-
-    randomShuffleLetters(): string[] {
-        const letters: string[] = [];
-        for (let i = 0; i < 7; i++) {
-            const element = this.reserveLetters[Math.floor(Math.random() * this.reserveLetters.length)];
-            const indexElement = this.reserveLetters.indexOf(element);
-            letters.push(element);
-            this.reserveLetters.splice(indexElement, 1);
-        }
-        return letters;
     }
 
     placeWord(row: string, column: number, orientation: string, word: string) {
@@ -84,6 +73,10 @@ export class GameService {
             return this.player2;
         }
     }
+
+    /*     private touchOtherLetters(orientation: string, row: string, column: number, numberLetters: number): boolean {
+        return true;
+    } */
 
     private insideBoardGame(orientation: string, row: string, column: number, numberLetters: number): boolean {
         const cases = this.gameBoard.cases;
@@ -138,16 +131,47 @@ export class GameService {
         return true;
     }
 
+    private getRandomLetterReserve(): string {
+        const reserveLength = this.reserveLetters.length;
+        if (reserveLength === 0) {
+            return '';
+        }
+        const element = this.reserveLetters[Math.floor(Math.random() * this.reserveLetters.length)];
+        const indexElement = this.reserveLetters.indexOf(element);
+        this.reserveLetters.splice(indexElement, 1);
+        return element;
+    }
+
     private initializeReserveLetters(): string[] {
         const reserveLetters = letterNumber;
         const reserve: string[] = [];
-        for (const letter in reserveLetters) {
-            for (let i = 0; i < reserveLetters[letter]; i++) {
+        for (const [letter, number] of Object.entries(reserveLetters)) {
+            for (let i = 0; i < number; i++) {
                 reserve.push(letter);
             }
         }
         return reserve;
     }
+
+    private randomLettersInitialisation(): string[] {
+        const letters: string[] = [];
+        for (let i = 0; i < 7; i++) {
+            letters.push(this.getRandomLetterReserve());
+        }
+        return letters;
+    }
+
+    /*     private firstTurn(): boolean {
+        const cases = this.gameBoard.cases;
+        for (const row of cases) {
+            for (const tile of row) {
+                if (tile.tileContainsLetter()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    } */
 
     /*     validatedWord(newLettersPositions: { position: number[]; letter: string }[]): boolean {
         for (const letter of newLettersPositions) {
