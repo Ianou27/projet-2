@@ -32,7 +32,6 @@ export class GameService {
             letters.push(element);
             this.reserveLetters.splice(indexElement, 1);
         }
-        
         return letters;
     }
 
