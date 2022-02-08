@@ -5,13 +5,13 @@ import { GameManager } from './gameManager.service';
 export class SocketManager {
     private sio: io.Server;
     private room: string = 'serverRoom';
-    private gameManager: GameManager;
     // commandsList et exclamationIndex à mettre dans un fichier de constantes
     private commandsList: string[] = ['!placer', '!echanger', '!passer', '!indice'];
     private commandIndex: number = 0;
     constructor(server: http.Server) {
         this.sio = new io.Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
     }
+    gameManager: GameManager = new GameManager();
 
     handleSockets(): void {
         this.sio.on('connection', (socket) => {
@@ -29,6 +29,7 @@ export class SocketManager {
                     socket.emit('commandValidated', isValid);
                     if (isValid) {
                         this.handleCommand(message.split(''));
+                        socket.emit('modification', this.gameManager.gameList.gameBoard);
                     }
                 } else {
                     const isValid = this.lengthVerification(message) && this.characterVerification(message);
@@ -64,7 +65,9 @@ export class SocketManager {
     }
 
     handleCommand(command: string[]) {
-        this.gameManager.validatedCommandFormat(command);
+        this.gameManager.gameList.placeWord('A', 1, 'h', 'allo');
+
+        // this.gameManager.validatedCommandFormat(command);
     }
 
     private emitTime() {

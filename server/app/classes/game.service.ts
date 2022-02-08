@@ -1,5 +1,5 @@
 import { PlayerService } from '@app/../../client/src/app/classes/player/player.service';
-import { RowTest } from 'assets/row';
+import { RowTest } from './../../assets/row';
 import { GameBoardService } from './../services/gameBoard.service';
 
 /* declare let require: unknown;
@@ -9,7 +9,7 @@ export class GameService {
     private player1: PlayerService;
     private player2: PlayerService;
     /* private dictionary: string; */
-    private gameBoard: GameBoardService;
+    gameBoard: GameBoardService;
 
     constructor() {
         /* this.dictionary = "Mon dictionnaire"; */
