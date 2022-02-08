@@ -8,11 +8,11 @@ export class ChatService {
     
     username ="";
     room="";
-    allRooms="";
+    allRooms:any[]=[];
     roomMessage = '';
     currentRoom ='';
     roomMessages: any[] = [];
-
+    playerJoined:boolean =false;
     constructor(public socketService: SocketClientService) {}
 
     get socketId() {
@@ -28,7 +28,7 @@ export class ChatService {
             this.socketService.connect();
             this.configureBaseSocketFeatures();
             this.updateRooms();
-            console.log("allRooms: ", this.allRooms);
+            
         }
     }
 
@@ -51,13 +51,14 @@ export class ChatService {
         
 
         // Gérer l'événement envoyé par le serveur : afficher le message envoyé par un membre de la salle
-        this.socketService.on('roomMessage', (roomMessage: any) => {
+        this.socketService.on('roomMessage', (roomMessage: string[]) => {
             this.roomMessages =roomMessage;
             
         });
 
-        this.socketService.on('rooms', (rooms: any) => {
+        this.socketService.on('rooms', (rooms: any[]) => {
             this.allRooms =rooms;
+            console.log(rooms);
             
         });
     }
@@ -68,14 +69,20 @@ export class ChatService {
 
     
 
-    updateRooms(){
+    updateRooms(){ 
         this.socketService.send('updateRoom',this.allRooms);
     }
+ 
 
-    joinRoom() {
+    createRoom(username:string, room:string) {
        
-        this.socketService.socket.emit('joinRoom',this.username,this.room);
+        this.socketService.socket.emit('createRoom',username,room);
+       
         
+    }
+
+    joinRoom(username:string, room:string){
+        this.socketService.socket.emit('joinRoom',username,room);
     }
   
     sendToRoom() {

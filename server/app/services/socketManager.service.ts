@@ -7,9 +7,10 @@ export class SocketManager {
 
     roomMessages:any={
        
-    };
+    }; 
 
-    rooms:string[]=[];
+    rooms:any[]=[];
+  
     // commandsList et exclamationIndex à mettre dans un fichier de constantes
     private commandsList: string[] = ['!placer', '!echanger', '!passer', '!indice'];
     private commandIndex: number = 0;
@@ -26,7 +27,7 @@ export class SocketManager {
             socket.on('validate', (message: string) => {
                 if (message === undefined || message === null) return;
                 if (message.charAt(0) === '!') {
-                    socket.emit('commandValidated', this.commandVerification(message));
+                    socket.emit('commandValidated', this.commandVerification(message)); 
                 } else {
                     const isValid = this.lengthVerification(message) && this.characterVerification(message);
                     socket.emit('wordValidated', isValid);
@@ -34,17 +35,54 @@ export class SocketManager {
             });
 
 
-            socket.on('joinRoom', (username,room:string) => {
+            socket.on('createRoom', (username:string,room:string) => {
                 const user ={
                     username,
                     id:socket.id,
                     room
                 }
                 this.users.push(user);
+                this.roomMessages[room]=[]; 
+
+                const roomObj={
+                    "player1":username,
+                    "player2":'',
+
+                };
+                this.rooms.push(roomObj);
                 console.log("----------");
                 this.users.forEach(element => console.log(element));
-
+            
                 socket.join(room);
+                
+              
+              
+            });
+
+            socket.on('joinRoom', (username:string,roomObj:any) => {
+                
+                this.rooms.forEach((element:any) =>{
+    
+                    if(roomObj.player1 === element.player1){
+                        let room= roomObj.player1;
+                        if (element.player2.length ===0){
+                            const user ={
+                                username,
+                                id:socket.id,
+                                room
+                            }
+                            this.users.push(user);
+                            element.player2= username;
+                            console.log(element);
+                            socket.join(room);
+                            
+                        }
+
+                    }
+                   
+                });
+
+             
             });
 
             socket.on('roomMessage', (message: string) => {
@@ -59,11 +97,11 @@ export class SocketManager {
                         
                   
                     });
-                    if(!(this.roomMessages.hasOwnProperty(currentRoom))){
+                   
                      
-                        this.roomMessages[currentRoom]=[]; 
+                        
 
-                    }
+                    
                     
                 const roomSockets = this.sio.sockets.adapter.rooms.get(currentRoom);
                 // Seulement un membre de la salle peut envoyer un message aux autres
@@ -75,7 +113,7 @@ export class SocketManager {
                 }
             });
             socket.on('updateRoom', (a) => {
-                this.updateRoom();
+              
                 socket.emit('rooms',this.rooms);
 
             });
@@ -90,7 +128,7 @@ export class SocketManager {
       
     }
 
-    
+   
     lengthVerification(message: string) {
         return message.length > 512 ? false : true;
     }
@@ -113,24 +151,6 @@ export class SocketManager {
         
     }
 
-    updateRoom(){
-        let isIn=false;
-        this.users.forEach(user => {
-            this.rooms.forEach(room => {
-                if(user.room === room){
-                    isIn=true;
-                }
-            
-            })
-            if(!isIn){
-                this.rooms.push(user.room);
-            }
-        })
- 
-
-        console.log(this.rooms);
-       
-       
-}
+   
 }
   
