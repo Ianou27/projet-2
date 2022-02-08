@@ -58,7 +58,12 @@ export class ChatService {
 
         this.socketService.on('rooms', (rooms: any[]) => {
             this.allRooms =rooms;
-            console.log(rooms);
+            
+        });
+
+        this.socketService.on('salut', (testa:boolean) => {
+            this.playerJoined=testa;
+            console.log("YOUPIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
             
         });
     }
@@ -77,21 +82,22 @@ export class ChatService {
     createRoom(username:string, room:string) {
        
         this.socketService.socket.emit('createRoom',username,room);
-       
+        this.updateRooms();
         
     }
 
     joinRoom(username:string, room:string){
         this.socketService.socket.emit('joinRoom',username,room);
+        this.playerJoined=true;
     }
-  
+   
     sendToRoom() {
         this.socketService.send('roomMessage', this.roomMessage);
         this.roomMessage = '';
     }
 
     messageLengthError() {
-        
+         
     }
 
     commandError(): void {

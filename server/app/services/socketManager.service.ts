@@ -6,9 +6,9 @@ export class SocketManager {
     users:any[]=[] ;
 
     roomMessages:any={
-       
+        
     }; 
-
+ 
     rooms:any[]=[];
   
     // commandsList et exclamationIndex à mettre dans un fichier de constantes
@@ -23,7 +23,7 @@ export class SocketManager {
             console.log(`Connexion par l'utilisateur avec id : ${socket.id}`);
             // message initial
             
-
+ 
             socket.on('validate', (message: string) => {
                 if (message === undefined || message === null) return;
                 if (message.charAt(0) === '!') {
@@ -58,7 +58,7 @@ export class SocketManager {
               
               
             });
-
+            
             socket.on('joinRoom', (username:string,roomObj:any) => {
                 
                 this.rooms.forEach((element:any) =>{
@@ -76,14 +76,16 @@ export class SocketManager {
                             console.log(element);
                             socket.join(room);
                             
+                          
+                            this.sio.to(roomObj.player1).emit('salut', "bonsoir");
                         }
 
                     }
                    
                 });
 
-             
-            });
+              
+            });  
 
             socket.on('roomMessage', (message: string) => {
                 let username ='';
@@ -128,7 +130,23 @@ export class SocketManager {
       
     }
 
-   
+
+    getID(username:string):any{
+        this.users.forEach(user => {
+            if(username ===user.id){
+                return user.id;
+            } 
+
+            
+      
+        });
+
+    }
+
+    joined(){
+        return true;
+        
+    }
     lengthVerification(message: string) {
         return message.length > 512 ? false : true;
     }
