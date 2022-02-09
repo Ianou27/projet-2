@@ -25,16 +25,21 @@ export class SocketManager {
             socket.on('validate', (message: string) => {
                 if (message === undefined || message === null) return;
                 if (message.charAt(0) === '!') {
-                    const isValid = this.commandVerification(message);
-                    socket.emit('commandValidated', isValid);
-                    if (isValid) {
+                    const command = this.commandVerification(message);
+                    socket.emit('commandValidated', command);
+                    /* if (isValid) {
                         this.handleCommand(message.split(' '));
                         socket.emit('modification', this.gameManager.gameList.gameBoard.cases);
-                    }
+                    }*/
                 } else {
                     const isValid = this.lengthVerification(message) && this.characterVerification(message);
                     socket.emit('wordValidated', isValid);
                 }
+            });
+
+            socket.on('commandFormatVerification', (command: string) => {
+                const commandFormatValid = this.commandFormatValid(command.split(' '));
+                socket.emit('commandFormatValidated', commandFormatValid);
             });
 
             socket.on('broadcastAll', (message: string) => {
@@ -64,14 +69,18 @@ export class SocketManager {
         }, 1000);
     }
 
-    handleCommand(command: string[]) {
-        // this.gameManager.gameList.placeWord('F', 5, 'h', 'Animal');
-        this.gameManager.gameList.placeWord(command);
-        // console.log(this.gameManager.gameList.gameBoard.cases[0][1]);
-        /* if (!this.gameManager.validatedCommandFormat(command)) {
-            // envoie un message syntaxe non valide
-        }*/
-        // console.log(this.gameManager.validatedCommandFormat(command));
+    commandVerification(message: string): string {
+        const messageArray = message.split(' ');
+        for (const command of this.commandsList) {
+            if (command === messageArray[this.commandIndex]) {
+                return command;
+            }
+        }
+        return 'notRecognized';
+    }
+
+    commandFormatValid(command: string[]) {
+        return this.gameManager.validatedCommandFormat(command);
     }
 
     private emitTime() {
@@ -83,10 +92,5 @@ export class SocketManager {
     }
     characterVerification(message: string): boolean {
         return message.trim().length === 0 ? false : true;
-    }
-
-    commandVerification(message: string): boolean {
-        const messageArray = message.split(' ');
-        return this.commandsList.includes(messageArray[this.commandIndex]) ? true : false;
     }
 }

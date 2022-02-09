@@ -16,6 +16,7 @@ export class ChatService {
 
     broadcastMessage = '';
     serverMessages: string[] = [];
+    lastCommandProcessed: string;
 
     roomMessage = '';
     roomMessages: string[] = [];
@@ -56,10 +57,17 @@ export class ChatService {
             isValid ? this.broadcastMessageToAll() : this.messageLengthError();
         });
 
-        this.socketService.on('commandValidated', (isValid: boolean) => {
-            isValid ? this.broadcastMessageToAll() : this.commandError();
-            // this.socketService.send()
+        this.socketService.on('commandValidated', (command: string) => {
+            //this.lastCommandProcessed = this.broadcastMessage;
+            if (command === '!placer')
+                this.socketService.send('commandFormatVerification', this.broadcastMessage)
+            isValid ? this.socketService.send('commandFormatVerification', this.broadcastMessage) : this.commandError();
+            console.log(this.lastCommandProcessed);
         });
+
+        this.socketService.on('commandFormatValidated', (isValid: boolean) => {
+            isValid ? this.socketService.send('boardVerification') : 
+        })
 
         // Gérer l'événement envoyé par le serveur : afficher le message envoyé par un client connecté
         this.socketService.on('massMessage', (broadcastMessage: string) => {

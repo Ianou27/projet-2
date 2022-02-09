@@ -1,6 +1,4 @@
 import { GameService } from '@app/classes/game.service';
-import { COLUMN_ROWS_NUMBER } from '@common/constants/general-constants';
-import { RowTest } from './../../assets/row';
 
 export class GameManager {
     gameList: GameService;
@@ -9,12 +7,11 @@ export class GameManager {
         this.gameList = new GameService();
     }
 
-    validatedCommandFormat(commandInformations: string[]): void {
+    validatedCommandFormat(commandInformations: string[]): boolean {
         const command = commandInformations[0];
         switch (command) {
             case '!placer': {
-                // if (!this.validatedPlaceCommandFormat(commandInformations)) return false;
-                break;
+                return this.validatedPlaceCommandFormat(commandInformations);
             }
             /*             case '!passer': {
                 return this.validatedPassCommand(commandInformations);
@@ -27,29 +24,15 @@ export class GameManager {
     }
 
     validatedPlaceCommandFormat(commandInformations: string[]): boolean {
-        const positionOrientation = commandInformations[1].split('');
-        const row = positionOrientation[0];
-        const numberLetters = commandInformations[1].length;
-        let orientation = '';
-        let column = 0;
-        if (numberLetters === 3) {
-            orientation = positionOrientation[2];
-            column = Number(positionOrientation[1]);
-        } else if (numberLetters === 4) {
-            orientation = positionOrientation[3];
-            column = Number(positionOrientation[1] + positionOrientation[2]);
+        if (commandInformations.length !== 3) {
+            return false;
         }
-        const oneLetterValid: boolean = numberLetters === 1;
-        const argumentsValid: boolean = this.placePositionOrientationVerification(orientation, row, column);
+        const command: string = commandInformations.join(' ');
+        const oneLetterValidWithoutOrientation = /^!placer ([A-O][1-9]|[A-O][1][0-5]) [a-z A-Z]$/;
+        const oneLetterValidWithOrientation = /^!placer ([A-O][1-9][hv]|[A-O][1][0-5][hv]) [a-z A-Z]$/;
+        const lettersValidPattern = /^!placer ([A-O][1-9][hv]|[A-O][1][0-5][hv]) [a-z A-Z]+$/;
 
-        return oneLetterValid && argumentsValid;
-    }
-
-    private placePositionOrientationVerification(orientation: string, row: string, column: number) {
-        if (orientation !== 'h' && orientation !== 'v') return false;
-        if (column <= 1 || column >= COLUMN_ROWS_NUMBER) return false;
-        if (RowTest[row] === undefined) return false;
-        return true;
+        return oneLetterValidWithoutOrientation.test(command) || oneLetterValidWithOrientation.test(command) || lettersValidPattern.test(command);
     }
 
     /* validatedWordDictionary(word: string): boolean {
