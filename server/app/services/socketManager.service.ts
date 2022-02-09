@@ -28,7 +28,7 @@ export class SocketManager {
                     const isValid = this.commandVerification(message);
                     socket.emit('commandValidated', isValid);
                     if (isValid) {
-                        this.handleCommand(message.split(''));
+                        this.handleCommand(message.split(' '));
                         socket.emit('modification', this.gameManager.gameList.gameBoard.cases);
                     }
                 } else {
@@ -66,6 +66,7 @@ export class SocketManager {
 
     handleCommand(command: string[]) {
         // this.gameManager.gameList.placeWord('F', 5, 'h', 'Animal');
+        this.gameManager.gameList.placeWord(command);
         // console.log(this.gameManager.gameList.gameBoard.cases[0][1]);
         /* if (!this.gameManager.validatedCommandFormat(command)) {
             // envoie un message syntaxe non valide

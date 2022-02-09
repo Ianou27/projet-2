@@ -58,6 +58,7 @@ export class ChatService {
 
         this.socketService.on('commandValidated', (isValid: boolean) => {
             isValid ? this.broadcastMessageToAll() : this.commandError();
+            // this.socketService.send()
         });
 
         // Gérer l'événement envoyé par le serveur : afficher le message envoyé par un client connecté

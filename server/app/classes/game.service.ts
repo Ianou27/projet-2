@@ -25,18 +25,31 @@ export class GameService {
         this.player2.changeTurn();
     }
 
-    placeWord(row: string, column: number, orientation: string, word: string) {
-        const letters = word.split('');
+    placeWord(commandInformations: string[]): boolean {
+        const positionOrientation = commandInformations[1].split('');
+        const row = positionOrientation[0];
+        const numberLetters = commandInformations[1].length;
+        let orientation = '';
+        let column = 0;
+        if (numberLetters === 3) {
+            orientation = positionOrientation[2];
+            column = Number(positionOrientation[1]);
+        } else if (numberLetters === 4) {
+            orientation = positionOrientation[3];
+            column = Number(positionOrientation[1] + positionOrientation[2]);
+        }
+        const letters = commandInformations[2].split('');
         switch (orientation) {
             case 'h': {
                 this.placeWordHorizontal(row, column, letters);
-                break;
+                return true;
             }
             case 'v': {
                 this.placeWordVertical(row, column, letters);
-                break;
+                return true;
             }
         }
+        return false;
     }
 
     validatedPlaceCommandBoard(commandInformations: string[]): boolean {
