@@ -23,7 +23,7 @@
                             <td>
                                 <mat-form-field appearance="fill">
                                     <mat-label>Joueur 1</mat-label>
-                                    <input matInput placeHolder="Votre nom" formControlName="name" />
+                                    <input matInput [(ngModel)]="this.name"  placeHolder="Votre nom" formControlName="name" />
                                     <mat-hint align="end">Minimum 3 lettres</mat-hint>
                                     <mat-error *ngIf="myError('name', 'required')">Veuillez entrer un nom</mat-error>
                                     <mat-error *ngIf="myError('name', 'minLength')">Veuillez entrer un nom d'au moins 3 lettre</mat-error>
@@ -53,13 +53,15 @@
                     </form>
                     <div mat-dialog-actions id="confirm-button">
                         <button
+                            (click)= "createRoom()"
                             mat-raised-button
                             color="primary"
                             [disabled]="form.invalid"
                             [mat-dialog-close]
                             cdkFocusInitial
                             mat-dialog-close="true"
-                        >
+                           
+                        >   
                             Confirmer
                         </button>
                     </div>
@@ -76,7 +78,7 @@
                             <h2>Nom du joueur :</h2>
                             <mat-form-field>
                                 <mat-label>Joueur 1</mat-label>
-                                <input matInput placeHolder="Votre nom" formControlName="name" />
+                                <input matInput [(ngModel)]="this.name" placeHolder="Votre nom" formControlName="name" />
                                 <mat-hint align="end">Minimum 3 lettres</mat-hint>
                                 <mat-error *ngIf="myError('name', 'required')">Veuillez entrer un nom</mat-error>
                                 <mat-error *ngIf="myError('name', 'minLength')">Veuillez entrer un nom d'au moins 3 lettre</mat-error>
@@ -98,7 +100,7 @@
                         </mat-form-field>
                     </form>
                     <div mat-dialog-actions id="confirm-button">
-                        <button mat-raised-button color="primary" [disabled]="form.invalid" [mat-dialog-close] cdkFocusInitial (click)="openWait()">
+                        <button mat-raised-button color="primary" [disabled]="form.invalid" [mat-dialog-close] cdkFocusInitial  (click)= "createRoom()">
                             Confirmer
                         </button>
                     </div>
@@ -113,31 +115,46 @@
                 </marquee>
             </mat-toolbar>
             <div>
-                <mat-accordion multi>
-                    <mat-expansion-panel>
-                        <mat-expansion-panel-header>
-                            <mat-panel-title>
+                <mat-accordion *ngFor="let room of this.chatService.allRooms" multi>
+                    <div *ngIf="room.player2===''" >
+                       
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
                                 <mat-icon>people</mat-icon>
-                                Room 1
+                                {{room.player1}}
                             </mat-panel-title>
                             <mat-panel-description> Nom utilisateur </mat-panel-description>
                         </mat-expansion-panel-header>
                         <h3>Détails de la salle:</h3>
-                        <p>Nom de l'adversaire:</p>
-                        <p>Durée des tours:</p>
-                        <p>Mode je jeu:</p>
-                        <p>Dictionnaire:</p>
+                        <p>Nom de l'adversaire: {{room.player1}}</p>
+                        <p>Durée des tours: 1 minute</p>
+                        <p>Mode je jeu: classique</p>
+                        <p>Dictionnaire: classique</p>
+                       
                         <mat-card id="card">
+                            <form  [formGroup]="form">
                             <mat-form-field appearance="fill">
-                                <input matInput placeHolder="Votre nom" formControlName="name" />
+                                <input matInput [(ngModel)]="this.name" placeHolder="Votre nom" formControlName="name" />
                                 <mat-hint align="end">Minimum 3 lettres</mat-hint>
                                 <mat-error *ngIf="myError('name', 'required')">Veuillez entrer un nom</mat-error>
                                 <mat-error *ngIf="myError('name', 'minLength')">Veuillez entrer un nom d'au moins 3 lettres</mat-error>
                                 <mat-error *ngIf="myError('name', 'pattern')">Pas de chiffres et/ou caractères spéciaux</mat-error>
                             </mat-form-field>
-                            <button mat-raised-button color="primary">Rejoindre</button>
+                            </form>
+                            <button 
+                            
+                            (click)= "this.chatService.joinRoom(this.name,room)"
+                            mat-raised-button
+                            color="primary"
+                            [disabled]="form.invalid"
+                            [mat-dialog-close]
+                            cdkFocusInitial
+                            mat-dialog-close="true"
+                            >Rejoindre</button>
                         </mat-card>
                     </mat-expansion-panel>
+                    </div>
                 </mat-accordion>
             </div>
         </mat-tab>
