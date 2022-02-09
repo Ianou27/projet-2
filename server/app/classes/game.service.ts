@@ -8,14 +8,16 @@ export class GameService {
     private player1: PlayerService;
     private player2: PlayerService;
     private reserveLetters: string[] = [];
+    private firstTurn: boolean;
     /* private dictionary: string; */
 
     constructor() {
         /* this.dictionary = "Mon dictionnaire"; */
-        this.player1 = new PlayerService(this.randomLettersInitialisation(), true);
-        this.player2 = new PlayerService(this.randomLettersInitialisation(), false);
+        this.player1 = new PlayerService(this.randomLettersInitialization(), true);
+        this.player2 = new PlayerService(this.randomLettersInitialization(), false);
         this.gameBoard = new GameBoardService();
         this.reserveLetters = this.initializeReserveLetters();
+        this.firstTurn = true;
     }
 
     changeTurnTwoPlayers() {
@@ -27,15 +29,17 @@ export class GameService {
         const letters = word.split('');
         switch (orientation) {
             case 'h': {
-                for (let i = 0; i < letters.length; i++) {
-                    this.gameBoard.addLetterTile(column + i, RowTest[row], letters[i]);
-                }
+                this.placeWordHorizontal(row, column, letters);
+                break;
+            }
+            case 'v': {
+                this.placeWordVertical(row, column, letters);
                 break;
             }
         }
     }
 
-    validatedPlaceCommand(commandInformations: string[]): void {
+    validatedPlaceCommandBoard(commandInformations: string[]): boolean {
         const positionOrientation = commandInformations[1].split('');
         const row = positionOrientation[0];
         const numberLetters = commandInformations[1].length;
@@ -48,22 +52,12 @@ export class GameService {
             orientation = positionOrientation[3];
             column = Number(positionOrientation[1] + positionOrientation[2]);
         }
+        const insideBoard: boolean = this.insideBoardGame(orientation, row, column, numberLetters);
+        const firstWordCondition = this.firstTurn && this.firstWordTouchCenter(orientation, row, column, numberLetters);
+        const nextWordCondition = this.wordHasAdjacent(orientation, row, column, numberLetters);
+        const tileHolderContains = this.tileHolderContains(commandInformations[2]);
 
-        const orientationValid: boolean = orientation === 'h' || orientation === 'v';
-        const columnValid: boolean = 1 <= column && column <= 15;
-        const rowValid: boolean = row === undefined ? false : RowTest[row] !== undefined;
-        const oneLetterValid: boolean = numberLetters === 1 && columnValid && rowValid;
-
-        const validLineRowOrientation: boolean = (orientationValid && columnValid && rowValid) || oneLetterValid;
-        const lettersTileHolder: boolean = this.tileHolderContains(commandInformations[2]);
-        const insideBoardGame: boolean = this.insideBoardGame(orientation, row, column, numberLetters);
-
-        if (validLineRowOrientation && lettersTileHolder && insideBoardGame) {
-            this.placeWord(row, column, orientation, commandInformations[2]);
-        } else {
-            // methode pour envoyer message chatService
-            // missingArgument();
-        }
+        return insideBoard && (firstWordCondition || nextWordCondition) && tileHolderContains;
     }
 
     playerTurn(): PlayerService {
@@ -74,9 +68,54 @@ export class GameService {
         }
     }
 
-    /*     private touchOtherLetters(orientation: string, row: string, column: number, numberLetters: number): boolean {
+    private surroundingRowColumns(rowColumn: number, incrementation: boolean): number {
+        if (incrementation && rowColumn < 13) {
+            return rowColumn++;
+        } else if (rowColumn > 1) {
+            return rowColumn--;
+        }
+        return rowColumn;
+    }
+
+    private letterHasAdjacent(row: number, column: number): boolean {
+        const cases = this.gameBoard.cases;
+        const haveTile: boolean = cases[row][column].tileContainsLetter();
+        const haveTileUp: boolean = cases[this.surroundingRowColumns(row, false)][column].tileContainsLetter();
+        const haveTileDown: boolean = cases[this.surroundingRowColumns(row, true)][column].tileContainsLetter();
+        const haveTileLeft: boolean = cases[row][this.surroundingRowColumns(column, false)].tileContainsLetter();
+        const haveTileRight: boolean = cases[row][this.surroundingRowColumns(column, true)].tileContainsLetter();
+        if (haveTile || haveTileUp || haveTileDown || haveTileLeft || haveTileRight) {
+            return true;
+        }
+        return false;
+    }
+
+    private wordHasAdjacent(orientation: string, row: string, column: number, numberLetters: number): boolean {
+        const cases = this.gameBoard.cases;
+        let rowNumber = RowTest[row];
+        let columnNumber = column - 1;
+        let numberLettersToPlace = numberLetters;
+        if (orientation === 'h') {
+            while (numberLettersToPlace > 0) {
+                if (this.letterHasAdjacent(rowNumber, columnNumber)) {
+                    return true;
+                } else if (!cases[rowNumber][columnNumber].tileContainsLetter()) {
+                    numberLettersToPlace--;
+                }
+                columnNumber++;
+            }
+        } else if (orientation === 'v') {
+            while (numberLettersToPlace > 0) {
+                if (this.letterHasAdjacent(rowNumber, columnNumber)) {
+                    return true;
+                } else if (!cases[rowNumber][columnNumber].tileContainsLetter()) {
+                    numberLettersToPlace--;
+                }
+                rowNumber++;
+            }
+        }
         return true;
-    } */
+    }
 
     private insideBoardGame(orientation: string, row: string, column: number, numberLetters: number): boolean {
         const cases = this.gameBoard.cases;
@@ -153,7 +192,19 @@ export class GameService {
         return reserve;
     }
 
-    private randomLettersInitialisation(): string[] {
+    private placeWordHorizontal(row: string, column: number, letters: string[]) {
+        for (let i = 0; i < letters.length; i++) {
+            this.gameBoard.addLetterTile(column + i, RowTest[row], letters[i]);
+        }
+    }
+
+    private placeWordVertical(row: string, column: number, letters: string[]) {
+        for (let i = 0; i < letters.length; i++) {
+            this.gameBoard.addLetterTile(column, RowTest[row] + i, letters[i]);
+        }
+    }
+
+    private randomLettersInitialization(): string[] {
         const letters: string[] = [];
         for (let i = 0; i < 7; i++) {
             letters.push(this.getRandomLetterReserve());
@@ -161,42 +212,24 @@ export class GameService {
         return letters;
     }
 
-    /*     private firstTurn(): boolean {
-        const cases = this.gameBoard.cases;
-        for (const row of cases) {
-            for (const tile of row) {
-                if (tile.tileContainsLetter()) {
-                    return false;
+    private firstWordTouchCenter(orientation: string, row: string, column: number, numberLetters: number): boolean {
+        let letterPlacement;
+        const rowNumber = Number(RowTest[row]);
+        if (orientation === 'h') {
+            for (let i = 0; i < numberLetters; i++) {
+                letterPlacement = column + i;
+                if (letterPlacement === 8) {
+                    return true;
+                }
+            }
+        } else if (orientation === 'v') {
+            for (let i = 0; i < numberLetters; i++) {
+                letterPlacement = rowNumber + i;
+                if (letterPlacement === 8) {
+                    return true;
                 }
             }
         }
-        return true;
-    } */
-
-    /*     validatedWord(newLettersPositions: { position: number[]; letter: string }[]): boolean {
-        for (const letter of newLettersPositions) {
-            const position = letter.position;
-            if (this.gameBoard.tileContainsLetter(position)) {
-                return false;
-            }
-
-            const positionUp = [];
-            positionUp[0] = letter.position[0];
-            positionUp[1] = letter.position[0] - 1;
-
-            const positionDown = [];
-            positionDown[0] = letter.position[0];
-            positionDown[1] = letter.position[0] + 1;
-
-            const positionLeft = [];
-            positionLeft[0] = letter.position[0] - 1;
-            positionLeft[1] = letter.position[0];
-
-            const positionRight = [];
-            positionRight[0] = letter.position[0] + 1;
-            positionRight[1] = letter.position[0];
-        }
-
-        return true;
-    }*/
+        return false;
+    }
 }
