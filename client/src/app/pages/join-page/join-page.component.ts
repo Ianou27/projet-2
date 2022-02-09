@@ -26,7 +26,7 @@ export class JoinPageComponent implements OnInit {
 
         });
 
-        this.chatService.connect();
+      
     }
     myError = (controlName: string, errorName: string) => {
         // eslint-disable-next-line no-invalid-this
