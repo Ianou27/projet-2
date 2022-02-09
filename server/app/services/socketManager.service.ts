@@ -37,9 +37,19 @@ export class SocketManager {
                 }
             });
 
-            socket.on('commandFormatVerification', (command: string) => {
-                const commandFormatValid = this.commandFormatValid(command.split(' '));
-                socket.emit('commandFormatValidated', commandFormatValid);
+            socket.on('placeFormatVerification', (command: string) => {
+                const commandFormatValid = this.placeFormatValid(command.split(' '));
+                socket.emit('placeFormatValidated', commandFormatValid);
+            });
+
+            socket.on('boardVerification', (command: string) => {
+                const isValid = this.placeBoardValid(command.split(' '));
+                socket.emit('placeBoardValidated', isValid);
+            });
+
+            socket.on('placeWord', (command: string) => {
+                this.placeWord(command.split(' '));
+                socket.emit('modification', this.gameManager.gameList.gameBoard.cases);
             });
 
             socket.on('broadcastAll', (message: string) => {
@@ -69,6 +79,14 @@ export class SocketManager {
         }, 1000);
     }
 
+    placeWord(command: string[]) {
+        this.gameManager.gameList.placeWord(command);
+    }
+
+    placeBoardValid(command: string[]): boolean {
+        return this.gameManager.gameList.validatedPlaceCommandBoard(command);
+    }
+
     commandVerification(message: string): string {
         const messageArray = message.split(' ');
         for (const command of this.commandsList) {
@@ -79,8 +97,8 @@ export class SocketManager {
         return 'notRecognized';
     }
 
-    commandFormatValid(command: string[]) {
-        return this.gameManager.validatedCommandFormat(command);
+    placeFormatValid(command: string[]) {
+        return this.gameManager.validatedPlaceCommandFormat(command);
     }
 
     private emitTime() {

@@ -7,7 +7,7 @@ export class GameManager {
         this.gameList = new GameService();
     }
 
-    validatedCommandFormat(commandInformations: string[]): boolean {
+    /*     validatedCommandFormat(commandInformations: string[]): boolean {
         const command = commandInformations[0];
         switch (command) {
             case '!placer': {
@@ -18,10 +18,10 @@ export class GameManager {
             }
             case '!échanger': {
                 return this.validatedExchangeCommand(commandInformations);
-            } */
+            }
             // No default
         }
-    }
+    } */
 
     validatedPlaceCommandFormat(commandInformations: string[]): boolean {
         if (commandInformations.length !== 3) {

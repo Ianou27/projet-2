@@ -16,7 +16,7 @@ export class ChatService {
 
     broadcastMessage = '';
     serverMessages: string[] = [];
-    lastCommandProcessed: string;
+    // lastCommandProcessed: string;
 
     roomMessage = '';
     roomMessages: string[] = [];
@@ -58,16 +58,30 @@ export class ChatService {
         });
 
         this.socketService.on('commandValidated', (command: string) => {
-            //this.lastCommandProcessed = this.broadcastMessage;
-            if (command === '!placer')
-                this.socketService.send('commandFormatVerification', this.broadcastMessage)
-            isValid ? this.socketService.send('commandFormatVerification', this.broadcastMessage) : this.commandError();
-            console.log(this.lastCommandProcessed);
+            // this.lastCommandProcessed = this.broadcastMessage;
+            if (command === '!placer') this.socketService.send('placeFormatVerification', this.broadcastMessage);
+            /*
+            Il y aura les autres conditions ici
+            */
         });
 
-        this.socketService.on('commandFormatValidated', (isValid: boolean) => {
-            isValid ? this.socketService.send('boardVerification') : 
-        })
+        this.socketService.on('placeFormatValidated', (isValid: boolean) => {
+            if (isValid) {
+                this.socketService.send('boardVerification', this.broadcastMessage);
+            } else {
+                this.syntaxError();
+            }
+            // isValid ? this.socketService.send('boardVerification', this.broadcastMessage) : this.syntaxError();
+        });
+
+        this.socketService.on('placeBoardValidated', (isValid: boolean) => {
+            if (isValid) {
+                this.socketService.send('placeWord', this.broadcastMessage);
+            } else {
+                this.impossibleCommand();
+            }
+            // isValid ? this.socketService.send('placeWord', this.broadcastMessage) : this.impossibleCommand();
+        });
 
         // Gérer l'événement envoyé par le serveur : afficher le message envoyé par un client connecté
         this.socketService.on('massMessage', (broadcastMessage: string) => {
@@ -75,14 +89,24 @@ export class ChatService {
         });
 
         this.socketService.on('modification', (updatedBoard: Tile[][]) => {
-            console.log('Received');
             this.boardService.board = updatedBoard;
+            this.broadcastMessageToAll();
         });
 
         // Gérer l'événement envoyé par le serveur : afficher le message envoyé par un membre de la salle
         this.socketService.on('roomMessage', (roomMessage: string) => {
             this.roomMessages.push(roomMessage);
         });
+    }
+
+    impossibleCommand() {
+        this.serverMessages.push('Commande impossible');
+        this.broadcastMessage = '';
+    }
+
+    syntaxError() {
+        this.serverMessages.push('Erreur de syntaxe');
+        this.broadcastMessage = '';
     }
 
     sendWordValidation() {

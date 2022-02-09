@@ -1,28 +1,24 @@
-import { PlayerService } from '@app/../../client/src/app/classes/player/player.service';
-import { letterNumber } from './../../../common/assets/reserve-letters';
-import { RowTest } from './../../assets/row';
-import { GameBoardService } from './../services/gameBoard.service';
+import { RowTest } from 'assets/row';
+import { PlayerService } from './../../../client/src/app/classes/player/player.service';
+import { GameService } from './game.service';
 
-export class GameService {
-    gameBoard: GameBoardService;
-    firstTurn: boolean;
-    private player1: PlayerService;
-    private player2: PlayerService;
-    private reserveLetters: string[] = [];
-    /* private dictionary: string; */
+export class PlacementCommand {
+    game: GameService;
 
-    constructor() {
-        /* this.dictionary = "Mon dictionnaire"; */
-        this.player1 = new PlayerService(this.randomLettersInitialization(), true);
-        this.player2 = new PlayerService(this.randomLettersInitialization(), false);
-        this.gameBoard = new GameBoardService();
-        this.reserveLetters = this.initializeReserveLetters();
-        this.firstTurn = true;
+    constructor(game: GameService) {
+        this.game = game;
     }
 
-    changeTurnTwoPlayers() {
-        this.player1.changeTurn();
-        this.player2.changeTurn();
+    validatedPlaceCommandFormat(commandInformations: string[]): boolean {
+        if (commandInformations.length !== 3) {
+            return false;
+        }
+        const command: string = commandInformations.join(' ');
+        const oneLetterValidWithoutOrientation = /^!placer ([A-O][1-9]|[A-O][1][0-5]) [a-z A-Z]$/;
+        const oneLetterValidWithOrientation = /^!placer ([A-O][1-9][hv]|[A-O][1][0-5][hv]) [a-z A-Z]$/;
+        const lettersValidPattern = /^!placer ([A-O][1-9][hv]|[A-O][1][0-5][hv]) [a-z A-Z]+$/;
+
+        return oneLetterValidWithoutOrientation.test(command) || oneLetterValidWithOrientation.test(command) || lettersValidPattern.test(command);
     }
 
     placeWord(commandInformations: string[]): boolean {
@@ -33,10 +29,10 @@ export class GameService {
         let column = 0;
         if (numberLetters === 3) {
             orientation = positionOrientation[2];
-            column = Number(positionOrientation[1]) - 1;
+            column = Number(positionOrientation[1]);
         } else if (numberLetters === 4) {
             orientation = positionOrientation[3];
-            column = Number(positionOrientation[1] + positionOrientation[2]) - 1;
+            column = Number(positionOrientation[1] + positionOrientation[2]);
         }
         const letters = commandInformations[2].split('');
         switch (orientation) {
@@ -66,32 +62,56 @@ export class GameService {
             column = Number(positionOrientation[1] + positionOrientation[2]);
         }
         const insideBoard: boolean = this.insideBoardGame(orientation, row, column, numberLetters);
-        // const firstWordCondition = this.firstTurn && this.firstWordTouchCenter(orientation, row, column, numberLetters);
-        // const nextWordCondition = this.wordHasAdjacent(orientation, row, column, numberLetters);
-        // const tileHolderContains = this.tileHolderContains(commandInformations[2]);
+        const firstWordCondition = this.game.firstTurn && this.firstWordTouchCenter(orientation, row, column, numberLetters);
+        const nextWordCondition = this.wordHasAdjacent(orientation, row, column, numberLetters);
+        const tileHolderContains = this.tileHolderContains(commandInformations[2]);
 
-        return insideBoard; // && firstWordCondition; /* ||  nextWordCondition && tileHolderContains ;*/
+        return insideBoard && (firstWordCondition || nextWordCondition) && tileHolderContains;
     }
 
-    playerTurn(): PlayerService {
-        if (this.player1.getHisTurn()) {
-            return this.player1;
-        } else {
-            return this.player2;
+    private firstWordTouchCenter(orientation: string, row: string, column: number, numberLetters: number): boolean {
+        let letterPlacement;
+        const rowNumber = Number(RowTest[row]);
+        if (orientation === 'h') {
+            for (let i = 0; i < numberLetters; i++) {
+                letterPlacement = column + i;
+                if (letterPlacement === 8) {
+                    return true;
+                }
+            }
+        } else if (orientation === 'v') {
+            for (let i = 0; i < numberLetters; i++) {
+                letterPlacement = rowNumber + i;
+                if (letterPlacement === 8) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private placeWordHorizontal(row: string, column: number, letters: string[]) {
+        for (let i = 0; i < letters.length; i++) {
+            this.game.gameBoard.addLetterTile(column + i, RowTest[row], letters[i]);
         }
     }
 
-    /*     private surroundingRowColumns(rowColumn: number, incrementation: boolean): number {
+    private placeWordVertical(row: string, column: number, letters: string[]) {
+        for (let i = 0; i < letters.length; i++) {
+            this.game.gameBoard.addLetterTile(column, RowTest[row] + i, letters[i]);
+        }
+    }
+    private surroundingRowColumns(rowColumn: number, incrementation: boolean): number {
         if (incrementation && rowColumn < 13) {
             return rowColumn++;
         } else if (rowColumn > 1) {
             return rowColumn--;
         }
         return rowColumn;
-    } */
+    }
 
-    /*     private letterHasAdjacent(row: number, column: number): boolean {
-        const cases = this.gameBoard.cases;
+    private letterHasAdjacent(row: number, column: number): boolean {
+        const cases = this.game.gameBoard.cases;
         const haveTile: boolean = cases[row][column].tileContainsLetter();
         const haveTileUp: boolean = cases[this.surroundingRowColumns(row, false)][column].tileContainsLetter();
         const haveTileDown: boolean = cases[this.surroundingRowColumns(row, true)][column].tileContainsLetter();
@@ -101,10 +121,10 @@ export class GameService {
             return true;
         }
         return false;
-    } */
+    }
 
-    /*     private wordHasAdjacent(orientation: string, row: string, column: number, numberLetters: number): boolean {
-        const cases = this.gameBoard.cases;
+    private wordHasAdjacent(orientation: string, row: string, column: number, numberLetters: number): boolean {
+        const cases = this.game.gameBoard.cases;
         let rowNumber = RowTest[row];
         let columnNumber = column - 1;
         let numberLettersToPlace = numberLetters;
@@ -125,47 +145,47 @@ export class GameService {
                     numberLettersToPlace--;
                 }
                 rowNumber++;
-            }
-        }
-        return true;
-    } */
-
-    private insideBoardGame(orientation: string, row: string, column: number, numberLetters: number): boolean {
-        const cases = this.gameBoard.cases;
-        let rowNumber = RowTest[row];
-        let columnNumber = column - 1;
-        let numberLettersToPlace = numberLetters;
-        if (orientation === 'h') {
-            while (numberLettersToPlace > 0) {
-                if (!cases[rowNumber][columnNumber].tileContainsLetter()) {
-                    numberLettersToPlace--;
-                }
-                columnNumber++;
-                if (columnNumber > 14) {
-                    return false;
-                }
-            }
-        } else if (orientation === 'v') {
-            while (numberLettersToPlace > 0) {
-                if (!cases[rowNumber][columnNumber].tileContainsLetter()) {
-                    numberLettersToPlace--;
-                }
-                rowNumber++;
-                if (rowNumber > 14) {
-                    return false;
-                }
             }
         }
         return true;
     }
 
-    /* private isUpperCase(letter: string): boolean {
-        return letter === letter.toUpperCase();
-    }*/
+    private insideBoardGame(orientation: string, row: string, column: number, numberLetters: number): boolean {
+        const cases = this.game.gameBoard.cases;
+        let rowNumber = RowTest[row];
+        let columnNumber = column - 1;
+        let numberLettersToPlace = numberLetters;
+        if (orientation === 'h') {
+            while (numberLettersToPlace > 0) {
+                if (!cases[rowNumber][columnNumber].tileContainsLetter()) {
+                    numberLettersToPlace--;
+                }
+                columnNumber++;
+            }
+            if (columnNumber > 15) {
+                return false;
+            }
+        } else if (orientation === 'v') {
+            while (numberLettersToPlace > 0) {
+                if (!cases[rowNumber][columnNumber].tileContainsLetter()) {
+                    numberLettersToPlace--;
+                }
+                rowNumber++;
+            }
+            if (rowNumber > 15) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-    /*     private tileHolderContains(word: string): boolean {
+    private isUpperCase(letter: string): boolean {
+        return letter === letter.toUpperCase();
+    }
+
+    private tileHolderContains(word: string): boolean {
         const letters = word.split('');
-        const player: PlayerService = this.playerTurn();
+        const player: PlayerService = this.game.playerTurn();
         const lettersPlayer: string[] = player.getLetters();
         for (const letter of letters) {
             if (this.isUpperCase(letter)) {
@@ -181,68 +201,5 @@ export class GameService {
             }
         }
         return true;
-    } */
-
-    private getRandomLetterReserve(): string {
-        const reserveLength = this.reserveLetters.length;
-        if (reserveLength === 0) {
-            return '';
-        }
-        const element = this.reserveLetters[Math.floor(Math.random() * this.reserveLetters.length)];
-        const indexElement = this.reserveLetters.indexOf(element);
-        this.reserveLetters.splice(indexElement, 1);
-        return element;
     }
-
-    private initializeReserveLetters(): string[] {
-        const reserveLetters = letterNumber;
-        const reserve: string[] = [];
-        for (const [letter, number] of Object.entries(reserveLetters)) {
-            for (let i = 0; i < number; i++) {
-                reserve.push(letter);
-            }
-        }
-        return reserve;
-    }
-
-    private placeWordHorizontal(row: string, column: number, letters: string[]) {
-        for (let i = 0; i < letters.length; i++) {
-            this.gameBoard.addLetterTile(column + i, RowTest[row], letters[i]);
-        }
-    }
-
-    private placeWordVertical(row: string, column: number, letters: string[]) {
-        for (let i = 0; i < letters.length; i++) {
-            this.gameBoard.addLetterTile(column, RowTest[row] + i, letters[i]);
-        }
-    }
-
-    private randomLettersInitialization(): string[] {
-        const letters: string[] = [];
-        for (let i = 0; i < 7; i++) {
-            letters.push(this.getRandomLetterReserve());
-        }
-        return letters;
-    }
-
-    /*     private firstWordTouchCenter(orientation: string, row: string, column: number, numberLetters: number): boolean {
-        let letterPlacement;
-        const rowNumber = RowTest[row];
-        if (orientation === 'h') {
-            for (let i = 0; i < numberLetters; i++) {
-                letterPlacement = column + i;
-                if (letterPlacement === 8 && RowTest[row] === 8) {
-                    return true;
-                }
-            }
-        } else if (orientation === 'v') {
-            for (let i = 0; i < numberLetters; i++) {
-                letterPlacement = rowNumber + i;
-                if (letterPlacement === 8) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    } */
 }
