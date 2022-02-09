@@ -9,7 +9,7 @@ import { ChatService } from '@app/services/chat.service';
     styleUrls: ['./waiting-player-dialog.component.scss'],
 })
 export class WaitingPlayerDialogComponent implements OnInit {
-    constructor(private multiplayerDialog: MatDialog, public chatService:ChatService) {}
+    constructor(private multiplayerDialog: MatDialog, public chatService: ChatService) {}
 
     ngOnInit(): void {}
 
