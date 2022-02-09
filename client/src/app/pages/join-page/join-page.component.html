@@ -52,7 +52,14 @@
                         </mat-form-field>
                     </form>
                     <div mat-dialog-actions id="confirm-button">
-                        <button mat-raised-button color="primary" [disabled]="form.invalid" [mat-dialog-close] cdkFocusInitial (click)="openWait()">
+                        <button
+                            mat-raised-button
+                            color="primary"
+                            [disabled]="form.invalid"
+                            [mat-dialog-close]
+                            cdkFocusInitial
+                            mat-dialog-close="true"
+                        >
                             Confirmer
                         </button>
                     </div>
