@@ -1,15 +1,15 @@
 <div class="container">
     <div class="messageContainer">
         <ul id="serverBroadcastList">
-            <li *ngFor="let message of this.chatService.serverMessages">{{ message }}</li>
+            <li *ngFor="let m of this.chatService.roomMessages">{{ m.username }}:{{m.message}}</li>
         </ul>
     </div>
 
     <section class="inputMessage">
         <input
             id="broadcastMessage"
-            [(ngModel)]="this.chatService.broadcastMessage"
-            (keydown.enter)="this.chatService.sendWordValidation()"
+            [(ngModel)]="this.chatService.roomMessage"
+            (keydown.enter)="this.chatService.sendToRoom()"
             type="text"
         />
     </section>
