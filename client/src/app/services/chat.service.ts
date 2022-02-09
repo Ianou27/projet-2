@@ -61,9 +61,10 @@ export class ChatService {
             
         });
 
-        this.socketService.on('salut', (testa:boolean) => {
-            this.playerJoined=testa;
-            console.log("YOUPIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
+        this.socketService.on('didJoin', (didJoin:boolean) => {
+            this.playerJoined=didJoin;
+         
+  
             
         });
     }

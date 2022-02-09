@@ -22,7 +22,7 @@ export class SocketManager {
         this.sio.on('connection', (socket) => {
             console.log(`Connexion par l'utilisateur avec id : ${socket.id}`);
             // message initial
-            
+              
  
             socket.on('validate', (message: string) => {
                 if (message === undefined || message === null) return;
@@ -60,7 +60,7 @@ export class SocketManager {
             });
             
             socket.on('joinRoom', (username:string,roomObj:any) => {
-                
+                 
                 this.rooms.forEach((element:any) =>{
     
                     if(roomObj.player1 === element.player1){
@@ -75,13 +75,13 @@ export class SocketManager {
                             element.player2= username;
                             console.log(element);
                             socket.join(room);
-                            
+                              
                           
-                            this.sio.to(roomObj.player1).emit('salut', "bonsoir");
+                            this.sio.to(roomObj.player1).emit('didJoin', true);
                         }
 
-                    }
-                   
+                    } 
+                    
                 });
 
               
