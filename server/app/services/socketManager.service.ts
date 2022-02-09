@@ -3,7 +3,14 @@ import * as io from 'socket.io';
 
 export class SocketManager {
     private sio: io.Server;
-    private room: string = 'serverRoom';
+    users:any[]=[] ;
+
+    roomMessages:any={
+        
+    }; 
+ 
+    rooms:any[]=[];
+  
     // commandsList et exclamationIndex à mettre dans un fichier de constantes
     private commandsList: string[] = ['!placer', '!echanger', '!passer', '!indice'];
     private commandIndex: number = 0;
@@ -15,50 +22,130 @@ export class SocketManager {
         this.sio.on('connection', (socket) => {
             console.log(`Connexion par l'utilisateur avec id : ${socket.id}`);
             // message initial
-            socket.emit('hello', 'Hello World!');
-
-            socket.on('message', (message: string) => {
-                console.log(message);
-            });
+            
+ 
             socket.on('validate', (message: string) => {
                 if (message === undefined || message === null) return;
                 if (message.charAt(0) === '!') {
-                    socket.emit('commandValidated', this.commandVerification(message));
+                    socket.emit('commandValidated', this.commandVerification(message)); 
                 } else {
                     const isValid = this.lengthVerification(message) && this.characterVerification(message);
                     socket.emit('wordValidated', isValid);
                 }
             });
 
-            socket.on('broadcastAll', (message: string) => {
-                this.sio.sockets.emit('massMessage', `${socket.id} : ${message}`);
-            });
 
-            socket.on('joinRoom', () => {
-                socket.join(this.room);
+            socket.on('createRoom', (username:string,room:string) => {
+                const user ={
+                    username,
+                    id:socket.id,
+                    room
+                }
+                this.users.push(user);
+                this.roomMessages[room]=[]; 
+
+                const roomObj={
+                    "player1":username,
+                    "player2":'',
+
+                };
+                this.rooms.push(roomObj);
+                console.log("----------");
+                this.users.forEach(element => console.log(element));
+            
+                socket.join(room);
+                
+              
+              
             });
+            
+            socket.on('joinRoom', (username:string,roomObj:any) => {
+                
+                this.rooms.forEach((element:any) =>{
+    
+                    if(roomObj.player1 === element.player1){
+                        let room= roomObj.player1;
+                        if (element.player2.length ===0){
+                            const user ={
+                                username,
+                                id:socket.id,
+                                room
+                            }
+                            this.users.push(user);
+                            element.player2= username;
+                            console.log(element);
+                            socket.join(room);
+                            
+                          
+                            this.sio.to(roomObj.player1).emit('salut', "bonsoir");
+                        }
+
+                    }
+                   
+                });
+
+              
+            });  
 
             socket.on('roomMessage', (message: string) => {
-                const roomSockets = this.sio.sockets.adapter.rooms.get(this.room);
+                let username ='';
+                    let currentRoom:any ='';
+                    this.users.forEach(element => {
+                        if(element.id ===socket.id){
+                            username=element.username;
+                            currentRoom = element.room;
+                        }
+            
+                        
+                  
+                    });
+                   
+                     
+                        
+
+                    
+                    
+                const roomSockets = this.sio.sockets.adapter.rooms.get(currentRoom);
                 // Seulement un membre de la salle peut envoyer un message aux autres
                 if (roomSockets?.has(socket.id)) {
-                    this.sio.to(this.room).emit('roomMessage', `${socket.id} : ${message}`);
+                    
+                    this.roomMessages[currentRoom].push({username,message});
+                    
+                    this.sio.to(currentRoom).emit('roomMessage', this.roomMessages[currentRoom]);
                 }
             });
+            socket.on('updateRoom', (a) => {
+              
+                socket.emit('rooms',this.rooms);
 
+            });
             socket.on('disconnect', (reason) => {
+                this.deleteUser(socket.id);
                 console.log(`Deconnexion par l'utilisateur avec id : ${socket.id}`);
                 console.log(`Raison de deconnexion : ${reason}`);
+
             });
         });
 
-        setInterval(() => {
-            this.emitTime();
-        }, 1000);
+      
     }
 
-    private emitTime() {
-        this.sio.sockets.emit('clock', new Date().toLocaleTimeString());
+
+    getID(username:string):any{
+        this.users.forEach(user => {
+            if(username ===user.id){
+                return user.id;
+            } 
+
+            
+      
+        });
+
+    }
+
+    joined(){
+        return true;
+        
     }
     lengthVerification(message: string) {
         return message.length > 512 ? false : true;
@@ -71,4 +158,17 @@ export class SocketManager {
         const messageArray = message.split(' ');
         return this.commandsList.includes(messageArray[this.commandIndex]) ? true : false;
     }
+
+    deleteUser(socketId:any){
+        this.users.forEach(element => {
+            if(element.id ===socketId){
+                let index= this.users.indexOf(element);
+                this.users.splice(index, 1);
+            }
+        })
+        
+    }
+
+   
 }
+  
