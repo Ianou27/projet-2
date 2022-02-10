@@ -53,7 +53,7 @@ describe('JoinPageComponent', () => {
 
     it('createRoom() should create a room and open the dialog for the player that created the room', () => {
         const dialogMethodSpy = spyOn(component, 'openWait');
-        const createSpy = spyOn(component.chatService, 'createRoom').and.callFake;
+        const createSpy = spyOn(component.chatService, 'createRoom').and.stub();
         component.createRoom();
         expect(dialogMethodSpy).toHaveBeenCalled();
         expect(createSpy).toHaveBeenCalled();
