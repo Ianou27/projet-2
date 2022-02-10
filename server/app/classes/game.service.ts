@@ -1,5 +1,7 @@
 import { PlayerService } from '@app/../../client/src/app/classes/player/player.service';
+import { CaseProperty } from '@common/assets/case-property';
 import { CENTER_ROW_COLUMN, EXTREMITY_ROW_COLUMN, NUMBER_TILEHOLDER } from '@common/constants/general-constants';
+import { Tile } from '@common/tile/Tile';
 import { letterNumber } from './../../../common/assets/reserve-letters';
 import { RowTest } from './../../assets/row';
 import { GameBoardService } from './../services/gameBoard.service';
@@ -7,18 +9,21 @@ import { GameBoardService } from './../services/gameBoard.service';
 export class GameService {
     gameBoard: GameBoardService;
     firstTurn: boolean;
-    private player1: PlayerService;
-    private player2: PlayerService;
+    player1: PlayerService;
+    player2: PlayerService;
     private reserveLetters: string[] = [];
     /* private dictionary: string; */
 
     constructor() {
         /* this.dictionary = "Mon dictionnaire"; */
+        this.reserveLetters = this.initializeReserveLetters();
         this.player1 = new PlayerService(this.randomLettersInitialization(), true);
         this.player2 = new PlayerService(this.randomLettersInitialization(), false);
         this.gameBoard = new GameBoardService();
-        this.reserveLetters = this.initializeReserveLetters();
+
         this.firstTurn = true;
+        console.log(this.player1.getLetters());
+        console.log(this.player2.getLetters());
     }
 
     changeTurnTwoPlayers() {
@@ -76,9 +81,11 @@ export class GameService {
             wordCondition = this.wordHasAdjacent(orientation, row, column, numberLetters);
         }
 
-        // const tileHolderContains = this.tileHolderContains(commandInformations[2]);
-
-        return insideBoard && wordCondition; /* && tileHolderContains ;*/
+        const tileHolderContains = this.tileHolderContains(commandInformations[2]);
+        console.log(insideBoard);
+        console.log(wordCondition);
+        console.log(tileHolderContains);
+        return insideBoard && wordCondition && tileHolderContains;
     }
 
     playerTurn(): PlayerService {
@@ -187,29 +194,38 @@ export class GameService {
         return false;
     }
 
-    /* private isUpperCase(letter: string): boolean {
+    private isUpperCase(letter: string): boolean {
         return letter === letter.toUpperCase();
-    }*/
+    }
 
-    /*     private tileHolderContains(word: string): boolean {
-        const letters = word.split('');
+    private findLetterTileHolder(letter: string): boolean {
         const player: PlayerService = this.playerTurn();
-        const lettersPlayer: string[] = player.getLetters();
-        for (const letter of letters) {
-            if (this.isUpperCase(letter)) {
-                if (!lettersPlayer.includes('*')) {
-                    return false;
-                }
-                lettersPlayer.splice(lettersPlayer.indexOf('*'), 1);
-            } else {
-                if (!lettersPlayer.includes(letter)) {
-                    return false;
-                }
-                lettersPlayer.splice(lettersPlayer.indexOf(letter), 1);
+        const lettersPlayer: Tile[] = player.getLetters();
+        for (const letterPlayer of lettersPlayer) {
+            if (letterPlayer.letter === letter) {
+                return true;
             }
         }
+        return false;
+    }
+
+    private tileHolderContains(word: string): boolean {
+        const lettersWord = word.split('');
+        const player: PlayerService = this.playerTurn();
+        const lettersPlayer: Tile[] = JSON.parse(JSON.stringify(player.getLetters()));
+        console.log(lettersPlayer);
+        for (const letter of lettersWord) {
+            if (this.isUpperCase(letter) && this.findLetterTileHolder('*')) {
+                player.changeLetter('*', '');
+            } else if (!this.isUpperCase(letter) && this.findLetterTileHolder(letter.toUpperCase())) {
+                player.changeLetter(letter.toUpperCase(), '');
+            } else {
+                return false;
+            }
+        }
+        console.log(lettersPlayer);
         return true;
-    } */
+    }
 
     private placeWordHorizontal(row: string, column: number, letters: string[]) {
         let letterCount = letters.length;
@@ -265,10 +281,12 @@ export class GameService {
         return reserve;
     }
 
-    private randomLettersInitialization(): string[] {
-        const letters: string[] = [];
+    private randomLettersInitialization(): Tile[] {
+        const letters: Tile[] = [];
         for (let i = 0; i < NUMBER_TILEHOLDER; i++) {
-            letters.push(this.getRandomLetterReserve());
+            const tile: Tile = new Tile(CaseProperty.Normal);
+            tile.addLetter(this.getRandomLetterReserve());
+            letters.push(tile);
         }
         return letters;
     }

@@ -4,7 +4,6 @@ import { CaseProperty } from './../../../../common/assets/case-property';
 import { COLUMN_ROWS_NUMBER } from './../../../../common/constants/general-constants';
 import { LETTER_2X, LETTER_3X, WORD_2X, WORD_3X } from './../../../../common/constants/tile-information';
 import { Vec2 } from './../../../../common/vec2';
-import { SocketClientService } from './socket-client.service';
 
 @Injectable({
     providedIn: 'root',
@@ -12,7 +11,7 @@ import { SocketClientService } from './socket-client.service';
 export class BoardService {
     board: Tile[][];
 
-    constructor(public socketService: SocketClientService) {
+    constructor() {
         this.board = new Array(COLUMN_ROWS_NUMBER);
         for (let i = 0; i < COLUMN_ROWS_NUMBER; i++) {
             this.board[i] = new Array(COLUMN_ROWS_NUMBER);
@@ -29,14 +28,6 @@ export class BoardService {
                     this.board[i][j] = new Tile(CaseProperty.Normal);
                 }
             }
-        }
-        this.connect();
-    }
-
-    connect() {
-        if (!this.socketService.isSocketAlive()) {
-            console.log('xd');
-            this.socketService.connect();
         }
     }
 

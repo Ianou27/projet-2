@@ -1,9 +1,5 @@
 <div id="tile-holder">
-    <app-tile></app-tile>
-    <app-tile></app-tile>
-    <app-tile></app-tile>
-    <app-tile></app-tile>
-    <app-tile></app-tile>
-    <app-tile></app-tile>
-    <app-tile></app-tile>
+    <div *ngFor="let tile of this.chatService.tileHolderService.tileHolder">
+        <app-tile [letter]="tile.letter" [value]="tile.value"></app-tile>
+    </div>
 </div>

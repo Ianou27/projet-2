@@ -50,6 +50,7 @@ export class SocketManager {
             socket.on('placeWord', (command: string) => {
                 this.placeWord(command.split(' '));
                 socket.emit('modification', this.gameManager.gameList.gameBoard.cases);
+                socket.emit('tileHolder', this.gameManager.gameList.player1.getLetters());
             });
 
             socket.on('broadcastAll', (message: string) => {

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Tile } from './../../../../common/tile/Tile';
 import { BoardService } from './board.service';
 import { SocketClientService } from './socket-client.service';
+import { TileHolderService } from './tile-holder/tile-holder.service';
 
 @Injectable({
     providedIn: 'root',
@@ -21,7 +22,7 @@ export class ChatService {
     roomMessage = '';
     roomMessages: string[] = [];
 
-    constructor(public socketService: SocketClientService, public boardService: BoardService) {}
+    constructor(public socketService: SocketClientService, public boardService: BoardService, public tileHolderService: TileHolderService) {}
 
     get socketId() {
         return this.socketService.socket.id ? this.socketService.socket.id : '';
@@ -63,6 +64,10 @@ export class ChatService {
             /*
             Il y aura les autres conditions ici
             */
+        });
+
+        this.socketService.on('tileHolder', (letters: Tile[]) => {
+            this.tileHolderService.tileHolder = letters;
         });
 
         this.socketService.on('placeFormatValidated', (isValid: boolean) => {
