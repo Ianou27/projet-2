@@ -44,7 +44,7 @@ export class JoinPageComponent implements OnInit {
         this.openWait();
     }
 
-    goHome(){
+    goHome() {
         this.waitDialog.closeAll();
     }
 }

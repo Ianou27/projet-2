@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { JoinPageComponent } from '@app/pages/join-page/join-page.component';
 import { ChatService } from '@app/services/chat.service';
@@ -8,10 +8,8 @@ import { ChatService } from '@app/services/chat.service';
     templateUrl: './waiting-player-dialog.component.html',
     styleUrls: ['./waiting-player-dialog.component.scss'],
 })
-export class WaitingPlayerDialogComponent implements OnInit {
+export class WaitingPlayerDialogComponent {
     constructor(private multiplayerDialog: MatDialog, public chatService: ChatService) {}
-
-    ngOnInit(): void {}
 
     goBack() {
         this.multiplayerDialog.open(JoinPageComponent, {
