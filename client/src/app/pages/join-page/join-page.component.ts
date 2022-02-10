@@ -43,4 +43,8 @@ export class JoinPageComponent implements OnInit {
         this.chatService.createRoom(this.name, this.name);
         this.openWait();
     }
+
+    goHome(){
+        this.waitDialog.closeAll();
+    }
 }
