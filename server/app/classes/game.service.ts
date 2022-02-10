@@ -245,13 +245,14 @@ export class GameService {
         let letterCount = letters.length;
         let iter = 0;
         let lettersIter = 0;
-        /*         const player: PlayerService = this.playerTurn(); */
+        console.log(letters);
         while (letterCount > 0) {
             if (this.gameBoard.tileContainsLetter(column, RowTest[row] + iter)) {
                 iter++;
                 continue;
             }
             this.gameBoard.addLetterTile(column, RowTest[row] + iter, letters[lettersIter]);
+            console.log(letters[lettersIter]);
             this.playerTurn().changeLetter(letters[lettersIter], this.getRandomLetterReserve());
             lettersIter++;
             iter++;
@@ -283,11 +284,14 @@ export class GameService {
 
     private randomLettersInitialization(): Tile[] {
         const letters: Tile[] = [];
-        for (let i = 0; i < NUMBER_TILEHOLDER; i++) {
+        for (let i = 0; i < NUMBER_TILEHOLDER - 1; i++) {
             const tile: Tile = new Tile(CaseProperty.Normal);
             tile.addLetter(this.getRandomLetterReserve());
             letters.push(tile);
         }
+        const tile1: Tile = new Tile(CaseProperty.Normal);
+        tile1.addLetter('*');
+        letters.push(tile1);
         return letters;
     }
 }

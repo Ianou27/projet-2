@@ -32,11 +32,20 @@ export class PlayerService {
 
     changeLetter(removeLetter: string, newLetter: string): void {
         for (const letterPlayer of this.letters) {
-            if (letterPlayer.letter === removeLetter.toUpperCase()) {
+            if (this.isUpper(removeLetter) && letterPlayer.letter === '*') {
+                letterPlayer.letter = newLetter.toUpperCase();
+                letterPlayer.value = letterValue[newLetter];
+                break;
+            }
+            if (!this.isUpper(removeLetter) && letterPlayer.letter === removeLetter.toUpperCase()) {
                 letterPlayer.letter = newLetter.toUpperCase();
                 letterPlayer.value = letterValue[newLetter];
                 break;
             }
         }
+    }
+
+    private isUpper(letter: string) {
+        return /[A-Z]/.test(letter);
     }
 }
