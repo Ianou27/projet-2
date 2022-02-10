@@ -142,22 +142,23 @@
                                     </mat-form-field>
                                 </form>
                                 <button
-                                    (click)="this.chatService.joinRoom(this.name, room)"
+                                    (click)="this.chatService.askJoin(this.name, room)"
                                     (click)="openWaitToJoin()"
                                     mat-raised-button
                                     color="primary"
                                     [disabled]="form.invalid"
                                     [mat-dialog-close]
                                     cdkFocusInitial
-                                    mat-dialog-close="true"
-                                >
+                                    mat-dialog-close="true" 
+                                > 
                                     Rejoindre
                                 </button>
-                            </mat-card>
+                            </mat-card>  
+                            
                         </mat-expansion-panel>
                     </div>
                 </mat-accordion>
             </div>
         </mat-tab>
-    </mat-tab-group>
+    </mat-tab-group>    
 </div>

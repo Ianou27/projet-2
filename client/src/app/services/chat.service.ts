@@ -10,13 +10,14 @@ export class ChatService {
     room="";
     allRooms:any[]=[];
     roomMessage = '';
-    currentRoom ='';
     roomMessages: any[] = [];
     playerJoined:boolean =false;
-    socketwantToJoin:any;
-    playerwantToJoin:string;
+    socketWantToJoin:any;
+ 
 
-    aEteAccept:boolean =false;
+    informationToJoin:any;
+    gotAccepted:boolean =false;
+
     constructor(public socketService: SocketClientService) {}
  
     get socketId() {
@@ -72,17 +73,22 @@ export class ChatService {
             
         });
 
-        this.socketService.on('vr', () => {
-            this.aEteAccept=true;
+        this.socketService.on('joining', (obj:any) => {
+            this.gotAccepted=true;
+            this.informationToJoin= obj;
          
   
             
         });
-        this.socketService.socket.on('asked', ( username:string,socket:any) => {
+        this.socketService.socket.on('asked', ( username:string,socket:any,roomObj:any) => {
             
-            this.socketwantToJoin = socket;
-            this.playerwantToJoin=username;
+            this.socketWantToJoin = socket;
             this.playerJoined=true;
+    
+            this.informationToJoin={
+                username,
+                roomObj
+            }
 
             
   
@@ -93,7 +99,7 @@ export class ChatService {
 
     sendWordValidation() {
         this.socketService.send('validate');
-    }
+    } 
 
     
 
@@ -106,7 +112,8 @@ export class ChatService {
     }
  
     accepted(){
-        this.socketService.socket.emit('accepted',this.socketwantToJoin);
+
+        this.socketService.socket.emit('accepted',this.socketWantToJoin,this.informationToJoin);
     }
  
     createRoom(username:string, room:string) {
@@ -116,9 +123,11 @@ export class ChatService {
          
     }
 
-    joinRoom(username:string, room:any){
-        this.socketService.socket.emit('joinRoom',username,room);
-       
+    joinRoom(){
+     
+        
+        this.socketService.socket.emit('joinRoom',this.informationToJoin.username,this.informationToJoin.roomObj);
+        
     }
    
     sendToRoom() {

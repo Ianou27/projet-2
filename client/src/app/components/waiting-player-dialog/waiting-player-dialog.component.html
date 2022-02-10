@@ -7,9 +7,10 @@
     <section id="server-message">
         <div class="justified">
             <mat-dialog-actions align="end">
-                <button mat-button color="warn" mat-dialog-close disabled="true" routerLink="/waiting">Refuser</button>
-                <button mat-button color="primary" cdkFocusInitial disabled="true" routerLink="/game">Accepter</button>
+                <button mat-button color="warn" mat-dialog-close disabled= {{!this.chatService.playerJoined}} routerLink="/waiting">Refuser</button>
+                <button mat-button color="primary" cdkFocusInitial disabled={{!this.chatService.playerJoined}} (click)="this.accept()">Accepter</button>
             </mat-dialog-actions>
         </div>
     </section>
 </div>
+ 

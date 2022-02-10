@@ -1,4 +1,10 @@
 <div class="container">
     <h2>En attente de confirmation...</h2>
     <mat-spinner></mat-spinner>
+    <section id="server-message">
+        <div class="justified">
+            <div *ngIf="this.chatService.gotAccepted?join():false"></div>
+        </div>
+    </section>
 </div>
+  

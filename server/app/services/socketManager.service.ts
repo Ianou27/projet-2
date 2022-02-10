@@ -86,18 +86,18 @@ export class SocketManager {
                 });
 
                
-            });  
+            });   
 
             socket.on('askJoin',(username:string,roomObj:any)=> {
-                this.sio.to(roomObj.player1).emit('asked', username,socket.id);
+                this.sio.to(roomObj.player1).emit('asked', username,socket.id,roomObj);
             })
   
 
-            socket.on('accepted',(socketid:any)=> {
-                this.sio.to(socketid).emit('vr');
+            socket.on('accepted',(socketid:any,infoObj:any)=> {
+                this.sio.to(socketid).emit('joining',infoObj);
                 
-            })   
- 
+            })      
+  
 
             socket.on('RefuseJoin',()=> {
                
@@ -134,13 +134,13 @@ export class SocketManager {
               
                 socket.emit('rooms',this.rooms);
 
-            });
+            }); 
             socket.on('disconnect', (reason) => {
                 this.deleteUser(socket.id);
                 console.log(`Deconnexion par l'utilisateur avec id : ${socket.id}`);
                 console.log(`Raison de deconnexion : ${reason}`);
 
-            });
+            }); 
         });
 
       
