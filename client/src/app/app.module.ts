@@ -26,9 +26,6 @@ import { WaitingDialogComponent } from './components/waiting-dialog/waiting-dial
 import { WaitingPlayerDialogComponent } from './components/waiting-player-dialog/waiting-player-dialog.component';
 import { WaitingPlayerTwoComponent } from './components/waiting-player-two/waiting-player-two.component';
 import { JoinPageComponent } from './pages/join-page/join-page.component';
-import { MultiplayerPageComponent } from './pages/multiplayer-page/multiplayer-page.component';
-import { ScrabbleClassicPageComponent } from './pages/scrabble-classic-page/scrabble-classic-page.component';
-import { WaitingMultiplayerPageComponent } from './pages/waiting-multiplayer-page/waiting-multiplayer-page.component';
 import { FormatTimePipe } from './pipes/format-time.pipe';
 
 // import { LoadingScreenService } from './services/loading-screen/loading-screen.service';
@@ -56,12 +53,7 @@ import { FormatTimePipe } from './pipes/format-time.pipe';
         TextHistoryComponent,
         TextInputComponent,
         ButtonComponent,
-        ScrabbleClassicPageComponent,
         QuitGameDialogComponent,
-        MultiplayerPageComponent,
-        ScrabbleClassicPageComponent,
-        WaitingMultiplayerPageComponent,
-        MultiplayerPageComponent,
         CommunicationAreaComponent,
         WaitingDialogComponent,
         JoinPageComponent,
@@ -71,6 +63,6 @@ import { FormatTimePipe } from './pipes/format-time.pipe';
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule, MatDialogModule],
     providers: [],
     bootstrap: [AppComponent],
-    entryComponents: [MultiplayerPageComponent],
+    entryComponents: [],
 })
 export class AppModule {}
