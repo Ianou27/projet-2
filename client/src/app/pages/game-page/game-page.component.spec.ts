@@ -41,16 +41,14 @@ describe('GamePageComponent', () => {
         expect(pushSpy).toHaveBeenCalled();
     });
 
-    /* it('should call pushState and openDialog', () => {
-        const pushSpy = spyOn(history, 'pushState');
+    it('should call pushState and openDialog', () => {
+        // const pushSpy = spyOn(history, 'pushState');
         const dialogSpy = spyOn(component, 'openDialog');
-        const quitButton = fixture.debugElement.query(By.css('#tooltip'));
-        quitButton.triggerEventHandler('click', null);
-        // window.dispatchEvent(new Event('popstate'));
-        // new GamePageComponent(dialog, location);
+        new GamePageComponent(dialog, location);
+        window.dispatchEvent(new Event('popstate'));
         expect(dialogSpy).toHaveBeenCalled();
-        expect(pushSpy).toHaveBeenCalled();
-    }); */
+        // expect(pushSpy).toHaveBeenCalled();
+    });
 
     it('clicking on the quit button should call openDialog', () => {
         const dialogMethodSpy = spyOn(component, 'openDialog');
