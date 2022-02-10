@@ -30,39 +30,43 @@ describe('GridService', () => {
         expect(service.width).toEqual(CANVAS_HEIGHT);
     });
 
-    it(' draw should call clear on the canvas', () => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const clearSpy = spyOn<any>(service, 'clear');
-        service.draw(fontSize);
-        expect(clearSpy).toHaveBeenCalled();
-    });
-
-    it(' draw should call drawGrid on the canvas', () => {
+    it(' draw should call other methods', () => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const gridSpy = spyOn<any>(service, 'drawGrid');
-        service.draw(fontSize);
-        expect(gridSpy).toHaveBeenCalled();
-    });
-
-    it(' draw should call drawTiles on the canvas', () => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const clearSpy = spyOn<any>(service, 'clear');
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const drawTilesSpy = spyOn<any>(service, 'drawTiles');
-        service.draw(fontSize);
-        expect(drawTilesSpy).toHaveBeenCalled();
-    });
-
-    it(' draw should call drawStar on the canvas', () => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const drawStarSpy = spyOn<any>(service, 'drawStar');
-        service.draw(fontSize);
-        expect(drawStarSpy).toHaveBeenCalled();
-    });
-
-    it(' draw should call writeBonusTypes on the canvas', () => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const bonusTypeSpy = spyOn<any>(service, 'writeBonusTypes');
         service.draw(fontSize);
+        expect(clearSpy).toHaveBeenCalled();
+        expect(gridSpy).toHaveBeenCalled();
+        expect(drawTilesSpy).toHaveBeenCalled();
+        expect(drawStarSpy).toHaveBeenCalled();
         expect(bonusTypeSpy).toHaveBeenCalled();
+    });
+
+    it(' draw not should call other methods if fontSize <= 0', () => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const gridSpy = spyOn<any>(service, 'drawGrid');
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const clearSpy = spyOn<any>(service, 'clear');
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const drawTilesSpy = spyOn<any>(service, 'drawTiles');
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const drawStarSpy = spyOn<any>(service, 'drawStar');
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const bonusTypeSpy = spyOn<any>(service, 'writeBonusTypes');
+        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+        service.draw(-1);
+        expect(clearSpy).toHaveBeenCalledTimes(0);
+        expect(gridSpy).toHaveBeenCalledTimes(0);
+        expect(drawTilesSpy).toHaveBeenCalledTimes(0);
+        expect(drawStarSpy).toHaveBeenCalledTimes(0);
+        expect(bonusTypeSpy).toHaveBeenCalledTimes(0);
     });
 
     it(' writeBonusTypes should call fillText on the canvas', () => {
@@ -70,6 +74,13 @@ describe('GridService', () => {
         // eslint-disable-next-line dot-notation
         service['writeBonusTypes'](WORD_2X, fontSize);
         expect(fillTextSpy).toHaveBeenCalled();
+    });
+
+    it(' writeBonusTypes should not call fillText on the canvas if fontSize <= 0', () => {
+        const fillTextSpy = spyOn(service.gridContext, 'fillText');
+        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+        service['writeBonusTypes'](WORD_2X, -1); // eslint-disable-line dot-notation
+        expect(fillTextSpy).toHaveBeenCalledTimes(0);
     });
 
     it(' writeBonusTypes should color pixels on the canvas', () => {
@@ -115,8 +126,8 @@ describe('GridService', () => {
 
     it(' drawGrid should call moveTo and lineTo 28 times', () => {
         const expectedCallTimes = 28;
-        const moveToSpy = spyOn(service.gridContext, 'moveTo').and.callThrough();
-        const lineToSpy = spyOn(service.gridContext, 'lineTo').and.callThrough();
+        const moveToSpy = spyOn(service.gridContext, 'moveTo');
+        const lineToSpy = spyOn(service.gridContext, 'lineTo');
         // eslint-disable-next-line dot-notation
         service['drawGrid']();
         expect(moveToSpy).toHaveBeenCalledTimes(expectedCallTimes);
@@ -126,9 +137,30 @@ describe('GridService', () => {
     it(' drawGrid should color pixels on the canvas', () => {
         let imageData = service.gridContext.getImageData(0, 0, service.width, service.height).data;
         const beforeSize = imageData.filter((x) => x !== 0).length;
-        service.draw(fontSize);
+        // eslint-disable-next-line dot-notation
+        service['drawGrid']();
         imageData = service.gridContext.getImageData(0, 0, service.width, service.height).data;
         const afterSize = imageData.filter((x) => x !== 0).length;
         expect(afterSize).toBeGreaterThan(beforeSize);
+    });
+
+    it(' drawStar should color pixels on the canvas', () => {
+        let imageData = service.gridContext.getImageData(0, 0, service.width, service.height).data;
+        const beforeSize = imageData.filter((x) => x !== 0).length;
+        // eslint-disable-next-line dot-notation
+        service['drawStar'](0.1, 5); // eslint-disable-line @typescript-eslint/no-magic-numbers
+        imageData = service.gridContext.getImageData(0, 0, service.width, service.height).data;
+        const afterSize = imageData.filter((x) => x !== 0).length;
+        expect(afterSize).toBeGreaterThan(beforeSize);
+    });
+
+    it(' drawStar should not color pixels on the canvas if params <= 0', () => {
+        let imageData = service.gridContext.getImageData(0, 0, service.width, service.height).data;
+        const beforeSize = imageData.filter((x) => x !== 0).length;
+        // eslint-disable-next-line dot-notation
+        service['drawStar'](0, -4); // eslint-disable-line @typescript-eslint/no-magic-numbers
+        imageData = service.gridContext.getImageData(0, 0, service.width, service.height).data;
+        const afterSize = imageData.filter((x) => x !== 0).length;
+        expect(afterSize).toBe(beforeSize);
     });
 });

@@ -11,7 +11,7 @@ export class GridService {
     private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
 
     draw(fontSize: number) {
-        if (this.gridContext) {
+        if (this.gridContext && fontSize > 0) {
             this.clear();
             this.drawGrid();
             this.drawTiles();
@@ -53,6 +53,7 @@ export class GridService {
     }
 
     private drawStar(innerRadius: number, outerRadius: number) {
+        if (innerRadius <= 0 || outerRadius <= 0) return;
         const starPoints = 5;
         const offset = 5;
         this.gridContext.fillStyle = 'black';
@@ -81,17 +82,18 @@ export class GridService {
     }
 
     private writeBonusTypes(bonusType: Vec2[], fontSize: number) {
+        if (fontSize <= 0) return;
         const wordHeightOffset = 5;
         const letterWidthOffset = 4;
         const middleTile = 7;
         const xOffset = 17;
         const yOffset = 18;
-        let firstWord = 'MOT';
-        let secondWord = 'X3';
         this.gridContext.fillStyle = 'black';
         this.gridContext.textBaseline = 'top';
         this.gridContext.textAlign = 'center';
         this.gridContext.font = fontSize + 'px Arial';
+        let firstWord = 'MOT';
+        let secondWord = 'X3';
         if (bonusType === LETTER_3X || bonusType === LETTER_2X) firstWord = 'LETTRE';
         if (bonusType === WORD_2X || bonusType === LETTER_2X) secondWord = 'X2';
         for (const tiles of bonusType) {
