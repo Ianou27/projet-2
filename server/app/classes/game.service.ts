@@ -1,4 +1,5 @@
 import { PlayerService } from '@app/../../client/src/app/classes/player/player.service';
+import { CENTER_ROW_COLUMN, EXTREMITY_ROW_COLUMN } from '@common/constants/general-constants';
 import { letterNumber } from './../../../common/assets/reserve-letters';
 import { RowTest } from './../../assets/row';
 import { GameBoardService } from './../services/gameBoard.service';
@@ -137,7 +138,7 @@ export class GameService {
         let numberLettersToPlace = numberLetters;
         if (orientation === 'h') {
             while (numberLettersToPlace > 0) {
-                if (columnNumber > 14) {
+                if (columnNumber > EXTREMITY_ROW_COLUMN) {
                     return false;
                 }
 
@@ -148,7 +149,7 @@ export class GameService {
             }
         } else if (orientation === 'v') {
             while (numberLettersToPlace > 0) {
-                if (rowNumber > 14) {
+                if (rowNumber > EXTREMITY_ROW_COLUMN) {
                     return false;
                 }
                 if (!this.gameBoard.cases[rowNumber][columnNumber].tileContainsLetter()) {
@@ -233,14 +234,14 @@ export class GameService {
         if (orientation === 'h') {
             for (let i = 0; i < numberLetters; i++) {
                 letterPlacement = columnNumber + i;
-                if (letterPlacement === 7 && RowTest[row] === 7) {
+                if (letterPlacement === CENTER_ROW_COLUMN && RowTest[row] === CENTER_ROW_COLUMN) {
                     return true;
                 }
             }
         } else if (orientation === 'v') {
             for (let i = 0; i < numberLetters; i++) {
                 letterPlacement = rowNumber + i;
-                if (letterPlacement === 7 && columnNumber === 7) {
+                if (letterPlacement === CENTER_ROW_COLUMN && columnNumber === CENTER_ROW_COLUMN) {
                     return true;
                 }
             }
