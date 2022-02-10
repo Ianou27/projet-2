@@ -40,6 +40,7 @@ export class GameService {
             column = Number(positionOrientation[1] + positionOrientation[2]) - 1;
         }
         const letters = commandInformations[2].split('');
+        this.firstTurn = false;
         switch (orientation) {
             case 'h': {
                 this.placeWordHorizontal(row, column, letters);
@@ -68,11 +69,16 @@ export class GameService {
             column = Number(positionOrientation[1] + positionOrientation[2]);
         }
         const insideBoard: boolean = this.insideBoardGame(orientation, row, column, numberLettersToPlace);
-        const firstWordCondition = this.firstTurn && this.firstWordTouchCenter(orientation, row, column, numberLettersToPlace);
-        // const nextWordCondition = this.wordHasAdjacent(orientation, row, column, numberLetters);
+        let wordCondition: boolean;
+        if (this.firstTurn) {
+            wordCondition = this.firstWordTouchCenter(orientation, row, column, numberLettersToPlace);
+        } else {
+            wordCondition = this.wordHasAdjacent(orientation, row, column, numberLetters);
+        }
+
         // const tileHolderContains = this.tileHolderContains(commandInformations[2]);
 
-        return insideBoard && firstWordCondition; /* ||  nextWordCondition && tileHolderContains ;*/
+        return insideBoard && wordCondition; /* && tileHolderContains ;*/
     }
 
     playerTurn(): PlayerService {
@@ -83,30 +89,29 @@ export class GameService {
         }
     }
 
-    /*     private surroundingRowColumns(rowColumn: number, incrementation: boolean): number {
-        if (incrementation && rowColumn < 13) {
-            return rowColumn++;
-        } else if (rowColumn > 1) {
-            return rowColumn--;
+    private letterHasAdjacent(row: number, column: number): boolean {
+        const haveTile: boolean = this.gameBoard.tileContainsLetter(column, row);
+        let haveTileUp = false;
+        let haveTileDown = false;
+        let haveTileLeft = false;
+        let haveTileRight = false;
+        if (row > 1) {
+            haveTileUp = this.gameBoard.tileContainsLetter(column, row - 1);
         }
-        return rowColumn;
-    } */
-
-    /*     private letterHasAdjacent(row: number, column: number): boolean {
-        const cases = this.gameBoard.cases;
-        const haveTile: boolean = cases[row][column].tileContainsLetter();
-        const haveTileUp: boolean = cases[this.surroundingRowColumns(row, false)][column].tileContainsLetter();
-        const haveTileDown: boolean = cases[this.surroundingRowColumns(row, true)][column].tileContainsLetter();
-        const haveTileLeft: boolean = cases[row][this.surroundingRowColumns(column, false)].tileContainsLetter();
-        const haveTileRight: boolean = cases[row][this.surroundingRowColumns(column, true)].tileContainsLetter();
-        if (haveTile || haveTileUp || haveTileDown || haveTileLeft || haveTileRight) {
-            return true;
+        if (row < 13) {
+            haveTileDown = this.gameBoard.tileContainsLetter(column, row + 1);
         }
-        return false;
-    } */
+        if (column > 1) {
+            haveTileLeft = this.gameBoard.tileContainsLetter(column - 1, row);
+        }
+        if (column < 13) {
+            haveTileRight = this.gameBoard.tileContainsLetter(column + 1, row);
+        }
 
-    /*     private wordHasAdjacent(orientation: string, row: string, column: number, numberLetters: number): boolean {
-        const cases = this.gameBoard.cases;
+        return haveTile || haveTileUp || haveTileDown || haveTileLeft || haveTileRight;
+    }
+
+    private wordHasAdjacent(orientation: string, row: string, column: number, numberLetters: number): boolean {
         let rowNumber = RowTest[row];
         let columnNumber = column - 1;
         let numberLettersToPlace = numberLetters;
@@ -114,23 +119,22 @@ export class GameService {
             while (numberLettersToPlace > 0) {
                 if (this.letterHasAdjacent(rowNumber, columnNumber)) {
                     return true;
-                } else if (!cases[rowNumber][columnNumber].tileContainsLetter()) {
-                    numberLettersToPlace--;
                 }
+                numberLettersToPlace--;
                 columnNumber++;
             }
         } else if (orientation === 'v') {
             while (numberLettersToPlace > 0) {
                 if (this.letterHasAdjacent(rowNumber, columnNumber)) {
                     return true;
-                } else if (!cases[rowNumber][columnNumber].tileContainsLetter()) {
+                } else if (!this.gameBoard.tileContainsLetter(rowNumber, columnNumber)) {
                     numberLettersToPlace--;
                 }
                 rowNumber++;
             }
         }
-        return true;
-    } */
+        return false;
+    }
 
     private insideBoardGame(orientation: string, row: string, column: number, numberLetters: number): boolean {
         let rowNumber = RowTest[row];
@@ -142,7 +146,7 @@ export class GameService {
                     return false;
                 }
 
-                if (!this.gameBoard.cases[rowNumber][columnNumber].tileContainsLetter()) {
+                if (!this.gameBoard.tileContainsLetter(columnNumber, rowNumber)) {
                     numberLettersToPlace--;
                 }
                 columnNumber++;
@@ -152,7 +156,7 @@ export class GameService {
                 if (rowNumber > EXTREMITY_ROW_COLUMN) {
                     return false;
                 }
-                if (!this.gameBoard.cases[rowNumber][columnNumber].tileContainsLetter()) {
+                if (!this.gameBoard.tileContainsLetter(column, rowNumber)) {
                     numberLettersToPlace--;
                 }
                 rowNumber++;
@@ -208,14 +212,34 @@ export class GameService {
     } */
 
     private placeWordHorizontal(row: string, column: number, letters: string[]) {
-        for (let i = 0; i < letters.length; i++) {
-            this.gameBoard.addLetterTile(column + i, RowTest[row], letters[i]);
+        let letterCount = letters.length;
+        let iter = 0;
+        let lettersIter = 0;
+        while (letterCount > 0) {
+            if (this.gameBoard.tileContainsLetter(column + iter, RowTest[row])) {
+                iter++;
+                continue;
+            }
+            this.gameBoard.addLetterTile(column + iter, RowTest[row], letters[lettersIter]);
+            lettersIter++;
+            iter++;
+            letterCount--;
         }
     }
 
     private placeWordVertical(row: string, column: number, letters: string[]) {
-        for (let i = 0; i < letters.length; i++) {
-            this.gameBoard.addLetterTile(column, RowTest[row] + i, letters[i]);
+        let letterCount = letters.length;
+        let iter = 0;
+        let lettersIter = 0;
+        while (letterCount > 0) {
+            if (this.gameBoard.tileContainsLetter(column, RowTest[row] + iter)) {
+                iter++;
+                continue;
+            }
+            this.gameBoard.addLetterTile(column, RowTest[row] + iter, letters[lettersIter]);
+            lettersIter++;
+            iter++;
+            letterCount--;
         }
     }
 
