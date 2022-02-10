@@ -2,8 +2,7 @@
     min-height: 100vh;
     height: auto;
     margin-top: 20rm;
-    background-color: #361e0c;
-   
+    background-color: #d2b48c;
 }
 
 .justified {
@@ -13,9 +12,18 @@
     align-items: center;
 }
 
+button {
+    padding: 15px 30px;
+    text-align: center;
+    font-size: 250%;
+    margin-bottom: 1.5rem;
+    margin-left: 1.5rem;
+    width: 25rem;
+    border-radius: 15px;
+}
 
-
-img{
-    
+h2 {
+    font-family: 'Lucida Handwriting';
     margin-bottom: 10rem;
+    font-size: 700%;
 }
