@@ -13,12 +13,16 @@ export class ChatService {
     currentRoom ='';
     roomMessages: any[] = [];
     playerJoined:boolean =false;
-    constructor(public socketService: SocketClientService) {}
+    socketwantToJoin:any;
+    playerwantToJoin:string;
 
+    aEteAccept:boolean =false;
+    constructor(public socketService: SocketClientService) {}
+ 
     get socketId() {
         return this.socketService.socket.id ? this.socketService.socket.id : '';
     }
-
+ 
     ngOnInit(): void {
         this.connect();
     }
@@ -67,6 +71,24 @@ export class ChatService {
   
             
         });
+
+        this.socketService.on('vr', () => {
+            this.aEteAccept=true;
+         
+  
+            
+        });
+        this.socketService.socket.on('asked', ( username:string,socket:any) => {
+            
+            this.socketwantToJoin = socket;
+            this.playerwantToJoin=username;
+            this.playerJoined=true;
+
+            
+  
+            
+        });
+
     }
 
     sendWordValidation() {
@@ -78,18 +100,25 @@ export class ChatService {
     updateRooms(){ 
         this.socketService.send('updateRoom',this.allRooms);
     }
+    
+    askJoin(username:string, room:any){
+        this.socketService.socket.emit('askJoin',username,room);
+    }
  
-
+    accepted(){
+        this.socketService.socket.emit('accepted',this.socketwantToJoin);
+    }
+ 
     createRoom(username:string, room:string) {
        
         this.socketService.socket.emit('createRoom',username,room);
         this.updateRooms();
-        
+         
     }
 
-    joinRoom(username:string, room:string){
+    joinRoom(username:string, room:any){
         this.socketService.socket.emit('joinRoom',username,room);
-        this.playerJoined=true;
+       
     }
    
     sendToRoom() {

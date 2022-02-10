@@ -60,6 +60,7 @@ export class SocketManager {
             });
             
             socket.on('joinRoom', (username:string,roomObj:any) => {
+                console.log(username,"--------------------------------------------------", roomObj);
                  
                 this.rooms.forEach((element:any) =>{
     
@@ -69,24 +70,39 @@ export class SocketManager {
                             const user ={
                                 username,
                                 id:socket.id,
-                                room
+                                room 
                             }
                             this.users.push(user);
                             element.player2= username;
-                            console.log(element);
+                            
                             socket.join(room);
                               
+                           
                           
-                            this.sio.to(roomObj.player1).emit('didJoin', true);
                         }
 
                     } 
                     
                 });
 
-              
+               
             });  
 
+            socket.on('askJoin',(username:string,roomObj:any)=> {
+                this.sio.to(roomObj.player1).emit('asked', username,socket.id);
+            })
+  
+
+            socket.on('accepted',(socketid:any)=> {
+                this.sio.to(socketid).emit('vr');
+                
+            })   
+ 
+
+            socket.on('RefuseJoin',()=> {
+               
+            })   
+ 
             socket.on('roomMessage', (message: string) => {
                 let username ='';
                     let currentRoom:any ='';
@@ -133,13 +149,15 @@ export class SocketManager {
 
     getID(username:string):any{
         this.users.forEach(user => {
-            if(username ===user.id){
+            if(username ===user.username){
                 return user.id;
             } 
 
             
       
         });
+
+        return false;
 
     }
 
