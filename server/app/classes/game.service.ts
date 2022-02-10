@@ -141,7 +141,7 @@ export class GameService {
                     return false;
                 }
 
-                if (this.gameBoard.cases[rowNumber][columnNumber].letter === '') {
+                if (!this.gameBoard.cases[rowNumber][columnNumber].tileContainsLetter()) {
                     numberLettersToPlace--;
                 }
                 columnNumber++;
@@ -151,7 +151,7 @@ export class GameService {
                 if (rowNumber > 14) {
                     return false;
                 }
-                if (this.gameBoard.cases[rowNumber][columnNumber].letter === '') {
+                if (!this.gameBoard.cases[rowNumber][columnNumber].tileContainsLetter()) {
                     numberLettersToPlace--;
                 }
                 rowNumber++;
