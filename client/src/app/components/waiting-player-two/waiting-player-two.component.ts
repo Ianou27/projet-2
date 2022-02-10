@@ -10,6 +10,7 @@ import { ChatService } from '@app/services/chat.service';
     styleUrls: ['./waiting-player-two.component.scss'],
 })
 export class WaitingPlayerTwoComponent {
+    isBeingRedirected: boolean = false;
     constructor(private multiplayerDialog: MatDialog, public chatService: ChatService) {}
 
     join() {
@@ -18,11 +19,14 @@ export class WaitingPlayerTwoComponent {
         this.chatService.gotAccepted = false;
     }
     refused() {
+        this.chatService.gotRefused = false;
+        this.isBeingRedirected = true;
         setTimeout(() => {
+            console.log('hello');
+            this.isBeingRedirected = false;
             this.multiplayerDialog.open(JoinPageComponent, {
                 disableClose: true,
             });
-            this.chatService.gotRefused = false;
         }, CLOSING_DELAY);
     }
 }
