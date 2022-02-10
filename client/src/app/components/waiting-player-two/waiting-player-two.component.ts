@@ -22,8 +22,8 @@ export class WaitingPlayerTwoComponent {
         this.chatService.gotRefused = false;
         this.isBeingRedirected = true;
         setTimeout(() => {
-            console.log('hello');
             this.isBeingRedirected = false;
+            this.multiplayerDialog.closeAll();
             this.multiplayerDialog.open(JoinPageComponent, {
                 disableClose: true,
             });
