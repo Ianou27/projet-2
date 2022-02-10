@@ -55,6 +55,7 @@ export class GameService {
     validatedPlaceCommandBoard(commandInformations: string[]): boolean {
         const positionOrientation = commandInformations[1].split('');
         const row = positionOrientation[0];
+        const numberLettersToPlace = commandInformations[2].length;
         const numberLetters = commandInformations[1].length;
         let orientation = '';
         let column = 0;
@@ -65,12 +66,12 @@ export class GameService {
             orientation = positionOrientation[3];
             column = Number(positionOrientation[1] + positionOrientation[2]);
         }
-        const insideBoard: boolean = this.insideBoardGame(orientation, row, column, numberLetters);
-        // const firstWordCondition = this.firstTurn && this.firstWordTouchCenter(orientation, row, column, numberLetters);
+        const insideBoard: boolean = this.insideBoardGame(orientation, row, column, numberLettersToPlace);
+        const firstWordCondition = this.firstTurn && this.firstWordTouchCenter(orientation, row, column, numberLettersToPlace);
         // const nextWordCondition = this.wordHasAdjacent(orientation, row, column, numberLetters);
         // const tileHolderContains = this.tileHolderContains(commandInformations[2]);
 
-        return insideBoard; // && firstWordCondition; /* ||  nextWordCondition && tileHolderContains ;*/
+        return insideBoard && firstWordCondition; /* ||  nextWordCondition && tileHolderContains ;*/
     }
 
     playerTurn(): PlayerService {
@@ -131,29 +132,29 @@ export class GameService {
     } */
 
     private insideBoardGame(orientation: string, row: string, column: number, numberLetters: number): boolean {
-        const cases = this.gameBoard.cases;
         let rowNumber = RowTest[row];
         let columnNumber = column - 1;
         let numberLettersToPlace = numberLetters;
         if (orientation === 'h') {
             while (numberLettersToPlace > 0) {
-                if (!cases[rowNumber][columnNumber].tileContainsLetter()) {
-                    numberLettersToPlace--;
-                }
-                columnNumber++;
                 if (columnNumber > 14) {
                     return false;
                 }
+
+                if (this.gameBoard.cases[rowNumber][columnNumber].letter === '') {
+                    numberLettersToPlace--;
+                }
+                columnNumber++;
             }
         } else if (orientation === 'v') {
             while (numberLettersToPlace > 0) {
-                if (!cases[rowNumber][columnNumber].tileContainsLetter()) {
-                    numberLettersToPlace--;
-                }
-                rowNumber++;
                 if (rowNumber > 14) {
                     return false;
                 }
+                if (this.gameBoard.cases[rowNumber][columnNumber].letter === '') {
+                    numberLettersToPlace--;
+                }
+                rowNumber++;
             }
         }
         return true;
@@ -225,24 +226,25 @@ export class GameService {
         return letters;
     }
 
-    /*     private firstWordTouchCenter(orientation: string, row: string, column: number, numberLetters: number): boolean {
+    private firstWordTouchCenter(orientation: string, row: string, column: number, numberLetters: number): boolean {
         let letterPlacement;
         const rowNumber = RowTest[row];
+        const columnNumber = column - 1;
         if (orientation === 'h') {
             for (let i = 0; i < numberLetters; i++) {
-                letterPlacement = column + i;
-                if (letterPlacement === 8 && RowTest[row] === 8) {
+                letterPlacement = columnNumber + i;
+                if (letterPlacement === 7 && RowTest[row] === 7) {
                     return true;
                 }
             }
         } else if (orientation === 'v') {
             for (let i = 0; i < numberLetters; i++) {
                 letterPlacement = rowNumber + i;
-                if (letterPlacement === 8) {
+                if (letterPlacement === 7 && columnNumber === 7) {
                     return true;
                 }
             }
         }
         return false;
-    } */
+    }
 }
