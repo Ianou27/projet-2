@@ -19,14 +19,13 @@ export class WaitingPlayerDialogComponent implements OnInit {
         });
     }
 
-    accept(){
+    accept() {
         this.multiplayerDialog.closeAll();
         this.chatService.accepted();
     }
 
-    deny(){
-        this.chatService.playerJoined= false
+    deny() {
+        this.chatService.playerJoined = false;
         this.chatService.refused();
-        
     }
 }
