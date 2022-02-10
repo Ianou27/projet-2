@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { JoinPageComponent } from '@app/pages/join-page/join-page.component';
 import { WaitingPlayerDialogComponent } from './waiting-player-dialog.component';
 
 describe('WaitingPlayerDialogComponent', () => {
@@ -7,7 +9,21 @@ describe('WaitingPlayerDialogComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [WaitingPlayerDialogComponent],
+            declarations: [WaitingPlayerDialogComponent, JoinPageComponent],
+            imports: [MatDialogModule],
+            providers: [
+                {
+                    provide: MatDialog,
+                    useValue: {
+                        open: () => {
+                            return;
+                        },
+                        closeAll: () => {
+                            return;
+                        },
+                    },
+                },
+            ],
         }).compileComponents();
     });
 
@@ -19,5 +35,30 @@ describe('WaitingPlayerDialogComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('goBack() should open the dialog', () => {
+        // eslint-disable-next-line dot-notation
+        const openSpy = spyOn(component['multiplayerDialog'], 'open');
+        component.goBack();
+        expect(openSpy).toHaveBeenCalledWith(JoinPageComponent, {
+            disableClose: true,
+        });
+    });
+
+    it('accept() should close the dialogs and call accepted() in the chatService ', () => {
+        // eslint-disable-next-line dot-notation
+        const closeSpy = spyOn(component['multiplayerDialog'], 'closeAll');
+        const acceptSpy = spyOn(component.chatService, 'accepted');
+        component.accept();
+        expect(acceptSpy).toHaveBeenCalled();
+        expect(closeSpy).toHaveBeenCalled();
+    });
+
+    it('deny() should call refused() in the chatService and PlayerJoined value should be false ', () => {
+        const refusedSpy = spyOn(component.chatService, 'refused');
+        component.deny();
+        expect(component.chatService.playerJoined).toBeFalsy();
+        expect(refusedSpy).toHaveBeenCalled();
     });
 });
