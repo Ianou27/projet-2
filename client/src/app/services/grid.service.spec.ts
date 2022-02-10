@@ -148,7 +148,7 @@ describe('GridService', () => {
         let imageData = service.gridContext.getImageData(0, 0, service.width, service.height).data;
         const beforeSize = imageData.filter((x) => x !== 0).length;
         // eslint-disable-next-line dot-notation
-        service['drawStar'](0.1, 5); // eslint-disable-line @typescript-eslint/no-magic-numbers
+        service['drawStar'](1, 50); // eslint-disable-line @typescript-eslint/no-magic-numbers
         imageData = service.gridContext.getImageData(0, 0, service.width, service.height).data;
         const afterSize = imageData.filter((x) => x !== 0).length;
         expect(afterSize).toBeGreaterThan(beforeSize);
