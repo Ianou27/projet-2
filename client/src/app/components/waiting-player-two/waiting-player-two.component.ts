@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { CLOSING_DELAY } from '@app/constants/general-constants';
 import { JoinPageComponent } from '@app/pages/join-page/join-page.component';
 import { ChatService } from '@app/services/chat.service';
-import { Subject } from 'rxjs';
 
 @Component({
     selector: 'app-waiting-player-two',
@@ -11,8 +11,6 @@ import { Subject } from 'rxjs';
 })
 export class WaitingPlayerTwoComponent implements OnInit {
     constructor(private multiplayerDialog: MatDialog, public chatService: ChatService) {}
-    // eslint-disable-next-line @typescript-eslint/member-ordering
-    subject = new Subject<string>();
 
     ngOnInit(): void {}
 
@@ -27,6 +25,6 @@ export class WaitingPlayerTwoComponent implements OnInit {
                 disableClose: true,
             });
             this.chatService.gotRefused = false;
-        }, 2000);
+        }, CLOSING_DELAY);
     }
 }
