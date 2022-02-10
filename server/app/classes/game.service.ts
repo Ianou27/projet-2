@@ -1,5 +1,5 @@
 import { PlayerService } from '@app/../../client/src/app/classes/player/player.service';
-import { CENTER_ROW_COLUMN, EXTREMITY_ROW_COLUMN } from '@common/constants/general-constants';
+import { CENTER_ROW_COLUMN, EXTREMITY_ROW_COLUMN, NUMBER_TILEHOLDER } from '@common/constants/general-constants';
 import { letterNumber } from './../../../common/assets/reserve-letters';
 import { RowTest } from './../../assets/row';
 import { GameBoardService } from './../services/gameBoard.service';
@@ -161,6 +161,28 @@ export class GameService {
         return true;
     }
 
+    private firstWordTouchCenter(orientation: string, row: string, column: number, numberLetters: number): boolean {
+        let letterPlacement;
+        const rowNumber = RowTest[row];
+        const columnNumber = column - 1;
+        if (orientation === 'h') {
+            for (let i = 0; i < numberLetters; i++) {
+                letterPlacement = columnNumber + i;
+                if (letterPlacement === CENTER_ROW_COLUMN && RowTest[row] === CENTER_ROW_COLUMN) {
+                    return true;
+                }
+            }
+        } else if (orientation === 'v') {
+            for (let i = 0; i < numberLetters; i++) {
+                letterPlacement = rowNumber + i;
+                if (letterPlacement === CENTER_ROW_COLUMN && columnNumber === CENTER_ROW_COLUMN) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     /* private isUpperCase(letter: string): boolean {
         return letter === letter.toUpperCase();
     }*/
@@ -185,6 +207,18 @@ export class GameService {
         return true;
     } */
 
+    private placeWordHorizontal(row: string, column: number, letters: string[]) {
+        for (let i = 0; i < letters.length; i++) {
+            this.gameBoard.addLetterTile(column + i, RowTest[row], letters[i]);
+        }
+    }
+
+    private placeWordVertical(row: string, column: number, letters: string[]) {
+        for (let i = 0; i < letters.length; i++) {
+            this.gameBoard.addLetterTile(column, RowTest[row] + i, letters[i]);
+        }
+    }
+
     private getRandomLetterReserve(): string {
         const reserveLength = this.reserveLetters.length;
         if (reserveLength === 0) {
@@ -207,45 +241,11 @@ export class GameService {
         return reserve;
     }
 
-    private placeWordHorizontal(row: string, column: number, letters: string[]) {
-        for (let i = 0; i < letters.length; i++) {
-            this.gameBoard.addLetterTile(column + i, RowTest[row], letters[i]);
-        }
-    }
-
-    private placeWordVertical(row: string, column: number, letters: string[]) {
-        for (let i = 0; i < letters.length; i++) {
-            this.gameBoard.addLetterTile(column, RowTest[row] + i, letters[i]);
-        }
-    }
-
     private randomLettersInitialization(): string[] {
         const letters: string[] = [];
-        for (let i = 0; i < 7; i++) {
+        for (let i = 0; i < NUMBER_TILEHOLDER; i++) {
             letters.push(this.getRandomLetterReserve());
         }
         return letters;
-    }
-
-    private firstWordTouchCenter(orientation: string, row: string, column: number, numberLetters: number): boolean {
-        let letterPlacement;
-        const rowNumber = RowTest[row];
-        const columnNumber = column - 1;
-        if (orientation === 'h') {
-            for (let i = 0; i < numberLetters; i++) {
-                letterPlacement = columnNumber + i;
-                if (letterPlacement === CENTER_ROW_COLUMN && RowTest[row] === CENTER_ROW_COLUMN) {
-                    return true;
-                }
-            }
-        } else if (orientation === 'v') {
-            for (let i = 0; i < numberLetters; i++) {
-                letterPlacement = rowNumber + i;
-                if (letterPlacement === CENTER_ROW_COLUMN && columnNumber === CENTER_ROW_COLUMN) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 }
