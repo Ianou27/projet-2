@@ -127,6 +127,7 @@ export class ChatService {
     accepted(){
 
         this.socketService.socket.emit('accepted',this.socketWantToJoin,this.informationToJoin);
+        this.updateRooms();
     }
 
     refused(){
@@ -144,6 +145,7 @@ export class ChatService {
      
         
         this.socketService.socket.emit('joinRoom',this.informationToJoin.username,this.informationToJoin.roomObj);
+        this.updateRooms();
         
     }
    
