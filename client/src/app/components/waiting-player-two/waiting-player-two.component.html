@@ -1,10 +1,12 @@
 <div class="container">
     <h2>En attente de confirmation...</h2>
     <mat-spinner></mat-spinner>
+    <h1 *ngIf="this.chatService.gotRefused"> la demande de partie a été  refusé</h1>
     <section id="server-message">
         <div class="justified">
             <div *ngIf="this.chatService.gotAccepted?join():false"></div>
+            
         </div>
     </section>
 </div>
-  
+<button  mat-button color="primary" *ngIf="this.chatService.gotRefused" (click)="refused()" >back</button>

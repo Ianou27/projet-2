@@ -23,4 +23,10 @@ export class WaitingPlayerDialogComponent implements OnInit {
         this.multiplayerDialog.closeAll();
         this.chatService.accepted();
     }
+
+    deny(){
+        this.chatService.playerJoined= false
+        this.chatService.refused();
+        
+    }
 }

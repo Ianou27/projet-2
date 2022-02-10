@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ChatService } from '@app/services/chat.service';
-
+import { JoinPageComponent } from '@app/pages/join-page/join-page.component';
 @Component({
   selector: 'app-waiting-player-two',
   templateUrl: './waiting-player-two.component.html',
@@ -21,5 +21,10 @@ export class WaitingPlayerTwoComponent implements OnInit {
 
 
 }
-
+refused(){
+  this.multiplayerDialog.open(JoinPageComponent, {
+    disableClose: true,
+  });
+  this.chatService.gotRefused = false;
+  }
 }

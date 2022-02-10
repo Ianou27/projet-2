@@ -77,7 +77,7 @@ export class SocketManager {
                             
                             socket.join(room);
                               
-                           
+                            
                           
                         }
 
@@ -99,8 +99,8 @@ export class SocketManager {
             })      
   
 
-            socket.on('RefuseJoin',()=> {
-               
+            socket.on('refused',(socketid:any,infoObj:any)=> {
+                this.sio.to(socketid).emit('refusing',infoObj)
             })   
  
             socket.on('roomMessage', (message: string) => {

@@ -13,10 +13,11 @@ export class ChatService {
     roomMessages: any[] = [];
     playerJoined:boolean =false;
     socketWantToJoin:any;
- 
-
     informationToJoin:any;
     gotAccepted:boolean =false;
+    gotRefused:boolean =false;
+
+
 
     constructor(public socketService: SocketClientService) {}
  
@@ -80,6 +81,17 @@ export class ChatService {
   
             
         });
+
+        this.socketService.on('refusing', (obj:any) => {
+            
+            this.informationToJoin= obj;
+            this.gotRefused =true;
+
+            
+         
+  
+            
+        });
         this.socketService.socket.on('asked', ( username:string,socket:any,roomObj:any) => {
             
             this.socketWantToJoin = socket;
@@ -109,11 +121,16 @@ export class ChatService {
     
     askJoin(username:string, room:any){
         this.socketService.socket.emit('askJoin',username,room);
+        this.gotRefused =false;
     }
  
     accepted(){
 
         this.socketService.socket.emit('accepted',this.socketWantToJoin,this.informationToJoin);
+    }
+
+    refused(){
+        this.socketService.socket.emit('refused',this.socketWantToJoin,this.informationToJoin);
     }
  
     createRoom(username:string, room:string) {
