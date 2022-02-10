@@ -171,7 +171,6 @@ export class GameService {
         }
         return true;
     }
-
     private firstWordTouchCenter(orientation: string, row: string, column: number, numberLetters: number): boolean {
         let letterPlacement;
         const rowNumber = RowTest[row];
@@ -212,18 +211,18 @@ export class GameService {
     private tileHolderContains(word: string): boolean {
         const lettersWord = word.split('');
         const player: PlayerService = this.playerTurn();
-        const lettersPlayer: Tile[] = JSON.parse(JSON.stringify(player.getLetters()));
-        console.log(lettersPlayer);
+        const lettersPlayer: string[] = player.lettersToStringArray();
+        console.log(player.getLetters());
         for (const letter of lettersWord) {
             if (this.isUpperCase(letter) && this.findLetterTileHolder('*')) {
-                player.changeLetter('*', '');
+                lettersPlayer[lettersPlayer.indexOf('*')] = '';
             } else if (!this.isUpperCase(letter) && this.findLetterTileHolder(letter.toUpperCase())) {
-                player.changeLetter(letter.toUpperCase(), '');
+                lettersPlayer[lettersPlayer.indexOf(letter)] = '';
             } else {
                 return false;
             }
         }
-        console.log(lettersPlayer);
+        // console.log(player.getLetters());
         return true;
     }
 

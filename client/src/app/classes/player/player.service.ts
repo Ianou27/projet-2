@@ -22,6 +22,14 @@ export class PlayerService {
         return this.hisTurn;
     }
 
+    lettersToStringArray(): string[] {
+        const lettersPlayer = [];
+        for (const letterTile of this.letters) {
+            lettersPlayer.push(letterTile.letter);
+        }
+        return lettersPlayer;
+    }
+
     changeLetter(removeLetter: string, newLetter: string): void {
         for (const letterPlayer of this.letters) {
             if (letterPlayer.letter === removeLetter) {
