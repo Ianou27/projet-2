@@ -32,8 +32,8 @@ export class PlayerService {
 
     changeLetter(removeLetter: string, newLetter: string): void {
         for (const letterPlayer of this.letters) {
-            if (letterPlayer.letter === removeLetter) {
-                letterPlayer.letter = newLetter;
+            if (letterPlayer.letter === removeLetter.toUpperCase()) {
+                letterPlayer.letter = newLetter.toUpperCase();
                 letterPlayer.value = letterValue[newLetter];
                 break;
             }

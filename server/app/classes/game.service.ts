@@ -17,6 +17,7 @@ export class GameService {
     constructor() {
         /* this.dictionary = "Mon dictionnaire"; */
         this.reserveLetters = this.initializeReserveLetters();
+        console.log(this.reserveLetters.length);
         this.player1 = new PlayerService(this.randomLettersInitialization(), true);
         this.player2 = new PlayerService(this.randomLettersInitialization(), false);
         this.gameBoard = new GameBoardService();
@@ -49,10 +50,12 @@ export class GameService {
         switch (orientation) {
             case 'h': {
                 this.placeWordHorizontal(row, column, letters);
+                console.log(this.reserveLetters.length);
                 return true;
             }
             case 'v': {
                 this.placeWordVertical(row, column, letters);
+                console.log(this.reserveLetters.length);
                 return true;
             }
         }
@@ -82,9 +85,6 @@ export class GameService {
         }
 
         const tileHolderContains = this.tileHolderContains(commandInformations[2]);
-        console.log(insideBoard);
-        console.log(wordCondition);
-        console.log(tileHolderContains);
         return insideBoard && wordCondition && tileHolderContains;
     }
 
@@ -212,7 +212,6 @@ export class GameService {
         const lettersWord = word.split('');
         const player: PlayerService = this.playerTurn();
         const lettersPlayer: string[] = player.lettersToStringArray();
-        console.log(player.getLetters());
         for (const letter of lettersWord) {
             if (this.isUpperCase(letter) && this.findLetterTileHolder('*')) {
                 lettersPlayer[lettersPlayer.indexOf('*')] = '';
@@ -222,7 +221,6 @@ export class GameService {
                 return false;
             }
         }
-        // console.log(player.getLetters());
         return true;
     }
 
@@ -236,6 +234,7 @@ export class GameService {
                 continue;
             }
             this.gameBoard.addLetterTile(column + iter, RowTest[row], letters[lettersIter]);
+            this.playerTurn().changeLetter(letters[lettersIter], this.getRandomLetterReserve());
             lettersIter++;
             iter++;
             letterCount--;
@@ -246,12 +245,14 @@ export class GameService {
         let letterCount = letters.length;
         let iter = 0;
         let lettersIter = 0;
+        /*         const player: PlayerService = this.playerTurn(); */
         while (letterCount > 0) {
             if (this.gameBoard.tileContainsLetter(column, RowTest[row] + iter)) {
                 iter++;
                 continue;
             }
             this.gameBoard.addLetterTile(column, RowTest[row] + iter, letters[lettersIter]);
+            this.playerTurn().changeLetter(letters[lettersIter], this.getRandomLetterReserve());
             lettersIter++;
             iter++;
             letterCount--;
