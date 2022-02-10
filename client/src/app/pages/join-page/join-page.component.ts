@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { WaitingPlayerDialogComponent } from '@app/components/waiting-player-dialog/waiting-player-dialog.component';
 import { WaitingPlayerTwoComponent } from '@app/components/waiting-player-two/waiting-player-two.component';
 import { ChatService } from '@app/services/chat.service';
@@ -18,7 +18,7 @@ export class JoinPageComponent implements OnInit {
     selectedDico = 'Dictionnaire par defaut';
     selectedTime = '1';
 
-    constructor(public dialogRef: MatDialogRef<JoinPageComponent>, public waitDialog: MatDialog, public chatService: ChatService) {}
+    constructor(public waitDialog: MatDialog, public chatService: ChatService) {}
     ngOnInit(): void {
         this.form = new FormGroup({
             name: new FormControl('', [Validators.required, Validators.minLength(3), Validators.pattern(this.alphaNumericRegex)]),
@@ -42,9 +42,5 @@ export class JoinPageComponent implements OnInit {
     createRoom() {
         this.chatService.createRoom(this.name, this.name);
         this.openWait();
-    }
-
-    joinRoom() {
-        console.log(this.chatService.username);
     }
 }
