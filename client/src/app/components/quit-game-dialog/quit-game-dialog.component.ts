@@ -8,7 +8,7 @@ import { Component } from '@angular/core';
 export class QuitGameDialogComponent {
     constructor() {}
 
-    /* reload() {
-        window.location.reload();
-    } */
+    goHome() {
+        window.location.href = '/home';
+    }
 }
