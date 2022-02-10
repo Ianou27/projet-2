@@ -27,6 +27,7 @@ export class PlayerService {
             if (letterPlayer.letter === removeLetter) {
                 letterPlayer.letter = newLetter;
                 letterPlayer.value = letterValue[newLetter];
+                break;
             }
         }
     }
