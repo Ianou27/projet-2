@@ -1,3 +1,4 @@
+import { GameService } from '@app/classes/game.service';
 import * as http from 'http';
 import * as io from 'socket.io';
 import { GameManager } from './gameManager.service';
@@ -39,19 +40,20 @@ export class SocketManager {
             });
 
             socket.on('placeFormatVerification', (command: string) => {
+                
                 const commandFormatValid = this.placeFormatValid(command.split(' '));
-                socket.emit('placeFormatValidated', commandFormatValid);
+                this.sio.to(socket.id).emit('placeFormatValidated', commandFormatValid);
             });
 
             socket.on('boardVerification', (command: string) => {
                 const isValid = this.placeBoardValid(command.split(' '));
-                socket.emit('placeBoardValidated', isValid);
+                this.sio.to(socket.id).emit('placeBoardValidated', isValid);
             });
 
             socket.on('placeWord', (command: string) => {
-                this.placeWord(command.split(' '));
-                socket.emit('modification', this.gameManager.gameList.gameBoard.cases);
-                socket.emit('tileHolder', this.gameManager.gameList.player1.getLetters());
+                // this.placeWord(command.split(' '));
+                // socket.emit('modification', this.gameManager.gameList.gameBoard.cases);
+                // socket.emit('tileHolder', this.gameManager.gameList.player1.getLetters());
             });
 
             socket.on('broadcastAll', (message: string) => {
@@ -63,13 +65,15 @@ export class SocketManager {
                     username,
                     id: socket.id,
                     room,
+                    
                 };
                 this.users.push(user);
                 this.roomMessages[room] = [];
-
+                let j =new GameService();
                 const roomObj = {
                     player1: username,
                     player2: '',
+                    game: j
                 };
                 this.rooms.push(roomObj);
                 console.log('----------');
@@ -79,7 +83,7 @@ export class SocketManager {
             });
 
             socket.on('joinRoom', (username: string, roomObj: any) => {
-                console.log(username, '--------------------------------------------------', roomObj);
+                
 
                 this.rooms.forEach((element: any) => {
                     if (roomObj.player1 === element.player1) {
@@ -149,13 +153,36 @@ export class SocketManager {
 
             socket.on('roomMessage', (message: string) => {
                 let username = '';
-                let currentRoom: any = '';
+                let currentRoom: any ;
+                let a:any;
                 this.users.forEach((element) => {
                     if (element.id === socket.id) {
                         username = element.username;
                         currentRoom = element.room;
+
                     }
                 });
+
+                this.rooms.forEach((room: any) => {
+                    if (room.player1 === username) {
+                        a=room.game;
+                    }
+                });
+                if (message === undefined || message === null) return;
+                if (message.charAt(0) === '!') {
+                    const command = message.split(' ');
+                    console.log(a);
+                    this.placeWord(command,a);
+                    this.sio.to(currentRoom).emit('modification', a.gameBoard.cases);
+                    this.sio.to(currentRoom).emit('tileHolder', a.player1.getLetters());
+            
+                  
+                   
+                } else{
+
+
+                
+               
 
                 const roomSockets = this.sio.sockets.adapter.rooms.get(currentRoom);
                 // Seulement un membre de la salle peut envoyer un message aux autres
@@ -164,6 +191,7 @@ export class SocketManager {
 
                     this.sio.to(currentRoom).emit('roomMessage', this.roomMessages[currentRoom]);
                 }
+            }
             });
             socket.on('updateRoom', (a) => {
                 this.sio.sockets.emit('rooms', this.rooms);
@@ -187,8 +215,10 @@ export class SocketManager {
     joined() {
         return true;
     }
-    placeWord(command: string[]) {
-        this.gameManager.gameList.placeWord(command);
+    placeWord(command: string[], room:any) {
+       
+    
+        room.placeWord(command);
     }
 
     placeBoardValid(command: string[]): boolean {

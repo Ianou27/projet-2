@@ -8,15 +8,13 @@ import { TileHolderService } from './tile-holder/tile-holder.service';
     providedIn: 'root',
 })
 export class ChatService {
-
-
     //vrai
     username = '';
     room = '';
     allRooms: any[] = [];
     roomMessage = '';
     roomMessages: any[] = [];
-    playerJoined: boolean =false;
+    playerJoined: boolean = false;
     socketWantToJoin: any;
     informationToJoin: any;
     gotAccepted: boolean = false;
@@ -38,7 +36,7 @@ export class ChatService {
     get socketId() {
         return this.socketService.socket.id ? this.socketService.socket.id : '';
     }
- 
+
     ngOnInit(): void {
         this.connect();
     }
@@ -56,17 +54,17 @@ export class ChatService {
         this.socketService.on('connect', () => {
             console.log(`Connexion par WebSocket sur le socket ${this.socketId}`);
         });
-        
-
 
         // Gérer l'événement envoyé par le serveur : afficher le résultat de validation
-        this.socketService.on('wordValidated', (isValid: boolean) => {
-           
-        });
+        this.socketService.on('wordValidated', (isValid: boolean) => {});
 
         this.socketService.on('commandValidated', (command: string) => {
             // this.lastCommandProcessed = this.broadcastMessage;
-            if (command === '!placer') this.socketService.send('placeFormatVerification', this.broadcastMessage);
+            if (command === '!placer') {
+                console.log(command);
+                console.log(this.roomMessage);
+                this.socketService.send('placeFormatVerification', this.roomMessage);
+            }
             /*
             Il y aura les autres conditions ici
             */
@@ -78,7 +76,7 @@ export class ChatService {
 
         this.socketService.on('placeFormatValidated', (isValid: boolean) => {
             if (isValid) {
-                this.socketService.send('boardVerification', this.broadcastMessage);
+                this.socketService.send('boardVerification', this.roomMessage);
             } else {
                 this.syntaxError();
             }
@@ -87,7 +85,7 @@ export class ChatService {
 
         this.socketService.on('placeBoardValidated', (isValid: boolean) => {
             if (isValid) {
-                this.socketService.send('placeWord', this.broadcastMessage);
+                this.socketService.send('placeWord', this.roomMessage);
             } else {
                 this.impossibleCommand();
             }
@@ -101,51 +99,35 @@ export class ChatService {
 
         //vrai
         this.socketService.on('roomMessage', (roomMessage: string[]) => {
-            this.roomMessages = roomMessage;        
+            this.roomMessages = roomMessage;
         });
 
         this.socketService.on('rooms', (rooms: any[]) => {
             this.allRooms = rooms;
-            
         });
 
-        this.socketService.on('didJoin', (didJoin : boolean) => {
+        this.socketService.on('didJoin', (didJoin: boolean) => {
             this.playerJoined = didJoin;
-         
-  
-            
         });
 
-        this.socketService.on('joining', (obj : any) => {
+        this.socketService.on('joining', (obj: any) => {
             this.gotAccepted = true;
             this.informationToJoin = obj;
         });
 
-        this.socketService.on('refusing', (obj : any) => {
-            
+        this.socketService.on('refusing', (obj: any) => {
             this.informationToJoin = obj;
             this.gotRefused = true;
-
-            
-         
-  
-            
         });
-        this.socketService.socket.on('asked', (username:string,socket:any,roomObj:any) => {
-            
+        this.socketService.socket.on('asked', (username: string, socket: any, roomObj: any) => {
             this.socketWantToJoin = socket;
-            this.playerJoined=true;
-    
-            this.informationToJoin={
+            this.playerJoined = true;
+
+            this.informationToJoin = {
                 username,
-                roomObj
-            }
-
-            
-  
-            
+                roomObj,
+            };
         });
-
     }
 
     impossibleCommand() {
@@ -157,31 +139,24 @@ export class ChatService {
         this.serverMessages.push('Erreur de syntaxe');
         this.broadcastMessage = '';
     }
-    updateRooms() { 
+    updateRooms() {
         this.socketService.send('updateRoom', this.allRooms);
     }
-   
-    
 
-    refused(){
+    refused() {
         this.socketService.socket.emit('refused', this.socketWantToJoin, this.informationToJoin);
     }
- 
+
     createRoom(username: string, room: string) {
-       
-        this.socketService.socket.emit( 'createRoom', username, room);
+        this.socketService.socket.emit('createRoom', username, room);
         this.updateRooms();
-         
     }
 
-    joinRoom(){
-     
-        
-        this.socketService.socket.emit('joinRoom', this.informationToJoin.username,this.informationToJoin.roomObj);
+    joinRoom() {
+        this.socketService.socket.emit('joinRoom', this.informationToJoin.username, this.informationToJoin.roomObj);
         this.updateRooms();
-        
     }
-   
+
     sendToRoom() {
         this.socketService.send('roomMessage', this.roomMessage);
         this.roomMessage = '';
@@ -189,28 +164,19 @@ export class ChatService {
 
     sendWordValidation() {
         this.socketService.send('validate');
-    } 
-
-    
-
-    
-    askJoin(username:string, room:any){
-        this.socketService.socket.emit('askJoin',username,room);
-        this.gotRefused =false;
     }
- 
-    accepted(){
 
-        this.socketService.socket.emit('accepted',this.socketWantToJoin,this.informationToJoin);
+    askJoin(username: string, room: any) {
+        this.socketService.socket.emit('askJoin', username, room);
+        this.gotRefused = false;
+    }
+
+    accepted() {
+        this.socketService.socket.emit('accepted', this.socketWantToJoin, this.informationToJoin);
         this.updateRooms();
     }
 
+    messageLengthError() {}
 
-    messageLengthError() {
-         
-    }
-
-    commandError(): void {
-      
-    }
+    commandError(): void {}
 }
