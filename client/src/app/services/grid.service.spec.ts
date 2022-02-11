@@ -1,14 +1,14 @@
 import { TestBed } from '@angular/core/testing';
+import { WORD_2X } from '@app/../../../common/constants/tile-information';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
-import { WORD_2X } from '@app/constants/tile-information';
 import { GridService } from '@app/services/grid.service';
 
 describe('GridService', () => {
     let service: GridService;
     let ctxStub: CanvasRenderingContext2D;
 
-    const CANVAS_WIDTH = 500;
-    const CANVAS_HEIGHT = 500;
+    const CANVAS_WIDTH = 750;
+    const CANVAS_HEIGHT = 750;
     const fontSize = 14;
 
     beforeEach(() => {

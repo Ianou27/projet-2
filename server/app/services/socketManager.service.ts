@@ -1,5 +1,6 @@
 import * as http from 'http';
 import * as io from 'socket.io';
+import { GameManager } from './gameManager.service';
 
 export class SocketManager {
     private sio: io.Server;
@@ -15,6 +16,7 @@ export class SocketManager {
     constructor(server: http.Server) {
         this.sio = new io.Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
     }
+    gameManager: GameManager = new GameManager();
 
     handleSockets(): void {
         this.sio.on('connection', (socket) => {
@@ -24,11 +26,36 @@ export class SocketManager {
             socket.on('validate', (message: string) => {
                 if (message === undefined || message === null) return;
                 if (message.charAt(0) === '!') {
-                    socket.emit('commandValidated', this.commandVerification(message));
+                    const command = this.commandVerification(message);
+                    socket.emit('commandValidated', command);
+                    /* if (isValid) {
+                        this.handleCommand(message.split(' '));
+                        socket.emit('modification', this.gameManager.gameList.gameBoard.cases);
+                    }*/
                 } else {
                     const isValid = this.lengthVerification(message) && this.characterVerification(message);
                     socket.emit('wordValidated', isValid);
                 }
+            });
+
+            socket.on('placeFormatVerification', (command: string) => {
+                const commandFormatValid = this.placeFormatValid(command.split(' '));
+                socket.emit('placeFormatValidated', commandFormatValid);
+            });
+
+            socket.on('boardVerification', (command: string) => {
+                const isValid = this.placeBoardValid(command.split(' '));
+                socket.emit('placeBoardValidated', isValid);
+            });
+
+            socket.on('placeWord', (command: string) => {
+                this.placeWord(command.split(' '));
+                socket.emit('modification', this.gameManager.gameList.gameBoard.cases);
+                socket.emit('tileHolder', this.gameManager.gameList.player1.getLetters());
+            });
+
+            socket.on('broadcastAll', (message: string) => {
+                this.sio.sockets.emit('massMessage', `${socket.id} : ${message}`);
             });
 
             socket.on('createRoom', (username: string, room: string) => {
@@ -141,6 +168,8 @@ export class SocketManager {
             socket.on('updateRoom', (a) => {
                 this.sio.sockets.emit('rooms', this.rooms);
             });
+
+
             socket.on('disconnect', (reason) => {
                 this.deleteUser(socket.id);
                 console.log(`Deconnexion par l'utilisateur avec id : ${socket.id}`);
@@ -158,16 +187,34 @@ export class SocketManager {
     joined() {
         return true;
     }
+    placeWord(command: string[]) {
+        this.gameManager.gameList.placeWord(command);
+    }
+
+    placeBoardValid(command: string[]): boolean {
+        return this.gameManager.gameList.validatedPlaceCommandBoard(command);
+    }
+
+    commandVerification(message: string): string {
+        const messageArray = message.split(' ');
+        for (const command of this.commandsList) {
+            if (command === messageArray[this.commandIndex]) {
+                return command;
+            }
+        }
+        return 'notRecognized';
+    }
+
+    placeFormatValid(command: string[]) {
+        return this.gameManager.validatedPlaceCommandFormat(command);
+    }
+
+
     lengthVerification(message: string) {
         return message.length > 512 ? false : true;
     }
     characterVerification(message: string): boolean {
         return message.trim().length === 0 ? false : true;
-    }
-
-    commandVerification(message: string): boolean {
-        const messageArray = message.split(' ');
-        return this.commandsList.includes(messageArray[this.commandIndex]) ? true : false;
     }
 
     deleteUser(socketId: any) {

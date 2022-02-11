@@ -41,7 +41,8 @@
         "instrument": true
     },
     "_moduleAliases": {
-        "@app": "out/"
+        "@app": "out/server/app",
+        "@common": "out/common"
     },
     "dependencies": {
         "cookie-parser": "1.4.5",

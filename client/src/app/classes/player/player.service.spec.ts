@@ -1,4 +1,4 @@
-import { PlayerService } from './playerService';
+import { PlayerService } from './player.service';
 
 describe('Player', () => {
     const letters = ['a', 'a', 'b', 'c', 'z', 'r', 'p'];
@@ -9,19 +9,18 @@ describe('Player', () => {
     });
 
     it('constructor should construct a player with letters ', () => {
-        let playerLetters = player.getLetters();
+        const playerLetters = player.getLetters();
         expect(letters).toEqual(playerLetters);
     });
 
     it('constructor should construct a player with an attribute turn', () => {
-        let playerHisTurn = player.getHisTurn();
+        const playerHisTurn = player.getHisTurn();
         expect(hisTurn).toEqual(playerHisTurn);
     });
 
     it('method changeTurn should switch the turn of the player', () => {
         player.changeTurn();
-        let playerHisTurn = player.getHisTurn();
+        const playerHisTurn = player.getHisTurn();
         expect(!hisTurn).toEqual(playerHisTurn);
     });
-
 });

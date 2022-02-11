@@ -1,5 +1,5 @@
 <div id="grid-container">
-    <div class="row-numbers">
+    <!-- <div class="row-numbers">
         <p class="number-text" *ngFor="let number of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]">{{ number }}</p>
     </div>
     <div class="wrapper">
@@ -7,17 +7,19 @@
             <p class="letters-text" *ngFor="let letter of ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O']">
                 {{ letter }}
             </p>
-        </div>
-        <canvas id="canvas" #gridCanvas (click)="mouseHitDetect($event)" [attr.width]="width" [attr.height]="height"> </canvas>
-    </div>
+        </div> -->
+
+    <canvas id="canvas" #gridCanvas (click)="mouseHitDetect($event)" [attr.width]="width" [attr.height]="height"></canvas>
+    <!-- </div> -->
+    <app-board></app-board>
     <app-size-selector></app-size-selector>
     <app-tile-holder></app-tile-holder>
-    <div id="mouse-position-display">
+    <!--<div id="mouse-position-display">
         <p>Cliquez sur la grille pour avoir la position de la souris</p>
         <p *ngIf="mousePosition.x !== 0">X : {{ mousePosition.x }}</p>
         <p *ngIf="mousePosition.y !== 0">Y : {{ mousePosition.y }}</p>
         <hr />
         <p>Appuyez sur une touche du clavier pour la détecter</p>
         <p *ngIf="buttonPressed !== ''">Touche : {{ buttonPressed }}</p>
-    </div>
+    </div>-->
 </div>

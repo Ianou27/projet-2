@@ -13,13 +13,13 @@ import { AppComponent } from '@app/pages/app/app.component';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { MaterialPageComponent } from '@app/pages/material-page/material-page.component';
+// import { LoadingScreenService } from './services/loading-screen/loading-screen.service';
+import { BoardComponent } from './components/board/board.component';
 import { ButtonComponent } from './components/button/button.component';
 import { CommunicationAreaComponent } from './components/communication-area/communication-area.component';
 import { InformationBoardComponent } from './components/information-board/information-board.component';
 import { QuitGameDialogComponent } from './components/quit-game-dialog/quit-game-dialog.component';
 import { SizeSelectorComponent } from './components/size-selector/size-selector.component';
-import { TextHistoryComponent } from './components/text-history/text-history.component';
-import { TextInputComponent } from './components/text-input/text-input.component';
 import { TileHolderComponent } from './components/tile-holder/tile-holder.component';
 import { TileComponent } from './components/tile/tile.component';
 import { WaitingDialogComponent } from './components/waiting-dialog/waiting-dialog.component';
@@ -27,8 +27,6 @@ import { WaitingPlayerDialogComponent } from './components/waiting-player-dialog
 import { WaitingPlayerTwoComponent } from './components/waiting-player-two/waiting-player-two.component';
 import { JoinPageComponent } from './pages/join-page/join-page.component';
 import { FormatTimePipe } from './pipes/format-time.pipe';
-
-// import { LoadingScreenService } from './services/loading-screen/loading-screen.service';
 
 /**
  * Main module that is used in main.ts.
@@ -50,8 +48,6 @@ import { FormatTimePipe } from './pipes/format-time.pipe';
         SizeSelectorComponent,
         FormatTimePipe,
         CommunicationAreaComponent,
-        TextHistoryComponent,
-        TextInputComponent,
         ButtonComponent,
         QuitGameDialogComponent,
         CommunicationAreaComponent,
@@ -59,6 +55,7 @@ import { FormatTimePipe } from './pipes/format-time.pipe';
         JoinPageComponent,
         WaitingPlayerDialogComponent,
         WaitingPlayerTwoComponent,
+        BoardComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule, MatDialogModule],
     providers: [],

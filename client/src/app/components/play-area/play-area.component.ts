@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Vec2 } from '@app/classes/vec2';
-import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from '@app/constants/board';
+import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from '@app/../../../common/constants/board';
+import { Vec2 } from '@app/../../../common/vec2';
 import { GridService } from '@app/services/grid.service';
 import { MouseService } from '@app/services/mouse.service';
 import { ResizerService } from '@app/services/resizer.service';
