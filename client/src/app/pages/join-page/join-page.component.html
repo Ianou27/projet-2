@@ -128,7 +128,7 @@
                             <h3>Détails de la salle:</h3>
                             <p>Nom de l'adversaire: {{ room.player1 }}</p>
                             <p>Durée des tours: 1 minute</p>
-                            <p>Mode je jeu: classique</p>
+                            <p>Mode de jeu: classique</p>
                             <p>Dictionnaire: classique</p>
 
                             <mat-card id="card">
@@ -139,7 +139,8 @@
                                         <mat-error *ngIf="myError('name', 'required')">Veuillez entrer un nom</mat-error>
                                         <mat-error *ngIf="myError('name', 'minLength')">Veuillez entrer un nom d'au moins 3 lettres</mat-error>
                                         <mat-error *ngIf="myError('name', 'pattern')">Pas de chiffres et/ou caractères spéciaux</mat-error>
-                                        <!-- <mat-error *ngIf="myError('name2', 'confirmName.myError.mustMatch')">Choisissez un nom différent que le joueur 1</mat-error> -->
+                                        <!-- <mat-error *ngIf="myError('name', 'pattern')">Choisissez un nom différent que le joueur 1</mat-error> -->
+                                        <!-- <mat-error *ngIf="f.confirmName.errors.mustMatch">Choisissez un nom différent que le joueur 1</mat-error> -->
                                     </mat-form-field>
                                 </form>
                                 <button
