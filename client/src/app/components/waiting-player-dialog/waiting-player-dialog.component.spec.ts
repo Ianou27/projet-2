@@ -49,7 +49,7 @@ describe('WaitingPlayerDialogComponent', () => {
     it('accept() should close the dialogs and call accepted() in the chatService ', () => {
         // eslint-disable-next-line dot-notation
         const closeSpy = spyOn(component['multiplayerDialog'], 'closeAll');
-        const acceptSpy = spyOn(component.chatService, 'accepted');
+        const acceptSpy = spyOn(component.chatService, 'accepted').and.stub();
         component.accept();
         expect(acceptSpy).toHaveBeenCalled();
         expect(closeSpy).toHaveBeenCalled();
