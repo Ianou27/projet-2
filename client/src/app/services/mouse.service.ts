@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Vec2 } from '@app/classes/vec2';
+import { Vec2 } from '@app/../../../common/vec2';
 import { MouseButton } from '@app/constants/general-constants';
 
 @Injectable({
