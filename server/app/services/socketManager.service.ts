@@ -1,7 +1,7 @@
-import { GameService } from '@app/classes/game.service';
+import { Game } from '@app/classes/game/game';
+import { PlacementCommand } from '@app/classes/placementCommand/placement-command';
 import * as http from 'http';
 import * as io from 'socket.io';
-import { GameManager } from './gameManager.service';
 
 export class SocketManager {
     private sio: io.Server;
@@ -17,7 +17,6 @@ export class SocketManager {
     constructor(server: http.Server) {
         this.sio = new io.Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
     }
-    gameManager: GameManager = new GameManager();
 
     handleSockets(): void {
         this.sio.on('connection', (socket) => {
@@ -69,7 +68,7 @@ export class SocketManager {
                 };
                 this.users.push(user);
                 this.roomMessages[room] = [];
-                let j =new GameService();
+                let j =new Game();
                 const roomObj = {
                     player1: username,
                     player2: '',
@@ -308,11 +307,11 @@ export class SocketManager {
     placeWord(command: string[], room:any) {
        
     
-        room.placeWord(command);
+        PlacementCommand.placeWord(command, room);
     }
 
     placeBoardValid(command: string[], game:any): boolean {
-        return game.validatedPlaceCommandBoard(command);
+        return PlacementCommand.validatedPlaceCommandBoard(command, game);
     }
 
     commandVerification(message: string): boolean {
@@ -327,7 +326,7 @@ export class SocketManager {
     }
 
     placeFormatValid(command: string[]) {
-        return this.gameManager.validatedPlaceCommandFormat(command);
+        return PlacementCommand.validatedPlaceCommandFormat(command);
     }
 
 
