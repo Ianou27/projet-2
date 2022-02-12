@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { Vec2 } from '@app/classes/vec2';
+// eslint-disable-next-line no-restricted-imports
+import { Vec2 } from '../../../../common/vec2';
 import { MouseService } from './mouse.service';
 
 describe('MouseService', () => {

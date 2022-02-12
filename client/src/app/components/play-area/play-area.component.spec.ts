@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Vec2 } from '@app/classes/vec2';
 import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
 import { MouseService } from '@app/services/mouse.service';
+// eslint-disable-next-line no-restricted-imports
+import { Vec2 } from '../../../../../common/vec2';
 
 describe('PlayAreaComponent', () => {
     let component: PlayAreaComponent;
