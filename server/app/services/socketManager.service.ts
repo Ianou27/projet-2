@@ -247,11 +247,26 @@ export class SocketManager {
                 this.sio.sockets.emit('rooms', this.rooms);
             });
 
-
+            socket.on('deleteRoom', (a) => {
+                let room= this.getRoom(socket.id);
+               
+                socket.leave(room)
+             
+            });
             socket.on('disconnect', (reason) => {
+                let room= this.getRoom(socket.id);
+                if(room!==''){
+                    socket.leave(room)
+                    this.deleteRoom(socket.id);
+                    this.sio.to(room).emit('playerDc');
+                }
+            
                 this.deleteUser(socket.id);
                 console.log(`Deconnexion par l'utilisateur avec id : ${socket.id}`);
                 console.log(`Raison de deconnexion : ${reason}`);
+                
+                
+
             });
         });
     }
@@ -264,6 +279,27 @@ export class SocketManager {
             }
         });
         return id;
+    }
+
+    getUsername(socketId: any): any {
+        let username = '';
+        this.users.forEach((element) => {
+            if (element.id === socketId) {
+                username =element.username;
+            }
+        });
+        return username;
+    }
+
+    getRoom(id: any): any {
+        let room = '';
+        this.users.forEach((element) => {
+            if (element.id === id) {
+                console.log(element.room);
+                room =element.room;
+            }
+        });
+        return room;
     }
 
     joined() {
@@ -307,6 +343,21 @@ export class SocketManager {
             if (element.id === socketId) {
                 let index = this.users.indexOf(element);
                 this.users.splice(index, 1);
+            }
+        });
+
+        
+    }
+
+    deleteRoom(socketId: any){
+        let username = this.getUsername(socketId);
+        console.log(this.rooms);
+        this.rooms.forEach((element) => {
+            if (username === element.player1 || username === element.player2) {
+                let index = this.rooms.indexOf(element);
+                this.rooms.splice(index, 1);
+
+                this.sio.sockets.emit('rooms', this.rooms);
             }
         });
     }

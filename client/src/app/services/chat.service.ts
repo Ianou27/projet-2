@@ -103,6 +103,7 @@ export class ChatService {
             this.informationToJoin = obj;
             this.gotRefused = true;
         });
+        
         this.socketService.socket.on('asked', (username: string, socket: any, roomObj: any) => {
             this.socketWantToJoin = socket;
             this.playerJoined = true;
@@ -111,6 +112,12 @@ export class ChatService {
                 username,
                 roomObj,
             };
+        });
+        this.socketService.on('playerDc', () => {
+            this.roomMessages.push({username:"Server", message:"  Partie interrompue : joueur deconnecté"});
+            this.socketService.send('deleteRoom');
+            this.updateRooms();
+
         });
     }
 
