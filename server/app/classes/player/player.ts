@@ -1,7 +1,7 @@
-import { letterValue } from './../../../../../common/assets/reserve-letters';
-import { Tile } from './../../../../../common/tile/Tile';
+import { letterValue } from './../../../../common/assets/reserve-letters';
+import { Tile } from './../../../../common/tile/Tile';
 
-export class PlayerService {
+export class Player {
     private letters: Tile[];
     private hisTurn: boolean;
 

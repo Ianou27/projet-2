@@ -1,24 +1,24 @@
-import { PlayerService } from '@app/../../client/src/app/classes/player/player.service';
 import { CaseProperty } from '@common/assets/case-property';
 import { CENTER_ROW_COLUMN, EXTREMITY_ROW_COLUMN, NUMBER_TILEHOLDER } from '@common/constants/general-constants';
 import { Tile } from '@common/tile/Tile';
 import { letterNumber } from './../../../common/assets/reserve-letters';
 import { RowTest } from './../../assets/row';
 import { GameBoardService } from './../services/gameBoard.service';
+import { Player } from './player/player';
 
 export class GameService {
     gameBoard: GameBoardService;
     firstTurn: boolean;
-    player1: PlayerService;
-    player2: PlayerService;
+    player1: Player;
+    player2: Player;
     private reserveLetters: string[] = [];
     /* private dictionary: string; */
 
     constructor() {
         /* this.dictionary = "Mon dictionnaire"; */
         this.reserveLetters = this.initializeReserveLetters();
-        this.player1 = new PlayerService(this.randomLettersInitialization(), true);
-        this.player2 = new PlayerService(this.randomLettersInitialization(), false);
+        this.player1 = new Player(this.randomLettersInitialization(), true);
+        this.player2 = new Player(this.randomLettersInitialization(), false);
         this.gameBoard = new GameBoardService();
 
         this.firstTurn = true;
@@ -88,7 +88,7 @@ export class GameService {
         return insideBoard && wordCondition && tileHolderContains;
     }
 
-    playerTurn(): PlayerService {
+    playerTurn(): Player {
         if (this.player1.getHisTurn()) {
             return this.player1;
         } else {
@@ -198,7 +198,7 @@ export class GameService {
     }
 
     private findLetterTileHolder(letter: string): boolean {
-        const player: PlayerService = this.playerTurn();
+        const player: Player = this.playerTurn();
         const lettersPlayer: Tile[] = player.getLetters();
         for (const letterPlayer of lettersPlayer) {
             if (letterPlayer.letter === letter) {
@@ -210,7 +210,7 @@ export class GameService {
 
     private tileHolderContains(word: string): boolean {
         const lettersWord = word.split('');
-        const player: PlayerService = this.playerTurn();
+        const player: Player = this.playerTurn();
         const lettersPlayer: string[] = player.lettersToStringArray();
         for (const letter of lettersWord) {
             if (this.isUpperCase(letter) && this.findLetterTileHolder('*')) {
