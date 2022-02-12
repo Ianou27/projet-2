@@ -58,16 +58,9 @@ export class ChatService {
         // Gérer l'événement envoyé par le serveur : afficher le résultat de validation
         this.socketService.on('wordValidated', (isValid: boolean) => {});
 
-        this.socketService.on('commandValidated', (command: string) => {
-            // this.lastCommandProcessed = this.broadcastMessage;
-            if (command === '!placer') {
-                console.log(command);
-                console.log(this.roomMessage);
-                this.socketService.send('placeFormatVerification', this.roomMessage);
-            }
-            /*
-            Il y aura les autres conditions ici
-            */
+        this.socketService.on('commandValidated', () => {
+            this.roomMessages.push({username:"Server", message:"Commande Invalide"})
+            
         });
 
         this.socketService.on('tileHolder', (letters: Tile[]) => {
@@ -98,8 +91,9 @@ export class ChatService {
         });
 
         //vrai
-        this.socketService.on('roomMessage', (roomMessage: string[]) => {
-            this.roomMessages = roomMessage;
+        this.socketService.on('roomMessage', (roomMessage: any) => {
+            console.log(roomMessage.player);
+            this.roomMessages.push(roomMessage);
         });
 
         this.socketService.on('rooms', (rooms: any[]) => {
@@ -132,7 +126,7 @@ export class ChatService {
 
     impossibleCommand() {
         this.serverMessages.push('Commande impossible');
-        this.broadcastMessage = '';
+
     }
 
     syntaxError() {

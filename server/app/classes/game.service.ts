@@ -82,6 +82,9 @@ export class GameService {
         }
 
         const tileHolderContains = this.tileHolderContains(commandInformations[2]);
+        console.log(insideBoard);
+        console.log(wordCondition);
+        console.log(tileHolderContains);
         return insideBoard && wordCondition && tileHolderContains;
     }
 

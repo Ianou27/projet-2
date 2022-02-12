@@ -10,11 +10,10 @@ export class SocketManager {
     roomMessages: any = {};
 
     rooms: any[] = [];
-    player:number ;
-
+    
     // commandsList et exclamationIndex à mettre dans un fichier de constantes
     private commandsList: string[] = ['!placer', '!echanger', '!passer', '!indice'];
-    private commandIndex: number = 0;
+
     constructor(server: http.Server) {
         this.sio = new io.Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
     }
@@ -47,8 +46,8 @@ export class SocketManager {
             });
 
             socket.on('boardVerification', (command: string) => {
-                const isValid = this.placeBoardValid(command.split(' '));
-                this.sio.to(socket.id).emit('placeBoardValidated', isValid);
+                // const isValid = this.placeBoardValid(command.split(' '));
+                // this.sio.to(socket.id).emit('placeBoardValidated', isValid);
             });
 
             socket.on('placeWord', (command: string) => {
@@ -99,24 +98,11 @@ export class SocketManager {
                             element.player2 = username;
 
                             socket.join(room);
-                            
-                                 
-                                    
-                                   
+                              
                                     this.sio.to(player1Id).emit('tileHolder', element.game.player1.getLetters());
-                                    
-                                
-                                
-                                
-                                   
+                      
                                     this.sio.to(socket.id).emit('tileHolder', element.game.player2.getLetters());
-                                   
-            
-                                
-                               
-                                    
-                                
-                            
+                       
                             
                         }
                     }
@@ -178,6 +164,8 @@ export class SocketManager {
                 let username = '';
                 let currentRoom: any ;
                 let a:any;
+                let validCommand:boolean =true;
+                let player;
                 this.users.forEach((element) => {
                     if (element.id === socket.id) {
                         username = element.username;
@@ -188,35 +176,55 @@ export class SocketManager {
 
                    
 
-                    this.rooms.forEach((room: any) => {
-                    if (room.player1 === username)  {
-                        
-                        a=room.game;
-                        this.player = 1;
-                        
-                    }
-                    else if(room.player2 === username)
-                    {
-                        a=room.game;
-                        this.player =2;
-                       
+                this.rooms.forEach((room: any) => {
+                if (room.player1 === username)  {
+                    
+                    a=room.game;
+                    player="player1";
+                    
+                }
+                else if(room.player2 === username)
+                {
+                    a=room.game;
+                    player="player2";
+                    
+                    
 
-                    }
-                     if(this.player =1){
-                      
-                        this.sio.to(socket.id).emit('tileHolder', a.player1.getLetters());
-                    }
-                    else if(this.player =2){
-                        
-                        this.sio.to(socket.id).emit('tileHolder', a.player2.getLetters());
-                    }
+                }
+                   
+
                 });
+
+
+
+
                 if (message === undefined || message === null) return;
                 if (message.charAt(0) === '!') {
                     const command = message.split(' ');
-    
-                    this.placeWord(command,a);
-                    this.sio.to(currentRoom).emit('modification', a.gameBoard.cases);
+
+                    if(!this.commandVerification(command[0])){
+                        validCommand =false;
+                        console.log("commandVerification");
+                        this.sio.to(socket.id).emit('commandValidated');
+                        
+                    }
+                    
+                    else if(!this.placeFormatValid(command)){
+                        validCommand =false;
+                        console.log("formatValid");
+                    }
+                    else if(!this.placeBoardValid(command,a)){
+                        validCommand =false;
+                        console.log("placeBoardValid");
+                    }
+                    
+                    if(validCommand){
+                        this.placeWord(command,a);
+                        this.sio.to(currentRoom).emit('modification', a.gameBoard.cases);
+                        this.sio.to(socket.id).emit('tileHolder', a.player1.getLetters());
+                                   
+                    }
+                    
 
                    
                 } else{
@@ -230,7 +238,8 @@ export class SocketManager {
                 if (roomSockets?.has(socket.id)) {
                     this.roomMessages[currentRoom].push({ username, message });
 
-                    this.sio.to(currentRoom).emit('roomMessage', this.roomMessages[currentRoom]);
+                    this.sio.to(currentRoom).emit('roomMessage', { username, message,player });
+                    
                 }
             }
             });
@@ -266,18 +275,19 @@ export class SocketManager {
         room.placeWord(command);
     }
 
-    placeBoardValid(command: string[]): boolean {
-        return this.gameManager.gameList.validatedPlaceCommandBoard(command);
+    placeBoardValid(command: string[], game:any): boolean {
+        return game.validatedPlaceCommandBoard(command);
     }
 
-    commandVerification(message: string): string {
-        const messageArray = message.split(' ');
+    commandVerification(message: string): boolean {
+    
         for (const command of this.commandsList) {
-            if (command === messageArray[this.commandIndex]) {
-                return command;
+            if (command === message) {
+                return true;
             }
         }
-        return 'notRecognized';
+        return false;
+
     }
 
     placeFormatValid(command: string[]) {

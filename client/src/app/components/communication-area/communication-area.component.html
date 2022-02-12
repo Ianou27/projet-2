@@ -1,7 +1,7 @@
 <div class="container">
     <div class="messageContainer">
         <ul id="serverBroadcastList">
-            <li *ngFor="let m of this.chatService.roomMessages">{{ m.username }}:{{m.message}}</li>
+            <li class= {{m.player}} *ngFor="let m of this.chatService.roomMessages">{{ m.username }}:  {{m.message}}</li>
         </ul>
     </div>
 
