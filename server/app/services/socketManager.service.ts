@@ -211,11 +211,11 @@ export class SocketManager {
                     
                     else if(!this.placeFormatValid(command)){
                         validCommand =false;
-                        console.log("formatValid");
+                        this.sio.to(socket.id).emit('placeFormatValidated');
                     }
                     else if(!this.placeBoardValid(command,a)){
                         validCommand =false;
-                        console.log("placeBoardValid");
+                        this.sio.to(socket.id).emit('placeBoardValidated');
                     }
                     
                     if(validCommand){

@@ -67,22 +67,12 @@ export class ChatService {
             this.tileHolderService.tileHolder = letters;
         });
 
-        this.socketService.on('placeFormatValidated', (isValid: boolean) => {
-            if (isValid) {
-                this.socketService.send('boardVerification', this.roomMessage);
-            } else {
-                this.syntaxError();
-            }
-            // isValid ? this.socketService.send('boardVerification', this.broadcastMessage) : this.syntaxError();
+        this.socketService.on('placeFormatValidated', () => {
+            this.roomMessages.push({username:"Server", message:"Format de la commande Invalide"});
         });
 
-        this.socketService.on('placeBoardValidated', (isValid: boolean) => {
-            if (isValid) {
-                this.socketService.send('placeWord', this.roomMessage);
-            } else {
-                this.impossibleCommand();
-            }
-            // isValid ? this.socketService.send('placeWord', this.broadcastMessage) : this.impossibleCommand();
+        this.socketService.on('placeBoardValidated', () => {
+            this.roomMessages.push({username:"Server", message:"Mot impossible a placer "});
         });
 
         this.socketService.on('modification', (updatedBoard: Tile[][]) => {
