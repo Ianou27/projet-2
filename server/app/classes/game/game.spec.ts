@@ -1,20 +1,15 @@
-import { GameService } from './game.service';
-
 describe('Validated Word', () => {
     // let game: GameService;
     // const row = 'f';
     // const column = '10';
     // const orientation = 'h';
-
     // beforeEach(() => {
     //     game = new GameService();
     // });
-
     // it('method insideBoardGame should return True when a word is place inside an empty board', () => {
     //     game;
     //     expect(result).to.equals(true);
     // });
-
     /*
     it('method validatedWord should return True when a word is in the dictionary', () => {
         const result = game.validatedWordDictionary('ourson');
