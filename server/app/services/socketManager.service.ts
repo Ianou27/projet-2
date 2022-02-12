@@ -10,6 +10,7 @@ export class SocketManager {
     roomMessages: any = {};
 
     rooms: any[] = [];
+    player:number ;
 
     // commandsList et exclamationIndex à mettre dans un fichier de constantes
     private commandsList: string[] = ['!placer', '!echanger', '!passer', '!indice'];
@@ -83,7 +84,7 @@ export class SocketManager {
             });
 
             socket.on('joinRoom', (username: string, roomObj: any) => {
-                
+                let player1Id =this.getId(roomObj.player1)
 
                 this.rooms.forEach((element: any) => {
                     if (roomObj.player1 === element.player1) {
@@ -98,9 +99,31 @@ export class SocketManager {
                             element.player2 = username;
 
                             socket.join(room);
+                            
+                                 
+                                    
+                                   
+                                    this.sio.to(player1Id).emit('tileHolder', element.game.player1.getLetters());
+                                    
+                                
+                                
+                                
+                                   
+                                    this.sio.to(socket.id).emit('tileHolder', element.game.player2.getLetters());
+                                   
+            
+                                
+                               
+                                    
+                                
+                            
+                            
                         }
                     }
                 });
+
+
+
             });
 
             socket.on('askJoin', (username: string, roomObj: any) => {
@@ -163,20 +186,38 @@ export class SocketManager {
                     }
                 });
 
-                this.rooms.forEach((room: any) => {
-                    if (room.player1 === username) {
+                   
+
+                    this.rooms.forEach((room: any) => {
+                    if (room.player1 === username)  {
+                        
                         a=room.game;
+                        this.player = 1;
+                        
+                    }
+                    else if(room.player2 === username)
+                    {
+                        a=room.game;
+                        this.player =2;
+                       
+
+                    }
+                     if(this.player =1){
+                      
+                        this.sio.to(socket.id).emit('tileHolder', a.player1.getLetters());
+                    }
+                    else if(this.player =2){
+                        
+                        this.sio.to(socket.id).emit('tileHolder', a.player2.getLetters());
                     }
                 });
                 if (message === undefined || message === null) return;
                 if (message.charAt(0) === '!') {
                     const command = message.split(' ');
-                    console.log(a);
+    
                     this.placeWord(command,a);
                     this.sio.to(currentRoom).emit('modification', a.gameBoard.cases);
-                    this.sio.to(currentRoom).emit('tileHolder', a.player1.getLetters());
-            
-                  
+
                    
                 } else{
 
@@ -206,10 +247,14 @@ export class SocketManager {
         });
     }
 
-    getUsername(id: any): any {
-        let username = '';
-
-        return username;
+    getId(username: any): any {
+        let id = '';
+        this.users.forEach((element) => {
+            if (element.username === username) {
+                id =element.id;
+            }
+        });
+        return id;
     }
 
     joined() {
