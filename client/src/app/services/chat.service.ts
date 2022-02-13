@@ -8,14 +8,18 @@ import { TileHolderService } from './tile-holder/tile-holder.service';
     providedIn: 'root',
 })
 export class ChatService {
-    //vrai
+    // vrai
     username = '';
     room = '';
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     allRooms: any[] = [];
     roomMessage = '';
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     roomMessages: any[] = [];
     playerJoined: boolean = false;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     socketWantToJoin: any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     informationToJoin: any;
     gotAccepted: boolean = false;
     gotRefused: boolean = false;
@@ -45,7 +49,7 @@ export class ChatService {
         if (!this.socketService.isSocketAlive()) {
             this.socketService.connect();
             this.configureBaseSocketFeatures();
-            //enplus
+            // enplus
             this.updateRooms();
         }
     }
@@ -59,8 +63,7 @@ export class ChatService {
         this.socketService.on('wordValidated', (isValid: boolean) => {});
 
         this.socketService.on('commandValidated', () => {
-            this.roomMessages.push({username:"Server", message:"Commande Invalide"})
-            
+            this.roomMessages.push({ username: 'Server', message: 'Commande Invalide' });
         });
 
         this.socketService.on('tileHolder', (letters: Tile[]) => {
@@ -68,24 +71,26 @@ export class ChatService {
         });
 
         this.socketService.on('placeFormatValidated', () => {
-            this.roomMessages.push({username:"Server", message:"Format de la commande Invalide"});
+            this.roomMessages.push({ username: 'Server', message: 'Format de la commande Invalide' });
         });
 
         this.socketService.on('placeBoardValidated', () => {
-            this.roomMessages.push({username:"Server", message:"Mot impossible a placer "});
+            this.roomMessages.push({ username: 'Server', message: 'Mot impossible a placer ' });
         });
 
         this.socketService.on('modification', (updatedBoard: Tile[][]) => {
             this.boardService.board = updatedBoard;
-            //this.broadcastMessageToAll();
+            // this.broadcastMessageToAll();
         });
 
-        //vrai
+        // vrai
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         this.socketService.on('roomMessage', (roomMessage: any) => {
             console.log(roomMessage.player);
             this.roomMessages.push(roomMessage);
         });
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         this.socketService.on('rooms', (rooms: any[]) => {
             this.allRooms = rooms;
         });
@@ -94,16 +99,19 @@ export class ChatService {
             this.playerJoined = didJoin;
         });
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         this.socketService.on('joining', (obj: any) => {
             this.gotAccepted = true;
             this.informationToJoin = obj;
         });
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         this.socketService.on('refusing', (obj: any) => {
             this.informationToJoin = obj;
             this.gotRefused = true;
         });
-        
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         this.socketService.socket.on('asked', (username: string, socket: any, roomObj: any) => {
             this.socketWantToJoin = socket;
             this.playerJoined = true;
@@ -114,16 +122,14 @@ export class ChatService {
             };
         });
         this.socketService.on('playerDc', () => {
-            this.roomMessages.push({username:"Server", message:"  Partie interrompue : joueur deconnecté"});
+            this.roomMessages.push({ username: 'Server', message: '  Partie interrompue : joueur deconnecté' });
             this.socketService.send('deleteRoom');
             this.updateRooms();
-
         });
     }
 
     impossibleCommand() {
         this.serverMessages.push('Commande impossible');
-
     }
 
     syntaxError() {
@@ -157,6 +163,7 @@ export class ChatService {
         this.socketService.send('validate');
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     askJoin(username: string, room: any) {
         this.socketService.socket.emit('askJoin', username, room);
         this.gotRefused = false;
@@ -167,7 +174,7 @@ export class ChatService {
         this.updateRooms();
     }
 
-    messageLengthError() {}
+    /* messageLengthError() {}
 
-    commandError(): void {}
+    commandError(): void {} */
 }
