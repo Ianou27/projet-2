@@ -34,6 +34,9 @@ export class ChatService {
 
     broadcastMessage = '';
     serverMessages: string[] = [];
+
+    player1Point: number =0;
+    player2Point: number=0;
     // lastCommandProcessed: string;
     constructor(public socketService: SocketClientService, public boardService: BoardService, public tileHolderService: TileHolderService) {}
 
@@ -121,10 +124,19 @@ export class ChatService {
                 roomObj,
             };
         });
+
         this.socketService.on('playerDc', () => {
             this.roomMessages.push({ username: 'Server', message: '  Partie interrompue : joueur deconnecté' });
             this.socketService.send('deleteRoom');
             this.updateRooms();
+        });
+
+        this.socketService.socket.on('updatePoint', (player:string, point:number) => {
+            if (player === 'player1') {
+                this.player1Point = point;
+            } else if (player === 'player2') {
+                this.player2Point = point;
+            }
         });
     }
 

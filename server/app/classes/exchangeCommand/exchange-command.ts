@@ -3,18 +3,19 @@ import { Game } from './../game/game';
 import { Player } from './../player/player';
 
 export class ExchangeCommand {
-    static exchangeLetters(commandInformations: string[], gameService: Game): void {
-        const player: Player = gameService.playerTurn();
+    static exchangeLetters(commandInformations: string[], game: Game): void {
+        const player: Player = game.playerTurn();
         const oldLetters = commandInformations[1];
         for (const letter of oldLetters) {
-            player.changeLetter(letter, gameService.getRandomLetterReserve());
-            gameService.reserveLetters.push(letter);
+            player.changeLetter(letter, game.getRandomLetterReserve());
+            game.reserveLetters.push(letter);
         }
+        game.changeTurnTwoPlayers();
     }
 
-    static validatedExchangeCommandBoard(commandInformations: string[], gameService: Game): boolean {
-        const tileHolderContains: boolean = gameService.tileHolderContains(commandInformations[1]);
-        const reserveMoreSevenLetters: boolean = gameService.reserveLetters.length >= MINIMUM_LETTER_RESERVE_FOR_EXCHANGE;
+    static validatedExchangeCommandBoard(commandInformations: string[], game: Game): boolean {
+        const tileHolderContains: boolean = game.tileHolderContains(commandInformations[1]);
+        const reserveMoreSevenLetters: boolean = game.reserveLetters.length >= MINIMUM_LETTER_RESERVE_FOR_EXCHANGE;
 
         return tileHolderContains && reserveMoreSevenLetters;
     }

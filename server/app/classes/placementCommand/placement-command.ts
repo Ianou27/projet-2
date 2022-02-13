@@ -66,7 +66,7 @@ export class PlacementCommand {
                 lettersToPlace--;
             }
             console.log(game.playerTurn().points);
-            // game.changeTurnTwoPlayers();
+            game.changeTurnTwoPlayers();
         }
         return true;
     }

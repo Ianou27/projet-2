@@ -28,6 +28,9 @@ export class PointsCalculator {
             }
             total += totalOneWord * wordMultiplier;
         }
+        if (letterPositions.length === 7) {
+            total += 50;
+        }
         return total;
     }
 

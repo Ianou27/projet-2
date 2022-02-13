@@ -5,11 +5,13 @@ export class Player {
     letters: Tile[];
     hisTurn: boolean;
     points: number;
+    name: string;
 
-    constructor(letters: Tile[], hisTurn: boolean) {
+    constructor(letters: Tile[], hisTurn: boolean, name: string) {
         this.letters = letters;
         this.hisTurn = hisTurn;
         this.points = 0;
+        this.name = name;
     }
 
     changeTurn() {

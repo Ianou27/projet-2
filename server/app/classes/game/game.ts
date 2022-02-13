@@ -14,8 +14,8 @@ export class Game {
 
     constructor() {
         this.reserveLetters = this.initializeReserveLetters();
-        this.player1 = new Player(this.randomLettersInitialization(), true);
-        this.player2 = new Player(this.randomLettersInitialization(), false);
+        this.player1 = new Player(this.randomLettersInitialization(), true, 'player1');
+        this.player2 = new Player(this.randomLettersInitialization(), false, 'player2');
         this.gameBoard = new GameBoardService();
         this.firstTurn = true;
     }
@@ -33,6 +33,9 @@ export class Game {
         }
     }
 
+    playerTurnValid(playerName: string): boolean {        return playerName === this.playerTurn().name;
+    }
+;
     getRandomLetterReserve(): string {
         const reserveLength = this.reserveLetters.length;
         if (reserveLength === 0) {
