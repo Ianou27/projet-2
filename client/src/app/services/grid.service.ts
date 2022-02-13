@@ -35,8 +35,6 @@ export class GridService {
         for (let i = 1; i < NUMBER_OF_CASES; i++) {
             this.gridContext.moveTo(0, (this.height * i) / NUMBER_OF_CASES);
             this.gridContext.lineTo(DEFAULT_WIDTH, (this.height * i) / NUMBER_OF_CASES);
-        }
-        for (let i = 1; i < NUMBER_OF_CASES; i++) {
             this.gridContext.moveTo((this.width * i) / NUMBER_OF_CASES, 0);
             this.gridContext.lineTo((this.width * i) / NUMBER_OF_CASES, DEFAULT_HEIGHT);
         }
@@ -82,6 +80,7 @@ export class GridService {
     }
 
     private writeBonusTypes(bonusType: Vec2[], fontSize: number) {
+        if (fontSize <= 0) return;
         const wordHeightOffset = 10;
         const letterWidthOffset = 4;
         const middleTile = 7;
