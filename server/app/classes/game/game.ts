@@ -2,7 +2,6 @@ import { CaseProperty } from '@common/assets/case-property';
 import { NUMBER_TILEHOLDER } from '@common/constants/general-constants';
 import { Tile } from '@common/tile/Tile';
 import { letterNumber } from './../../../../common/assets/reserve-letters';
-import { PlacementInformations } from './../../placement-informations';
 import { GameBoardService } from './../../services/gameBoard.service';
 import { Player } from './../player/player';
 
@@ -66,10 +65,11 @@ export class Game {
         return letters;
     }
 
-    tileHolderContains(placementInformations: PlacementInformations): boolean {
+    tileHolderContains(word: string): boolean {
+        const lettersWord = word.split('');
         const player: Player = this.playerTurn();
         const lettersPlayer: string[] = player.lettersToStringArray();
-        for (const letter of placementInformations.letters) {
+        for (const letter of lettersWord) {
             if (this.isUpperCase(letter) && this.findLetterTileHolder('*')) {
                 lettersPlayer[lettersPlayer.indexOf('*')] = '';
             } else if (!this.isUpperCase(letter) && this.findLetterTileHolder(letter.toUpperCase())) {

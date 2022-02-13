@@ -34,7 +34,7 @@ export class PlacementCommand {
         } else {
             wordCondition = this.wordHasAdjacent(placementInformations, game);
         }
-        const tileHolderContains = game.tileHolderContains(placementInformations);
+        const tileHolderContains = game.tileHolderContains(placementInformations.letters.join(''));
         return insideBoard && wordCondition && tileHolderContains;
     }
 
