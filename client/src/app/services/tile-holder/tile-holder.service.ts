@@ -10,7 +10,7 @@ export class TileHolderService {
     constructor() {
         this.tileHolder = new Array(7);
         for (let i = 0; i < 7; i++) {
-            this.tileHolder[i] = new Tile(CaseProperty.Normal);
+            this.tileHolder[i] = new Tile(CaseProperty.Normal, 0, i);
         }
     }
 }

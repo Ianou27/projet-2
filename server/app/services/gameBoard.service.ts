@@ -12,15 +12,15 @@ export class GameBoardService {
             this.cases[i] = new Array(COLUMN_ROWS_NUMBER);
             for (let j = 0; j < COLUMN_ROWS_NUMBER; j++) {
                 if (this.verifyProperty(WORD_3X, i, j)) {
-                    this.cases[i][j] = new Tile(CaseProperty.WordTriple);
+                    this.cases[i][j] = new Tile(CaseProperty.WordTriple, i, j);
                 } else if (this.verifyProperty(WORD_2X, i, j)) {
-                    this.cases[i][j] = new Tile(CaseProperty.WordDouble);
+                    this.cases[i][j] = new Tile(CaseProperty.WordDouble, i, j);
                 } else if (this.verifyProperty(LETTER_3X, i, j)) {
-                    this.cases[i][j] = new Tile(CaseProperty.LetterTriple);
+                    this.cases[i][j] = new Tile(CaseProperty.LetterTriple, i, j);
                 } else if (this.verifyProperty(LETTER_2X, i, j)) {
-                    this.cases[i][j] = new Tile(CaseProperty.LetterDouble);
+                    this.cases[i][j] = new Tile(CaseProperty.LetterDouble, i, j);
                 } else {
-                    this.cases[i][j] = new Tile(CaseProperty.Normal);
+                    this.cases[i][j] = new Tile(CaseProperty.Normal, i, j);
                 }
             }
         }

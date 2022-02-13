@@ -17,15 +17,15 @@ export class BoardService {
             this.board[i] = new Array(COLUMN_ROWS_NUMBER);
             for (let j = 0; j < COLUMN_ROWS_NUMBER; j++) {
                 if (this.verifyProperty(WORD_3X, i, j)) {
-                    this.board[i][j] = new Tile(CaseProperty.WordTriple);
+                    this.board[i][j] = new Tile(CaseProperty.WordTriple, i, j);
                 } else if (this.verifyProperty(WORD_2X, i, j)) {
-                    this.board[i][j] = new Tile(CaseProperty.WordDouble);
+                    this.board[i][j] = new Tile(CaseProperty.WordDouble, i, j);
                 } else if (this.verifyProperty(LETTER_3X, i, j)) {
-                    this.board[i][j] = new Tile(CaseProperty.LetterTriple);
+                    this.board[i][j] = new Tile(CaseProperty.LetterTriple, i, j);
                 } else if (this.verifyProperty(LETTER_2X, i, j)) {
-                    this.board[i][j] = new Tile(CaseProperty.LetterDouble);
+                    this.board[i][j] = new Tile(CaseProperty.LetterDouble, i, j);
                 } else {
-                    this.board[i][j] = new Tile(CaseProperty.Normal);
+                    this.board[i][j] = new Tile(CaseProperty.Normal, i, j);
                 }
             }
         }

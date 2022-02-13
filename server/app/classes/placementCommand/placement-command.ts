@@ -6,20 +6,22 @@ import {
     MINIMUM_LETTERS_PLACE_COMMAND,
     MINIMUM_ROW_COLUMN_COMPARISON_LIMIT,
 } from '@common/constants/general-constants';
+import { Tile } from '@common/tile/Tile';
+import * as fs from 'fs';
 import { RowTest } from './../../../assets/row';
 import { PlacementInformations } from './../../placement-informations';
 import { Game } from './../game/game';
+import { PointsCalculator } from './../pointsCalculator/points-calculator';
 
 export class PlacementCommand {
+    static dictionaryArray: string[] = JSON.parse(fs.readFileSync('./assets/dictionnary.json').toString()).words;
+
     static validatedPlaceCommandFormat(commandInformations: string[]): boolean {
-        if (commandInformations.length !== 3) {
-            return false;
-        }
+        if (commandInformations.length !== 3) return false;
         const command: string = commandInformations.join(' ');
         const oneLetterValidWithoutOrientation = /^!placer ([A-O][1-9]|[A-O][1][0-5]) [a-z A-Z]$/;
         const oneLetterValidWithOrientation = /^!placer ([A-O][1-9][hv]|[A-O][1][0-5][hv]) [a-z A-Z]$/;
         const lettersValidPattern = /^!placer ([A-O][1-9][hv]|[A-O][1][0-5][hv]) [a-z A-Z]+$/;
-
         return oneLetterValidWithoutOrientation.test(command) || oneLetterValidWithOrientation.test(command) || lettersValidPattern.test(command);
     }
 
@@ -32,32 +34,63 @@ export class PlacementCommand {
         } else {
             wordCondition = this.wordHasAdjacent(placementInformations, game);
         }
-
         const tileHolderContains = game.tileHolderContains(placementInformations);
-
         return insideBoard && wordCondition && tileHolderContains;
     }
 
     static placeWord(commandInformations: string[], game: Game): boolean {
         const placementInformations = this.separatePlaceCommandInformations(commandInformations);
         game.firstTurn = false;
+        let letterPositions: number[] = [];
         switch (placementInformations.orientation) {
             case 'h': {
-                this.placeWordHorizontal(placementInformations, game);
-                return true;
+                letterPositions = this.placeWordHorizontal(placementInformations, game);
+                break;
             }
             case 'v': {
-                this.placeWordVertical(placementInformations, game);
-                return true;
+                letterPositions = this.placeWordVertical(placementInformations, game);
+                break;
             }
         }
-        return false;
+        if (!this.newWordsValid(commandInformations, game, letterPositions)) {
+            /* setTimeout(() => {
+                console.log('timeout');
+            }, 3000);*/
+
+            this.restoreBoard(commandInformations, game, letterPositions);
+            return false;
+        } else {
+            let lettersToPlace = placementInformations.letters.length;
+            while (lettersToPlace > 0) {
+                game.playerTurn().changeLetter('', game.getRandomLetterReserve());
+                lettersToPlace--;
+            }
+            console.log(game.playerTurn().points);
+            // game.changeTurnTwoPlayers();
+        }
+        return true;
     }
 
-    private static placeWordHorizontal(placementInformations: PlacementInformations, game: Game) {
+    private static restoreBoard(commandInformations: string[], game: Game, letterPositions: number[]) {
+        const placementInformations = this.separatePlaceCommandInformations(commandInformations);
+        for (const position of letterPositions) {
+            if (placementInformations.orientation === 'h') {
+                game.playerTurn().changeLetter('', game.gameBoard.cases[position][placementInformations.row].letter);
+                game.gameBoard.cases[position][placementInformations.row].letter = '';
+                game.gameBoard.cases[position][placementInformations.row].value = 0;
+            } else if (placementInformations.orientation === 'v') {
+                game.playerTurn().changeLetter('', game.gameBoard.cases[placementInformations.column][position].letter);
+                game.gameBoard.cases[placementInformations.column][position].letter = '';
+                game.gameBoard.cases[placementInformations.column][position].value = 0;
+            }
+        }
+    }
+
+    private static placeWordHorizontal(placementInformations: PlacementInformations, game: Game): number[] {
         let letterCount = placementInformations.numberLetters;
         let iter = 0;
         let lettersIter = 0;
+        const positions: number[] = [];
         while (letterCount > 0) {
             if (game.gameBoard.tileContainsLetter(placementInformations.column + iter, placementInformations.row)) {
                 iter++;
@@ -65,17 +98,20 @@ export class PlacementCommand {
             }
             const letterPlace = placementInformations.letters[lettersIter];
             game.gameBoard.addLetterTile(placementInformations.column + iter, placementInformations.row, letterPlace);
-            game.playerTurn().changeLetter(letterPlace, game.getRandomLetterReserve());
+            game.playerTurn().changeLetter(letterPlace, '');
+            positions.push(placementInformations.column + iter);
             lettersIter++;
             iter++;
             letterCount--;
         }
+        return positions;
     }
 
-    private static placeWordVertical(placementInformations: PlacementInformations, game: Game) {
+    private static placeWordVertical(placementInformations: PlacementInformations, game: Game): number[] {
         let letterCount = placementInformations.letters.length;
         let iter = 0;
         let lettersIter = 0;
+        const positions: number[] = [];
         while (letterCount > 0) {
             if (game.gameBoard.tileContainsLetter(placementInformations.column, placementInformations.row + iter)) {
                 iter++;
@@ -83,11 +119,13 @@ export class PlacementCommand {
             }
             const letterPlace = placementInformations.letters[lettersIter];
             game.gameBoard.addLetterTile(placementInformations.column, placementInformations.row + iter, letterPlace);
-            game.playerTurn().changeLetter(letterPlace, game.getRandomLetterReserve());
+            game.playerTurn().changeLetter(letterPlace, '');
+            positions.push(placementInformations.row + iter);
             lettersIter++;
             iter++;
             letterCount--;
         }
+        return positions;
     }
 
     private static separatePlaceCommandInformations(commandInformations: string[]): PlacementInformations {
@@ -112,7 +150,6 @@ export class PlacementCommand {
             orientation,
             numberLetters,
         };
-
         return placementInformations;
     }
 
@@ -122,19 +159,10 @@ export class PlacementCommand {
         let haveTileDown = false;
         let haveTileLeft = false;
         let haveTileRight = false;
-        if (row > MINIMUM_ROW_COLUMN_COMPARISON_LIMIT) {
-            haveTileUp = game.gameBoard.tileContainsLetter(column, row - 1);
-        }
-        if (row < MAXIMUM_ROW_COLUMN_COMPARISON_LIMIT) {
-            haveTileDown = game.gameBoard.tileContainsLetter(column, row + 1);
-        }
-        if (column > MINIMUM_ROW_COLUMN_COMPARISON_LIMIT) {
-            haveTileLeft = game.gameBoard.tileContainsLetter(column - 1, row);
-        }
-        if (column < MAXIMUM_ROW_COLUMN_COMPARISON_LIMIT) {
-            haveTileRight = game.gameBoard.tileContainsLetter(column + 1, row);
-        }
-
+        if (row > MINIMUM_ROW_COLUMN_COMPARISON_LIMIT) haveTileUp = game.gameBoard.tileContainsLetter(column, row - 1);
+        if (row < MAXIMUM_ROW_COLUMN_COMPARISON_LIMIT) haveTileDown = game.gameBoard.tileContainsLetter(column, row + 1);
+        if (column > MINIMUM_ROW_COLUMN_COMPARISON_LIMIT) haveTileLeft = game.gameBoard.tileContainsLetter(column - 1, row);
+        if (column < MAXIMUM_ROW_COLUMN_COMPARISON_LIMIT) haveTileRight = game.gameBoard.tileContainsLetter(column + 1, row);
         return haveTile || haveTileUp || haveTileDown || haveTileLeft || haveTileRight;
     }
 
@@ -144,17 +172,13 @@ export class PlacementCommand {
         let row = placementInformations.row;
         if (placementInformations.orientation === 'h') {
             while (numberLettersToPlace > 0) {
-                if (this.letterHasAdjacent(row, column, game)) {
-                    return true;
-                }
+                if (this.letterHasAdjacent(row, column, game)) return true;
                 numberLettersToPlace--;
                 column++;
             }
         } else if (placementInformations.orientation === 'v') {
             while (numberLettersToPlace > 0) {
-                if (this.letterHasAdjacent(row, column, game)) {
-                    return true;
-                }
+                if (this.letterHasAdjacent(row, column, game)) return true;
                 numberLettersToPlace--;
                 row++;
             }
@@ -168,23 +192,14 @@ export class PlacementCommand {
         let numberLettersToPlace = placementInformations.numberLetters;
         if (placementInformations.orientation === 'h') {
             while (numberLettersToPlace > 0) {
-                if (column > MAXIMUM_ROW_COLUMN) {
-                    return false;
-                }
-
-                if (!game.gameBoard.tileContainsLetter(column, row)) {
-                    numberLettersToPlace--;
-                }
+                if (column > MAXIMUM_ROW_COLUMN) return false;
+                if (!game.gameBoard.tileContainsLetter(column, row)) numberLettersToPlace--;
                 column++;
             }
         } else if (placementInformations.orientation === 'v') {
             while (numberLettersToPlace > 0) {
-                if (row > MAXIMUM_ROW_COLUMN) {
-                    return false;
-                }
-                if (!game.gameBoard.tileContainsLetter(column, row)) {
-                    numberLettersToPlace--;
-                }
+                if (row > MAXIMUM_ROW_COLUMN) return false;
+                if (!game.gameBoard.tileContainsLetter(column, row)) numberLettersToPlace--;
                 row++;
             }
         }
@@ -196,16 +211,122 @@ export class PlacementCommand {
         if (placementInformations.orientation === 'h') {
             for (let i = 0; i < placementInformations.numberLetters; i++) {
                 letterPlacement = placementInformations.column + i;
-                if (letterPlacement === CENTER_ROW_COLUMN && placementInformations.row === CENTER_ROW_COLUMN) {
-                    return true;
-                }
+                if (letterPlacement === CENTER_ROW_COLUMN && placementInformations.row === CENTER_ROW_COLUMN) return true;
             }
         } else if (placementInformations.orientation === 'v') {
             for (let i = 0; i < placementInformations.numberLetters; i++) {
                 letterPlacement = placementInformations.row + i;
-                if (letterPlacement === CENTER_ROW_COLUMN && placementInformations.column === CENTER_ROW_COLUMN) {
-                    return true;
-                }
+                if (letterPlacement === CENTER_ROW_COLUMN && placementInformations.column === CENTER_ROW_COLUMN) return true;
+            }
+        }
+        return false;
+    }
+
+    private static findNewWordsHorizontal(game: Game, placementInformations: PlacementInformations, letterPositions: number[]): Tile[][] {
+        let column = placementInformations.column;
+        let row = placementInformations.row;
+        let word: Tile[] = [];
+        const wordsFormed: Tile[][] = [];
+        while (game.gameBoard.tileContainsLetter(column, placementInformations.row)) {
+            if (column === 0) break;
+            column--;
+        }
+        if (column !== 0) column++;
+        while (game.gameBoard.tileContainsLetter(column, placementInformations.row)) {
+            word = word.concat(game.gameBoard.cases[column][placementInformations.row]);
+            column++;
+            if (column === 15) break;
+        }
+        wordsFormed.push(word);
+        word = [];
+        for (const letterPosition of letterPositions) {
+            while (game.gameBoard.tileContainsLetter(letterPosition, row)) {
+                if (row === 0) break;
+                row--;
+            }
+            if (row !== 0) row++;
+            while (game.gameBoard.tileContainsLetter(letterPosition, row)) {
+                word = word.concat(game.gameBoard.cases[letterPosition][row]);
+                row++;
+                if (row === 15) break;
+            }
+            row = placementInformations.row;
+            wordsFormed.push(word);
+            word = [];
+        }
+        return wordsFormed;
+    }
+    private static findNewWordsVertical(game: Game, placementInformations: PlacementInformations, letterPositions: number[]): Tile[][] {
+        let column = placementInformations.column;
+        let row = placementInformations.row;
+        let word: Tile[] = [];
+        const wordsFormed: Tile[][] = [];
+        while (game.gameBoard.tileContainsLetter(column, row)) {
+            if (row === 0) break;
+            row--;
+        }
+        if (row !== 0) row++;
+        while (game.gameBoard.tileContainsLetter(column, row)) {
+            word = word.concat(game.gameBoard.cases[column][row]);
+            row++;
+            if (row === 15) break;
+        }
+        wordsFormed.push(word);
+        word = [];
+        for (const position of letterPositions) {
+            while (game.gameBoard.tileContainsLetter(column, position)) {
+                if (column === 0) break;
+                column--;
+            }
+            if (column !== 0) column++;
+            while (game.gameBoard.tileContainsLetter(column, position)) {
+                word = word.concat(game.gameBoard.cases[column][position]);
+                column++;
+                if (column === 15) break;
+            }
+            column = placementInformations.column;
+            wordsFormed.push(word);
+            word = [];
+        }
+        return wordsFormed;
+    }
+
+    private static newWordsValid(commandInformations: string[], game: Game, letterPositions: number[]): boolean {
+        const placementInformations = this.separatePlaceCommandInformations(commandInformations);
+        let wordsFormed: Tile[][] = [];
+        if (placementInformations.orientation === 'h') {
+            wordsFormed = this.findNewWordsHorizontal(game, placementInformations, letterPositions);
+        } else if (placementInformations.orientation === 'v') {
+            wordsFormed = this.findNewWordsVertical(game, placementInformations, letterPositions);
+        }
+        wordsFormed = wordsFormed.filter((item) => {
+            return item.length > 1;
+        });
+        for (const word of wordsFormed) {
+            let wordString = '';
+            for (const wordLetter of word) {
+                wordString = wordString.concat(wordLetter.getLetter());
+            }
+            if (!this.validatedWordDictionary(wordString)) return false;
+        }
+        game.playerTurn().points += PointsCalculator.calculatedPointsPlacement(wordsFormed, letterPositions, placementInformations, game);
+        return true;
+    }
+
+    private static validatedWordDictionary(word: string): boolean {
+        if (word.length < 2 || word.includes('-') || word.includes("'")) return false;
+        let leftLimit = 0;
+        let rightLimit = this.dictionaryArray.length - 1;
+        while (leftLimit <= rightLimit) {
+            const middleLimit = leftLimit + Math.floor((rightLimit - leftLimit) / 2);
+            // localeCompare helps us know if the word is before(-1), equivalent(0) or after(1)
+            const comparisonResult = word.localeCompare(this.dictionaryArray[middleLimit], 'en', { sensitivity: 'base' });
+            if (comparisonResult < 0) {
+                rightLimit = middleLimit - 1;
+            } else if (comparisonResult > 0) {
+                leftLimit = middleLimit + 1;
+            } else {
+                return true;
             }
         }
         return false;

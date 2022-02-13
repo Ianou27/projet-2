@@ -12,18 +12,13 @@ export class Game {
     player1: Player;
     player2: Player;
     reserveLetters: string[] = [];
-    /* private dictionary: string; */
 
     constructor() {
-        /* this.dictionary = "Mon dictionnaire"; */
         this.reserveLetters = this.initializeReserveLetters();
         this.player1 = new Player(this.randomLettersInitialization(), true);
         this.player2 = new Player(this.randomLettersInitialization(), false);
         this.gameBoard = new GameBoardService();
-
         this.firstTurn = true;
-        /*         console.log(this.player1.getLetters());
-        console.log(this.player2.getLetters()); */
     }
 
     changeTurnTwoPlayers() {
@@ -64,7 +59,7 @@ export class Game {
     randomLettersInitialization(): Tile[] {
         const letters: Tile[] = [];
         for (let i = 0; i < NUMBER_TILEHOLDER; i++) {
-            const tile: Tile = new Tile(CaseProperty.Normal);
+            const tile: Tile = new Tile(CaseProperty.Normal, 0, i);
             tile.addLetter(this.getRandomLetterReserve());
             letters.push(tile);
         }
