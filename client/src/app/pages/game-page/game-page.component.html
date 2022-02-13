@@ -1,8 +1,5 @@
 <div class="container">
     <app-communication-area></app-communication-area>
-    <section class="play-area-container">
-        <app-play-area class="play-area" tabindex="0"></app-play-area>
-    </section>
     <div id="buttons">
         <button mat-fab color="accent" matTooltip="Quitter la partie" matTooltipPosition="right" id="tooltip" (click)="openDialog()">
             <mat-icon style="transform: rotate(180deg)">exit_to_app</mat-icon>
@@ -11,5 +8,9 @@
             <mat-icon>skip_next</mat-icon>
         </button>
     </div>
+    <section class="play-area-container">
+        <app-play-area class="play-area" tabindex="0"></app-play-area>
+    </section>
+
     <app-information-board></app-information-board>
 </div>
