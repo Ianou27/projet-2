@@ -1,3 +1,4 @@
+import { ExchangeCommand } from '@app/classes/exchangeCommand/exchange-command';
 import { Game } from '@app/classes/game/game';
 import { PlacementCommand } from '@app/classes/placementCommand/placement-command';
 import * as http from 'http';
@@ -200,29 +201,53 @@ export class SocketManager {
                 if (message === undefined || message === null) return;
                 if (message.charAt(0) === '!') {
                     const command = message.split(' ');
-
                     if(!this.commandVerification(command[0])){
                         validCommand =false;
                         console.log("commandVerification");
                         this.sio.to(socket.id).emit('commandValidated');
                         
                     }
+                    else if(command[0] === '!placer')
+                    {
+                     
+                        
+                        if(!this.placeFormatValid(command)){
+                            validCommand =false;
+                            this.sio.to(socket.id).emit('placeFormatValidated');
+                        }
+                        else if(!this.placeBoardValid(command,a)){
+                            validCommand =false;
+                            this.sio.to(socket.id).emit('placeBoardValidated');
+                        }
+                        
+                        if(validCommand){
+                            this.placeWord(command,a);
+                            this.sio.to(currentRoom).emit('modification', a.gameBoard.cases);
+                            this.sio.to(socket.id).emit('tileHolder', a.player1.getLetters());
+                                       
+                        }
+                    }
+
+
+                    else if(command[0] === '!echanger'){
+                        if(!this.exchangeFormatValid(command)){
+                            validCommand =false;
+                            this.sio.to(socket.id).emit('placeFormatValidated');
+                        }
+                        else if(!this.exchangeTileHolderValid(command,a)){
+                            validCommand =false;
+                            this.sio.to(socket.id).emit('placeBoardValidated');
+                        }
+                        
+                        if(validCommand){
+                            this.exchange(command,a);
+                            this.sio.to(currentRoom).emit('modification', a.gameBoard.cases);
+                            this.sio.to(socket.id).emit('tileHolder', a.player1.getLetters());
+                                       
+                        }
+
+                    }
                     
-                    else if(!this.placeFormatValid(command)){
-                        validCommand =false;
-                        this.sio.to(socket.id).emit('placeFormatValidated');
-                    }
-                    else if(!this.placeBoardValid(command,a)){
-                        validCommand =false;
-                        this.sio.to(socket.id).emit('placeBoardValidated');
-                    }
-                    
-                    if(validCommand){
-                        this.placeWord(command,a);
-                        this.sio.to(currentRoom).emit('modification', a.gameBoard.cases);
-                        this.sio.to(socket.id).emit('tileHolder', a.player1.getLetters());
-                                   
-                    }
                     
 
                    
@@ -304,10 +329,14 @@ export class SocketManager {
     joined() {
         return true;
     }
-    placeWord(command: string[], room:any) {
+    placeWord(command: string[], game:any) {
        
     
-        PlacementCommand.placeWord(command, room);
+        PlacementCommand.placeWord(command, game);
+    }
+
+    exchange(command: string[],game:any) {
+        ExchangeCommand.exchangeLetters(command, game);
     }
 
     placeBoardValid(command: string[], game:any): boolean {
@@ -327,6 +356,14 @@ export class SocketManager {
 
     placeFormatValid(command: string[]) {
         return PlacementCommand.validatedPlaceCommandFormat(command);
+    }
+
+    exchangeFormatValid(command: string[]) {
+        return ExchangeCommand.validatedExchangeCommandFormat(command);
+    }
+
+    exchangeTileHolderValid(command: string[], game: any) {
+        return ExchangeCommand.validatedExchangeCommandBoard(command, game);
     }
 
 
