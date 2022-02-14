@@ -1,4 +1,6 @@
-type CallbackSignature = (params: any) => {}
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// eslint-disable-next-line @typescript-eslint/ban-types
+type CallbackSignature = (params: any) => {};
 
 export class SocketTestHelper {
     on(event: string, callback: CallbackSignature): void {
@@ -6,24 +8,31 @@ export class SocketTestHelper {
             this.callbacks.set(event, []);
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.callbacks.get(event)!.push(callback);
     }
 
+    // eslint-disable-next-line no-unused-vars
     emit(event: string, ...params: any): void {
         return;
     }
 
-    disconnect(): void { return; }
+    disconnect(): void {
+        return;
+    }
 
-    peerSideEmit(event: string, params?: any) {
+    peerSideEmit(event: string, params?: any, params2?: any) {
         if (!this.callbacks.has(event)) {
             return;
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         for (const callback of this.callbacks.get(event)!) {
             callback(params);
+            callback(params2);
         }
     }
 
+    // eslint-disable-next-line @typescript-eslint/member-ordering
     private callbacks = new Map<string, CallbackSignature[]>();
 }

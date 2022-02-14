@@ -224,7 +224,7 @@ describe('ChatService', () => {
             expect(updateSpy).toHaveBeenCalled();
         });
 
-        /* it('should handle updatePoint event and set player1 points', () => {
+        it('should handle updatePoint event and set player1 points', () => {
             service.configureBaseSocketFeatures();
             socketTestHelper.peerSideEmit('updatePoint', 'player1', 15);
             expect(service.player1Point).toBe(15);
@@ -234,6 +234,6 @@ describe('ChatService', () => {
             service.configureBaseSocketFeatures();
             socketTestHelper.peerSideEmit('updatePoint', 'player2', 15);
             expect(service.player2Point).toBe(15);
-        }); */
+        });
     });
 });
