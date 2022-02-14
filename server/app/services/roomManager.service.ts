@@ -1,6 +1,7 @@
 import { Game } from '@app/classes/game/game';
 import { Tile } from '@common/tile/Tile';
 import { IdManager } from './idManager.service';
+import {Room} from '@common/types'
 
 export class RoomManager {
    
@@ -22,10 +23,10 @@ export class RoomManager {
         
     }
 
-    joinRoom(username: string, roomObj: any, socketId:string, identification :IdManager):Tile[]{
+    joinRoom(username: string, roomObj: Room, socketId:string, identification :IdManager):Tile[][]{
 
-        let tiles: Tile[] =[];
-        identification.rooms.forEach((element: any) => {
+        let tiles:Tile[][] =[];
+        identification.rooms.forEach((element: Room) => {
             if (roomObj.player1 === element.player1) {
                 let room = roomObj.player1;
                 if (element.player2.length === 0) {
@@ -37,8 +38,8 @@ export class RoomManager {
                     identification.users.push(user);
                     element.player2 = username;
 
-                    
-                    tiles = [element.game.player1.getLetters(),element.game.player2.getLetters()];
+
+                    tiles = [element.game.player1.getLetters(), element.game.player2.getLetters()];
                 }
             }
            
@@ -47,7 +48,7 @@ export class RoomManager {
         return tiles;
     }
 
-    deleteRoom(socketId: any, identification :IdManager) {
+    deleteRoom(socketId: String, identification :IdManager) {
         let username = identification.getUsername(socketId);
         console.log(identification.rooms);
         identification.rooms.forEach((element) => {
