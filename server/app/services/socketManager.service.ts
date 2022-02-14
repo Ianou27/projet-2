@@ -1,11 +1,12 @@
-import { ExchangeCommand } from '@app/classes/exchangeCommand/exchange-command';
+
 import { Game } from '@app/classes/game/game';
-import { PlacementCommand } from '@app/classes/placementCommand/placement-command';
 import * as http from 'http';
 import * as io from 'socket.io';
+import { GameManager } from './gameManager.service';
 
 export class SocketManager {
     private sio: io.Server;
+    private gameManager: GameManager  = new GameManager();
     users: any[] = [];
 
     roomMessages: any = {};
@@ -13,7 +14,7 @@ export class SocketManager {
     rooms: any[] = [];
 
     // commandsList et exclamationIndex à mettre dans un fichier de constantes
-    private commandsList: string[] = ['!placer', '!echanger', '!passer', '!indice'];
+    // private commandsList: string[] = ['!placer', '!echanger', '!passer', '!indice'];
 
     constructor(server: http.Server) {
         this.sio = new io.Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
@@ -23,41 +24,6 @@ export class SocketManager {
         this.sio.on('connection', (socket) => {
             console.log(`Connexion par l'utilisateur avec id : ${socket.id}`);
             // message initial
-
-            socket.on('validate', (message: string) => {
-                if (message === undefined || message === null) return;
-                if (message.charAt(0) === '!') {
-                    const command = this.commandVerification(message);
-                    socket.emit('commandValidated', command);
-                    /* if (isValid) {
-                        this.handleCommand(message.split(' '));
-                        socket.emit('modification', this.gameManager.gameList.gameBoard.cases);
-                    }*/
-                } else {
-                    const isValid = this.lengthVerification(message) && this.characterVerification(message);
-                    socket.emit('wordValidated', isValid);
-                }
-            });
-
-            socket.on('placeFormatVerification', (command: string) => {
-                const commandFormatValid = this.placeFormatValid(command.split(' '));
-                this.sio.to(socket.id).emit('placeFormatValidated', commandFormatValid);
-            });
-
-            socket.on('boardVerification', (command: string) => {
-                // const isValid = this.placeBoardValid(command.split(' '));
-                // this.sio.to(socket.id).emit('placeBoardValidated', isValid);
-            });
-
-            socket.on('placeWord', (command: string) => {
-                // this.placeWord(command.split(' '));
-                // socket.emit('modification', this.gameManager.gameList.gameBoard.cases);
-                // socket.emit('tileHolder', this.gameManager.gameList.player1.getLetters());
-            });
-
-            socket.on('broadcastAll', (message: string) => {
-                this.sio.sockets.emit('massMessage', `${socket.id} : ${message}`);
-            });
 
             socket.on('createRoom', (username: string, room: string) => {
                 const user = {
@@ -183,21 +149,21 @@ export class SocketManager {
                     if (!game.playerTurnValid(this.getPlayer(socket.id))) {
                         validCommand = false;
                         this.sio.to(socket.id).emit('commandValidated');
-                    } else if (!this.commandVerification(command[0])) {
+                    } else if (!this.gameManager.commandVerification(command[0])) {
                         validCommand = false;
                         console.log('commandVerification');
                         this.sio.to(socket.id).emit('commandValidated');
                     } else if (command[0] === '!placer') {
-                        if (!this.placeFormatValid(command)) {
+                        if (!this.gameManager.placeFormatValid(command)) {
                             validCommand = false;
                             this.sio.to(socket.id).emit('placeFormatValidated');
-                        } else if (!this.placeBoardValid(command, game)) {
+                        } else if (!this.gameManager.placeBoardValid(command, game)) {
                             validCommand = false;
                             this.sio.to(socket.id).emit('placeBoardValidated');
                         }
 
                         if (validCommand) {
-                            this.placeWord(command, game);
+                            this.gameManager.placeWord(command, game);
                             this.sio.to(currentRoom).emit('modification', game.gameBoard.cases);
 
                             if (player === 'player1') {
@@ -211,16 +177,16 @@ export class SocketManager {
 
                         }
                     } else if (command[0] === '!echanger') {
-                        if (!this.exchangeFormatValid(command)) {
+                        if (!this.gameManager.exchangeFormatValid(command)) {
                             validCommand = false;
                             this.sio.to(socket.id).emit('placeFormatValidated');
-                        } else if (!this.exchangeTileHolderValid(command, game)) {
+                        } else if (!this.gameManager.exchangeTileHolderValid(command, game)) {
                             validCommand = false;
                             this.sio.to(socket.id).emit('placeBoardValidated');
                         }
 
                         if (validCommand) {
-                            this.exchange(command, game);
+                            this.gameManager.exchange(command, game);
                             this.sio.to(currentRoom).emit('modification', game.gameBoard.cases);
                             if (player === 'player1') {
                                 this.sio.to(socket.id).emit('tileHolder', game.player1.getLetters());
@@ -307,48 +273,8 @@ export class SocketManager {
         return room;
     }
 
-    joined() {
-        return true;
-    }
-    placeWord(command: string[], game: any) {
-        PlacementCommand.placeWord(command, game);
-    }
+  
 
-    exchange(command: string[], game: any) {
-        ExchangeCommand.exchangeLetters(command, game);
-    }
-
-    placeBoardValid(command: string[], game: any): boolean {
-        return PlacementCommand.validatedPlaceCommandBoard(command, game);
-    }
-
-    commandVerification(message: string): boolean {
-        for (const command of this.commandsList) {
-            if (command === message) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    placeFormatValid(command: string[]) {
-        return PlacementCommand.validatedPlaceCommandFormat(command);
-    }
-
-    exchangeFormatValid(command: string[]) {
-        return ExchangeCommand.validatedExchangeCommandFormat(command);
-    }
-
-    exchangeTileHolderValid(command: string[], game: any) {
-        return ExchangeCommand.validatedExchangeCommandBoard(command, game);
-    }
-
-    lengthVerification(message: string) {
-        return message.length > 512 ? false : true;
-    }
-    characterVerification(message: string): boolean {
-        return message.trim().length === 0 ? false : true;
-    }
 
     deleteUser(socketId: any) {
         this.users.forEach((element) => {
