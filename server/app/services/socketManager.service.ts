@@ -1,17 +1,17 @@
+import { Game } from '@app/classes/game/game';
 import * as http from 'http';
 import * as io from 'socket.io';
 import { GameManager } from './gameManager.service';
 import { IdManager } from './idManager.service';
 import { RoomManager } from './roomManager.service';
+import {Room} from '@common/types'
+import {InfoToJoin} from '@common/types'
 
 export class SocketManager {
     private sio: io.Server;
     private gameManager: GameManager = new GameManager();
     private identification: IdManager = new IdManager();
     private roomManager: RoomManager = new RoomManager();
-
-    // commandsList et exclamationIndex à mettre dans un fichier de constantes
-    // private commandsList: string[] = ['!placer', '!echanger', '!passer', '!indice'];
 
     constructor(server: http.Server) {
         this.sio = new io.Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
@@ -27,7 +27,8 @@ export class SocketManager {
                 socket.join(room);
             });
 
-            socket.on('joinRoom', (username: string, roomObj: any) => {
+            socket.on('joinRoom', (username: string, roomObj: Room) => {
+                
                 let player1Id = this.identification.getId(roomObj.player1);
                 const letters = this.roomManager.joinRoom(username, roomObj, socket.id, this.identification);
                 socket.join(roomObj.player1);
@@ -37,7 +38,8 @@ export class SocketManager {
                 this.sio.to(socket.id).emit('tileHolder', letters[1]);
             });
 
-            socket.on('askJoin', (username: string, roomObj: any) => {
+            socket.on('askJoin', (username: string, roomObj: Room) => {
+                
                 this.sio.to(roomObj.player1).emit('asked', username, socket.id, roomObj);
                 this.identification.rooms.forEach((room) => {
                     if (room.player1 === roomObj.player1) {
@@ -48,8 +50,9 @@ export class SocketManager {
                 this.sio.sockets.emit('rooms', this.identification.rooms);
             });
 
-            socket.on('accepted', (socketid: any, infoObj: any) => {
-                this.sio.to(socketid).emit('joining', infoObj);
+            socket.on('accepted', (socketId: string, infoObj: InfoToJoin) => {
+                
+                this.sio.to(socketId).emit('joining', infoObj);
                 let username = this.identification.getUsername(socket.id);
 
                 this.identification.rooms.forEach((room) => {
@@ -59,8 +62,9 @@ export class SocketManager {
                 });
             });
 
-            socket.on('refused', (socketid: any, infoObj: any) => {
-                this.sio.to(socketid).emit('refusing', infoObj);
+            socket.on('refused', (socketId: string, infoObj: InfoToJoin) => {
+                
+                this.sio.to(socketId).emit('refusing', infoObj);
 
                 let username = this.identification.getUsername(socket.id);
 
@@ -76,10 +80,10 @@ export class SocketManager {
             socket.on('roomMessage', (message: string) => {
                 let username = this.identification.getUsername(socket.id);
                 let currentRoom = this.identification.getRoom(socket.id);
-                let game: any;
+                let game: Game = new Game();
                 let player;
 
-                this.identification.rooms.forEach((room: any) => {
+                this.identification.rooms.forEach((room: Room) => {
                     if (room.player1 === username) {
                         game = room.game;
                         player = 'player1';
