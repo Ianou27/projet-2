@@ -21,7 +21,7 @@ export class SocketTestHelper {
         return;
     }
 
-    peerSideEmit(event: string, params?: any, params2?: any) {
+    peerSideEmit(event: string, params?: any) {
         if (!this.callbacks.has(event)) {
             return;
         }
@@ -29,7 +29,18 @@ export class SocketTestHelper {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         for (const callback of this.callbacks.get(event)!) {
             callback(params);
-            callback(params2);
+        }
+    }
+
+    peerEmitMultipleParams(event: string, param?: any, param2?: any) {
+        if (!this.callbacks.has(event)) {
+            return;
+        }
+
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        for (const callback of this.callbacks.get(event)!) {
+            callback(param);
+            callback(param2);
         }
     }
 

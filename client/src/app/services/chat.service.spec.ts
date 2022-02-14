@@ -226,13 +226,13 @@ describe('ChatService', () => {
 
         it('should handle updatePoint event and set player1 points', () => {
             service.configureBaseSocketFeatures();
-            socketTestHelper.peerSideEmit('updatePoint', 'player1', 15);
+            socketTestHelper.peerEmitMultipleParams('updatePoint', 'player1', 15);
             expect(service.player1Point).toBe(15);
         });
 
         it('should handle updatePoint event and set player2 points', () => {
             service.configureBaseSocketFeatures();
-            socketTestHelper.peerSideEmit('updatePoint', 'player2', 15);
+            socketTestHelper.peerEmitMultipleParams('updatePoint', 'player2', 15);
             expect(service.player2Point).toBe(15);
         });
     });
