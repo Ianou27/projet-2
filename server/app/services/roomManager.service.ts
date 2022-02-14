@@ -46,5 +46,18 @@ export class RoomManager {
 
         return tiles;
     }
+
+    deleteRoom(socketId: any, identification :IdManager) {
+        let username = identification.getUsername(socketId);
+        console.log(identification.rooms);
+        identification.rooms.forEach((element) => {
+            if (username === element.player1 || username === element.player2) {
+                let index = identification.rooms.indexOf(element);
+                identification.rooms.splice(index, 1);
+
+                
+            }
+        });
+    }
     
 }

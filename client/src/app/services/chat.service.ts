@@ -65,8 +65,8 @@ export class ChatService {
         // Gérer l'événement envoyé par le serveur : afficher le résultat de validation
         this.socketService.on('wordValidated', (isValid: boolean) => {});
 
-        this.socketService.on('commandValidated', () => {
-            this.roomMessages.push({ username: 'Server', message: 'Commande Invalide' });
+        this.socketService.on('commandValidated', (message:string) => {
+            this.roomMessages.push({ username: 'Server', message: message });
         });
 
         this.socketService.on('tileHolder', (letters: Tile[]) => {
@@ -149,7 +149,7 @@ export class ChatService {
         this.broadcastMessage = '';
     }
     updateRooms() {
-        this.socketService.send('updateRoom', this.allRooms);
+        this.socketService.send('updateRoom');
     }
 
     refused() {
