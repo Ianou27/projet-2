@@ -67,7 +67,6 @@ export class JoinPageComponent implements OnInit {
 
     goHome() {
         this.waitDialog.closeAll();
-        window.location.href = '/home';
     }
 }
 // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
