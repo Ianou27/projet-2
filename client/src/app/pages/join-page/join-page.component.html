@@ -144,11 +144,13 @@
                                         <!-- <mat-error *ngIf="f.confirmName.errors.mustMatch">Choisissez un nom différent que le joueur 1</mat-error> -->
                                     </mat-form-field>
                                 </form>
+                                <p><b>Choisir un nom différent que celui du joueur 1</b></p>
                                 <button
                                     (click)="this.chatService.askJoin(this.name, room)"
                                     (click)="openWaitToJoin()"
                                     mat-raised-button
                                     color="primary"
+                                    [disabled]="this.name === room.player1"
                                     [disabled]="form.invalid"
                                     [mat-dialog-close]
                                     cdkFocusInitial
