@@ -10,3 +10,9 @@ export type InfoToJoin ={
     username:string
     game: Game
 }
+
+export type User={
+    username:string
+    id:string
+    room:string
+}

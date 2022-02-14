@@ -1,11 +1,12 @@
+import {Room} from '@common/types'
+import {User} from '@common/types'
 
 export class IdManager {
-    users: any[] = [];
+    users: User[] = [];
 
-    roomMessages: any = {};
-
-    rooms: any[] = [];
-    getId(username: any): any {
+    public roomMessages = new Map<string, Room[]>();
+    public rooms: Room[] = [];
+    getId(username: string): string {
         let id = '';
         this.users.forEach((element) => {
             if (element.username === username) {
@@ -15,7 +16,7 @@ export class IdManager {
         return id;
     }
 
-    getUsername(socketId: any): any {
+    getUsername(socketId: string): string {
         let username = '';
         this.users.forEach((element) => {
             if (element.id === socketId) {
@@ -25,10 +26,10 @@ export class IdManager {
         return username;
     }
 
-    getPlayer(socketId: any): string {
+    getPlayer(socketId: string): string {
         let player = '';
         let username = this.getUsername(socketId);
-        this.rooms.forEach((room) => {
+        this.rooms.forEach((room:Room) => {
             if (username === room.player1) {
                 player = 'player1';
             } else if (username === room.player2) {
@@ -38,11 +39,11 @@ export class IdManager {
         return player;
     }
 
-    getRoom(id: any): any {
+    getRoom(id: string): string {
         let room = '';
-        this.users.forEach((element) => {
+        this.users.forEach((element:User) => {
             if (element.id === id) {
-                console.log(element.room);
+                
                 room = element.room;
             }
         });
@@ -52,8 +53,8 @@ export class IdManager {
   
 
 
-    deleteUser(socketId: any) {
-        this.users.forEach((element) => {
+    deleteUser(socketId: string) {
+        this.users.forEach((element:User) => {
             if (element.id === socketId) {
                 let index = this.users.indexOf(element);
                 this.users.splice(index, 1);

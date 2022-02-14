@@ -100,8 +100,9 @@ export class SocketManager {
                     if (!game.playerTurnValid(this.identification.getPlayer(socket.id))) {
                         this.sio.to(socket.id).emit('commandValidated', " Ce n'est pas ton tour");
                     } else if (!this.gameManager.commandVerification(command[0])) {
-                        console.log('commandVerification');
+                        
                         this.sio.to(socket.id).emit('commandValidated', ' Commande Invalide');
+                        
                     } else if (command[0] === '!placer') {
                         let verification: string = this.gameManager.placerVerifications(command, game);
 
