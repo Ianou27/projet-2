@@ -3,15 +3,12 @@ import { Game } from '@app/classes/game/game';
 import * as http from 'http';
 import * as io from 'socket.io';
 import { GameManager } from './gameManager.service';
+import { IdManager } from './idManager.service';
 
 export class SocketManager {
     private sio: io.Server;
     private gameManager: GameManager  = new GameManager();
-    users: any[] = [];
-
-    roomMessages: any = {};
-
-    rooms: any[] = [];
+    private identification: IdManager = new IdManager();
 
     // commandsList et exclamationIndex à mettre dans un fichier de constantes
     // private commandsList: string[] = ['!placer', '!echanger', '!passer', '!indice'];
@@ -31,25 +28,25 @@ export class SocketManager {
                     id: socket.id,
                     room,
                 };
-                this.users.push(user);
-                this.roomMessages[room] = [];
+                this.identification.users.push(user);
+                this.identification.roomMessages[room] = [];
                 let j = new Game();
                 const roomObj = {
                     player1: username,
                     player2: '',
                     game: j,
                 };
-                this.rooms.push(roomObj);
+                this.identification.rooms.push(roomObj);
                 console.log('----------');
-                this.users.forEach((element) => console.log(element));
+                this.identification.users.forEach((element) => console.log(element));
 
                 socket.join(room);
             });
 
             socket.on('joinRoom', (username: string, roomObj: any) => {
-                let player1Id = this.getId(roomObj.player1);
+                let player1Id = this.identification.getId(roomObj.player1);
 
-                this.rooms.forEach((element: any) => {
+                this.identification.rooms.forEach((element: any) => {
                     if (roomObj.player1 === element.player1) {
                         let room = roomObj.player1;
                         if (element.player2.length === 0) {
@@ -58,7 +55,7 @@ export class SocketManager {
                                 id: socket.id,
                                 room,
                             };
-                            this.users.push(user);
+                            this.identification.users.push(user);
                             element.player2 = username;
 
                             socket.join(room);
@@ -73,26 +70,26 @@ export class SocketManager {
 
             socket.on('askJoin', (username: string, roomObj: any) => {
                 this.sio.to(roomObj.player1).emit('asked', username, socket.id, roomObj);
-                this.rooms.forEach((room) => {
+                this.identification.rooms.forEach((room) => {
                     if (room.player1 === roomObj.player1) {
                         room.player2 = '-1';
                     }
                 });
 
-                this.sio.sockets.emit('rooms', this.rooms);
+                this.sio.sockets.emit('rooms', this.identification.rooms);
             });
 
             socket.on('accepted', (socketid: any, infoObj: any) => {
                 this.sio.to(socketid).emit('joining', infoObj);
                 let username = '';
-                this.users.forEach((user) => {
+                this.identification.users.forEach((user) => {
                     console.log(socket.id, user.id);
                     if (socket.id === user.id) {
                         username = user.username;
                     }
                 });
 
-                this.rooms.forEach((room) => {
+                this.identification.rooms.forEach((room) => {
                     if (room.player1 === username) {
                         room.player2 = '';
                     }
@@ -104,19 +101,19 @@ export class SocketManager {
 
                 //dup code
                 let username = '';
-                this.users.forEach((user) => {
+                this.identification.users.forEach((user) => {
                     console.log(socket.id, user.id);
                     if (socket.id === user.id) {
                         username = user.username;
                     }
                 });
 
-                this.rooms.forEach((room) => {
+                this.identification.rooms.forEach((room) => {
                     if (room.player1 === username) {
                         room.player2 = '';
                     }
                 });
-                this.sio.sockets.emit('rooms', this.rooms);
+                this.sio.sockets.emit('rooms', this.identification.rooms);
             });
 
             socket.on('roomMessage', (message: string) => {
@@ -125,14 +122,14 @@ export class SocketManager {
                 let game: any;
                 let validCommand: boolean = true;
                 let player;
-                this.users.forEach((element) => {
+                this.identification.users.forEach((element) => {
                     if (element.id === socket.id) {
                         username = element.username;
                         currentRoom = element.room;
                     }
                 });
 
-                this.rooms.forEach((room: any) => {
+                this.identification.rooms.forEach((room: any) => {
                     if (room.player1 === username) {
                         game = room.game;
                         player = 'player1';
@@ -146,7 +143,7 @@ export class SocketManager {
                 if (message.charAt(0) === '!') {
                     const command = message.split(' ');
 
-                    if (!game.playerTurnValid(this.getPlayer(socket.id))) {
+                    if (!game.playerTurnValid(this.identification.getPlayer(socket.id))) {
                         validCommand = false;
                         this.sio.to(socket.id).emit('commandValidated');
                     } else if (!this.gameManager.commandVerification(command[0])) {
@@ -199,101 +196,101 @@ export class SocketManager {
                     const roomSockets = this.sio.sockets.adapter.rooms.get(currentRoom);
                     // Seulement un membre de la salle peut envoyer un message aux autres
                     if (roomSockets?.has(socket.id)) {
-                        this.roomMessages[currentRoom].push({ username, message });
+                        this.identification.roomMessages[currentRoom].push({ username, message });
 
                         this.sio.to(currentRoom).emit('roomMessage', { username, message, player });
                     }
                 }
             });
             socket.on('updateRoom', (a) => {
-                this.sio.sockets.emit('rooms', this.rooms);
+                this.sio.sockets.emit('rooms', this.identification.rooms);
             });
 
             socket.on('deleteRoom', (a) => {
-                let room = this.getRoom(socket.id);
+                let room = this.identification.getRoom(socket.id);
 
                 socket.leave(room);
             });
             socket.on('disconnect', (reason) => {
-                let room = this.getRoom(socket.id);
+                let room = this.identification.getRoom(socket.id);
                 if (room !== '') {
                     socket.leave(room);
                     this.deleteRoom(socket.id);
                     this.sio.to(room).emit('playerDc');
                 }
 
-                this.deleteUser(socket.id);
+                this.identification.deleteUser(socket.id);
                 console.log(`Deconnexion par l'utilisateur avec id : ${socket.id}`);
                 console.log(`Raison de deconnexion : ${reason}`);
             });
         });
     }
 
-    getId(username: any): any {
-        let id = '';
-        this.users.forEach((element) => {
-            if (element.username === username) {
-                id = element.id;
-            }
-        });
-        return id;
-    }
+    // getId(username: any): any {
+    //     let id = '';
+    //     this.users.forEach((element) => {
+    //         if (element.username === username) {
+    //             id = element.id;
+    //         }
+    //     });
+    //     return id;
+    // }
 
-    getUsername(socketId: any): any {
-        let username = '';
-        this.users.forEach((element) => {
-            if (element.id === socketId) {
-                username = element.username;
-            }
-        });
-        return username;
-    }
+    // getUsername(socketId: any): any {
+    //     let username = '';
+    //     this.users.forEach((element) => {
+    //         if (element.id === socketId) {
+    //             username = element.username;
+    //         }
+    //     });
+    //     return username;
+    // }
 
-    getPlayer(socketId: any): string {
-        let player = '';
-        let username = this.getUsername(socketId);
-        this.rooms.forEach((room) => {
-            if (username === room.player1) {
-                player = 'player1';
-            } else if (username === room.player2) {
-                player = 'player2';
-            }
-        });
-        return player;
-    }
+    // getPlayer(socketId: any): string {
+    //     let player = '';
+    //     let username = this.getUsername(socketId);
+    //     this.rooms.forEach((room) => {
+    //         if (username === room.player1) {
+    //             player = 'player1';
+    //         } else if (username === room.player2) {
+    //             player = 'player2';
+    //         }
+    //     });
+    //     return player;
+    // }
 
-    getRoom(id: any): any {
-        let room = '';
-        this.users.forEach((element) => {
-            if (element.id === id) {
-                console.log(element.room);
-                room = element.room;
-            }
-        });
-        return room;
-    }
+    // getRoom(id: any): any {
+    //     let room = '';
+    //     this.users.forEach((element) => {
+    //         if (element.id === id) {
+    //             console.log(element.room);
+    //             room = element.room;
+    //         }
+    //     });
+    //     return room;
+    // }
 
   
 
 
-    deleteUser(socketId: any) {
-        this.users.forEach((element) => {
-            if (element.id === socketId) {
-                let index = this.users.indexOf(element);
-                this.users.splice(index, 1);
-            }
-        });
-    }
+    // deleteUser(socketId: any) {
+    //     this.users.forEach((element) => {
+    //         if (element.id === socketId) {
+    //             let index = this.users.indexOf(element);
+    //             this.users.splice(index, 1);
+    //         }
+    //     });
+    // }
 
     deleteRoom(socketId: any) {
-        let username = this.getUsername(socketId);
-        console.log(this.rooms);
-        this.rooms.forEach((element) => {
+        let username = this.identification.getUsername(socketId);
+        console.log(this.identification.rooms);
+        this.identification.rooms.forEach((element) => {
             if (username === element.player1 || username === element.player2) {
-                let index = this.rooms.indexOf(element);
-                this.rooms.splice(index, 1);
+                let index = this.identification.rooms.indexOf(element);
+                this.identification.rooms.splice(index, 1);
 
-                this.sio.sockets.emit('rooms', this.rooms);
+                this.sio.sockets.emit('rooms', this.identification.rooms);
             }
         });
     }
