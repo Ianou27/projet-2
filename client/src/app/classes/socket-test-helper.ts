@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // eslint-disable-next-line @typescript-eslint/ban-types
-type CallbackSignature = (params: any) => {};
+type CallbackSignature = (param?: any, parma2?: any, param3?: any) => {};
 
 export class SocketTestHelper {
     on(event: string, callback: CallbackSignature): void {
@@ -32,15 +32,25 @@ export class SocketTestHelper {
         }
     }
 
-    peerEmitMultipleParams(event: string, param?: any, param2?: any) {
+    peerEmitTwoParams(event: string, param?: any, param2?: any) {
         if (!this.callbacks.has(event)) {
             return;
         }
 
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         for (const callback of this.callbacks.get(event)!) {
-            callback(param);
-            callback(param2);
+            callback(param, param2);
+        }
+    }
+
+    peerEmitThreeParams(event: string, param?: any, param2?: any, param3?: any) {
+        if (!this.callbacks.has(event)) {
+            return;
+        }
+
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        for (const callback of this.callbacks.get(event)!) {
+            callback(param, param2, param3);
         }
     }
 
