@@ -20,17 +20,8 @@ describe('Points Calculator', () => {
             letters: ['a', 'l', 'l', 'o'],
             numberLetters: 4,
         };
-        /* placementInformations.column = 7;
-        placementInformations.row = 7;
-        placementInformations.orientation = 'h';
-        placementInformations.letters = ['a', 'l', 'l', 'o'];
-        placementInformations.numberLetters = 4;*/
         // eslint-disable-next-line @typescript-eslint/no-magic-numbers
         letterPositions = [7, 8, 9, 10];
-        for (let i = 0; i < placementInformations.letters.length; i++) {
-            game.gameBoard.cases[letterPositions[i]][placementInformations.row].letter = placementInformations.letters[i];
-            game.gameBoard.cases[letterPositions[i]][placementInformations.row].value = letterValue[placementInformations.letters[i]];
-        }
     });
 
     afterEach(() => {
@@ -74,8 +65,60 @@ describe('Points Calculator', () => {
     });
 
     it('method newLetterOnBoard should return true if the letter was just placed', () => {
+        for (let i = 0; i < placementInformations.letters.length; i++) {
+            game.gameBoard.cases[letterPositions[i]][placementInformations.row].letter = placementInformations.letters[i];
+            game.gameBoard.cases[letterPositions[i]][placementInformations.row].value = letterValue[placementInformations.letters[i]];
+        }
         const letter = game.gameBoard.cases[placementInformations.column][placementInformations.row];
         const isNew = PointsCalculator.newLetterOnBoard(letter, letterPositions, placementInformations);
         expect(isNew).to.equal(true);
     });
+
+    it('method newLetterOnBoard should return false if the letter was just placed', () => {
+        for (let i = 0; i < placementInformations.letters.length; i++) {
+            game.gameBoard.cases[letterPositions[i]][placementInformations.row].letter = placementInformations.letters[i];
+            game.gameBoard.cases[letterPositions[i]][placementInformations.row].value = letterValue[placementInformations.letters[i]];
+        }
+        const letter = game.gameBoard.cases[placementInformations.column][placementInformations.row];
+        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+        const wrongLetterPositions = [1, 2, 3, 4];
+        const isNew = PointsCalculator.newLetterOnBoard(letter, wrongLetterPositions, placementInformations);
+        expect(isNew).to.equal(false);
+    });
 });
+
+/* describe('Points', () => {
+    let placement: PlacementInformations;
+    let game: Game;
+    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+    let newLetterPositions: number[];
+
+    beforeEach(() => {
+        game = new Game();
+        placement = {
+            row: 7,
+            column: 7,
+            orientation: 'h',
+            letters: ['A', 'A', 'A', 'A', 'A', 'A', 'A'],
+            numberLetters: 7,
+        };
+        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+        newLetterPositions = [7, 8, 9, 10, 11, 12, 13];
+        for (let i = 0; i < placement.letters.length; i++) {
+            game.gameBoard.cases[newLetterPositions[i]][placement.row].letter = placement.letters[i];
+            game.gameBoard.cases[newLetterPositions[i]][placement.row].value = letterValue[placement.letters[i]];
+        }
+    });
+
+    it('method calculatedPointsPlacement should return the right number of points', () => {
+        const wordsFormed: Tile[][] = [];
+        const word = [];
+        for (let i = 0; i < placement.letters.length; i++) {
+            word.push(game.gameBoard.cases[newLetterPositions[i]][placement.row]);
+        }
+        wordsFormed.push(word);
+        const point = PointsCalculator.calculatedPointsPlacement(wordsFormed, newLetterPositions, placement, game);
+        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+        expect(point).to.equal(66);
+    });
+}); */

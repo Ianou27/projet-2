@@ -11,6 +11,7 @@ export class ExchangeCommand {
             game.reserveLetters.push(letter);
         }
         game.changeTurnTwoPlayers();
+        game.passesCount = 0;
     }
 
     static validatedExchangeCommandBoard(commandInformations: string[], game: Game): boolean {

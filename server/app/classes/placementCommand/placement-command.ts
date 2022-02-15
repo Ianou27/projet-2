@@ -73,6 +73,7 @@ export class PlacementCommand {
             }
             game.firstTurn = false;
             game.changeTurnTwoPlayers();
+            game.passesCount = 0;
         }
         return true;
     }

@@ -1,6 +1,6 @@
 import { CaseProperty } from './../../../../common/assets/case-property';
 import { letterNumber, letterValue } from './../../../../common/assets/reserve-letters';
-import { NUMBER_TILEHOLDER } from './../../../../common/constants/general-constants';
+import { MAXIMUM_PASSES_COUNT, NUMBER_TILEHOLDER } from './../../../../common/constants/general-constants';
 import { Tile } from './../../../../common/tile/Tile';
 import { GameBoardService } from './../../services/gameBoard.service';
 import { Player } from './../player/player';
@@ -10,7 +10,9 @@ export class Game {
     firstTurn: boolean;
     player1: Player;
     player2: Player;
+    passesCount: number;
     reserveLetters: string[] = [];
+    gameFinished: boolean;
 
     constructor() {
         this.reserveLetters = this.initializeReserveLetters();
@@ -18,6 +20,13 @@ export class Game {
         this.player2 = new Player(this.randomLettersInitialization(), false, 'player2');
         this.gameBoard = new GameBoardService();
         this.firstTurn = true;
+        this.passesCount = 0;
+        this.gameFinished = false;
+    }
+
+    verifyGameState() {
+        if (this.passesCount !== MAXIMUM_PASSES_COUNT) return;
+        if (this.reserveLetters.length !== 0) return;
     }
 
     changeTurnTwoPlayers() {
