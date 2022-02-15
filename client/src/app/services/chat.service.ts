@@ -135,4 +135,9 @@ export class ChatService {
         this.socketService.socket.emit('accepted', this.socketWantToJoin, this.informationToJoin);
         this.updateRooms();
     }
+
+    cancelCreation(){
+        this.socketService.socket.emit('cancelCreation');
+        this.updateRooms();
+    }
 }

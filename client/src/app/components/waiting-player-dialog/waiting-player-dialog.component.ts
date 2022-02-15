@@ -15,6 +15,9 @@ export class WaitingPlayerDialogComponent {
         this.multiplayerDialog.open(JoinPageComponent, {
             disableClose: true,
         });
+
+        this.chatService.cancelCreation();
+      
     }
 
     accept() {

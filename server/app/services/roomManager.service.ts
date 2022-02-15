@@ -47,7 +47,24 @@ export class RoomManager {
 
         return tiles;
     }
+    cancelCreation(socketId: string, identification :IdManager) {
+        let username = identification.getUsername(socketId);
+        identification.rooms.forEach((element) => {
 
+
+            if (username === element.player1 ) {
+
+                
+                element.player2 = '-2';
+                this.deleteRoom(socketId,identification);
+                
+                
+            }
+            
+        });
+  
+
+    }
     deleteRoom(socketId: string, identification :IdManager) {
         let username = identification.getUsername(socketId);
         
@@ -56,8 +73,12 @@ export class RoomManager {
 
             if (username === element.player1 ) {
 
-                
-                if(element.player2 ==='-2'){
+                if(element.player2 ===''){
+                    let index = identification.rooms.indexOf(element);
+                    identification.rooms.splice(index, 1);
+                }
+
+                else if(element.player2 ==='-2'){
                     let index = identification.rooms.indexOf(element);
                     identification.rooms.splice(index, 1);
                 }
@@ -77,7 +98,7 @@ export class RoomManager {
                 }
             }
         });
-        console.log(identification.rooms);
+        
 
     }
     
