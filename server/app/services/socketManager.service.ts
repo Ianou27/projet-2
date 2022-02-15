@@ -96,7 +96,21 @@ export class SocketManager {
                         this.sio.to(socket.id).emit('commandValidated', " Ce n'est pas ton tour");
                     } else if (!this.gameManager.commandVerification(command[0])) {
                         this.sio.to(socket.id).emit('commandValidated', 'Erreur de syntaxe');
-                    } else if (command[0] === '!placer') {
+                    } else if (command[0] === '!passer'){
+                        const verification: string = this.gameManager.passVerification(command);
+                        if (verification === 'valide') {
+                            this.gameManager.pass(game);
+                            this.sio.to(currentRoom).emit('roomMessage', {
+                                username: 'Server',
+                                message: username + ' a passé son tour ',
+                                player: 'server',
+                            });
+                            this.sio.to(currentRoom).emit('modification', game.gameBoard.cases, game.playerTurn().name);
+                        }
+                        else{
+                            this.sio.to(socket.id).emit('commandValidated', verification);
+                        }
+                    }else if (command[0] === '!placer') {
                         const verification: string = this.gameManager.placeVerification(command, game);
 
                         if (verification === 'valide') {
