@@ -49,6 +49,14 @@ export class Player {
         }
     }
 
+    getNumberLetters(): number {
+        let counter = 0;
+        for (const tile of this.letters) {
+            if (tile.letter !== '') counter++;
+        }
+        return counter;
+    }
+
     private isUpper(letter: string) {
         return /[A-Z]/.test(letter);
     }
