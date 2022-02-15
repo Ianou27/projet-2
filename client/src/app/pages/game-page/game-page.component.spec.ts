@@ -4,7 +4,6 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
 import { QuitGameDialogComponent } from '@app/components/quit-game-dialog/quit-game-dialog.component';
-import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { GamePageComponent } from './game-page.component';
 
 describe('GamePageComponent', () => {
@@ -17,10 +16,9 @@ describe('GamePageComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [GamePageComponent, SidebarComponent, PlayAreaComponent, QuitGameDialogComponent],
+            declarations: [GamePageComponent, PlayAreaComponent, QuitGameDialogComponent],
             imports: [MatDialogModule],
             providers: [
-                // { provide: LocationStrategy, useClass: MockLocationStrategy },
                 {
                     provide: MatDialog,
                     useValue: {
@@ -35,38 +33,22 @@ describe('GamePageComponent', () => {
 
     beforeEach(() => {
         pushSpy = spyOn(history, 'pushState').and.callThrough();
-        // eslint-disable-next-line dot-notation
-        // popStateSpy = spyOn(component['location'], 'onPopState').and.callThrough();
         fixture = TestBed.createComponent(GamePageComponent);
         component = fixture.componentInstance;
-        // location = TestBed.inject(LocationStrategy);
         fixture.detectChanges();
     });
 
     it('should create', () => {
         expect(component).toBeTruthy();
         expect(pushSpy).toHaveBeenCalled();
-        // expect(popStateSpy).toHaveBeenCalled();
     });
-
-    // it('should call pushState and onPopState on construction', () => {
-    //     const pushSpy = spyOn(history, 'pushState');
-    //     // const popStateSpy = spyOn(component['location'], 'onPopState');
-    //     // new GamePageComponent(dialog, location);
-    //     // expect(popStateSpy).toHaveBeenCalled();
-    //     expect(pushSpy).toHaveBeenCalled();
-    // });
 
     it('should call pushState and openDialog', () => {
         const event = new PopStateEvent('popstate');
-        // const pushSpy = spyOn(history, 'pushState');
         const dialogSpy = spyOn(component, 'openDialog');
-        // new GamePageComponent(dialog, location);
-        // Object.assign(event.state, { foo: 'bar' });
         window.dispatchEvent(event);
         fixture.detectChanges();
         expect(dialogSpy).toHaveBeenCalled();
-        // expect(pushSpy).toHaveBeenCalled();
     });
 
     it('clicking on the quit button should call openDialog', () => {
