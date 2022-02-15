@@ -1,5 +1,13 @@
 import { CaseProperty } from '@common/assets/case-property';
 import { letterValue } from '@common/assets/reserve-letters';
+import {
+    INDEX_OF_NOT_FOUND,
+    NUMBER_TILEHOLDER,
+    POINTS_SEVEN_LETTERS_PLACEMENT,
+    WORD_LETTER_2X_MULTIPLIER,
+    WORD_LETTER_3X_MULTIPLIER,
+    WORD_LETTER_NO_MULTIPLIER,
+} from '@common/constants/general-constants';
 import { Tile } from '@common/tile/Tile';
 import { PlacementInformations } from './../../placement-informations';
 import { Game } from './../game/game';
@@ -8,11 +16,11 @@ export class PointsCalculator {
         let total = 0;
         for (const word of wordsFormed) {
             let totalOneWord = 0;
-            let wordMultiplier = 1;
+            let wordMultiplier = WORD_LETTER_NO_MULTIPLIER;
             for (const letterTile of word) {
                 let row = 0;
                 let column = 0;
-                let letterMultiplier = 1;
+                let letterMultiplier = WORD_LETTER_NO_MULTIPLIER;
                 if (this.newLetterOnBoard(letterTile, letterPositions, placementInformations)) {
                     if (placementInformations.orientation === 'h') {
                         row = placementInformations.row;
@@ -28,32 +36,32 @@ export class PointsCalculator {
             }
             total += totalOneWord * wordMultiplier;
         }
-        if (letterPositions.length === 7) {
-            total += 50;
+        if (letterPositions.length === NUMBER_TILEHOLDER) {
+            total += POINTS_SEVEN_LETTERS_PLACEMENT;
         }
         return total;
     }
 
     private static specialPropertyLetter(column: number, row: number, game: Game): number {
         const specialProperty = game.gameBoard.cases[column][row].getSpecialProperty();
-        if (specialProperty === CaseProperty.LetterDouble) return 2;
-        if (specialProperty === CaseProperty.LetterTriple) return 3;
-        return 1;
+        if (specialProperty === CaseProperty.LetterDouble) return WORD_LETTER_2X_MULTIPLIER;
+        if (specialProperty === CaseProperty.LetterTriple) return WORD_LETTER_3X_MULTIPLIER;
+        return WORD_LETTER_NO_MULTIPLIER;
     }
 
     private static specialPropertyWord(column: number, row: number, game: Game, wordMultiplier: number): number {
         const specialProperty = game.gameBoard.cases[column][row].getSpecialProperty();
-        let multiplier = 1;
-        if (specialProperty === CaseProperty.WordDouble) multiplier = 2;
-        if (specialProperty === CaseProperty.WordTriple) multiplier = 3;
-        if (multiplier === 1) return wordMultiplier;
+        let multiplier = WORD_LETTER_NO_MULTIPLIER;
+        if (specialProperty === CaseProperty.WordDouble) multiplier = WORD_LETTER_2X_MULTIPLIER;
+        if (specialProperty === CaseProperty.WordTriple) multiplier = WORD_LETTER_3X_MULTIPLIER;
+        if (multiplier === WORD_LETTER_NO_MULTIPLIER) return wordMultiplier;
         return multiplier;
     }
 
     private static newLetterOnBoard(letter: Tile, letterPositions: number[], placementInformations: PlacementInformations): boolean {
         if (placementInformations.orientation === 'h') {
-            return letter.positionY === placementInformations.row && letterPositions.indexOf(letter.positionX) !== -1;
+            return letter.positionY === placementInformations.row && letterPositions.indexOf(letter.positionX) !== INDEX_OF_NOT_FOUND;
         }
-        return letter.positionX === placementInformations.column && letterPositions.indexOf(letter.positionY) !== -1;
+        return letter.positionX === placementInformations.column && letterPositions.indexOf(letter.positionY) !== INDEX_OF_NOT_FOUND;
     }
 }

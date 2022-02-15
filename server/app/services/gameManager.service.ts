@@ -1,11 +1,17 @@
-import { ExchangeCommand } from "@app/classes/exchangeCommand/exchange-command";
-import { Game } from "@app/classes/game/game";
-import { PlacementCommand } from "@app/classes/placementCommand/placement-command";
+import { ExchangeCommand } from '@app/classes/exchangeCommand/exchange-command';
+import { Game } from '@app/classes/game/game';
+import { PassCommand } from '@app/classes/passCommand/pass-command';
+import { PlacementCommand } from '@app/classes/placementCommand/placement-command';
+import { MAXIMUM_CHARACTERS_MESSAGE } from '@common/constants/general-constants';
 
 export class GameManager {
     private commandsList: string[] = ['!placer', '!echanger', '!passer', '!indice'];
     placeWord(command: string[], game: Game) {
         PlacementCommand.placeWord(command, game);
+    }
+
+    pass(game: Game) {
+        PassCommand.passTurn(game);
     }
 
     exchange(command: string[], game: Game) {
@@ -14,6 +20,10 @@ export class GameManager {
 
     placeBoardValid(command: string[], game: Game): boolean {
         return PlacementCommand.validatedPlaceCommandBoard(command, game);
+    }
+
+    passCommandValid(command: string[]) {
+        PassCommand.validatedPassCommandFormat(command);
     }
 
     commandVerification(message: string): boolean {
@@ -38,44 +48,37 @@ export class GameManager {
     }
 
     lengthVerification(message: string) {
-        return message.length > 512 ? false : true;
+        return message.length > MAXIMUM_CHARACTERS_MESSAGE ? false : true;
     }
+
     characterVerification(message: string): boolean {
         return message.trim().length === 0 ? false : true;
     }
 
-    messageVerification(message:string):string{
-        let erreur:string = 'valide';
-        if(!this.lengthVerification(message)){
-            erreur= "message trop long"
+    messageVerification(message: string): string {
+        let erreur = 'valide';
+        if (!this.lengthVerification(message)) {
+            erreur = 'Message trop long';
         }
-       return erreur;
+        return erreur;
     }
 
-    placerVerifications(command: string[], game: Game):string{
-        let message:string = 'valide';
+    placerVerifications(command: string[], game: Game): string {
+        let message = 'valide';
         if (!this.placeFormatValid(command)) {
-            
-            message= 'Format non valide';
-           
+            message = 'Entrée invalide';
+        } else if (!this.placeBoardValid(command, game)) {
+            message = 'Commande impossible à réaliser';
         }
-         else if (!this.placeBoardValid(command, game)) {
-        
-            message= 'Placement non valide';
-        }
-
         return message;
-
     }
 
-    echangerVerification(command: string[], game: Game):string{
-        let message:string = 'valide';
+    echangerVerification(command: string[], game: Game): string {
+        let message = 'valide';
         if (!this.exchangeFormatValid(command)) {
-            message= 'Format non valide';
-            
+            message = 'Entrée invalide';
         } else if (!this.exchangeTileHolderValid(command, game)) {
-            
-            message= 'Echange Impossible';
+            message = 'Commande impossible à réaliser';
         }
         return message;
     }

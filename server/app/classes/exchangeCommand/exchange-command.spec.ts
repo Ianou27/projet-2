@@ -2,23 +2,31 @@ import { CaseProperty } from '@common/assets/case-property';
 import { Tile } from '@common/tile/Tile';
 import { expect } from 'chai';
 import { Game } from './../game/game';
-import { Player } from './../player/player';
 import { ExchangeCommand } from './exchange-command';
 
 describe('Exchange Command', () => {
-    let game: Game;
-    const lettersTilePlayer1: Tile[] = [];
-    const hisTurn = true;
+    let game: Game = new Game();
+    let lettersTilePlayer1: Tile[] = [];
     const letters = ['A', 'A', 'A', 'B', 'B', 'B', '*'];
-    for (const letter of letters) {
-        const tile1: Tile = new Tile(CaseProperty.Normal, 0, 0);
-        tile1.addLetter(letter);
-        lettersTilePlayer1.push(tile1);
-    }
 
     beforeEach(() => {
         game = new Game();
-        game.player1 = new Player(lettersTilePlayer1, hisTurn, 'player1');
+        for (const letter of letters) {
+            const tile1: Tile = new Tile(CaseProperty.Normal, 0, 0);
+            tile1.addLetter(letter);
+            lettersTilePlayer1.push(tile1);
+        }
+        game.player1.letters = lettersTilePlayer1;
+    });
+
+    afterEach(() => {
+        lettersTilePlayer1 = [];
+    });
+
+    it('method validatedExchangeCommandFormat should return false if its not starting with a !', () => {
+        const commandNotValid = 'echanger aaabbb';
+        const validation = ExchangeCommand.validatedExchangeCommandFormat(commandNotValid.split(' '));
+        expect(validation).to.equals(false);
     });
 
     it('method validatedExchangeCommandFormat should return false if its not compose of 2 terms', () => {
@@ -46,21 +54,21 @@ describe('Exchange Command', () => {
         expect(validation).to.equals(false);
     });
 
-    it('method exchangeLetters should only exchange letters mention', () => {
-        const commandValid = '!echanger aa';
-        const lettersRemainingExpect = ['A', 'B', 'B', 'B', '*'];
+    it('method exchangeLetters should be able to change *', () => {
+        const commandValid = '!echanger *';
+        const lettersRemainingExpect = ['A', 'A', 'A', 'B', 'B', 'B', 'C'];
+        game.reserveLetters = ['C', 'C', 'C', 'C', 'C', 'C', 'C'];
         ExchangeCommand.exchangeLetters(commandValid.split(' '), game);
         const lettersPlayer = game.player1.lettersToStringArray();
-        lettersPlayer.splice(0, 2);
         expect(lettersRemainingExpect).to.eql(lettersPlayer);
     });
 
-    it('method exchangeLetters should only exchange * if mentions with a capital letter', () => {
-        const commandValid = '!echanger *';
-        const lettersRemainingExpect = ['A', 'A', 'A', 'B', 'B', 'B'];
+    it('method exchangeLetters should be able to change more than one occurrence of a letter', () => {
+        const commandValid = '!echanger aa';
+        const lettersRemainingExpect = ['D', 'D', 'A', 'B', 'B', 'B', '*'];
+        game.reserveLetters = ['D', 'D', 'D', 'D', 'D', 'D', 'D'];
         ExchangeCommand.exchangeLetters(commandValid.split(' '), game);
         const lettersPlayer = game.player1.lettersToStringArray();
-        lettersPlayer.pop();
         expect(lettersRemainingExpect).to.eql(lettersPlayer);
     });
 
