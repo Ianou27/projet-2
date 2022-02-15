@@ -1,7 +1,7 @@
 import { CaseProperty } from './../../../../common/assets/case-property';
+import { letterNumber } from './../../../../common/assets/reserve-letters';
 import { NUMBER_TILEHOLDER } from './../../../../common/constants/general-constants';
 import { Tile } from './../../../../common/tile/Tile';
-import { letterNumber } from './../../../../common/assets/reserve-letters';
 import { GameBoardService } from './../../services/gameBoard.service';
 import { Player } from './../player/player';
 
@@ -33,9 +33,10 @@ export class Game {
         }
     }
 
-    playerTurnValid(playerName: string): boolean {        return playerName === this.playerTurn().name;
+    playerTurnValid(playerName: string): boolean {
+        return playerName === this.playerTurn().name;
     }
-;
+
     getRandomLetterReserve(): string {
         const reserveLength = this.reserveLetters.length;
         if (reserveLength === 0) {
