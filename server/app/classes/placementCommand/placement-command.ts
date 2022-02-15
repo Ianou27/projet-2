@@ -142,7 +142,14 @@ export class PlacementCommand {
         const letters = commandInformations[2].split('');
         let orientation = '';
         let column = 0;
-        if (numberLettersCommand === MINIMUM_LETTERS_PLACE_COMMAND) {
+        if (numberLetters === 1 && MINIMUM_LETTERS_PLACE_COMMAND - 1) {
+            orientation = 'v';
+            column = Number(positionOrientation[1]) - 1;
+            orientation = positionOrientation[2];
+        } else if (numberLetters === 1 && MINIMUM_LETTERS_PLACE_COMMAND) {
+            orientation = positionOrientation[3];
+            column = Number(positionOrientation[1] + positionOrientation[2]) - 1;
+        } else if (numberLettersCommand === MINIMUM_LETTERS_PLACE_COMMAND) {
             orientation = positionOrientation[2];
             column = Number(positionOrientation[1]) - 1;
         } else {
