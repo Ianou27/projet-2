@@ -1,5 +1,4 @@
 import { CaseProperty } from '@common/assets/case-property';
-import { letterValue } from '@common/assets/reserve-letters';
 import {
     INDEX_OF_NOT_FOUND,
     NUMBER_TILEHOLDER,
@@ -32,7 +31,7 @@ export class PointsCalculator {
                     letterMultiplier = this.specialPropertyLetter(column, row, game);
                     wordMultiplier = this.specialPropertyWord(column, row, game, wordMultiplier);
                 }
-                totalOneWord += letterValue[letterTile.letter] * letterMultiplier;
+                totalOneWord += letterTile.value * letterMultiplier;
             }
             total += totalOneWord * wordMultiplier;
         }

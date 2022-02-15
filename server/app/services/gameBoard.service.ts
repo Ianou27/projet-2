@@ -31,9 +31,13 @@ export class GameBoardService {
     }
 
     addLetterTile(positionX: number, positionY: number, letter: string): void {
-        letter = letter.toUpperCase();
+        if (this.isUpperCase(letter)) {
+            this.cases[positionX][positionY].value = 0;
+        } else {
+            letter = letter.toUpperCase();
+            this.cases[positionX][positionY].value = letterValue[letter];
+        }
         this.cases[positionX][positionY].letter = letter;
-        this.cases[positionX][positionY].value = letterValue[letter];
     }
 
     private verifyProperty(property: Vec2[], positionX: number, positionY: number): boolean {
@@ -43,5 +47,9 @@ export class GameBoardService {
             }
         }
         return false;
+    }
+
+    private isUpperCase(letter: string): boolean {
+        return letter === letter.toUpperCase();
     }
 }

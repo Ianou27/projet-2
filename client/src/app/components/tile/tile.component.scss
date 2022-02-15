@@ -33,3 +33,14 @@
     display: grid;
     grid-template-rows: 20px 10px;
 }
+
+.tileBlankLetter {
+    z-index: 1;
+    height: 50px;
+    width: 50px;
+    border-radius: 4px;
+    background-color: #f7d8b5;
+    display: grid;
+    grid-template-rows: 20px 10px;
+    color: firebrick;
+}
