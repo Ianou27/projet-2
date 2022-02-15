@@ -32,6 +32,8 @@ export class ChatService {
     player1ChevaletLetters: number = 7;
     player2ChevaletLetters: number = 7;
     reserve: number = 88;
+
+    timer:number =0;
     constructor(public socketService: SocketClientService, public boardService: BoardService, public tileHolderService: TileHolderService) {}
 
     get socketId() {
@@ -99,6 +101,9 @@ export class ChatService {
         this.socketService.on('refusing', (obj: InfoToJoin) => {
             this.informationToJoin = obj;
             this.gotRefused = true;
+        });
+        this.socketService.on('timer', (timer:number) => {
+            this.timer = timer;
         });
 
         this.socketService.socket.on('asked', (username: string, socket: string, roomObj: Room) => {

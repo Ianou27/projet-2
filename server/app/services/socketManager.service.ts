@@ -5,13 +5,14 @@ import * as io from 'socket.io';
 import { GameManager } from './gameManager.service';
 import { IdManager } from './idManager.service';
 import { RoomManager } from './roomManager.service';
-
+import { Timer } from './timerManager.service';
 export class SocketManager {
     gameManager: GameManager = new GameManager();
     identification: IdManager = new IdManager();
     roomManager: RoomManager = new RoomManager();
-    private sio: io.Server;
-
+    timerManager: Timer = new Timer();
+    sio: io.Server;
+    timeLeft: number = 10;
     constructor(server: http.Server) {
         this.sio = new io.Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
     }
@@ -33,6 +34,7 @@ export class SocketManager {
 
                 this.sio.to(socket.id).emit('tileHolder', letters[1]);
                 this.sio.to(roomObj.player1).emit('startGame', roomObj.player1, username);
+                this.timerManager.start(socket.id,this.identification,this.sio,this.gameManager);
             });
 
             socket.on('askJoin', (username: string, roomObj: Room) => {
@@ -119,6 +121,7 @@ export class SocketManager {
                                 this.sio.to(socket.id).emit('commandValidated', message);
                             }
                             else {
+                                this.timerManager.reset();
                                 this.sio
                                 .to(currentRoom)
                                 .emit(
@@ -151,6 +154,7 @@ export class SocketManager {
 
                         if (verification === 'valide') {
                             this.gameManager.exchange(command, game);
+                            this.timerManager.reset();
                             this.sio.to(currentRoom).emit('modification', game.gameBoard.cases, game.playerTurn().name);
                             this.sio.to(socket.id).emit('roomMessage', {
                                 username: 'Server',
@@ -200,6 +204,7 @@ export class SocketManager {
                 }
                 else{
                     this.gameManager.pass(game);
+                    this.timerManager.reset();
                     this.sio.to(currentRoom).emit('roomMessage', {
                         username: 'Server',
                         message: username + ' a passé son tour ',
@@ -209,7 +214,11 @@ export class SocketManager {
                 }
             });
 
+            socket.on('timer', () => {
+                
+               
 
+            });
             socket.on('finPartie', () => {});
 
             socket.on('cancelCreation', () => {
@@ -217,6 +226,7 @@ export class SocketManager {
                 this.identification.deleteUser(socket.id);
             });
             socket.on('disconnect', (reason) => {
+                this.timerManager.stop();
                 const room = this.identification.getRoom(socket.id);
                 if (room !== '') {
                     socket.leave(room);
@@ -231,4 +241,7 @@ export class SocketManager {
             });
         });
     }
+
+
+    
 }
