@@ -32,7 +32,8 @@ export class ChatService {
     player1ChevaletLetters: number = 7;
     player2ChevaletLetters: number = 7;
     reserve: number = 88;
-
+    gameOver:boolean=false;
+    winner:string = '';
     timer:number =0;
     constructor(public socketService: SocketClientService, public boardService: BoardService, public tileHolderService: TileHolderService) {}
 
@@ -97,7 +98,12 @@ export class ChatService {
             this.player1Username = player1;
             this.player2Username = player2;
         });
-
+        this.socketService.socket.on('endGame', (winner:string) => {
+            
+            this.gameOver= true;
+            this.winner =winner;
+            console.log(winner);
+        });    
         this.socketService.on('refusing', (obj: InfoToJoin) => {
             this.informationToJoin = obj;
             this.gotRefused = true;

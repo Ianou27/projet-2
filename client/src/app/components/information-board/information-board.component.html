@@ -19,5 +19,12 @@
         <div id="reserve-left">{{ this.chatService.reserve }} lettre(s) restante(s) dans la réserve</div>
 
         <div id="timer">{{ this.chatService.timer | formatTime }}</div>
+        
     </div>
+ 
+   
+   
+    
 </div>
+ <div *ngIf="this.chatService.gameOver && this.chatService.winner === 'tie' " class="winner"> La partie s'est terminé en égalité</div>
+<div *ngIf="this.chatService.gameOver && this.chatService.winner !== 'tie' " class="winner"> {{this.chatService.winner}} a gagné la partie FÉLICITATION </div>

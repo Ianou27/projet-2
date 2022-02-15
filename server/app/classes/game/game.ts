@@ -13,7 +13,7 @@ export class Game {
     passesCount: number;
     reserveLetters: string[] = [];
     gameFinished: boolean;
-    winner: Player;
+    winner: string;
 
     constructor() {
         this.reserveLetters = this.initializeReserveLetters();
@@ -83,8 +83,12 @@ export class Game {
     }
 
     private setWinner() {
-        if (this.player1.points > this.player2.points) this.winner = this.player1;
-        if (this.player1.points < this.player2.points) this.winner = this.player2;
+        if (this.player1.points > this.player2.points) this.winner = this.player1.name;
+        else if (this.player1.points < this.player2.points) this.winner = this.player2.name;
+        else{
+            this.winner = 'tie';
+        }
+
     }
 
     private endGame() {
