@@ -143,7 +143,9 @@ export class ChatService {
         this.socketService.socket.emit('joinRoom', this.informationToJoin.username, this.informationToJoin.roomObj);
         this.updateRooms();
     }
-
+    passerTour(){
+        this.socketService.send('passer');
+    }
     sendToRoom() {
         this.socketService.send('roomMessage', this.roomMessage);
         this.roomMessage = '';
