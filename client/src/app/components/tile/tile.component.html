@@ -1,9 +1,14 @@
-<div *ngIf='letter !== ""' class="tile">
+<div *ngIf="letter !== '' && value !== 0" class="tile">
     <p id="letter" [style.font-size.px]="21">{{ letter }}</p>
     <p id="value" [style.font-size.px]="12">{{ value }}</p>
 </div>
 
-<div *ngIf='letter === ""' class="tileEmpty">
+<div *ngIf="letter === ''" class="tileEmpty">
     <p></p>
     <p></p>
+</div>
+
+<div *ngIf="letter !== '' && value === 0" class="tileBlankLetter">
+    <p id="letter" [style.font-size.px]="21">{{ letter }}</p>
+    <p id="value" [style.font-size.px]="12">{{ value }}</p>
 </div>
