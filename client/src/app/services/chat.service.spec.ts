@@ -136,6 +136,10 @@ describe('ChatService', () => {
     });
 
     describe('Receiving events', () => {
+        beforeEach(() => {
+            service.configureBaseSocketFeatures();
+        });
+
         it('should handle wordValidated event', () => {
             service.configureBaseSocketFeatures();
             socketTestHelper.peerSideEmit('wordValidated', true);
@@ -254,6 +258,12 @@ describe('ChatService', () => {
             socketTestHelper.peerSideEmit('asked', 'username');
             expect(service.informationToJoin.username).toBe('username');
             expect(service.playerJoined).toBeTruthy();
+        });
+
+        it('should handle timer event', () => {
+            service.configureBaseSocketFeatures();
+            socketTestHelper.peerSideEmit('timer', 30);
+            expect(service.timer).toBe(30);
         });
 
         it('should handle playerDc event', () => {
