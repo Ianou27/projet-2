@@ -1,5 +1,7 @@
 import {
     CENTER_ROW_COLUMN,
+    COLUMN_ROWS_MINIMUM,
+    COLUMN_ROWS_NUMBER,
     MAXIMUM_LETTERS_PLACE_COMMAND,
     MAXIMUM_ROW_COLUMN,
     MAXIMUM_ROW_COLUMN_COMPARISON_LIMIT,
@@ -47,16 +49,13 @@ export class PlacementCommand {
                 letterPositions = this.placeWordHorizontal(placementInformations, game);
                 break;
             }
-            case 'v': {
+            default: {
                 letterPositions = this.placeWordVertical(placementInformations, game);
                 break;
             }
         }
         if (!this.newWordsValid(commandInformations, game, letterPositions)) {
-            /* setTimeout(() => {
-                console.log('timeout');
-            }, 3000);*/
-
+            // timeout
             this.restoreBoard(commandInformations, game, letterPositions);
             return false;
         } else {
@@ -65,7 +64,6 @@ export class PlacementCommand {
                 game.playerTurn().changeLetter('', game.getRandomLetterReserve());
                 lettersToPlace--;
             }
-            console.log(game.playerTurn().points);
             game.changeTurnTwoPlayers();
         }
         return true;
@@ -78,7 +76,7 @@ export class PlacementCommand {
                 game.playerTurn().changeLetter('', game.gameBoard.cases[position][placementInformations.row].letter);
                 game.gameBoard.cases[position][placementInformations.row].letter = '';
                 game.gameBoard.cases[position][placementInformations.row].value = 0;
-            } else if (placementInformations.orientation === 'v') {
+            } else {
                 game.playerTurn().changeLetter('', game.gameBoard.cases[placementInformations.column][position].letter);
                 game.gameBoard.cases[placementInformations.column][position].letter = '';
                 game.gameBoard.cases[placementInformations.column][position].value = 0;
@@ -176,7 +174,7 @@ export class PlacementCommand {
                 numberLettersToPlace--;
                 column++;
             }
-        } else if (placementInformations.orientation === 'v') {
+        } else {
             while (numberLettersToPlace > 0) {
                 if (this.letterHasAdjacent(row, column, game)) return true;
                 numberLettersToPlace--;
@@ -196,7 +194,7 @@ export class PlacementCommand {
                 if (!game.gameBoard.tileContainsLetter(column, row)) numberLettersToPlace--;
                 column++;
             }
-        } else if (placementInformations.orientation === 'v') {
+        } else {
             while (numberLettersToPlace > 0) {
                 if (row > MAXIMUM_ROW_COLUMN) return false;
                 if (!game.gameBoard.tileContainsLetter(column, row)) numberLettersToPlace--;
@@ -213,7 +211,7 @@ export class PlacementCommand {
                 letterPlacement = placementInformations.column + i;
                 if (letterPlacement === CENTER_ROW_COLUMN && placementInformations.row === CENTER_ROW_COLUMN) return true;
             }
-        } else if (placementInformations.orientation === 'v') {
+        } else {
             for (let i = 0; i < placementInformations.numberLetters; i++) {
                 letterPlacement = placementInformations.row + i;
                 if (letterPlacement === CENTER_ROW_COLUMN && placementInformations.column === CENTER_ROW_COLUMN) return true;
@@ -228,27 +226,27 @@ export class PlacementCommand {
         let word: Tile[] = [];
         const wordsFormed: Tile[][] = [];
         while (game.gameBoard.tileContainsLetter(column, placementInformations.row)) {
-            if (column === 0) break;
+            if (column === COLUMN_ROWS_MINIMUM) break;
             column--;
         }
-        if (column !== 0) column++;
+        if (column !== COLUMN_ROWS_MINIMUM) column++;
         while (game.gameBoard.tileContainsLetter(column, placementInformations.row)) {
             word = word.concat(game.gameBoard.cases[column][placementInformations.row]);
             column++;
-            if (column === 15) break;
+            if (column === COLUMN_ROWS_NUMBER) break;
         }
         wordsFormed.push(word);
         word = [];
         for (const letterPosition of letterPositions) {
             while (game.gameBoard.tileContainsLetter(letterPosition, row)) {
-                if (row === 0) break;
+                if (row === COLUMN_ROWS_MINIMUM) break;
                 row--;
             }
-            if (row !== 0) row++;
+            if (row !== COLUMN_ROWS_MINIMUM) row++;
             while (game.gameBoard.tileContainsLetter(letterPosition, row)) {
                 word = word.concat(game.gameBoard.cases[letterPosition][row]);
                 row++;
-                if (row === 15) break;
+                if (row === COLUMN_ROWS_NUMBER) break;
             }
             row = placementInformations.row;
             wordsFormed.push(word);
@@ -262,27 +260,27 @@ export class PlacementCommand {
         let word: Tile[] = [];
         const wordsFormed: Tile[][] = [];
         while (game.gameBoard.tileContainsLetter(column, row)) {
-            if (row === 0) break;
+            if (row === COLUMN_ROWS_MINIMUM) break;
             row--;
         }
-        if (row !== 0) row++;
+        if (row !== COLUMN_ROWS_MINIMUM) row++;
         while (game.gameBoard.tileContainsLetter(column, row)) {
             word = word.concat(game.gameBoard.cases[column][row]);
             row++;
-            if (row === 15) break;
+            if (row === COLUMN_ROWS_NUMBER) break;
         }
         wordsFormed.push(word);
         word = [];
         for (const position of letterPositions) {
             while (game.gameBoard.tileContainsLetter(column, position)) {
-                if (column === 0) break;
+                if (column === COLUMN_ROWS_MINIMUM) break;
                 column--;
             }
-            if (column !== 0) column++;
+            if (column !== COLUMN_ROWS_MINIMUM) column++;
             while (game.gameBoard.tileContainsLetter(column, position)) {
                 word = word.concat(game.gameBoard.cases[column][position]);
                 column++;
-                if (column === 15) break;
+                if (column === COLUMN_ROWS_NUMBER) break;
             }
             column = placementInformations.column;
             wordsFormed.push(word);
