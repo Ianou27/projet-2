@@ -7,10 +7,10 @@ import { IdManager } from './idManager.service';
 import { RoomManager } from './roomManager.service';
 
 export class SocketManager {
+    gameManager: GameManager = new GameManager();
+    identification: IdManager = new IdManager();
+    roomManager: RoomManager = new RoomManager();
     private sio: io.Server;
-    private gameManager: GameManager = new GameManager();
-    private identification: IdManager = new IdManager();
-    private roomManager: RoomManager = new RoomManager();
 
     constructor(server: http.Server) {
         this.sio = new io.Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
@@ -74,7 +74,7 @@ export class SocketManager {
             socket.on('roomMessage', (message: string) => {
                 const username = this.identification.getUsername(socket.id);
                 const currentRoom = this.identification.getRoom(socket.id);
-                let player2Id: string = '';
+                let player2Id = '';
                 let game: Game = new Game();
                 let player;
 
@@ -110,13 +110,11 @@ export class SocketManager {
                                     game.player1.getLetters().length,
                                     game.player2.getLetters().length,
                                 );
-                            this.sio
-                                .to(currentRoom)
-                                .emit('roomMessage', {
-                                    username: 'Server',
-                                    message: username + ' a placé le mot ' + command[2] + ' en ' + command[1],
-                                    player: 'server',
-                                });
+                            this.sio.to(currentRoom).emit('roomMessage', {
+                                username: 'Server',
+                                message: username + ' a placé le mot ' + command[2] + ' en ' + command[1],
+                                player: 'server',
+                            });
                             this.sio.to(currentRoom).emit('modification', game.gameBoard.cases, game.playerTurn().name);
 
                             if (player === 'player1') {
@@ -135,20 +133,16 @@ export class SocketManager {
                         if (verification === 'valide') {
                             this.gameManager.exchange(command, game);
                             this.sio.to(currentRoom).emit('modification', game.gameBoard.cases, game.playerTurn().name);
-                            this.sio
-                                .to(socket.id)
-                                .emit('roomMessage', {
-                                    username: 'Server',
-                                    message: 'vous avez echangé les lettres ' + command[1],
-                                    player: 'server',
-                                });
-                            this.sio
-                                .to(player2Id)
-                                .emit('roomMessage', {
-                                    username: 'Server',
-                                    message: 'votre adversaire a echangé ' + command[1].length + ' lettres',
-                                    player: 'server',
-                                });
+                            this.sio.to(socket.id).emit('roomMessage', {
+                                username: 'Server',
+                                message: 'vous avez echangé les lettres ' + command[1],
+                                player: 'server',
+                            });
+                            this.sio.to(player2Id).emit('roomMessage', {
+                                username: 'Server',
+                                message: 'votre adversaire a echangé ' + command[1].length + ' lettres',
+                                player: 'server',
+                            });
 
                             if (player === 'player1') {
                                 this.sio.to(socket.id).emit('tileHolder', game.player1.getLetters());
