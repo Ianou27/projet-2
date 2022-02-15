@@ -52,13 +52,33 @@ export class RoomManager {
         let username = identification.getUsername(socketId);
         
         identification.rooms.forEach((element) => {
-            if (username === element.player1 || username === element.player2) {
-                let index = identification.rooms.indexOf(element);
-                identification.rooms.splice(index, 1);
+
+
+            if (username === element.player1 ) {
 
                 
+                if(element.player2 ==='-2'){
+                    let index = identification.rooms.indexOf(element);
+                    identification.rooms.splice(index, 1);
+                }
+                else{
+                    element.player1 ='-2';
+                }
+                
+                
+            }
+            else if(username === element.player2 ){
+                if(element.player1 ==='-2'){
+                    let index = identification.rooms.indexOf(element);
+                    identification.rooms.splice(index, 1);
+                }
+                else{
+                    element.player2 ='-2';
+                }
             }
         });
+        console.log(identification.rooms);
+
     }
     
 }

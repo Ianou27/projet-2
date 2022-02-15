@@ -90,7 +90,7 @@ export class ChatService {
 
         this.socketService.on('playerDc', () => {
             this.roomMessages.push({ username: 'Server', message: '  Partie interrompue : joueur deconnecté', player: 'server' });
-            this.socketService.send('deleteRoom');
+            this.socketService.send('finPartie');
             this.updateRooms();
         });
 

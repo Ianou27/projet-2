@@ -134,10 +134,10 @@ export class SocketManager {
                 this.sio.sockets.emit('rooms', this.identification.rooms);
             });
 
-            socket.on('deleteRoom', () => {
-                const room = this.identification.getRoom(socket.id);
+            socket.on('finPartie', () => {
+                // const room = this.identification.getRoom(socket.id);
 
-                socket.leave(room);
+                // socket.leave(room);
             });
             socket.on('disconnect', (reason) => {
                 const room = this.identification.getRoom(socket.id);
