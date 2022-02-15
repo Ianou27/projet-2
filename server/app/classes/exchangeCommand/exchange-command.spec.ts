@@ -18,7 +18,7 @@ describe('Exchange Command', () => {
 
     beforeEach(() => {
         game = new Game();
-        game.player1 = new Player(lettersTilePlayer1, hisTurn);
+        game.player1 = new Player(lettersTilePlayer1, hisTurn, 'player1');
     });
 
     it('method validatedExchangeCommandFormat should return false if its not compose of 2 terms', () => {

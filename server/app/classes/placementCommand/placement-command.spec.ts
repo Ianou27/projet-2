@@ -11,14 +11,14 @@ describe('Placement Command', () => {
     const hisTurn = true;
     const letters = ['A', 'L', 'L', '*', 'E', 'E', 'V'];
     for (const letter of letters) {
-        const tile1: Tile = new Tile(CaseProperty.Normal);
+        const tile1: Tile = new Tile(CaseProperty.Normal, 0, 0);
         tile1.addLetter(letter);
         lettersTilePlayer1.push(tile1);
     }
 
     beforeEach(() => {
         game = new Game();
-        game.player1 = new Player(lettersTilePlayer1, hisTurn);
+        game.player1 = new Player(lettersTilePlayer1, hisTurn, 'player1');
     });
 
     it('method validatedPlaceCommandFormat should return false if its not compose of 3 terms', () => {
@@ -82,7 +82,7 @@ describe('Placement Command', () => {
         const firstWordCommand = '!placer H8v alle';
         const secondWordCommandNotValid = '!placer A3h va';
         PlacementCommand.placeWord(firstWordCommand.split(' '), game);
-        game.player1 = new Player(lettersTilePlayer1, hisTurn);
+        game.player1 = new Player(lettersTilePlayer1, hisTurn, 'player1');
         const result = PlacementCommand.validatedPlaceCommandBoard(secondWordCommandNotValid.split(' '), game);
         expect(result).to.equal(false);
     });
@@ -91,7 +91,7 @@ describe('Placement Command', () => {
         const firstWordCommand = '!placer H8v alle';
         const secondWordCommandNotValid = '!placer A3v va';
         PlacementCommand.placeWord(firstWordCommand.split(' '), game);
-        game.player1 = new Player(lettersTilePlayer1, hisTurn);
+        game.player1 = new Player(lettersTilePlayer1, hisTurn, 'player1');
         const result = PlacementCommand.validatedPlaceCommandBoard(secondWordCommandNotValid.split(' '), game);
         expect(result).to.equal(false);
     });
@@ -100,7 +100,7 @@ describe('Placement Command', () => {
         const firstWordCommand = '!placer H8h alle';
         const secondWordCommandNotValid = '!placer H7h ve';
         PlacementCommand.placeWord(firstWordCommand.split(' '), game);
-        game.player1 = new Player(lettersTilePlayer1, hisTurn);
+        game.player1 = new Player(lettersTilePlayer1, hisTurn, 'player1');
         const result = PlacementCommand.validatedPlaceCommandBoard(secondWordCommandNotValid.split(' '), game);
         expect(result).to.equal(true);
     });
@@ -109,7 +109,7 @@ describe('Placement Command', () => {
         const firstWordCommand = '!placer H8v alle';
         const secondWordCommandNotValid = '!placer G8v ve';
         PlacementCommand.placeWord(firstWordCommand.split(' '), game);
-        game.player1 = new Player(lettersTilePlayer1, hisTurn);
+        game.player1 = new Player(lettersTilePlayer1, hisTurn, 'player1');
         const result = PlacementCommand.validatedPlaceCommandBoard(secondWordCommandNotValid.split(' '), game);
         expect(result).to.equal(true);
     });
@@ -118,7 +118,7 @@ describe('Placement Command', () => {
         const firstWordCommand = '!placer H8v alle';
         const secondWordCommandNotValid = '!placer G8v ve';
         PlacementCommand.placeWord(firstWordCommand.split(' '), game);
-        game.player1 = new Player(lettersTilePlayer1, hisTurn);
+        game.player1 = new Player(lettersTilePlayer1, hisTurn, 'player1');
         const result = PlacementCommand.placeWord(secondWordCommandNotValid.split(' '), game);
         expect(result).to.equal(true);
     });
@@ -127,7 +127,7 @@ describe('Placement Command', () => {
         const firstWordCommand = '!placer H8h alle';
         const secondWordCommandNotValid = '!placer G8h ve';
         PlacementCommand.placeWord(firstWordCommand.split(' '), game);
-        game.player1 = new Player(lettersTilePlayer1, hisTurn);
+        game.player1 = new Player(lettersTilePlayer1, hisTurn, 'player1');
         const result = PlacementCommand.placeWord(secondWordCommandNotValid.split(' '), game);
         expect(result).to.equal(true);
     });
