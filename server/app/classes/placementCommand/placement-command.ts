@@ -7,6 +7,7 @@ import {
     MAXIMUM_ROW_COLUMN_COMPARISON_LIMIT,
     MINIMUM_LETTERS_PLACE_COMMAND,
     MINIMUM_ROW_COLUMN_COMPARISON_LIMIT,
+    VERIFY_WORD,
 } from '@common/constants/general-constants';
 import { Tile } from '@common/tile/Tile';
 import { RowTest } from './../../../assets/row';
@@ -58,9 +59,12 @@ export class PlacementCommand {
             }
         }
         if (!this.newWordsValid(commandInformations, game, letterPositions)) {
-            // timeout
-            this.restoreBoard(commandInformations, game, letterPositions);
-            return false;
+            // Retirer les lettres du chevalet et les mettre sur la grid
+            // Les fcts dans le timeout retire les lettres de la grid et les remettent dans le chevalet après 3 sec (VERIFY_WORD)
+            setTimeout(() => {
+                this.restoreBoard(commandInformations, game, letterPositions);
+                return false;
+            }, VERIFY_WORD);
         } else {
             let lettersToPlace = placementInformations.letters.length;
             while (lettersToPlace > 0) {
