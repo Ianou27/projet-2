@@ -139,6 +139,13 @@ export class SocketManager {
 
                 // socket.leave(room);
             });
+
+            socket.on('cancelCreation', () => {
+                this.roomManager.cancelCreation(socket.id, this.identification);
+                this.identification.deleteUser(socket.id);
+               
+                // socket.leave(room);
+            });
             socket.on('disconnect', (reason) => {
                 const room = this.identification.getRoom(socket.id);
                 if (room !== '') {
