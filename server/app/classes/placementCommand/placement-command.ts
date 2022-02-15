@@ -312,7 +312,7 @@ export class PlacementCommand {
         for (const word of wordsFormed) {
             let wordString = '';
             for (const wordLetter of word) {
-                wordString = wordString.concat(wordLetter.getLetter());
+                wordString = wordString.concat(wordLetter.letter);
             }
             if (!this.validatedWordDictionary(wordString)) return false;
         }

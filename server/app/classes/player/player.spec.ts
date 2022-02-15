@@ -1,4 +1,5 @@
 import { CaseProperty } from '@common/assets/case-property';
+import { letterValue } from '@common/assets/reserve-letters';
 import { Tile } from '@common/tile/Tile';
 import { expect } from 'chai';
 import { Player } from './player';
@@ -13,7 +14,8 @@ describe('Player Class', () => {
         lettersTile = [];
         for (const letter of letters) {
             const tile: Tile = new Tile(CaseProperty.Normal, 0, 0);
-            tile.addLetter(letter);
+            tile.letter = letter;
+            tile.value = letterValue[letter];
             lettersTile.push(tile);
         }
         player = new Player(lettersTile, hisTurn, 'player1');

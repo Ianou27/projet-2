@@ -1,4 +1,5 @@
 import { CaseProperty } from '@common/assets/case-property';
+import { letterValue } from '@common/assets/reserve-letters';
 import { Tile } from '@common/tile/Tile';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
@@ -17,12 +18,14 @@ describe('Placement Command', () => {
         game = new Game();
         for (const letter of lettersPlayer1) {
             const tile1: Tile = new Tile(CaseProperty.Normal, 0, 0);
-            tile1.addLetter(letter);
+            tile1.letter = letter;
+            tile1.value = letterValue[letter];
             lettersTilePlayer1.push(tile1);
         }
         for (const letter of lettersPlayer2) {
             const tile2: Tile = new Tile(CaseProperty.Normal, 0, 0);
-            tile2.addLetter(letter);
+            tile2.letter = letter;
+            tile2.value = letterValue[letter];
             lettersTilePlayer2.push(tile2);
         }
         game.player1.letters = lettersTilePlayer1;

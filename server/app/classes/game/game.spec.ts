@@ -1,5 +1,6 @@
 import { GameBoardService } from '@app/services/gameBoard.service';
 import { CaseProperty } from '@common/assets/case-property';
+import { letterValue } from '@common/assets/reserve-letters';
 import { Tile } from '@common/tile/Tile';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
@@ -12,7 +13,8 @@ describe('Game', () => {
     const lettersTilePlayer1: Tile[] = [];
     for (const letter of letters) {
         const tile1: Tile = new Tile(CaseProperty.Normal, 0, 0);
-        tile1.addLetter(letter);
+        tile1.letter = letter;
+        tile1.value = letterValue[letter];
         lettersTilePlayer1.push(tile1);
     }
 

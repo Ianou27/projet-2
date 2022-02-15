@@ -43,14 +43,14 @@ export class PointsCalculator {
     }
 
     static specialPropertyLetter(column: number, row: number, game: Game): number {
-        const specialProperty = game.gameBoard.cases[column][row].getSpecialProperty();
+        const specialProperty = game.gameBoard.cases[column][row].specialProperty;
         if (specialProperty === CaseProperty.LetterDouble) return WORD_LETTER_2X_MULTIPLIER;
         if (specialProperty === CaseProperty.LetterTriple) return WORD_LETTER_3X_MULTIPLIER;
         return WORD_LETTER_NO_MULTIPLIER;
     }
 
     static specialPropertyWord(column: number, row: number, game: Game, wordMultiplier: number): number {
-        const specialProperty = game.gameBoard.cases[column][row].getSpecialProperty();
+        const specialProperty = game.gameBoard.cases[column][row].specialProperty;
         let multiplier = WORD_LETTER_NO_MULTIPLIER;
         if (specialProperty === CaseProperty.WordDouble) multiplier = WORD_LETTER_2X_MULTIPLIER;
         if (specialProperty === CaseProperty.WordTriple) multiplier = WORD_LETTER_3X_MULTIPLIER;

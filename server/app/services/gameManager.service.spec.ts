@@ -1,6 +1,7 @@
 import { ExchangeCommand } from '@app/classes/exchangeCommand/exchange-command';
 import { PassCommand } from '@app/classes/passCommand/pass-command';
 import { CaseProperty } from '@common/assets/case-property';
+import { letterValue } from '@common/assets/reserve-letters';
 import { Tile } from '@common/tile/Tile';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
@@ -20,7 +21,8 @@ describe('Game Manager', () => {
         const lettersPlayer1 = ['A', 'L', 'L', '', 'E', 'E', 'V'];
         for (const letter of lettersPlayer1) {
             const tile1: Tile = new Tile(CaseProperty.Normal, 0, 0);
-            tile1.addLetter(letter);
+            tile1.letter = letter;
+            tile1.value = letterValue[letter];
             lettersTilePlayer1.push(tile1);
         }
         game.player1.letters = lettersTilePlayer1;

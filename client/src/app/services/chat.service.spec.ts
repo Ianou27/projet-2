@@ -3,8 +3,8 @@ import { SocketTestHelper } from '@app/classes/socket-test-helper';
 import { Socket } from 'socket.io-client';
 // eslint-disable-next-line no-restricted-imports
 import { Tile } from '../../../../common/tile/Tile';
-import { InfoToJoin, Message, Room } from '../../../../common/types';
-import { Game } from '../../../../server/app/classes/game/game';
+import { InfoToJoin, Message, Room } from './../../../../common/types';
+import { Game } from './../../../../server/app/classes/game/game';
 import { ChatService } from './chat.service';
 
 describe('ChatService', () => {

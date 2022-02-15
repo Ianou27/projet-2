@@ -1,5 +1,5 @@
 import { CaseProperty } from './../../../../common/assets/case-property';
-import { letterNumber } from './../../../../common/assets/reserve-letters';
+import { letterNumber, letterValue } from './../../../../common/assets/reserve-letters';
 import { NUMBER_TILEHOLDER } from './../../../../common/constants/general-constants';
 import { Tile } from './../../../../common/tile/Tile';
 import { GameBoardService } from './../../services/gameBoard.service';
@@ -68,7 +68,8 @@ export class Game {
         const letters: Tile[] = [];
         for (let i = 0; i < NUMBER_TILEHOLDER; i++) {
             const tile: Tile = new Tile(CaseProperty.Normal, 0, i);
-            tile.addLetter(this.getRandomLetterReserve());
+            tile.letter = this.getRandomLetterReserve();
+            tile.value = letterValue[tile.letter];
             letters.push(tile);
         }
         return letters;

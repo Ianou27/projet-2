@@ -6,14 +6,13 @@ import { MAXIMUM_CHARACTERS_MESSAGE } from '@common/constants/general-constants'
 
 export class GameManager {
     private commandsList: string[] = ['!placer', '!echanger', '!passer', '!indice'];
-    placeWord(command: string[], game: Game):string {
-        let message ='placer';
-        if(!PlacementCommand.placeWord(command, game)){
-            message ='commande impossible à realisé';
+    placeWord(command: string[], game: Game): string {
+        let message = 'placer';
+        if (!PlacementCommand.placeWord(command, game)) {
+            message = 'commande impossible à realisé';
         }
 
         return message;
-
     }
 
     pass(game: Game) {
