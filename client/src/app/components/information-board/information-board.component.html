@@ -3,16 +3,17 @@
         <div class="player" id="player-1">
             <div class={{this.chatService.player1Turn}} class="player-name">{{this.chatService.player1Username}}</div>
             <div class="score">Score : {{this.chatService.player1Point}}</div>
-            <p class="letters-left">X lettre(s) restante(s)</p>
+            <p *ngIf="this.chatService.player2ChevaletLetters < 7" class="letters-left">X lettre(s) restante(s)</p>
         </div>
         <div class="player">
             <div class={{this.chatService.player2Turn}} class="player-name">{{this.chatService.player2Username}}</div>
             <div class="score">Score : {{this.chatService.player2Point}}</div>
-            <p class="letters-left">X lettre(s) restante(s)</p>
+            <p *ngIf="this.chatService.player2ChevaletLetters < 7"class="letters-left">X lettre(s) restante(s)</p>
         </div>
     </div>
     <div id="reserve">
-        <div id="reserve-left">X lettre(s) restante(s) dans la réserve</div>
+        <div  id="reserve-left">{{this.chatService.reserve}} lettre(s) restante(s) dans la réserve</div>
+        
         <div id="timer">{{ 60 | formatTime }}</div>
     </div>
 </div>

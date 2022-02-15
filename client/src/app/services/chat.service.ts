@@ -29,6 +29,9 @@ export class ChatService {
     player2Username:string='';
     player1Turn:string='tour';
     player2Turn:string='';
+    player1ChevaletLetters:number =7;
+    player2ChevaletLetters:number =7;
+    reserve:number =88;
     constructor(public socketService: SocketClientService, public boardService: BoardService, public tileHolderService: TileHolderService) {}
 
     get socketId() {
@@ -68,6 +71,12 @@ export class ChatService {
                 
             }
         });
+        this.socketService.socket.on('updateReserve', (reserve: number, player1:number,player2:number) => {
+            this.player1ChevaletLetters = player1;
+            this.player2ChevaletLetters = player2;
+            this.reserve = reserve;
+        });
+
         this.socketService.on('roomMessage', (roomMessage: Message) => {
             this.roomMessages.push(roomMessage);
         });

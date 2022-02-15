@@ -58,7 +58,8 @@ export class GameManager {
             
             message= 'Format non valide';
            
-        } else if (!this.placeBoardValid(command, game)) {
+        }
+         else if (!this.placeBoardValid(command, game)) {
         
             message= 'Placement non valide';
         }
