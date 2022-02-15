@@ -48,27 +48,6 @@ export class Game {
         return element;
     }
 
-    initializeReserveLetters(): string[] {
-        const reserveLettersObject = letterNumber;
-        const reserve: string[] = [];
-        Object.keys(reserveLettersObject).forEach((key) => {
-            for (let i = 0; i < reserveLettersObject[key]; i++) {
-                reserve.push(key);
-            }
-        });
-        return reserve;
-    }
-
-    randomLettersInitialization(): Tile[] {
-        const letters: Tile[] = [];
-        for (let i = 0; i < NUMBER_TILEHOLDER; i++) {
-            const tile: Tile = new Tile(CaseProperty.Normal, 0, i);
-            tile.addLetter(this.getRandomLetterReserve());
-            letters.push(tile);
-        }
-        return letters;
-    }
-
     tileHolderContains(word: string): boolean {
         const lettersWord = word.split('');
         const player: Player = this.playerTurn();
@@ -83,6 +62,27 @@ export class Game {
             }
         }
         return true;
+    }
+
+    private randomLettersInitialization(): Tile[] {
+        const letters: Tile[] = [];
+        for (let i = 0; i < NUMBER_TILEHOLDER; i++) {
+            const tile: Tile = new Tile(CaseProperty.Normal, 0, i);
+            tile.addLetter(this.getRandomLetterReserve());
+            letters.push(tile);
+        }
+        return letters;
+    }
+
+    private initializeReserveLetters(): string[] {
+        const reserveLettersObject = letterNumber;
+        const reserve: string[] = [];
+        Object.keys(reserveLettersObject).forEach((key) => {
+            for (let i = 0; i < reserveLettersObject[key]; i++) {
+                reserve.push(key);
+            }
+        });
+        return reserve;
     }
 
     private isUpperCase(letter: string): boolean {
