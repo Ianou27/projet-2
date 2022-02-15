@@ -114,9 +114,12 @@ export class SocketManager {
                         const verification: string = this.gameManager.placeVerification(command, game);
 
                         if (verification === 'valide') {
-                            this.gameManager.placeWord(command, game);
-
-                            this.sio
+                            let message =this.gameManager.placeWord(command, game);
+                            if(message !=='placer'){
+                                this.sio.to(socket.id).emit('commandValidated', message);
+                            }
+                            else {
+                                this.sio
                                 .to(currentRoom)
                                 .emit(
                                     'updateReserve',
@@ -138,6 +141,8 @@ export class SocketManager {
                                 this.sio.to(socket.id).emit('tileHolder', game.player2.getLetters());
                                 this.sio.to(currentRoom).emit('updatePoint', player, game.player2.points);
                             }
+                            }
+                            
                         } else {
                             this.sio.to(socket.id).emit('commandValidated', verification);
                         }
