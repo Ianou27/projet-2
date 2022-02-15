@@ -128,6 +128,13 @@ describe('ChatService', () => {
         expect(updateRoomSpy).toHaveBeenCalled();
     });
 
+    it('passerTour() should call send with the skip command', () => {
+        const sendSpy = spyOn(service.socketService, 'send');
+        service.passerTour();
+        expect(sendSpy).toHaveBeenCalled();
+        expect(sendSpy).toHaveBeenCalledWith('passer');
+    });
+
     describe('Receiving events', () => {
         it('should handle wordValidated event', () => {
             service.configureBaseSocketFeatures();
