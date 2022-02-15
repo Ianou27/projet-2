@@ -104,16 +104,12 @@ export class Game {
 
     private randomLettersInitialization(): Tile[] {
         const letters: Tile[] = [];
-        for (let i = 0; i < NUMBER_TILEHOLDER - 1; i++) {
+        for (let i = 0; i < NUMBER_TILEHOLDER; i++) {
             const tile: Tile = new Tile(CaseProperty.Normal, 0, i);
             tile.letter = this.getRandomLetterReserve();
             tile.value = letterValue[tile.letter];
             letters.push(tile);
         }
-        const tile1: Tile = new Tile(CaseProperty.Normal, 0, 7);
-        tile1.letter = '*';
-        tile1.value = 0;
-        letters.push(tile1);
         return letters;
     }
 
