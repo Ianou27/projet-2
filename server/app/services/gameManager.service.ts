@@ -6,8 +6,13 @@ import { MAXIMUM_CHARACTERS_MESSAGE } from '@common/constants/general-constants'
 
 export class GameManager {
     private commandsList: string[] = ['!placer', '!echanger', '!passer', '!indice'];
-    placeWord(command: string[], game: Game) {
-        PlacementCommand.placeWord(command, game);
+    placeWord(command: string[], game: Game): string {
+        let message = 'placer';
+        if (!PlacementCommand.placeWord(command, game)) {
+            message = 'commande impossible à realisé';
+        }
+
+        return message;
     }
 
     pass(game: Game) {
@@ -23,7 +28,7 @@ export class GameManager {
     }
 
     passCommandValid(command: string[]) {
-        PassCommand.validatedPassCommandFormat(command);
+        return PassCommand.validatedPassCommandFormat(command);
     }
 
     commandVerification(message: string): boolean {
@@ -63,7 +68,7 @@ export class GameManager {
         return erreur;
     }
 
-    placerVerifications(command: string[], game: Game): string {
+    placeVerification(command: string[], game: Game): string {
         let message = 'valide';
         if (!this.placeFormatValid(command)) {
             message = 'Entrée invalide';
@@ -73,12 +78,20 @@ export class GameManager {
         return message;
     }
 
-    echangerVerification(command: string[], game: Game): string {
+    exchangeVerification(command: string[], game: Game): string {
         let message = 'valide';
         if (!this.exchangeFormatValid(command)) {
             message = 'Entrée invalide';
         } else if (!this.exchangeTileHolderValid(command, game)) {
             message = 'Commande impossible à réaliser';
+        }
+        return message;
+    }
+
+    passVerification(command: string[]): string {
+        let message = 'valide';
+        if (!this.passCommandValid(command)) {
+            message = 'Format non valide';
         }
         return message;
     }

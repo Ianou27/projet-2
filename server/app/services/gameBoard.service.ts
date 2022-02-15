@@ -1,5 +1,5 @@
-import { letterValue } from './../../../common/assets/reserve-letters';
 import { CaseProperty } from './../../../common/assets/case-property';
+import { letterValue } from './../../../common/assets/reserve-letters';
 import { COLUMN_ROWS_NUMBER } from './../../../common/constants/general-constants';
 import { LETTER_2X, LETTER_3X, WORD_2X, WORD_3X } from './../../../common/constants/tile-information';
 import { Tile } from './../../../common/tile/Tile';
@@ -27,7 +27,7 @@ export class GameBoardService {
     }
 
     tileContainsLetter(positionX: number, positionY: number): boolean {
-        return this.cases[positionX][positionY].tileContainsLetter();
+        return this.cases[positionX][positionY].letter !== '';
     }
 
     addLetterTile(positionX: number, positionY: number, letter: string): void {

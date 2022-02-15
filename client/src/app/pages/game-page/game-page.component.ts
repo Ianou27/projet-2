@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { QuitGameDialogComponent } from '@app/components/quit-game-dialog/quit-game-dialog.component';
 import { JoinPageComponent } from '@app/pages/join-page/join-page.component';
+import { ChatService } from '@app/services/chat.service';
 
 @Component({
     selector: 'app-game-page',
@@ -10,7 +11,7 @@ import { JoinPageComponent } from '@app/pages/join-page/join-page.component';
     styleUrls: ['./game-page.component.scss'],
 })
 export class GamePageComponent implements OnInit {
-    constructor(public dialog: MatDialog, private location: LocationStrategy) {
+    constructor(public dialog: MatDialog, private location: LocationStrategy, public chatService:ChatService) {
         history.pushState(null, '', window.location.href);
         this.location.onPopState(() => {
             history.pushState(null, '', window.location.href);

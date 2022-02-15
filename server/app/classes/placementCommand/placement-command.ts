@@ -2,7 +2,6 @@ import {
     CENTER_ROW_COLUMN,
     COLUMN_ROWS_MINIMUM,
     COLUMN_ROWS_NUMBER,
-    MAXIMUM_LETTERS_PLACE_COMMAND,
     MAXIMUM_ROW_COLUMN,
     MAXIMUM_ROW_COLUMN_COMPARISON_LIMIT,
     MINIMUM_LETTERS_PLACE_COMMAND,
@@ -45,7 +44,7 @@ export class PlacementCommand {
 
     static placeWord(commandInformations: string[], game: Game): boolean {
         const placementInformations = this.separatePlaceCommandInformations(commandInformations);
-        game.firstTurn = false;
+
         let letterPositions: number[] = [];
         switch (placementInformations.orientation) {
             case 'h': {
@@ -58,7 +57,12 @@ export class PlacementCommand {
             }
         }
         if (!this.newWordsValid(commandInformations, game, letterPositions)) {
-            // timeout
+            // Retirer les lettres du chevalet et les mettre sur la grid
+            // Les fcts dans le timeout retire les lettres de la grid et les remettent dans le chevalet après 3 sec (VERIFY_WORD)
+            /*             setTimeout(() => {
+                this.restoreBoard(commandInformations, game, letterPositions);
+                return false;
+            }, VERIFY_WORD); */
             this.restoreBoard(commandInformations, game, letterPositions);
             return false;
         } else {
@@ -67,6 +71,7 @@ export class PlacementCommand {
                 game.playerTurn().changeLetter('', game.getRandomLetterReserve());
                 lettersToPlace--;
             }
+            game.firstTurn = false;
             game.changeTurnTwoPlayers();
         }
         return true;
@@ -137,10 +142,17 @@ export class PlacementCommand {
         const letters = commandInformations[2].split('');
         let orientation = '';
         let column = 0;
-        if (numberLettersCommand === MINIMUM_LETTERS_PLACE_COMMAND) {
+        if (numberLetters === 1 && MINIMUM_LETTERS_PLACE_COMMAND - 1) {
+            orientation = 'v';
+            column = Number(positionOrientation[1]) - 1;
+            orientation = positionOrientation[2];
+        } else if (numberLetters === 1 && MINIMUM_LETTERS_PLACE_COMMAND) {
+            orientation = positionOrientation[3];
+            column = Number(positionOrientation[1] + positionOrientation[2]) - 1;
+        } else if (numberLettersCommand === MINIMUM_LETTERS_PLACE_COMMAND) {
             orientation = positionOrientation[2];
             column = Number(positionOrientation[1]) - 1;
-        } else if (numberLettersCommand === MAXIMUM_LETTERS_PLACE_COMMAND) {
+        } else {
             orientation = positionOrientation[3];
             column = Number(positionOrientation[1] + positionOrientation[2]) - 1;
         }
@@ -295,9 +307,10 @@ export class PlacementCommand {
     private static newWordsValid(commandInformations: string[], game: Game, letterPositions: number[]): boolean {
         const placementInformations = this.separatePlaceCommandInformations(commandInformations);
         let wordsFormed: Tile[][] = [];
+        if (placementInformations.numberLetters === 1 && game.firstTurn) return false;
         if (placementInformations.orientation === 'h') {
             wordsFormed = this.findNewWordsHorizontal(game, placementInformations, letterPositions);
-        } else if (placementInformations.orientation === 'v') {
+        } else {
             wordsFormed = this.findNewWordsVertical(game, placementInformations, letterPositions);
         }
         wordsFormed = wordsFormed.filter((item) => {
@@ -306,7 +319,7 @@ export class PlacementCommand {
         for (const word of wordsFormed) {
             let wordString = '';
             for (const wordLetter of word) {
-                wordString = wordString.concat(wordLetter.getLetter());
+                wordString = wordString.concat(wordLetter.letter);
             }
             if (!this.validatedWordDictionary(wordString)) return false;
         }
@@ -315,7 +328,6 @@ export class PlacementCommand {
     }
 
     private static validatedWordDictionary(word: string): boolean {
-        if (word.length < 2 || word.includes('-') || word.includes("'")) return false;
         let leftLimit = 0;
         let rightLimit = this.dictionaryArray.length - 1;
         while (leftLimit <= rightLimit) {

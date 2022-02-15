@@ -29,7 +29,7 @@ describe('GameBoard', () => {
         let result = 0;
         for (const colonne of gameBoard.cases) {
             for (const tile of colonne) {
-                if (tile.getSpecialProperty() === CaseProperty.WordTriple) {
+                if (tile.specialProperty === CaseProperty.WordTriple) {
                     result += 1;
                 }
             }
@@ -41,7 +41,7 @@ describe('GameBoard', () => {
         let result = 0;
         for (const colonne of gameBoard.cases) {
             for (const tile of colonne) {
-                if (tile.getSpecialProperty() === CaseProperty.WordDouble) {
+                if (tile.specialProperty === CaseProperty.WordDouble) {
                     result += 1;
                 }
             }
@@ -53,7 +53,7 @@ describe('GameBoard', () => {
         let result = 0;
         for (const colonne of gameBoard.cases) {
             for (const tile of colonne) {
-                if (tile.getSpecialProperty() === CaseProperty.LetterTriple) {
+                if (tile.specialProperty === CaseProperty.LetterTriple) {
                     result += 1;
                 }
             }
@@ -65,7 +65,7 @@ describe('GameBoard', () => {
         let result = 0;
         for (const colonne of gameBoard.cases) {
             for (const tile of colonne) {
-                if (tile.getSpecialProperty() === CaseProperty.LetterDouble) {
+                if (tile.specialProperty === CaseProperty.LetterDouble) {
                     result += 1;
                 }
             }

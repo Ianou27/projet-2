@@ -1,5 +1,8 @@
 import { ExchangeCommand } from '@app/classes/exchangeCommand/exchange-command';
 import { PassCommand } from '@app/classes/passCommand/pass-command';
+import { CaseProperty } from '@common/assets/case-property';
+import { letterValue } from '@common/assets/reserve-letters';
+import { Tile } from '@common/tile/Tile';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
 import { Game } from './../classes/game/game';
@@ -9,13 +12,25 @@ import { GameManager } from './gameManager.service';
 describe('Game Manager', () => {
     let game: Game;
     let gameManager: GameManager;
-    const placeCommand = ['!placer', 'H8v', 'allo'];
-    const exchangeCommand = ['!exchange', 'allo'];
-    const passCommand = ['!pass'];
-
+    const placeCommand = ['!placer', 'H8v', 'all'];
+    const exchangeCommand = ['!echanger', 'all'];
+    const passCommand = ['!passer'];
+    let lettersTilePlayer1: Tile[] = [];
     beforeEach(() => {
         game = new Game();
+        const lettersPlayer1 = ['A', 'L', 'L', '', 'E', 'E', 'V'];
+        for (const letter of lettersPlayer1) {
+            const tile1: Tile = new Tile(CaseProperty.Normal, 0, 0);
+            tile1.letter = letter;
+            tile1.value = letterValue[letter];
+            lettersTilePlayer1.push(tile1);
+        }
+        game.player1.letters = lettersTilePlayer1;
         gameManager = new GameManager();
+    });
+
+    afterEach(() => {
+        lettersTilePlayer1 = [];
     });
 
     it('method placeWord should call PlacementCommand.placeWord', () => {
@@ -105,12 +120,73 @@ describe('Game Manager', () => {
             testMessageLong += 'ABCDEFGHIJKLMNOP';
         }
         gameManager.messageVerification(testMessageLong);
-        expect(gameManager.messageVerification(testMessageLong)).to.equal('message trop long');
+        expect(gameManager.messageVerification(testMessageLong)).to.equal('Message trop long');
     });
 
     it('method messageVerification should call lengthVerification and return "valide" if it has less than 512 characters', () => {
         const message = 'ABCDEFGHIJKLMNOP';
         gameManager.messageVerification(message);
         expect(gameManager.messageVerification(message)).to.equal('valide');
+    });
+
+    it('method placeVerification should call placeFormatValid and placeBoardValid if command is valid and return "valide"', () => {
+        const spyFormat = sinon.spy(gameManager, 'placeFormatValid');
+        const spyBoard = sinon.spy(gameManager, 'placeBoardValid');
+        const validation = gameManager.placeVerification(placeCommand, game);
+        assert(spyFormat.called);
+        assert(spyFormat.calledWith(placeCommand));
+        assert(spyBoard.called);
+        assert(spyBoard.calledWith(placeCommand, game));
+        expect(validation).to.equal('valide');
+    });
+
+    it('method placeVerification should return "Entrée invalide" if format is not valid and not call placeBoardValid', () => {
+        const spyBoard = sinon.spy(gameManager, 'placeBoardValid');
+        const wrongCommand = ['!placer', 'Z0h', 'abz'];
+        expect(gameManager.placeVerification(wrongCommand, game)).to.equal('Entrée invalide');
+        assert(spyBoard.notCalled);
+    });
+
+    it('method placeVerification should return "Commande impossible à réaliser" if placeBoardValid returns false', () => {
+        const wrongCommand = ['!placer', 'N14h', 'abcde'];
+        const validation = gameManager.placeVerification(wrongCommand, game);
+        expect(validation).to.equal('Commande impossible à réaliser');
+    });
+
+    it('method exchangeVerification should call exchangeFormatValid and exchangeTileHolderValid if command is valid and return "valide"', () => {
+        const spyFormat = sinon.spy(gameManager, 'exchangeFormatValid');
+        const spyBoard = sinon.spy(gameManager, 'exchangeTileHolderValid');
+        const validation = gameManager.exchangeVerification(exchangeCommand, game);
+        assert(spyFormat.called);
+        assert(spyFormat.calledWith(exchangeCommand));
+        assert(spyBoard.called);
+        assert(spyBoard.calledWith(exchangeCommand, game));
+        expect(validation).to.equal('valide');
+    });
+
+    it('method exchangeVerification should return "Entrée invalide" if format is not valid and not call exchangeTileHolderValid', () => {
+        const spyBoard = sinon.spy(gameManager, 'exchangeTileHolderValid');
+        const wrongCommand = ['!echanger', 'zkjhhdasddalkda'];
+        expect(gameManager.placeVerification(wrongCommand, game)).to.equal('Entrée invalide');
+        assert(spyBoard.notCalled);
+    });
+
+    it('method exchangeVerification should return "Commande impossible à réaliser" if exchangeTileHolderValid returns false', () => {
+        const wrongCommand = ['!echanger', 'ax'];
+        const validation = gameManager.exchangeVerification(wrongCommand, game);
+        expect(validation).to.equal('Commande impossible à réaliser');
+    });
+
+    it('method passVerification should return "valide" and call passCommandValid if command is valid', () => {
+        const spy = sinon.spy(gameManager, 'passCommandValid');
+        const validation = gameManager.passVerification(passCommand);
+        expect(validation).to.equal('valide');
+        assert(spy.called);
+    });
+
+    it('method passVerification should return "Format non valide" command format is not valid', () => {
+        const wrongCommand = ['!passer', 'lol'];
+        const validation = gameManager.passVerification(wrongCommand);
+        expect(validation).to.equal('Format non valide');
     });
 });
