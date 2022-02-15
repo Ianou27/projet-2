@@ -8,14 +8,12 @@ import {
     MINIMUM_ROW_COLUMN_COMPARISON_LIMIT,
 } from '@common/constants/general-constants';
 import { Tile } from '@common/tile/Tile';
+import * as fs from 'fs';
 import { RowTest } from './../../../assets/row';
 import { PlacementInformations } from './../../placement-informations';
 import { Game } from './../game/game';
 import { PointsCalculator } from './../pointsCalculator/points-calculator';
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-declare const require: any;
-const fs = require('fs');
 
 export class PlacementCommand {
     static dictionaryArray: string[] = JSON.parse(fs.readFileSync('./assets/dictionnary.json').toString()).words;

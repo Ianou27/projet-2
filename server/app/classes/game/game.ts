@@ -13,6 +13,7 @@ export class Game {
     passesCount: number;
     reserveLetters: string[] = [];
     gameFinished: boolean;
+    winner: Player;
 
     constructor() {
         this.reserveLetters = this.initializeReserveLetters();
@@ -27,10 +28,12 @@ export class Game {
     verifyGameState() {
         if (this.passesCount === MAXIMUM_PASSES_COUNT) {
             this.endGame();
+            this.setWinner();
             return;
         }
         if (this.reserveLetters.length === 0 && (this.player1.getNumberLetters() === 0 || this.player2.getNumberLetters() === 0)) {
             this.endGame();
+            this.setWinner();
             return;
         }
     }
@@ -77,6 +80,11 @@ export class Game {
             }
         }
         return true;
+    }
+
+    private setWinner() {
+        if (this.player1.points > this.player2.points) this.winner = this.player1;
+        if (this.player1.points < this.player2.points) this.winner = this.player2;
     }
 
     private endGame() {
