@@ -25,13 +25,13 @@ export class ChatService {
 
     player1Point: number = 0;
     player2Point: number = 0;
-    player1Username:string='';
-    player2Username:string='';
-    player1Turn:string='tour';
-    player2Turn:string='';
-    player1ChevaletLetters:number =7;
-    player2ChevaletLetters:number =7;
-    reserve:number =88;
+    player1Username: string = '';
+    player2Username: string = '';
+    player1Turn: string = 'tour';
+    player2Turn: string = '';
+    player1ChevaletLetters: number = 7;
+    player2ChevaletLetters: number = 7;
+    reserve: number = 88;
     constructor(public socketService: SocketClientService, public boardService: BoardService, public tileHolderService: TileHolderService) {}
 
     get socketId() {
@@ -59,19 +59,17 @@ export class ChatService {
             this.tileHolderService.tileHolder = letters;
         });
 
-        this.socketService.socket.on('modification', (updatedBoard: Tile[][], playerTurn:string) => {
+        this.socketService.socket.on('modification', (updatedBoard: Tile[][], playerTurn: string) => {
             this.boardService.board = updatedBoard;
-            if(playerTurn ==='player1') {
-                this.player1Turn= 'tour'
-                this.player2Turn= ''
-            }
-            else{
-                this.player1Turn= ''
-                this.player2Turn= 'tour'
-                
+            if (playerTurn === 'player1') {
+                this.player1Turn = 'tour';
+                this.player2Turn = '';
+            } else {
+                this.player1Turn = '';
+                this.player2Turn = 'tour';
             }
         });
-        this.socketService.socket.on('updateReserve', (reserve: number, player1:number,player2:number) => {
+        this.socketService.socket.on('updateReserve', (reserve: number, player1: number, player2: number) => {
             this.player1ChevaletLetters = player1;
             this.player2ChevaletLetters = player2;
             this.reserve = reserve;
@@ -92,13 +90,12 @@ export class ChatService {
         this.socketService.on('joining', (obj: InfoToJoin) => {
             this.gotAccepted = true;
             this.informationToJoin = obj;
-            
         });
-        this.socketService.socket.on('startGame', (player1: string,player2: string) => {
+        this.socketService.socket.on('startGame', (player1: string, player2: string) => {
             this.player1Username = player1;
             this.player2Username = player2;
         });
-        
+
         this.socketService.on('refusing', (obj: InfoToJoin) => {
             this.informationToJoin = obj;
             this.gotRefused = true;
@@ -162,7 +159,7 @@ export class ChatService {
         this.updateRooms();
     }
 
-    cancelCreation(){
+    cancelCreation() {
         this.socketService.socket.emit('cancelCreation');
         this.updateRooms();
     }
