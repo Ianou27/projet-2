@@ -5,10 +5,4 @@ import { Component } from '@angular/core';
     templateUrl: './quit-game-dialog.component.html',
     styleUrls: ['./quit-game-dialog.component.scss'],
 })
-export class QuitGameDialogComponent {
-    constructor() {}
-
-    goHome() {
-        window.location.href = '/home';
-    }
-}
+export class QuitGameDialogComponent {}

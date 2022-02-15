@@ -1,15 +1,16 @@
 <div class="container justified">
-    <button
+    <a
         mat-fab
         mat-dialog-close
         color="primary"
         matTooltip="Retourner à la page d'accueil"
         matTooltipPosition="right"
         id="tooltip"
+        href="/home"
         (click)="goHome()"
     >
         <mat-icon style="transform: rotate(180deg)">exit_to_app</mat-icon>
-    </button>
+    </a>
     <mat-tab-group mat-stretch-tabs>
         <mat-tab label="Partie solo (Prochainement)">
             <!-- <mat-toolbar>
@@ -143,11 +144,13 @@
                                         <!-- <mat-error *ngIf="f.confirmName.errors.mustMatch">Choisissez un nom différent que le joueur 1</mat-error> -->
                                     </mat-form-field>
                                 </form>
+                                <p><b>Choisir un nom différent que celui du joueur 1</b></p>
                                 <button
                                     (click)="this.chatService.askJoin(this.name, room)"
                                     (click)="openWaitToJoin()"
                                     mat-raised-button
                                     color="primary"
+                                    [disabled]="this.name === room.player1"
                                     [disabled]="form.invalid"
                                     [mat-dialog-close]
                                     cdkFocusInitial
