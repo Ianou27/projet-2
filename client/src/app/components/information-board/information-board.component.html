@@ -1,12 +1,12 @@
 <div id="info-board">
     <div id="player-info">
         <div class="player" id="player-1">
-            <div class="player-name">Player 1</div>
+            <div class={{this.chatService.player1Turn}} class="player-name">{{this.chatService.player1Username}}</div>
             <div class="score">Score : {{this.chatService.player1Point}}</div>
             <p class="letters-left">X lettre(s) restante(s)</p>
         </div>
         <div class="player">
-            <div class="player-name">Player 2</div>
+            <div class={{this.chatService.player2Turn}} class="player-name">{{this.chatService.player2Username}}</div>
             <div class="score">Score : {{this.chatService.player2Point}}</div>
             <p class="letters-left">X lettre(s) restante(s)</p>
         </div>

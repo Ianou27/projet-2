@@ -25,7 +25,10 @@ export class ChatService {
 
     player1Point: number = 0;
     player2Point: number = 0;
-
+    player1Username:string='';
+    player2Username:string='';
+    player1Turn:string='tour';
+    player2Turn:string='';
     constructor(public socketService: SocketClientService, public boardService: BoardService, public tileHolderService: TileHolderService) {}
 
     get socketId() {
@@ -53,8 +56,17 @@ export class ChatService {
             this.tileHolderService.tileHolder = letters;
         });
 
-        this.socketService.on('modification', (updatedBoard: Tile[][]) => {
+        this.socketService.socket.on('modification', (updatedBoard: Tile[][], playerTurn:string) => {
             this.boardService.board = updatedBoard;
+            if(playerTurn ==='player1') {
+                this.player1Turn= 'tour'
+                this.player2Turn= ''
+            }
+            else{
+                this.player1Turn= ''
+                this.player2Turn= 'tour'
+                
+            }
         });
         this.socketService.on('roomMessage', (roomMessage: Message) => {
             this.roomMessages.push(roomMessage);
@@ -71,8 +83,13 @@ export class ChatService {
         this.socketService.on('joining', (obj: InfoToJoin) => {
             this.gotAccepted = true;
             this.informationToJoin = obj;
+            
         });
-
+        this.socketService.socket.on('startGame', (player1: string,player2: string) => {
+            this.player1Username = player1;
+            this.player2Username = player2;
+        });
+        
         this.socketService.on('refusing', (obj: InfoToJoin) => {
             this.informationToJoin = obj;
             this.gotRefused = true;

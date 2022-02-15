@@ -32,6 +32,7 @@ export class SocketManager {
                 this.sio.to(player1Id).emit('tileHolder', letters[0]);
 
                 this.sio.to(socket.id).emit('tileHolder', letters[1]);
+                this.sio.to(roomObj.player1).emit('startGame', roomObj.player1,username);
             });
 
             socket.on('askJoin', (username: string, roomObj: Room) => {
@@ -101,7 +102,7 @@ export class SocketManager {
                         if (verification === 'valide') {
                             this.gameManager.placeWord(command, game);
                             this.sio.to(currentRoom).emit('roomMessage', { username:'Server', message: username+ ' a placé le mot ' +command[2] +' en '+command[1] , player:'server' });
-                            this.sio.to(currentRoom).emit('modification', game.gameBoard.cases);
+                            this.sio.to(currentRoom).emit('modification', game.gameBoard.cases,game.playerTurn().name);
 
                             if (player === 'player1') {
                                 this.sio.to(socket.id).emit('tileHolder', game.player1.getLetters());
@@ -118,7 +119,7 @@ export class SocketManager {
 
                         if (verification === 'valide') {
                             this.gameManager.exchange(command, game);
-                            this.sio.to(currentRoom).emit('modification', game.gameBoard.cases);
+                            this.sio.to(currentRoom).emit('modification', game.gameBoard.cases, game.playerTurn().name);
                             this.sio.to(socket.id).emit('roomMessage', { username:'Server', message:'vous avez echangé les lettres '+ command[1] , player:'server' });
                             this.sio.to(player2Id).emit('roomMessage', { username:'Server', message:'votre adversaire a echangé '+ command[1].length +' lettres'  , player:'server' });
 
