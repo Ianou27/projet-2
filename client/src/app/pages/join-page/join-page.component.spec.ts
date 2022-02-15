@@ -19,6 +19,9 @@ describe('JoinPageComponent', () => {
                         open: () => {
                             return;
                         },
+                        closeAll: () => {
+                            return;
+                        },
                     },
                 },
             ],
@@ -53,9 +56,15 @@ describe('JoinPageComponent', () => {
 
     it('createRoom() should create a room and open the dialog for the player that created the room', () => {
         const dialogMethodSpy = spyOn(component, 'openWait');
-        const createSpy = spyOn(component.chatService, 'createRoom').and.stub();
+        const createSpy = spyOn(component.chatService, 'createRoom');
         component.createRoom();
         expect(dialogMethodSpy).toHaveBeenCalled();
         expect(createSpy).toHaveBeenCalled();
+    });
+
+    it('goHome() should close the dialog', () => {
+        const closeSpy = spyOn(component.waitDialog, 'closeAll');
+        component.goHome();
+        expect(closeSpy).toHaveBeenCalled();
     });
 });
