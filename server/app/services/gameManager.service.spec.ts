@@ -113,4 +113,26 @@ describe('Game Manager', () => {
         gameManager.messageVerification(message);
         expect(gameManager.messageVerification(message)).to.equal('valide');
     });
+
+    it('method placeVerification should call placeFormatValid and placeBoardValid if command is valid', () => {
+        const spyFormat = sinon.spy(gameManager, 'placeFormatValid');
+        const spyBoard = sinon.spy(gameManager, 'placeBoardValid');
+        gameManager.placeVerification(placeCommand, game);
+        assert(spyFormat.called);
+        assert(spyFormat.calledWith(placeCommand));
+        assert(spyBoard.called);
+        assert(spyBoard.calledWith(placeCommand, game));
+    });
+
+    it('method placeVerification should return "Format non valide" if format is not valid and not call placeBoardValid', () => {
+        const spyBoard = sinon.spy(gameManager, 'placeBoardValid');
+        const wrongCommand = ['!placer, Z0h, abz'];
+        expect(gameManager.placeVerification(wrongCommand, game)).to.equal('Format non valide');
+        assert(spyBoard.notCalled);
+    });
+
+    it('method placeVerification should return "Placement non valide" if placeBoardValid return false', () => {
+        const wrongCommand = ['!placer, N14h, abzace'];
+        expect(gameManager.placeVerification(wrongCommand, game)).to.equal('Placement non valide');
+    });
 });

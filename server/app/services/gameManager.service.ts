@@ -22,7 +22,7 @@ export class GameManager {
     }
 
     passCommandValid(command: string[]) {
-        PassCommand.validatedPassCommandFormat(command);
+        return PassCommand.validatedPassCommandFormat(command);
     }
 
     commandVerification(message: string): boolean {
@@ -62,7 +62,7 @@ export class GameManager {
         return erreur;
     }
 
-    placerVerifications(command: string[], game: Game): string {
+    placeVerification(command: string[], game: Game): string {
         let message = 'valide';
         if (!this.placeFormatValid(command)) {
             message = 'Format non valide';
@@ -72,12 +72,20 @@ export class GameManager {
         return message;
     }
 
-    echangerVerification(command: string[], game: Game): string {
+    exchangeVerification(command: string[], game: Game): string {
         let message = 'valide';
         if (!this.exchangeFormatValid(command)) {
             message = 'Format non valide';
         } else if (!this.exchangeTileHolderValid(command, game)) {
             message = 'Echange Impossible';
+        }
+        return message;
+    }
+
+    passVerification(command: string[]): string {
+        let message = 'valide';
+        if (!this.passCommandValid(command)) {
+            message = 'Format non valide';
         }
         return message;
     }

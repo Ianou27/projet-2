@@ -97,7 +97,7 @@ export class SocketManager {
                     } else if (!this.gameManager.commandVerification(command[0])) {
                         this.sio.to(socket.id).emit('commandValidated', ' Commande Invalide');
                     } else if (command[0] === '!placer') {
-                        const verification: string = this.gameManager.placerVerifications(command, game);
+                        const verification: string = this.gameManager.placeVerification(command, game);
 
                         if (verification === 'valide') {
                             this.gameManager.placeWord(command, game);
@@ -128,7 +128,7 @@ export class SocketManager {
                             this.sio.to(socket.id).emit('commandValidated', verification);
                         }
                     } else if (command[0] === '!echanger') {
-                        const verification: string = this.gameManager.echangerVerification(command, game);
+                        const verification: string = this.gameManager.exchangeVerification(command, game);
 
                         if (verification === 'valide') {
                             this.gameManager.exchange(command, game);
