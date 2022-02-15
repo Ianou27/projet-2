@@ -39,6 +39,8 @@ export class IdManager {
         return player;
     }
 
+    
+
     getRoom(id: string): string {
         let room = '';
         this.users.forEach((element:User) => {

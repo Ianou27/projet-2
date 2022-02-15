@@ -73,6 +73,7 @@ export class SocketManager {
             socket.on('roomMessage', (message: string) => {
                 const username = this.identification.getUsername(socket.id);
                 const currentRoom = this.identification.getRoom(socket.id);
+                let player2Id:string ='';
                 let game: Game = new Game();
                 let player;
 
@@ -80,9 +81,11 @@ export class SocketManager {
                     if (room.player1 === username) {
                         game = room.game;
                         player = 'player1';
+                        player2Id = this.identification.getId(room.player2);
                     } else if (room.player2 === username) {
                         game = room.game;
                         player = 'player2';
+                        player2Id = this.identification.getId(room.player1);
                     }
                 });
                 if (message === undefined || message === null) return;
@@ -97,6 +100,7 @@ export class SocketManager {
 
                         if (verification === 'valide') {
                             this.gameManager.placeWord(command, game);
+                            this.sio.to(currentRoom).emit('roomMessage', { username:'Server', message: username+ ' a placé le mot ' +command[2] +' en '+command[1] , player:'server' });
                             this.sio.to(currentRoom).emit('modification', game.gameBoard.cases);
 
                             if (player === 'player1') {
@@ -115,6 +119,9 @@ export class SocketManager {
                         if (verification === 'valide') {
                             this.gameManager.exchange(command, game);
                             this.sio.to(currentRoom).emit('modification', game.gameBoard.cases);
+                            this.sio.to(socket.id).emit('roomMessage', { username:'Server', message:'vous avez echangé les lettres '+ command[1] , player:'server' });
+                            this.sio.to(player2Id).emit('roomMessage', { username:'Server', message:'votre adversaire a echangé '+ command[1].length +' lettres'  , player:'server' });
+
                             if (player === 'player1') {
                                 this.sio.to(socket.id).emit('tileHolder', game.player1.getLetters());
                             } else if (player === 'player2') {
@@ -135,16 +142,13 @@ export class SocketManager {
             });
 
             socket.on('finPartie', () => {
-                // const room = this.identification.getRoom(socket.id);
-
-                // socket.leave(room);
+                
             });
 
             socket.on('cancelCreation', () => {
                 this.roomManager.cancelCreation(socket.id, this.identification);
                 this.identification.deleteUser(socket.id);
                
-                // socket.leave(room);
             });
             socket.on('disconnect', (reason) => {
                 const room = this.identification.getRoom(socket.id);
