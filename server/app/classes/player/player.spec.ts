@@ -12,11 +12,11 @@ describe('Player Class', () => {
     beforeEach(() => {
         lettersTile = [];
         for (const letter of letters) {
-            const tile: Tile = new Tile(CaseProperty.Normal);
+            const tile: Tile = new Tile(CaseProperty.Normal, 0, 0);
             tile.addLetter(letter);
             lettersTile.push(tile);
         }
-        player = new Player(lettersTile, hisTurn);
+        player = new Player(lettersTile, hisTurn, 'player1');
     });
 
     it('constructor should construct a player with object tile as letters', () => {
