@@ -1,43 +1,38 @@
 import { Injectable } from '@angular/core';
 import { Tile } from './../../../../common/tile/Tile';
+import { InfoToJoin, Message, Room } from './../../../../common/types';
 import { BoardService } from './board.service';
 import { SocketClientService } from './socket-client.service';
 import { TileHolderService } from './tile-holder/tile-holder.service';
-import {Room} from './../../../../common/types'
-import {InfoToJoin} from './../../../../common/types'
-import {Message} from './../../../../common/types'
 @Injectable({
     providedIn: 'root',
 })
 export class ChatService {
-    // vrai
-    public username:string = '';
-    public room:string = '';
-    
-    public allRooms: Room[] = [];
-    public roomMessage:string = '';
-   
-    public roomMessages: Message[] = [];
-    public playerJoined: boolean = false;
-    
-    public socketWantToJoin: string;
-    
-    public informationToJoin: InfoToJoin;
-    public gotAccepted: boolean = false;
-    public gotRefused: boolean = false;
+    username: string = '';
+    room: string = '';
 
-    //
-  
-    player1Point: number =0;
-    player2Point: number=0;
-    // lastCommandProcessed: string;
+    allRooms: Room[] = [];
+    roomMessage: string = '';
+
+    roomMessages: Message[] = [];
+    playerJoined: boolean = false;
+
+    socketWantToJoin: string;
+
+    informationToJoin: InfoToJoin;
+    gotAccepted: boolean = false;
+    gotRefused: boolean = false;
+
+    player1Point: number = 0;
+    player2Point: number = 0;
+
     constructor(public socketService: SocketClientService, public boardService: BoardService, public tileHolderService: TileHolderService) {}
 
     get socketId() {
         return this.socketService.socket.id ? this.socketService.socket.id : '';
     }
 
-    ngOnInit(): void {
+    init(): void {
         this.connect();
     }
 
@@ -45,39 +40,26 @@ export class ChatService {
         if (!this.socketService.isSocketAlive()) {
             this.socketService.connect();
             this.configureBaseSocketFeatures();
-            // enplus
             this.updateRooms();
         }
     }
 
     configureBaseSocketFeatures() {
-        this.socketService.on('connect', () => {
-            console.log(`Connexion par WebSocket sur le socket ${this.socketId}`);
-        });
-
-        
-
-        this.socketService.on('commandValidated', (message:string) => {
-            this.roomMessages.push({ username: 'Server', message: message,player:'server' });
+        this.socketService.on('commandValidated', (message: string) => {
+            this.roomMessages.push({ username: 'Server', message, player: 'server' });
         });
 
         this.socketService.on('tileHolder', (letters: Tile[]) => {
             this.tileHolderService.tileHolder = letters;
         });
 
-
         this.socketService.on('modification', (updatedBoard: Tile[][]) => {
             this.boardService.board = updatedBoard;
-         
         });
-
-        
-      
         this.socketService.on('roomMessage', (roomMessage: Message) => {
             this.roomMessages.push(roomMessage);
         });
 
-    
         this.socketService.on('rooms', (rooms: Room[]) => {
             this.allRooms = rooms;
         });
@@ -89,18 +71,14 @@ export class ChatService {
         this.socketService.on('joining', (obj: InfoToJoin) => {
             this.gotAccepted = true;
             this.informationToJoin = obj;
-           
         });
 
-        
         this.socketService.on('refusing', (obj: InfoToJoin) => {
             this.informationToJoin = obj;
             this.gotRefused = true;
         });
 
-   
         this.socketService.socket.on('asked', (username: string, socket: string, roomObj: Room) => {
-           
             this.socketWantToJoin = socket;
             this.playerJoined = true;
 
@@ -111,12 +89,12 @@ export class ChatService {
         });
 
         this.socketService.on('playerDc', () => {
-            this.roomMessages.push({ username: 'Server', message: '  Partie interrompue : joueur deconnecté',player:'server' });
+            this.roomMessages.push({ username: 'Server', message: '  Partie interrompue : joueur deconnecté', player: 'server' });
             this.socketService.send('deleteRoom');
             this.updateRooms();
         });
 
-        this.socketService.socket.on('updatePoint', (player:string, point:number) => {
+        this.socketService.socket.on('updatePoint', (player: string, point: number) => {
             if (player === 'player1') {
                 this.player1Point = point;
             } else if (player === 'player2') {
@@ -125,7 +103,6 @@ export class ChatService {
         });
     }
 
-    
     updateRooms() {
         this.socketService.send('updateRoom');
     }
@@ -149,7 +126,6 @@ export class ChatService {
         this.roomMessage = '';
     }
 
-
     askJoin(username: string, room: Room) {
         this.socketService.socket.emit('askJoin', username, room);
         this.gotRefused = false;
@@ -159,6 +135,4 @@ export class ChatService {
         this.socketService.socket.emit('accepted', this.socketWantToJoin, this.informationToJoin);
         this.updateRooms();
     }
-
- 
 }

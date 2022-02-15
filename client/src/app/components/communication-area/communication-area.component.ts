@@ -10,6 +10,6 @@ export class CommunicationAreaComponent implements OnInit {
     constructor(public chatService: ChatService) {}
 
     ngOnInit(): void {
-        this.chatService.ngOnInit();
+        this.chatService.init();
     }
 }
