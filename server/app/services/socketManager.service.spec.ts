@@ -31,8 +31,8 @@ describe('SocketManager service tests', () => {
 
     it('should handle a validate event and call lengthVerification and characterVerification when the message is not a command', (done) => {
         const testMessage = 'ABCDEFGHIJKLMNOP';
-        const spyLength = sinon.spy(service, 'lengthVerification');
-        const spyCharacters = sinon.spy(service, 'characterVerification');
+        const spyLength = sinon.spy(service.gameManager, 'lengthVerification');
+        const spyCharacters = sinon.spy(service.gameManager, 'characterVerification');
         clientSocket.emit('validate', testMessage);
         clientSocket.on('wordValidated', () => {
             assert(spyLength.called);
@@ -46,8 +46,8 @@ describe('SocketManager service tests', () => {
         const testMessageUndefined = undefined;
         const testMessageEmpty = '';
         const testMessageNull = null;
-        const spyLength = sinon.spy(service, 'lengthVerification');
-        const spyCharacters = sinon.spy(service, 'characterVerification');
+        const spyLength = sinon.spy(service.gameManager, 'lengthVerification');
+        const spyCharacters = sinon.spy(service.gameManager, 'characterVerification');
         clientSocket.emit('validate', testMessageUndefined);
         clientSocket.emit('validate', testMessageEmpty);
         clientSocket.emit('validate', testMessageNull);
@@ -58,7 +58,7 @@ describe('SocketManager service tests', () => {
 
     it('should handle a validate event and call commandVerification when message is a command', (done) => {
         const testMessage = '!abcde';
-        const spyCommand = sinon.spy(service, 'commandVerification');
+        const spyCommand = sinon.spy(service.gameManager, 'commandVerification');
         clientSocket.emit('validate', testMessage);
         clientSocket.on('commandValidated', () => {
             assert(spyCommand.called);
@@ -69,7 +69,7 @@ describe('SocketManager service tests', () => {
 
     it('should handle a placeFormatVerification event and call placeFormatValidated when message is a command', (done) => {
         const testCommand = '!placer H8v arbre';
-        const placeFormatSpy = sinon.spy(service, 'placeFormatValid');
+        const placeFormatSpy = sinon.spy(service.gameManager, 'placeFormatValid');
         clientSocket.emit('placeFormatVerification', testCommand);
         clientSocket.on('placeFormatValidated', () => {
             assert(placeFormatSpy.called);
@@ -97,7 +97,7 @@ describe('SocketManager service tests', () => {
             player2: '',
             game: gameObj,
         };
-        service.rooms.push(roomObj);
+        service.identification.rooms.push(roomObj);
         const logSpy = sinon.spy(console, 'log');
         clientSocket.emit('joinRoom', username, roomObj);
         setTimeout(() => {
@@ -114,7 +114,7 @@ describe('SocketManager service tests', () => {
             player2: '',
             game: gameObj,
         };
-        service.rooms.push(roomObj);
+        service.identification.rooms.push(roomObj);
         clientSocket.emit('askJoin', username, roomObj);
         setTimeout(() => {
             expect(roomObj.player2).to.equal('-1');
@@ -134,7 +134,7 @@ describe('SocketManager service tests', () => {
             username: 'username',
             roomObj: roomObject,
         };
-        service.rooms.push(roomObject);
+        service.identification.rooms.push(roomObject);
         const logSpy = sinon.spy(console, 'log');
         clientSocket.emit('joinRoom', roomObject.player1, roomObject);
         clientSocket.emit('accepted', socketId, infoObj);
@@ -156,7 +156,7 @@ describe('SocketManager service tests', () => {
             username: 'username',
             roomObj: roomObject,
         };
-        service.rooms.push(roomObject);
+        service.identification.rooms.push(roomObject);
         const logSpy = sinon.spy(console, 'log');
         clientSocket.emit('joinRoom', roomObject.player1, roomObject);
         clientSocket.emit('refused', socketId, infoObj);
@@ -164,34 +164,6 @@ describe('SocketManager service tests', () => {
             assert(logSpy.called);
             done();
         }, RESPONSE_DELAY);
-    });
-
-    it('should verify if the command exists and return true if it exists', (done) => {
-        const testCommand = '!placer';
-        const testCommandFalse = 'abcde';
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-        expect(service.commandVerification(testCommand)).to.be.true; // eslint-disable-line no-unused-expressions
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-        expect(service.commandVerification(testCommandFalse)).to.be.false; // eslint-disable-line no-unused-expressions
-        done();
-    });
-
-    it('should verify if the message contains only spaces and return false', (done) => {
-        const testMessageSpaces = '          ';
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-        expect(service.characterVerification(testMessageSpaces)).to.be.false; // eslint-disable-line no-unused-expressions
-        done();
-    });
-
-    it('should verify if the message is longer than 512 characters or empty and return false if it is, else return true', (done) => {
-        let testMessageLong = 'ABCDEFGHIJKLMNOP';
-        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-        for (let i = 0; i < 47; i++) {
-            testMessageLong += 'ABCDEFGHIJKLMNOP';
-        }
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-        expect(service.lengthVerification(testMessageLong)).to.be.false; // eslint-disable-line no-unused-expressions
-        done();
     });
 
     it('should add the socket to the room after a join event', (done) => {
@@ -202,7 +174,7 @@ describe('SocketManager service tests', () => {
             player2: '',
             game: gameObj,
         };
-        service.rooms.push(roomObj);
+        service.identification.rooms.push(roomObj);
         clientSocket.emit('joinRoom', username, roomObj);
         setTimeout(() => {
             // eslint-disable-next-line dot-notation
@@ -231,7 +203,7 @@ describe('SocketManager service tests', () => {
             player2: '',
             game: gameObj,
         };
-        service.rooms.push(roomObj);
+        service.identification.rooms.push(roomObj);
         const testMessage = 'Hello World';
         clientSocket.emit('joinRoom', username, roomObj);
         clientSocket.emit('roomMessage', testMessage);
@@ -248,7 +220,7 @@ describe('SocketManager service tests', () => {
             player2: 'player2',
             game: gameObj,
         };
-        service.rooms.push(roomObj);
+        service.identification.rooms.push(roomObj);
         const testMessage = 'Hello World';
         clientSocket.emit('joinRoom', 'player1', roomObj);
         clientSocket2.emit('joinRoom', 'player2', roomObj);
@@ -267,7 +239,7 @@ describe('SocketManager service tests', () => {
             player2: '',
             game: gameObj,
         };
-        service.rooms.push(roomObj);
+        service.identification.rooms.push(roomObj);
         const testMessage = '!test';
         const logSpy = sinon.spy(console, 'log');
         clientSocket.emit('joinRoom', username, roomObj);
@@ -286,7 +258,7 @@ describe('SocketManager service tests', () => {
             player2: '',
             game: gameObj,
         };
-        service.rooms.push(roomObj);
+        service.identification.rooms.push(roomObj);
         const testMessage = '!placer';
         clientSocket.emit('joinRoom', username, roomObj);
         clientSocket.emit('roomMessage', testMessage);
@@ -304,7 +276,7 @@ describe('SocketManager service tests', () => {
             player2: '',
             game: gameObj,
         };
-        service.rooms.push(roomObj);
+        service.identification.rooms.push(roomObj);
         clientSocket.emit('joinRoom', username, roomObj);
         clientSocket.emit('roomMessage', testMessage);
         setTimeout(() => {
@@ -320,9 +292,9 @@ describe('SocketManager service tests', () => {
             player2: '',
             game: gameObj,
         };
-        service.rooms.push(roomObj);
+        service.identification.rooms.push(roomObj);
         const testMessage = '!placer H8v aa';
-        const placeSpy = sinon.spy(service, 'placeWord');
+        const placeSpy = sinon.spy(service.gameManager, 'placeWord');
         clientSocket.emit('joinRoom', username, roomObj);
         clientSocket.emit('roomMessage', testMessage);
         setTimeout(() => {
@@ -381,7 +353,7 @@ describe('SocketManager service tests', () => {
     });
 
     it('should handle deleteRoom event and emit rooms', (done) => {
-        const getSpy = sinon.spy(service, 'getRoom');
+        const getSpy = sinon.spy(service.identification, 'getRoom');
         clientSocket.emit('deleteRoom');
         setTimeout(() => {
             assert(getSpy.called);
@@ -395,8 +367,8 @@ describe('SocketManager service tests', () => {
             id: 'testId',
             room: 'testRoom',
         };
-        service.users.push(user);
-        const returnId = service.getId(user.username);
+        service.identification.users.push(user);
+        const returnId = service.identification.getId(user.username);
         setTimeout(() => {
             expect(returnId).to.equal('testId');
             done();
@@ -407,7 +379,7 @@ describe('SocketManager service tests', () => {
         const game = new Game();
         const testCommand = '!placer H8v arbre';
         const placeSpy = sinon.spy(PlacementCommand, 'placeWord');
-        service.placeWord(testCommand.split(' '), game);
+        service.gameManager.placeWord(testCommand.split(' '), game);
         setTimeout(() => {
             assert(placeSpy.called);
             done();
@@ -418,7 +390,7 @@ describe('SocketManager service tests', () => {
         const game = new Game();
         const testCommand = '!placer H8v aa';
         const placeSpy = sinon.spy(PlacementCommand, 'validatedPlaceCommandBoard');
-        const returnVal = service.placeBoardValid(testCommand.split(' '), game);
+        const returnVal = service.gameManager.placeBoardValid(testCommand.split(' '), game);
         setTimeout(() => {
             assert(placeSpy.called);
             assert(placeSpy.calledWith(testCommand.split(' '), game));
@@ -433,21 +405,12 @@ describe('SocketManager service tests', () => {
         const testCommand = '!placer H8v aaaaaaaaa';
         const command = testCommand.split(' ');
         const placeSpy = sinon.spy(PlacementCommand, 'validatedPlaceCommandBoard');
-        const returnVal = service.placeBoardValid(command, game);
+        const returnVal = service.gameManager.placeBoardValid(command, game);
         setTimeout(() => {
             assert(placeSpy.called);
             assert(placeSpy.calledWith(command, game));
             // eslint-disable-next-line @typescript-eslint/no-unused-expressions
             expect(returnVal).to.be.false; // eslint-disable-line no-unused-expressions
-            done();
-        }, RESPONSE_DELAY);
-    });
-
-    it('joined() should return true', (done) => {
-        const returnVal = service.joined();
-        setTimeout(() => {
-            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-            expect(returnVal).to.be.true; // eslint-disable-line no-unused-expressions
             done();
         }, RESPONSE_DELAY);
     });
