@@ -17,3 +17,4 @@ export const WORD_LETTER_NO_MULTIPLIER = 1;
 export const WORD_LETTER_2X_MULTIPLIER = 2;
 export const WORD_LETTER_3X_MULTIPLIER = 3;
 export const MAXIMUM_CHARACTERS_MESSAGE = 512;
+export const VERIFY_WORD = 3000;
