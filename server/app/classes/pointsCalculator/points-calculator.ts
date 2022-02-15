@@ -42,14 +42,14 @@ export class PointsCalculator {
         return total;
     }
 
-    private static specialPropertyLetter(column: number, row: number, game: Game): number {
+    static specialPropertyLetter(column: number, row: number, game: Game): number {
         const specialProperty = game.gameBoard.cases[column][row].getSpecialProperty();
         if (specialProperty === CaseProperty.LetterDouble) return WORD_LETTER_2X_MULTIPLIER;
         if (specialProperty === CaseProperty.LetterTriple) return WORD_LETTER_3X_MULTIPLIER;
         return WORD_LETTER_NO_MULTIPLIER;
     }
 
-    private static specialPropertyWord(column: number, row: number, game: Game, wordMultiplier: number): number {
+    static specialPropertyWord(column: number, row: number, game: Game, wordMultiplier: number): number {
         const specialProperty = game.gameBoard.cases[column][row].getSpecialProperty();
         let multiplier = WORD_LETTER_NO_MULTIPLIER;
         if (specialProperty === CaseProperty.WordDouble) multiplier = WORD_LETTER_2X_MULTIPLIER;
@@ -58,7 +58,7 @@ export class PointsCalculator {
         return multiplier;
     }
 
-    private static newLetterOnBoard(letter: Tile, letterPositions: number[], placementInformations: PlacementInformations): boolean {
+    static newLetterOnBoard(letter: Tile, letterPositions: number[], placementInformations: PlacementInformations): boolean {
         if (placementInformations.orientation === 'h') {
             return letter.positionY === placementInformations.row && letterPositions.indexOf(letter.positionX) !== INDEX_OF_NOT_FOUND;
         }
