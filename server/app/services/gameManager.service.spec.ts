@@ -105,7 +105,7 @@ describe('Game Manager', () => {
             testMessageLong += 'ABCDEFGHIJKLMNOP';
         }
         gameManager.messageVerification(testMessageLong);
-        expect(gameManager.messageVerification(testMessageLong)).to.equal('message trop long');
+        expect(gameManager.messageVerification(testMessageLong)).to.equal('Message trop long');
     });
 
     it('method messageVerification should call lengthVerification and return "valide" if it has less than 512 characters', () => {
