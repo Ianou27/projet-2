@@ -2,6 +2,7 @@ import { ExchangeCommand } from '@app/classes/exchangeCommand/exchange-command';
 import { Game } from '@app/classes/game/game';
 import { PassCommand } from '@app/classes/passCommand/pass-command';
 import { PlacementCommand } from '@app/classes/placementCommand/placement-command';
+import { MAXIMUM_CHARACTERS_MESSAGE } from '@common/constants/general-constants';
 
 export class GameManager {
     private commandsList: string[] = ['!placer', '!echanger', '!passer', '!indice'];
@@ -47,7 +48,7 @@ export class GameManager {
     }
 
     lengthVerification(message: string) {
-        return message.length > 512 ? false : true;
+        return message.length > MAXIMUM_CHARACTERS_MESSAGE ? false : true;
     }
 
     characterVerification(message: string): boolean {
@@ -57,7 +58,7 @@ export class GameManager {
     messageVerification(message: string): string {
         let erreur = 'valide';
         if (!this.lengthVerification(message)) {
-            erreur = 'message trop long';
+            erreur = 'Message trop long';
         }
         return erreur;
     }
@@ -65,9 +66,9 @@ export class GameManager {
     placeVerification(command: string[], game: Game): string {
         let message = 'valide';
         if (!this.placeFormatValid(command)) {
-            message = 'Format non valide';
+            message = 'Entrée invalide';
         } else if (!this.placeBoardValid(command, game)) {
-            message = 'Placement non valide';
+            message = 'Commande impossible à réaliser';
         }
         return message;
     }
@@ -75,9 +76,9 @@ export class GameManager {
     exchangeVerification(command: string[], game: Game): string {
         let message = 'valide';
         if (!this.exchangeFormatValid(command)) {
-            message = 'Format non valide';
+            message = 'Entrée invalide';
         } else if (!this.exchangeTileHolderValid(command, game)) {
-            message = 'Echange Impossible';
+            message = 'Commande impossible à réaliser';
         }
         return message;
     }

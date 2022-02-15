@@ -95,7 +95,7 @@ export class SocketManager {
                     if (!game.playerTurnValid(this.identification.getPlayer(socket.id))) {
                         this.sio.to(socket.id).emit('commandValidated', " Ce n'est pas ton tour");
                     } else if (!this.gameManager.commandVerification(command[0])) {
-                        this.sio.to(socket.id).emit('commandValidated', ' Commande Invalide');
+                        this.sio.to(socket.id).emit('commandValidated', 'Erreur de syntaxe');
                     } else if (command[0] === '!placer') {
                         const verification: string = this.gameManager.placeVerification(command, game);
 
