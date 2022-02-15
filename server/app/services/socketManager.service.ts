@@ -177,6 +177,34 @@ export class SocketManager {
                 this.sio.sockets.emit('rooms', this.identification.rooms);
             });
 
+            socket.on('passer', () => {
+                const username = this.identification.getUsername(socket.id);
+                const currentRoom = this.identification.getRoom(socket.id);
+                let game: Game = new Game();
+           
+
+                this.identification.rooms.forEach((room: Room) => {
+                    if (room.player1 === username || room.player2 === username ) {
+                        game = room.game;
+                
+                      
+                    }
+                });
+                if (!game.playerTurnValid(this.identification.getPlayer(socket.id))) {
+                    this.sio.to(socket.id).emit('commandValidated', " Ce n'est pas ton tour");
+                }
+                else{
+                    this.gameManager.pass(game);
+                    this.sio.to(currentRoom).emit('roomMessage', {
+                        username: 'Server',
+                        message: username + ' a passé son tour ',
+                        player: 'server',
+                    });
+                    this.sio.to(currentRoom).emit('modification', game.gameBoard.cases, game.playerTurn().name);
+                }
+            });
+
+
             socket.on('finPartie', () => {});
 
             socket.on('cancelCreation', () => {
