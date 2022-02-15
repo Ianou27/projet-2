@@ -140,10 +140,6 @@ describe('ChatService', () => {
             service.configureBaseSocketFeatures();
         });
 
-        it('should handle wordValidated event', () => {
-            socketTestHelper.peerSideEmit('wordValidated', true);
-        });
-
         it('should handle commandValidated event', () => {
             const pushSpy = spyOn(service.roomMessages, 'push');
             socketTestHelper.peerSideEmit('commandValidated');
