@@ -52,8 +52,8 @@ export class PointsCalculator {
 
     private static newLetterOnBoard(letter: Tile, letterPositions: number[], placementInformations: PlacementInformations): boolean {
         if (placementInformations.orientation === 'h') {
-            return letter.positionY === placementInformations.row && letterPositions.includes(letter.positionX);
+            return letter.positionY === placementInformations.row && letterPositions.indexOf(letter.positionX) !== -1;
         }
-        return letter.positionX === placementInformations.column && letterPositions.includes(letter.positionY);
+        return letter.positionX === placementInformations.column && letterPositions.indexOf(letter.positionY) !== -1;
     }
 }
