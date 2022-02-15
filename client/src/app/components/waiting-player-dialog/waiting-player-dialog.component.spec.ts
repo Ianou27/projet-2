@@ -37,13 +37,15 @@ describe('WaitingPlayerDialogComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('goBack() should open the dialog', () => {
+    it('goBack() should open the dialog and cancel room creation', () => {
         // eslint-disable-next-line dot-notation
         const openSpy = spyOn(component['multiplayerDialog'], 'open');
+        const cancelSpy = spyOn(component.chatService, 'cancelCreation');
         component.goBack();
         expect(openSpy).toHaveBeenCalledWith(JoinPageComponent, {
             disableClose: true,
         });
+        expect(cancelSpy).toHaveBeenCalled();
     });
 
     it('accept() should close the dialogs and call accepted() in the chatService ', () => {

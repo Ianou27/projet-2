@@ -3,6 +3,8 @@ import { SocketTestHelper } from '@app/classes/socket-test-helper';
 import { Socket } from 'socket.io-client';
 // eslint-disable-next-line no-restricted-imports
 import { Tile } from '../../../../common/tile/Tile';
+import { InfoToJoin, Message, Room } from '../../../../common/types';
+import { Game } from '../../../../server/app/classes/game/game';
 import { ChatService } from './chat.service';
 
 describe('ChatService', () => {
@@ -42,38 +44,26 @@ describe('ChatService', () => {
         expect(updateSpy).toHaveBeenCalledTimes(0);
     });
 
-    it('can spy on id getter', () => {
+    it('getter should return socket id', () => {
         service.socketService.socket.id = 'test';
         expect(service.socketId).toBe(service.socketService.socket.id);
     });
 
-    it('impossibleCommand() should push message', () => {
-        const pushSpy = spyOn(service.serverMessages, 'push');
-        service.impossibleCommand();
-        expect(pushSpy).toHaveBeenCalled();
-        expect(pushSpy).toHaveBeenCalledWith('Commande impossible');
-    });
-
-    it('syntaxError() should push message', () => {
-        const pushSpy = spyOn(service.serverMessages, 'push');
-        service.syntaxError();
-        expect(pushSpy).toHaveBeenCalled();
-        expect(pushSpy).toHaveBeenCalledWith('Erreur de syntaxe');
-        expect(service.broadcastMessage).toBe('');
-    });
-
-    it('sendValidation() should send validate event', () => {
-        const sendSpy = spyOn(service.socketService, 'send');
-        service.sendWordValidation();
-        expect(sendSpy).toHaveBeenCalled();
-        expect(sendSpy).toHaveBeenCalledWith('validate');
+    it('getter should return empty string if no id', () => {
+        expect(service.socketId).toBe('');
     });
 
     it('askJoin() should emit an event and set gotRefused to false', () => {
+        const testGame = new Game();
+        const room: Room = {
+            player1: 'player1',
+            player2: '',
+            game: testGame,
+        };
         const emitSpy = spyOn(service.socketService.socket, 'emit');
-        service.askJoin('test', 'testRoom');
+        service.askJoin('test', room);
         expect(emitSpy).toHaveBeenCalled();
-        expect(emitSpy).toHaveBeenCalledWith('askJoin', 'test', 'testRoom');
+        expect(emitSpy).toHaveBeenCalledWith('askJoin', 'test', room);
         expect(service.gotRefused).toBeFalsy();
     });
 
@@ -103,33 +93,42 @@ describe('ChatService', () => {
     });
 
     it('joinRoom() should emit an event and call updateRooms()', () => {
-        service.informationToJoin = {
-            username: 'username',
-            roomObj: 'roomObj',
+        const testGame = new Game();
+        const room: Room = {
+            player1: 'player1',
+            player2: '',
+            game: testGame,
         };
+        const info: InfoToJoin = {
+            username: 'username',
+            roomObj: room,
+        };
+        service.informationToJoin = info;
         const updateRoomSpy = spyOn(service, 'updateRooms');
         const emitSpy = spyOn(service.socketService.socket, 'emit');
         service.joinRoom();
         expect(emitSpy).toHaveBeenCalled();
-        expect(emitSpy).toHaveBeenCalledWith('joinRoom', 'username', 'roomObj');
+        expect(emitSpy).toHaveBeenCalledWith('joinRoom', 'username', room);
         expect(updateRoomSpy).toHaveBeenCalled();
     });
 
-    it('sendToRoom() should call sent in the socket client service set room messages to an empty string', () => {
+    it('sendToRoom() should call send in the socket client service set room messages to an empty string', () => {
         const sendSpy = spyOn(service.socketService, 'send');
         service.sendToRoom();
         expect(sendSpy).toHaveBeenCalled();
         expect(service.roomMessage).toBe('');
     });
 
-    describe('Receiving events', () => {
-        it('should handle connect event', () => {
-            const consoleSpy = spyOn(console, 'log');
-            service.configureBaseSocketFeatures();
-            socketTestHelper.peerSideEmit('connect');
-            expect(consoleSpy).toHaveBeenCalled();
-        });
+    it('cancelCreation() should emit the cancelCreation event and update the rooms', () => {
+        const emitSpy = spyOn(service.socketService.socket, 'emit');
+        const updateRoomSpy = spyOn(service, 'updateRooms');
+        service.cancelCreation();
+        expect(emitSpy).toHaveBeenCalled();
+        expect(emitSpy).toHaveBeenCalledWith('cancelCreation');
+        expect(updateRoomSpy).toHaveBeenCalled();
+    });
 
+    describe('Receiving events', () => {
         it('should handle wordValidated event', () => {
             service.configureBaseSocketFeatures();
             socketTestHelper.peerSideEmit('wordValidated', true);
@@ -149,20 +148,6 @@ describe('ChatService', () => {
             expect(service.tileHolderService.tileHolder).toBe(letters);
         });
 
-        it('should handle placeFormatValidated event', () => {
-            const pushSpy = spyOn(service.roomMessages, 'push');
-            service.configureBaseSocketFeatures();
-            socketTestHelper.peerSideEmit('placeFormatValidated');
-            expect(pushSpy).toHaveBeenCalled();
-        });
-
-        it('should handle placeBoardValidated event', () => {
-            const pushSpy = spyOn(service.roomMessages, 'push');
-            service.configureBaseSocketFeatures();
-            socketTestHelper.peerSideEmit('placeBoardValidated');
-            expect(pushSpy).toHaveBeenCalled();
-        });
-
         it('should handle modification event', () => {
             const board: Tile[][] = [];
             service.configureBaseSocketFeatures();
@@ -171,20 +156,29 @@ describe('ChatService', () => {
         });
 
         it('should handle roomMessage event', () => {
-            const logSpy = spyOn(console, 'log');
+            const message: Message = {
+                player: 'player1',
+                username: 'username',
+                message: 'test',
+            };
             const pushSpy = spyOn(service.roomMessages, 'push');
             service.configureBaseSocketFeatures();
-            socketTestHelper.peerSideEmit('roomMessage', 'test');
-            expect(logSpy).toHaveBeenCalled();
+            socketTestHelper.peerSideEmit('roomMessage', message);
             expect(pushSpy).toHaveBeenCalled();
-            expect(pushSpy).toHaveBeenCalledWith('test');
+            expect(pushSpy).toHaveBeenCalledWith(message);
         });
 
-        it('should handle rooms event', () => {
+        /* it('should handle rooms event', () => {
+            const testGame = new Game();
+            const room: Room = {
+                player1: 'player1',
+                player2: 'player2',
+                game: testGame,
+            };
             service.configureBaseSocketFeatures();
-            socketTestHelper.peerSideEmit('rooms', 'test');
-            expect(service.allRooms).toBe('test');
-        });
+            socketTestHelper.peerSideEmit('rooms', room);
+            expect(service.allRooms).toContain(room);
+        }); */
 
         it('should handle didJoin event', () => {
             service.configureBaseSocketFeatures();
@@ -193,17 +187,37 @@ describe('ChatService', () => {
         });
 
         it('should handle joining event', () => {
+            const testGame = new Game();
+            const room: Room = {
+                player1: 'player1',
+                player2: '',
+                game: testGame,
+            };
+            const info: InfoToJoin = {
+                username: 'username',
+                roomObj: room,
+            };
             service.configureBaseSocketFeatures();
-            socketTestHelper.peerSideEmit('joining', 'test');
+            socketTestHelper.peerSideEmit('joining', info);
             expect(service.gotAccepted).toBeTruthy();
-            expect(service.informationToJoin).toBe('test');
+            expect(service.informationToJoin).toBe(info);
         });
 
         it('should handle refusing event', () => {
+            const testGame = new Game();
+            const room: Room = {
+                player1: 'player1',
+                player2: '',
+                game: testGame,
+            };
+            const info: InfoToJoin = {
+                username: 'username',
+                roomObj: room,
+            };
             service.configureBaseSocketFeatures();
-            socketTestHelper.peerSideEmit('refusing', 'test');
+            socketTestHelper.peerSideEmit('refusing', info);
             expect(service.gotRefused).toBeTruthy();
-            expect(service.informationToJoin).toBe('test');
+            expect(service.informationToJoin).toBe(info);
         });
 
         it('should handle asked event', () => {
@@ -224,7 +238,7 @@ describe('ChatService', () => {
             expect(updateSpy).toHaveBeenCalled();
         });
 
-        it('should handle updatePoint event and set player1 points', () => {
+        /* it('should handle updatePoint event and set player1 points', () => {
             service.configureBaseSocketFeatures();
             socketTestHelper.peerEmitMultipleParams('updatePoint', 'player1', 15);
             expect(service.player1Point).toBe(15);
@@ -234,6 +248,6 @@ describe('ChatService', () => {
             service.configureBaseSocketFeatures();
             socketTestHelper.peerEmitMultipleParams('updatePoint', 'player2', 15);
             expect(service.player2Point).toBe(15);
-        });
+        }); */
     });
 });
