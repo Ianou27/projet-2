@@ -21,6 +21,12 @@ describe('Exchange Command', () => {
         game.player1 = new Player(lettersTilePlayer1, hisTurn, 'player1');
     });
 
+    it('method validatedExchangeCommandFormat should return false if its not starting with a !', () => {
+        const commandNotValid = 'echanger aaabbb';
+        const validation = ExchangeCommand.validatedExchangeCommandFormat(commandNotValid.split(' '));
+        expect(validation).to.equals(false);
+    });
+
     it('method validatedExchangeCommandFormat should return false if its not compose of 2 terms', () => {
         const commandNotValid = '!echanger aaabbbbcccc aa';
         const validation = ExchangeCommand.validatedExchangeCommandFormat(commandNotValid.split(' '));
@@ -48,19 +54,10 @@ describe('Exchange Command', () => {
 
     it('method exchangeLetters should only exchange letters mention', () => {
         const commandValid = '!echanger aa';
-        const lettersRemainingExpect = ['A', 'B', 'B', 'B', '*'];
+        const lettersRemainingExpect = ['C', 'C', 'A', 'B', 'B', 'B', '*'];
+        game.reserveLetters = ['C', 'C'];
         ExchangeCommand.exchangeLetters(commandValid.split(' '), game);
         const lettersPlayer = game.player1.lettersToStringArray();
-        lettersPlayer.splice(0, 2);
-        expect(lettersRemainingExpect).to.eql(lettersPlayer);
-    });
-
-    it('method exchangeLetters should only exchange * if mentions with a capital letter', () => {
-        const commandValid = '!echanger *';
-        const lettersRemainingExpect = ['A', 'A', 'A', 'B', 'B', 'B'];
-        ExchangeCommand.exchangeLetters(commandValid.split(' '), game);
-        const lettersPlayer = game.player1.lettersToStringArray();
-        lettersPlayer.pop();
         expect(lettersRemainingExpect).to.eql(lettersPlayer);
     });
 
