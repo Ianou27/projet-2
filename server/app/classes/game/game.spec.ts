@@ -17,6 +17,10 @@ describe('Game', () => {
         tile1.value = letterValue[letter];
         lettersTilePlayer1.push(tile1);
     }
+    let expectedPoints = 0;
+    for (const letter of lettersTilePlayer1) {
+        expectedPoints += letter.value;
+    }
 
     beforeEach(() => {
         game = new Game();
@@ -103,5 +107,38 @@ describe('Game', () => {
         game.player1.letters = lettersTilePlayer1;
         const result = game.tileHolderContains('awz');
         expect(result).equal(false);
+    });
+
+    it('method verifyGameState should set gameFinished to true if the passes count is 6', () => {
+        game.passesCount = 6;
+        expect(game.gameFinished).to.equal(false);
+        game.verifyGameState();
+        expect(game.gameFinished).to.equal(true);
+    });
+
+    it('method verifyGameState should set gameFinished to true if reserve length and letters of one player equal zero and calculate points', () => {
+        game.reserveLetters = [];
+        game.player1.letters = [];
+        game.player2.letters = lettersTilePlayer1;
+        expect(game.gameFinished).to.equal(false);
+        game.verifyGameState();
+        expect(game.gameFinished).to.equal(true);
+        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+        expect(game.player1.points).to.equal(expectedPoints);
+        expect(game.player2.points).to.equal(-expectedPoints);
+    });
+
+    it('method verifyGameState should set gameFinished to true if reserve length and letters of one player equal zero and calculate points', () => {
+        game.reserveLetters = [];
+        game.player2.letters = [];
+        game.player1.letters = lettersTilePlayer1;
+        game.player1.points = 0;
+        game.player2.points = 0;
+        expect(game.gameFinished).to.equal(false);
+        game.verifyGameState();
+        expect(game.gameFinished).to.equal(true);
+        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+        expect(game.player2.points).to.equal(expectedPoints);
+        expect(game.player1.points).to.equal(-expectedPoints);
     });
 });

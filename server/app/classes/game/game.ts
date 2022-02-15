@@ -25,8 +25,14 @@ export class Game {
     }
 
     verifyGameState() {
-        if (this.passesCount !== MAXIMUM_PASSES_COUNT) return;
-        if (this.reserveLetters.length !== 0) return;
+        if (this.passesCount === MAXIMUM_PASSES_COUNT) {
+            this.endGame();
+            return;
+        }
+        if (this.reserveLetters.length === 0 && (this.player1.getNumberLetters() === 0 || this.player2.getNumberLetters() === 0)) {
+            this.endGame();
+            return;
+        }
     }
 
     changeTurnTwoPlayers() {
@@ -71,6 +77,21 @@ export class Game {
             }
         }
         return true;
+    }
+
+    private endGame() {
+        this.gameFinished = true;
+        if (this.player1.getNumberLetters() === 0) {
+            for (const letter of this.player2.getLetters()) {
+                this.player1.points += letter.value;
+                this.player2.points -= letter.value;
+            }
+        } else if (this.player2.getNumberLetters() === 0) {
+            for (const letter of this.player1.getLetters()) {
+                this.player2.points += letter.value;
+                this.player1.points -= letter.value;
+            }
+        }
     }
 
     private randomLettersInitialization(): Tile[] {
