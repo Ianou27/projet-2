@@ -10,19 +10,12 @@ describe('IdManager tests', () => {
     const idManager = new IdManager();
 
     beforeEach(() => {
-        // const testGame = new Game();
         const user: User = {
             username: 'username',
             id: 'id',
             room: 'room',
         };
         idManager.users.push(user);
-        /* const room: Room = {
-            player1: 'username',
-            player2: '',
-            game: testGame,
-        };
-        idManager.rooms.push(room); */
     });
 
     afterEach(() => {

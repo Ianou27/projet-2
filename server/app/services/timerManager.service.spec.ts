@@ -1,4 +1,6 @@
+import { Game } from '@app/classes/game/game';
 import { IdManager } from '@app/services/idManager.service';
+import { Room, User } from '@common/types';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
 import * as io from 'socket.io';
@@ -24,7 +26,7 @@ describe('IdManager tests', () => {
         });
     });
 
-    /* it('start should do nothing if time is -1', (done) => {
+    it('start should do nothing if time is -1', (done) => {
         timer.timeLeft = -1;
         timer.start('id', idManager, sio, gameManager);
         setTimeout(() => {}, 1200);
@@ -61,7 +63,7 @@ describe('IdManager tests', () => {
             expect(timer.timeLeft).to.equal(60);
         }, 1001);
         done();
-    }); */
+    });
 
     it('start should call getUsername and getRoom', () => {
         const userSpy = sinon.spy(idManager, 'getUsername');
