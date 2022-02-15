@@ -3,38 +3,31 @@ import { Tile } from './../../../../common/tile/Tile';
 import { BoardService } from './board.service';
 import { SocketClientService } from './socket-client.service';
 import { TileHolderService } from './tile-holder/tile-holder.service';
-
+import {Room} from './../../../../common/types'
+import {InfoToJoin} from './../../../../common/types'
+import {Message} from './../../../../common/types'
 @Injectable({
     providedIn: 'root',
 })
 export class ChatService {
     // vrai
-    username = '';
-    room = '';
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    allRooms: any[] = [];
-    roomMessage = '';
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    roomMessages: any[] = [];
-    playerJoined: boolean = false;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    socketWantToJoin: any;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    informationToJoin: any;
-    gotAccepted: boolean = false;
-    gotRefused: boolean = false;
+    public username:string = '';
+    public room:string = '';
+    
+    public allRooms: Room[] = [];
+    public roomMessage:string = '';
+   
+    public roomMessages: Message[] = [];
+    public playerJoined: boolean = false;
+    
+    public socketWantToJoin: string;
+    
+    public informationToJoin: InfoToJoin;
+    public gotAccepted: boolean = false;
+    public gotRefused: boolean = false;
 
     //
-    serverMessage: string = '';
-    serverClock: Date;
-
-    wordInput = '';
-    serverValidationResult = '';
-    messageToServer = '';
-
-    broadcastMessage = '';
-    serverMessages: string[] = [];
-
+  
     player1Point: number =0;
     player2Point: number=0;
     // lastCommandProcessed: string;
@@ -62,39 +55,30 @@ export class ChatService {
             console.log(`Connexion par WebSocket sur le socket ${this.socketId}`);
         });
 
-        // Gérer l'événement envoyé par le serveur : afficher le résultat de validation
-        this.socketService.on('wordValidated', (isValid: boolean) => {});
+        
 
         this.socketService.on('commandValidated', (message:string) => {
-            this.roomMessages.push({ username: 'Server', message: message });
+            this.roomMessages.push({ username: 'Server', message: message,player:'server' });
         });
 
         this.socketService.on('tileHolder', (letters: Tile[]) => {
             this.tileHolderService.tileHolder = letters;
         });
 
-        this.socketService.on('placeFormatValidated', () => {
-            this.roomMessages.push({ username: 'Server', message: 'Format de la commande Invalide' });
-        });
-
-        this.socketService.on('placeBoardValidated', () => {
-            this.roomMessages.push({ username: 'Server', message: 'Mot impossible a placer ' });
-        });
 
         this.socketService.on('modification', (updatedBoard: Tile[][]) => {
             this.boardService.board = updatedBoard;
-            // this.broadcastMessageToAll();
+         
         });
 
-        // vrai
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        this.socketService.on('roomMessage', (roomMessage: any) => {
-            console.log(roomMessage.player);
+        
+      
+        this.socketService.on('roomMessage', (roomMessage: Message) => {
             this.roomMessages.push(roomMessage);
         });
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        this.socketService.on('rooms', (rooms: any[]) => {
+    
+        this.socketService.on('rooms', (rooms: Room[]) => {
             this.allRooms = rooms;
         });
 
@@ -102,20 +86,21 @@ export class ChatService {
             this.playerJoined = didJoin;
         });
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        this.socketService.on('joining', (obj: any) => {
+        this.socketService.on('joining', (obj: InfoToJoin) => {
             this.gotAccepted = true;
             this.informationToJoin = obj;
+           
         });
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        this.socketService.on('refusing', (obj: any) => {
+        
+        this.socketService.on('refusing', (obj: InfoToJoin) => {
             this.informationToJoin = obj;
             this.gotRefused = true;
         });
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        this.socketService.socket.on('asked', (username: string, socket: any, roomObj: any) => {
+   
+        this.socketService.socket.on('asked', (username: string, socket: string, roomObj: Room) => {
+           
             this.socketWantToJoin = socket;
             this.playerJoined = true;
 
@@ -126,7 +111,7 @@ export class ChatService {
         });
 
         this.socketService.on('playerDc', () => {
-            this.roomMessages.push({ username: 'Server', message: '  Partie interrompue : joueur deconnecté' });
+            this.roomMessages.push({ username: 'Server', message: '  Partie interrompue : joueur deconnecté',player:'server' });
             this.socketService.send('deleteRoom');
             this.updateRooms();
         });
@@ -140,14 +125,7 @@ export class ChatService {
         });
     }
 
-    impossibleCommand() {
-        this.serverMessages.push('Commande impossible');
-    }
-
-    syntaxError() {
-        this.serverMessages.push('Erreur de syntaxe');
-        this.broadcastMessage = '';
-    }
+    
     updateRooms() {
         this.socketService.send('updateRoom');
     }
@@ -171,12 +149,8 @@ export class ChatService {
         this.roomMessage = '';
     }
 
-    sendWordValidation() {
-        this.socketService.send('validate');
-    }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    askJoin(username: string, room: any) {
+    askJoin(username: string, room: Room) {
         this.socketService.socket.emit('askJoin', username, room);
         this.gotRefused = false;
     }
@@ -186,7 +160,5 @@ export class ChatService {
         this.updateRooms();
     }
 
-    /* messageLengthError() {}
-
-    commandError(): void {} */
+ 
 }

@@ -1,4 +1,4 @@
-import { letterValue } from '@common/assets/reserve-letters';
+import { letterValue } from './../../../common/assets/reserve-letters';
 import { CaseProperty } from './../../../common/assets/case-property';
 import { COLUMN_ROWS_NUMBER } from './../../../common/constants/general-constants';
 import { LETTER_2X, LETTER_3X, WORD_2X, WORD_3X } from './../../../common/constants/tile-information';

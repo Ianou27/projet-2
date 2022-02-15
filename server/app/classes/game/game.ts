@@ -1,6 +1,6 @@
-import { CaseProperty } from '@common/assets/case-property';
-import { NUMBER_TILEHOLDER } from '@common/constants/general-constants';
-import { Tile } from '@common/tile/Tile';
+import { CaseProperty } from './../../../../common/assets/case-property';
+import { NUMBER_TILEHOLDER } from './../../../../common/constants/general-constants';
+import { Tile } from './../../../../common/tile/Tile';
 import { letterNumber } from './../../../../common/assets/reserve-letters';
 import { GameBoardService } from './../../services/gameBoard.service';
 import { Player } from './../player/player';

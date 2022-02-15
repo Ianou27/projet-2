@@ -1,11 +1,10 @@
 import { Game } from '@app/classes/game/game';
+import { InfoToJoin, Room } from '@common/types';
 import * as http from 'http';
 import * as io from 'socket.io';
 import { GameManager } from './gameManager.service';
 import { IdManager } from './idManager.service';
 import { RoomManager } from './roomManager.service';
-import {Room} from '@common/types'
-import {InfoToJoin} from '@common/types'
 
 export class SocketManager {
     private sio: io.Server;
@@ -28,7 +27,6 @@ export class SocketManager {
             });
 
             socket.on('joinRoom', (username: string, roomObj: Room) => {
-                
                 let player1Id = this.identification.getId(roomObj.player1);
                 const letters = this.roomManager.joinRoom(username, roomObj, socket.id, this.identification);
                 socket.join(roomObj.player1);
@@ -39,7 +37,6 @@ export class SocketManager {
             });
 
             socket.on('askJoin', (username: string, roomObj: Room) => {
-                
                 this.sio.to(roomObj.player1).emit('asked', username, socket.id, roomObj);
                 this.identification.rooms.forEach((room) => {
                     if (room.player1 === roomObj.player1) {
@@ -51,7 +48,6 @@ export class SocketManager {
             });
 
             socket.on('accepted', (socketId: string, infoObj: InfoToJoin) => {
-                
                 this.sio.to(socketId).emit('joining', infoObj);
                 let username = this.identification.getUsername(socket.id);
 
@@ -63,7 +59,6 @@ export class SocketManager {
             });
 
             socket.on('refused', (socketId: string, infoObj: InfoToJoin) => {
-                
                 this.sio.to(socketId).emit('refusing', infoObj);
 
                 let username = this.identification.getUsername(socket.id);
@@ -100,9 +95,7 @@ export class SocketManager {
                     if (!game.playerTurnValid(this.identification.getPlayer(socket.id))) {
                         this.sio.to(socket.id).emit('commandValidated', " Ce n'est pas ton tour");
                     } else if (!this.gameManager.commandVerification(command[0])) {
-                        
                         this.sio.to(socket.id).emit('commandValidated', ' Commande Invalide');
-                        
                     } else if (command[0] === '!placer') {
                         let verification: string = this.gameManager.placerVerifications(command, game);
 
