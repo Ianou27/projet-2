@@ -25,6 +25,7 @@ export class Game {
         this.firstTurn = true;
         this.passesCount = 0;
         this.gameFinished = false;
+        this.timer = new Timer();
     }
 
     verifyGameState() {

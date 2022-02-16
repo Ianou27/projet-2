@@ -1,8 +1,9 @@
 import { Game } from '@app/classes/game/game';
 import { Tile } from '@common/tile/Tile';
 import { Room } from '@common/types';
+import * as io from 'socket.io';
+import { GameManager } from './gameManager.service';
 import { IdManager } from './idManager.service';
-
 export class RoomManager {
     createRoom(username: string, room: string, socketId: string, identification: IdManager) {
         const user = {
@@ -21,7 +22,7 @@ export class RoomManager {
         identification.rooms.push(roomObj);
     }
 
-    joinRoom(username: string, roomObj: Room, socketId: string, identification: IdManager): Tile[][] {
+    joinRoom(username: string, roomObj: Room, socketId: string, identification: IdManager, sio: io.Server, gameManager: GameManager): Tile[][] {
         let tiles: Tile[][] = [];
         identification.rooms.forEach((element: Room) => {
             if (roomObj.player1 === element.player1) {
@@ -36,6 +37,7 @@ export class RoomManager {
                     element.player2 = username;
 
                     tiles = [element.game.player1.getLetters(), element.game.player2.getLetters()];
+                    element.game.timer.start(socketId, identification, sio, gameManager);
                 }
             }
         });
