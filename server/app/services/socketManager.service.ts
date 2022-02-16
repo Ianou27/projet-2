@@ -1,3 +1,5 @@
+/* eslint-disable complexity */
+/* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable no-console */
 import { Game } from '@app/classes/game/game';
 import { InfoToJoin, Room } from '@common/types';
@@ -230,9 +232,6 @@ export class SocketManager {
                     this.sio.to(currentRoom).emit('endGame', this.identification.getWinner(username, game.winner));
                 }
             });
-
-            socket.on('timer', () => {});
-            socket.on('finPartie', () => {});
 
             socket.on('cancelCreation', () => {
                 this.roomManager.cancelCreation(socket.id, this.identification);
