@@ -1,4 +1,4 @@
-export const RowTest: { [letter: string]: number } = {
+export const rowNumber: { [letter: string]: number } = {
     A: 0,
     B: 1,
     C: 2,
