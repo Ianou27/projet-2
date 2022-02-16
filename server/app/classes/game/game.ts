@@ -85,10 +85,9 @@ export class Game {
     private setWinner() {
         if (this.player1.points > this.player2.points) this.winner = this.player1.name;
         else if (this.player1.points < this.player2.points) this.winner = this.player2.name;
-        else{
+        else {
             this.winner = 'tie';
         }
-
     }
 
     private endGame() {
