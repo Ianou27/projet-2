@@ -195,6 +195,15 @@ export class SocketManager {
                         console.log(game.winner);
                         this.sio.to(currentRoom).emit('endGame', this.identification.getWinner(username, game.winner));
                         game.timer.stop();
+                        this.sio.to(currentRoom).emit('roomMessage', {
+                            username: 'Server',
+                            message:
+                                'lettre joueuer 1 =>' +
+                                game.player1.lettersToStringArray() +
+                                ' \n lettre joueuer 2 ' +
+                                game.player2.lettersToStringArray(),
+                            player: 'server',
+                        });
                     }
                 } else if (this.gameManager.messageVerification(message) === 'valide') {
                     this.identification.roomMessages[currentRoom].push({ username, message });
@@ -232,6 +241,15 @@ export class SocketManager {
                 } else {
                     this.sio.to(currentRoom).emit('endGame', this.identification.getWinner(username, game.winner));
                     game.timer.stop();
+                    this.sio.to(currentRoom).emit('roomMessage', {
+                        username: 'Server',
+                        message:
+                            'lettre joueuer 1 =>' +
+                            game.player1.lettersToStringArray() +
+                            ' \n lettre joueuer 2 ' +
+                            game.player2.lettersToStringArray(),
+                        player: 'server',
+                    });
                 }
             });
 
