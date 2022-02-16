@@ -1,5 +1,4 @@
 import { Game } from '@app/classes/game/game';
-import { PlacementCommand } from '@app/classes/placementCommand/placement-command';
 import { Server } from 'app/server';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
@@ -27,55 +26,6 @@ describe('SocketManager service tests', () => {
         // eslint-disable-next-line dot-notation
         service['sio'].close();
         sinon.restore();
-    });
-
-    it('should handle a validate event and call lengthVerification and characterVerification when the message is not a command', (done) => {
-        const testMessage = 'ABCDEFGHIJKLMNOP';
-        const spyLength = sinon.spy(service.gameManager, 'lengthVerification');
-        const spyCharacters = sinon.spy(service.gameManager, 'characterVerification');
-        clientSocket.emit('validate', testMessage);
-        clientSocket.on('wordValidated', () => {
-            assert(spyLength.called);
-            assert(spyLength.calledWith(testMessage));
-            assert(spyCharacters.called);
-            assert(spyCharacters.calledWith(testMessage));
-            done();
-        });
-    });
-    it('should handle a validate event and not call any function if message is undefined', (done) => {
-        const testMessageUndefined = undefined;
-        const testMessageEmpty = '';
-        const testMessageNull = null;
-        const spyLength = sinon.spy(service.gameManager, 'lengthVerification');
-        const spyCharacters = sinon.spy(service.gameManager, 'characterVerification');
-        clientSocket.emit('validate', testMessageUndefined);
-        clientSocket.emit('validate', testMessageEmpty);
-        clientSocket.emit('validate', testMessageNull);
-        assert(spyCharacters.notCalled);
-        assert(spyLength.notCalled);
-        done();
-    });
-
-    it('should handle a validate event and call commandVerification when message is a command', (done) => {
-        const testMessage = '!abcde';
-        const spyCommand = sinon.spy(service.gameManager, 'commandVerification');
-        clientSocket.emit('validate', testMessage);
-        clientSocket.on('commandValidated', () => {
-            assert(spyCommand.called);
-            assert(spyCommand.calledWith(testMessage));
-            done();
-        });
-    });
-
-    it('should handle a placeFormatVerification event and call placeFormatValidated when message is a command', (done) => {
-        const testCommand = '!placer H8v arbre';
-        const placeFormatSpy = sinon.spy(service.gameManager, 'placeFormatValid');
-        clientSocket.emit('placeFormatVerification', testCommand);
-        clientSocket.on('placeFormatValidated', () => {
-            assert(placeFormatSpy.called);
-            assert(placeFormatSpy.calledWith(testCommand.split(' ')));
-            done();
-        });
     });
 
     it('should handle a createRoom event and call console log', (done) => {
@@ -303,45 +253,6 @@ describe('SocketManager service tests', () => {
         }, RESPONSE_DELAY);
     });
 
-    /* it('should call emit in current room', (done) => {
-        const gameObj = new Game();
-        const username = 'username';
-        const user = {
-            username: 'username',
-            id: 'testId',
-            room: 'testRoom',
-        };
-        const roomObj = {
-            player1: username,
-            player2: '',
-            game: gameObj,
-        };
-        service.rooms.push(roomObj);
-        service.users.push(user);
-        const testMessage = 'allo';
-        // eslint-disable-next-line dot-notation
-        const emitSpy = sinon.spy(service['sio'].to(user.room), 'emit');
-        clientSocket.emit('joinRoom', username, roomObj);
-        clientSocket.emit('roomMessage', testMessage);
-        setTimeout(() => {
-            assert(emitSpy.called);
-            done();
-        }, RESPONSE_DELAY);
-    }); */
-
-    it('should broadcast message to multiple clients on broadcastAll event', (done) => {
-        const clientSocket2 = ioClient(urlString);
-        const testMessage = 'Hello World';
-        // eslint-disable-next-line dot-notation
-        const spy = sinon.spy(service['sio'].sockets, 'emit');
-        clientSocket.emit('broadcastAll', testMessage);
-        clientSocket2.on('massMessage', (message: string) => {
-            expect(message).to.contain(testMessage);
-            assert(spy.called);
-            done();
-        });
-    });
-
     it('should handle updateRoom event and emit rooms', (done) => {
         // eslint-disable-next-line dot-notation
         const emitSpy = sinon.spy(service['sio'].sockets, 'emit');
@@ -352,65 +263,32 @@ describe('SocketManager service tests', () => {
         }, RESPONSE_DELAY);
     });
 
-    it('should handle deleteRoom event and emit rooms', (done) => {
-        const getSpy = sinon.spy(service.identification, 'getRoom');
-        clientSocket.emit('deleteRoom');
-        setTimeout(() => {
-            assert(getSpy.called);
-            done();
-        }, RESPONSE_DELAY);
-    });
-
-    it('getId should return the id associated with the username', (done) => {
-        const user = {
-            username: 'username',
-            id: 'testId',
-            room: 'testRoom',
+    it('should handle passer event', (done) => {
+        const gameObj = new Game();
+        const username = 'username';
+        const roomObj = {
+            player1: username,
+            player2: '',
+            game: gameObj,
         };
-        service.identification.users.push(user);
-        const returnId = service.identification.getId(user.username);
+        service.identification.rooms.push(roomObj);
+        const userSpy = sinon.spy(service.identification, 'getUsername');
+        const roomSpy = sinon.spy(service.identification, 'getRoom');
+        clientSocket.emit('passer');
         setTimeout(() => {
-            expect(returnId).to.equal('testId');
+            assert(userSpy.called);
+            assert(roomSpy.called);
             done();
         }, RESPONSE_DELAY);
     });
 
-    it('placeWord() should call placeWord in PlacementCommand', (done) => {
-        const game = new Game();
-        const testCommand = '!placer H8v arbre';
-        const placeSpy = sinon.spy(PlacementCommand, 'placeWord');
-        service.gameManager.placeWord(testCommand.split(' '), game);
+    it('should handle cancelCreation event and call cancelCreation and deleteUser', (done) => {
+        const cancelSpy = sinon.spy(service.roomManager, 'cancelCreation');
+        const deleteSpy = sinon.spy(service.identification, 'deleteUser');
+        clientSocket.emit('cancelCreation');
         setTimeout(() => {
-            assert(placeSpy.called);
-            done();
-        }, RESPONSE_DELAY);
-    });
-
-    it('placeBoardValid() should call validatedPlaceCommandBoard in PlacementCommand and return true if valid', (done) => {
-        const game = new Game();
-        const testCommand = '!placer H8v aa';
-        const placeSpy = sinon.spy(PlacementCommand, 'validatedPlaceCommandBoard');
-        const returnVal = service.gameManager.placeBoardValid(testCommand.split(' '), game);
-        setTimeout(() => {
-            assert(placeSpy.called);
-            assert(placeSpy.calledWith(testCommand.split(' '), game));
-            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-            expect(returnVal).to.be.true; // eslint-disable-line no-unused-expressions
-            done();
-        }, RESPONSE_DELAY);
-    });
-
-    it('placeBoardValid() should call validatedPlaceCommandBoard in PlacementCommand and return false if not valid', (done) => {
-        const game = new Game();
-        const testCommand = '!placer H8v aaaaaaaaa';
-        const command = testCommand.split(' ');
-        const placeSpy = sinon.spy(PlacementCommand, 'validatedPlaceCommandBoard');
-        const returnVal = service.gameManager.placeBoardValid(command, game);
-        setTimeout(() => {
-            assert(placeSpy.called);
-            assert(placeSpy.calledWith(command, game));
-            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-            expect(returnVal).to.be.false; // eslint-disable-line no-unused-expressions
+            assert(cancelSpy.called);
+            assert(deleteSpy.called);
             done();
         }, RESPONSE_DELAY);
     });
