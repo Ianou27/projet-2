@@ -1,4 +1,4 @@
-import * as io from 'socket.io';
+
 import { NO_TIME_LEFT, ONE_SECOND_MS, SECONDS_IN_MINUTE } from './../../../common/constants/general-constants';
 import { Room } from './../../../common/types';
 import { Game } from './../classes/game/game';
@@ -6,7 +6,7 @@ import { GameManager } from './game-manager.service';
 import { IdManager } from './idManager.service';
 export class Timer {
     timeLeft: number = SECONDS_IN_MINUTE;
-    start(socketId: string, identification: IdManager, sio: io.Server, gameManager: GameManager) {
+    start(socketId: string, identification: IdManager, sio: any, gameManager: GameManager) {
         const username = identification.getUsername(socketId);
         const currentRoom = identification.getRoom(socketId);
         let game: Game = new Game();
