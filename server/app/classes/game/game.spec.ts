@@ -123,7 +123,6 @@ describe('Game', () => {
         expect(game.gameFinished).to.equal(false);
         game.verifyGameState();
         expect(game.gameFinished).to.equal(true);
-        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
         expect(game.player1.points).to.equal(expectedPoints);
         expect(game.player2.points).to.equal(-expectedPoints);
     });
@@ -137,8 +136,16 @@ describe('Game', () => {
         expect(game.gameFinished).to.equal(false);
         game.verifyGameState();
         expect(game.gameFinished).to.equal(true);
-        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
         expect(game.player2.points).to.equal(expectedPoints);
         expect(game.player1.points).to.equal(-expectedPoints);
+    });
+
+    it('method verifyGameState should set the winner player1 if player1 has more points', () => {
+        game.player1.points = 100;
+        game.player2.points = 0;
+        game.reserveLetters = [];
+        game.player1.letters = [];
+        game.verifyGameState();
+        expect(game.winner).to.equal('player1');
     });
 });
