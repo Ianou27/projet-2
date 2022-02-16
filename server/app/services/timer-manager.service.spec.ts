@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 import { Game } from '@app/classes/game/game';
-import { IdManager } from '@app/services/idManager.service';
+import { IdManager } from '@app/services/id-manager.service';
 import { Room, User } from '@common/types';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
 import * as io from 'socket.io';
 import { GameManager } from './game-manager.service';
-import { Timer } from './timerManager.service';
+import { Timer } from './timer-manager.service';
 
 describe('IdManager tests', () => {
     const timer = new Timer();
@@ -30,6 +30,7 @@ describe('IdManager tests', () => {
     it('start should do nothing if time is -1', (done) => {
         timer.timeLeft = -1;
         timer.start('id', idManager, sio, gameManager);
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         setTimeout(() => {}, 1200);
         done();
     });

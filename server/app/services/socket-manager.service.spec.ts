@@ -8,7 +8,7 @@ import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
 import { io as ioClient, Socket } from 'socket.io-client';
 import { Container } from 'typedi';
-import { SocketManager } from './socketManager.service';
+import { SocketManager } from './socket-manager.service';
 
 const RESPONSE_DELAY = 200;
 describe('SocketManager service tests', () => {
@@ -263,6 +263,7 @@ describe('SocketManager service tests', () => {
         clientSocket2.emit('joinRoom', 'player2', roomObj);
         clientSocket.emit('roomMessage', testMessage);
         clientSocket2.emit('roomMessage', testCommand);
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         setTimeout(() => {}, RESPONSE_DELAY);
         done();
     });

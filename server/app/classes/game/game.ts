@@ -3,7 +3,7 @@ import { letterNumber, letterValue } from './../../../../common/assets/reserve-l
 import { MAXIMUM_PASSES_COUNT, NUMBER_TILEHOLDER } from './../../../../common/constants/general-constants';
 import { Tile } from './../../../../common/tile/Tile';
 import { GameBoardService } from './../../services/game-board.service';
-import { Timer } from './../../services/timerManager.service';
+import { Timer } from './../../services/timer-manager.service';
 import { Player } from './../player/player';
 
 export class Game {

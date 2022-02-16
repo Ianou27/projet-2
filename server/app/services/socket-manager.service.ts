@@ -6,8 +6,8 @@ import { InfoToJoin, Room } from '@common/types';
 import * as http from 'http';
 import * as io from 'socket.io';
 import { GameManager } from './game-manager.service';
-import { IdManager } from './idManager.service';
-import { RoomManager } from './roomManager.service';
+import { IdManager } from './id-manager.service';
+import { RoomManager } from './room-manager.service';
 export class SocketManager {
     gameManager: GameManager = new GameManager();
     identification: IdManager = new IdManager();

@@ -1,4 +1,3 @@
-
 import {
     CENTER_ROW_COLUMN,
     COLUMN_ROWS_MINIMUM,
@@ -15,8 +14,9 @@ import { PlacementInformations } from './../../placement-informations';
 import { Game } from './../game/game';
 import { PointsCalculator } from './../pointsCalculator/points-calculator';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-declare var require: any;
-const fs = require('fs');
+declare let require: any;
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const fs = require('fs'); // eslint-disable-line @typescript-eslint/no-var-requires
 export class PlacementCommand {
     static dictionaryArray: string[] = JSON.parse(fs.readFileSync('./assets/dictionnary.json').toString()).words;
 

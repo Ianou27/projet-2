@@ -1,5 +1,5 @@
 import { Game } from '@app/classes/game/game';
-import { IdManager } from '@app/services/idManager.service';
+import { IdManager } from '@app/services/id-manager.service';
 import { Room, User } from '@common/types';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';

@@ -1,11 +1,11 @@
 import { Game } from '@app/classes/game/game';
-import { RoomManager } from '@app/services/roomManager.service';
+import { RoomManager } from '@app/services/room-manager.service';
 import { Room, User } from '@common/types';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
 import * as io from 'socket.io';
 import { GameManager } from './game-manager.service';
-import { IdManager } from './idManager.service';
+import { IdManager } from './id-manager.service';
 
 describe('IdManager tests', () => {
     const roomManager = new RoomManager();

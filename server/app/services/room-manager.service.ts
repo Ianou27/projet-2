@@ -3,7 +3,7 @@ import { Tile } from '@common/tile/Tile';
 import { Room } from '@common/types';
 import * as io from 'socket.io';
 import { GameManager } from './game-manager.service';
-import { IdManager } from './idManager.service';
+import { IdManager } from './id-manager.service';
 export class RoomManager {
     createRoom(username: string, room: string, socketId: string, identification: IdManager) {
         const user = {
