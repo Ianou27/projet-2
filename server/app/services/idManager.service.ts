@@ -27,13 +27,16 @@ export class IdManager {
     getWinner(username: string, playerWinner: string): string {
         let winner = '';
         this.rooms.forEach((room: Room) => {
-            if (username === room.player1 || username === room.player2) {
-                if ('player1' === playerWinner) {
-                    winner = room.player1;
-                } else if ('player2' === playerWinner) {
-                    winner = room.player2;
+            if(playerWinner != 'tie'){
+                if (username === room.player1 || username === room.player2) {
+                    if ('player1' === playerWinner) {
+                        winner = room.player1;
+                    } else if ('player2' === playerWinner) {
+                        winner = room.player2;
+                    }
                 }
-            } else {
+            }
+            else {
                 winner = 'tie';
             }
         });
