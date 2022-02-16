@@ -1,3 +1,33 @@
 #canvas {
-    border: 1px solid black;
+    border: 3px solid black;
+    z-index: -1;
+    position: absolute;
+}
+
+#grid-container{
+    display: contents;
+}
+
+.row-numbers {
+    display: grid;
+    padding-left: 25px;
+    grid-template-columns: repeat(15, 50px);
+}
+
+.number-text {
+    padding-left: 20px;
+}
+
+.col-letters {
+    display: grid;
+    grid-template-rows: repeat(15, 50px);
+}
+
+.letters-text {
+    padding-top: 20px;
+    padding-right: 15px;
+}
+
+.wrapper {
+    display: flex;
 }

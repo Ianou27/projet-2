@@ -4,12 +4,63 @@
 }
 
 .play-area-container {
+    position: relative;
     overflow: auto;
     flex: 1 1 auto;
+    left: 100px;
+    top: 40px;
+    height: 100%;
 }
 
 .play-area {
     display: grid;
-    width: min-content;
+    width: 756px;
     outline: none;
+}
+
+#buttons {
+    position: relative;
+    display: grid;
+    grid-template-rows: repeat(4, 70px);
+    left: 10px;
+    top: 10px;
+}
+
+::ng-deep .mat-tooltip {
+    font-size: 16px;
+}
+
+.row-numbers {
+    position: relative;
+    left: 100px;
+    top: 30px;
+    display: grid;
+    padding-left: 25px;
+    grid-template-columns: repeat(15, 50px);
+}
+
+.number-text {
+    padding-left: 20px;
+}
+
+.col-letters {
+    position: relative;
+    left: 85px;
+    top: 40px;
+    display: grid;
+    grid-template-rows: repeat(15, 50px);
+}
+
+.letters-text {
+    padding-top: 20px;
+    padding-right: 15px;
+}
+
+.wrapper {
+    display: flex;
+}
+
+app-information-board {
+    position: relative;
+    left: 300px;
 }

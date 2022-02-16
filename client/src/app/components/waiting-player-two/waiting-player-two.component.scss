@@ -1,0 +1,17 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 500px;
+    width: 1000px;
+    align-items: center;
+}
+
+mat-spinner {
+    position: relative;
+    top: 35%;
+}
+
+h2 {
+    position: relative;
+    top: 10%;
+}

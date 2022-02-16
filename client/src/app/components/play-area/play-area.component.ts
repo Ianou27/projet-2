@@ -1,44 +1,43 @@
-import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
-import { Vec2 } from '@app/classes/vec2';
+import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from '@app/../../../common/constants/board';
+import { Vec2 } from '@app/../../../common/vec2';
 import { GridService } from '@app/services/grid.service';
-
-// TODO : Avoir un fichier séparé pour les constantes!
-export const DEFAULT_WIDTH = 500;
-export const DEFAULT_HEIGHT = 500;
-
-// TODO : Déplacer ça dans un fichier séparé accessible par tous
-export enum MouseButton {
-    Left = 0,
-    Middle = 1,
-    Right = 2,
-    Back = 3,
-    Forward = 4,
-}
+import { ResizerService } from '@app/services/resizer.service';
 
 @Component({
     selector: 'app-play-area',
     templateUrl: './play-area.component.html',
     styleUrls: ['./play-area.component.scss'],
 })
-export class PlayAreaComponent implements AfterViewInit {
+export class PlayAreaComponent implements AfterViewInit, OnInit, OnDestroy {
     @ViewChild('gridCanvas', { static: false }) private gridCanvas!: ElementRef<HTMLCanvasElement>;
-
+    letterFontSize: number;
     mousePosition: Vec2 = { x: 0, y: 0 };
     buttonPressed = '';
     private canvasSize = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
 
-    constructor(private readonly gridService: GridService) {}
+    constructor(private readonly gridService: GridService, private resizer: ResizerService) {}
 
     @HostListener('keydown', ['$event'])
     buttonDetect(event: KeyboardEvent) {
         this.buttonPressed = event.key;
     }
 
+    ngOnInit(): void {
+        this.resizer.letterFontSize.subscribe((letterFontSize) => {
+            this.letterFontSize = letterFontSize;
+            this.gridService.draw(letterFontSize);
+        });
+    }
+
     ngAfterViewInit(): void {
         this.gridService.gridContext = this.gridCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-        this.gridService.drawGrid();
-        this.gridService.drawWord('Scrabble');
+        this.gridService.draw(this.letterFontSize);
         this.gridCanvas.nativeElement.focus();
+    }
+
+    ngOnDestroy(): void {
+        this.resizer.letterFontSize.unsubscribe();
     }
 
     get width(): number {
@@ -47,12 +46,5 @@ export class PlayAreaComponent implements AfterViewInit {
 
     get height(): number {
         return this.canvasSize.y;
-    }
-
-    // TODO : déplacer ceci dans un service de gestion de la souris!
-    mouseHitDetect(event: MouseEvent) {
-        if (event.button === MouseButton.Left) {
-            this.mousePosition = { x: event.offsetX, y: event.offsetY };
-        }
     }
 }

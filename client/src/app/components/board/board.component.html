@@ -1,0 +1,7 @@
+<div class="tile-container">
+    <div *ngFor="let row of this.chatService.boardService.board">
+        <div *ngFor="let tile of row">
+            <app-tile [letter]="tile.letter" [value]="tile.value"></app-tile>
+        </div>
+    </div>
+</div>

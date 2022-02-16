@@ -1,44 +1,29 @@
 .container {
     min-height: 100vh;
     height: auto;
+    margin-top: 20rm;
+    background-color: #d2b48c;
 }
 
 .justified {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
 }
 
-.button {
-    margin-top: 10px;
+button {
+    padding: 15px 30px;
     text-align: center;
+    font-size: 250%;
+    margin-bottom: 1.5rem;
+    margin-left: 1.5rem;
+    width: 25rem;
+    border-radius: 15px;
 }
 
-.team-name {
-    margin-top: 0.25em;
-    margin-bottom: 0.25em;
-    color: green;
-}
-
-.header-item {
-    justify-content: center;
-    text-align: center;
-}
-
-.footer-item {
-    text-align: center;
-}
-
-.footer-item p :nth-child(even) {
-    color: orange;
-}
-.footer-item p :nth-child(odd) {
-    color: blue;
-}
-
-.server-message {
-    justify-content: center;
-    width: 20%;
-    min-width: min-content;
+h2 {
+    font-family: 'Lucida Handwriting';
+    margin-bottom: 10rem;
+    font-size: 700%;
 }

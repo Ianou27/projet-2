@@ -1,0 +1,22 @@
+button:hover {
+    background-color: #80808030;
+    cursor: pointer;
+}
+
+#size-change-wrapper {
+    gap: 5px;
+    display: flex;
+    margin-top: 0px;
+    justify-content: right;
+}
+
+.size-change {
+    height: 25px;
+    width: 25px;
+    border-radius: 15px;
+    border-style: solid;
+    border-color: black;
+    border-width: 1px;
+    background-color: #00000000;
+    align-items: center;
+}

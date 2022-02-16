@@ -1,0 +1,16 @@
+<div class="container">
+    <div class="messageContainer">
+        <ul id="serverBroadcastList">
+            <li class= {{m.player}} *ngFor="let m of this.chatService.roomMessages">{{ m.username }}:  {{m.message}}</li>
+        </ul>
+    </div>
+
+    <section class="inputMessage">
+        <input
+            id="broadcastMessage"
+            [(ngModel)]="this.chatService.roomMessage"
+            (keydown.enter)="this.chatService.sendToRoom()"
+            type="text"
+        />
+    </section>
+</div>

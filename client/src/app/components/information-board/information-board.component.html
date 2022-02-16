@@ -1,0 +1,27 @@
+<div id="info-board">
+    <div id="player-info">
+        <div class="player" id="player-1">
+            <div class="{{ this.chatService.player1Turn }}" class="player-name">{{ this.chatService.player1Username }}</div>
+            <div class="score">Score : {{ this.chatService.player1Point }}</div>
+            <p *ngIf="this.chatService.player1ChevaletLetters < 7" class="letters-left">
+                {{ this.chatService.player1ChevaletLetters }} lettre(s) restante(s)
+            </p>
+        </div>
+        <div class="player">
+            <div class="{{ this.chatService.player2Turn }}" class="player-name">{{ this.chatService.player2Username }}</div>
+            <div class="score">Score : {{ this.chatService.player2Point }}</div>
+            <p *ngIf="this.chatService.player2ChevaletLetters < 7" class="letters-left">
+                {{ this.chatService.player2ChevaletLetters }} lettre(s) restante(s)
+            </p>
+        </div>
+    </div>
+    <div id="reserve">
+        <div id="reserve-left">{{ this.chatService.reserve }} lettre(s) restante(s) dans la réserve</div>
+
+        <div id="timer">{{ this.chatService.timer | formatTime }}</div>
+    </div>
+</div>
+<div *ngIf="this.chatService.gameOver && this.chatService.winner === 'tie'" class="winner">La partie s'est terminé en égalité</div>
+<div *ngIf="this.chatService.gameOver && this.chatService.winner !== 'tie'" class="winner">
+    {{ this.chatService.winner }} a gagné la partie FÉLICITATION
+</div>

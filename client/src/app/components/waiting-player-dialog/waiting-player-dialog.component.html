@@ -1,0 +1,19 @@
+<button mat-fab mat-dialog-close color="primary" matTooltip="Annuler" matTooltipPosition="right" id="tooltip" (click)="goBack()">
+    <mat-icon style="transform: rotate(180deg)">exit_to_app</mat-icon>
+</button>
+<div class="container">
+    <h2>En attente d'un adversaire...</h2>
+    <mat-spinner></mat-spinner>
+    <section id="server-message">
+        <h1 *ngIf="this.chatService.playerJoined">{{this.chatService.informationToJoin.username}} voudrait rejoindre la partie</h1>
+        <div class="justified">
+            
+            <mat-dialog-actions class="a" align="end">
+                
+                <button mat-button color="primary" cdkFocusInitial disabled={{!this.chatService.playerJoined}} (click)="this.accept()">Accepter</button>
+                <button mat-button color="warn"  disabled= {{!this.chatService.playerJoined}} (click)="this.deny()">Refuser</button>
+            </mat-dialog-actions>
+        </div>
+    </section>
+</div>
+ 

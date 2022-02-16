@@ -1,0 +1,46 @@
+.tile {
+    z-index: 1;
+    height: 50px;
+    width: 50px;
+    border-radius: 4px;
+    background-color: #f7d8b5;
+    display: grid;
+    grid-template-rows: 20px 10px;
+}
+
+#value {
+    display: flex;
+    font-family: 'Courier New';
+    font-weight: bold;
+    position: relative;
+    justify-content: right;
+    right: 2px;
+}
+
+#letter {
+    font-family: 'Courier New';
+    font-weight: bold;
+    position: relative;
+    top: 5px;
+    left: 15px;
+}
+
+.tileEmpty {
+    z-index: 1;
+    height: 50px;
+    width: 50px;
+    border-radius: 4px;
+    display: grid;
+    grid-template-rows: 20px 10px;
+}
+
+.tileBlankLetter {
+    z-index: 1;
+    height: 50px;
+    width: 50px;
+    border-radius: 4px;
+    background-color: #f7d8b5;
+    display: grid;
+    grid-template-rows: 20px 10px;
+    color: firebrick;
+}

@@ -1,0 +1,11 @@
+<div class="container">
+    <h2>En attente de confirmation...</h2>
+    <mat-spinner></mat-spinner>
+    <h1 *ngIf="this.isBeingRedirected">La demande de partie a été refusée. Redirection...</h1>
+    <section id="server-message">
+        <div class="justified">
+            <div *ngIf="this.chatService.gotAccepted ? join() : false"></div>
+            <div *ngIf="this.chatService.gotRefused ? refused() : false"></div>
+        </div>
+    </section>
+</div>
