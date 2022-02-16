@@ -3,11 +3,15 @@ import { RoomManager } from '@app/services/roomManager.service';
 import { Room, User } from '@common/types';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
+import * as io from 'socket.io';
+import { GameManager } from './gameManager.service';
 import { IdManager } from './idManager.service';
 
 describe('IdManager tests', () => {
     const roomManager = new RoomManager();
     const idManager = new IdManager();
+    const gameManager = new GameManager();
+    const sio = new io.Server();
 
     beforeEach(() => {
         const user: User = {
@@ -44,7 +48,7 @@ describe('IdManager tests', () => {
         };
         idManager.rooms.push(room);
         idManager.rooms.push(room2);
-        roomManager.joinRoom(username, room, socketId, idManager);
+        roomManager.joinRoom(username, room, socketId, idManager, sio, gameManager);
         expect(room.player2).to.equal(username);
     });
 
@@ -58,7 +62,7 @@ describe('IdManager tests', () => {
             game: testGame,
         };
         idManager.rooms.push(room);
-        roomManager.joinRoom(username, room, socketId, idManager);
+        roomManager.joinRoom(username, room, socketId, idManager, sio, gameManager);
     });
 
     it('cancelCreation should call getUsername', () => {
