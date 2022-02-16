@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { LETTER_FONT_SIZE, VALUE_FONT_SIZE } from '@app/constants/general-constants';
 import { ResizerService } from '@app/services/resizer.service';
 import { BehaviorSubject } from 'rxjs';
 import { SizeSelectorComponent } from './size-selector.component';
@@ -11,8 +12,8 @@ describe('SizeSelectorComponent', () => {
 
     beforeEach(async () => {
         resizerServiceSpy = jasmine.createSpyObj('ResizerService', ['changeFont'], {
-            letterFontSize: new BehaviorSubject<number>(20),
-            valueFontSize: new BehaviorSubject<number>(12),
+            letterFontSize: new BehaviorSubject<number>(LETTER_FONT_SIZE),
+            valueFontSize: new BehaviorSubject<number>(VALUE_FONT_SIZE),
         });
         await TestBed.configureTestingModule({
             declarations: [SizeSelectorComponent],

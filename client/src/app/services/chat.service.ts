@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Tile } from './../../../../common/tile/Tile';
 import { InfoToJoin, Message, Room } from './../../../../common/types';
+import { INITIAL_NUMBER_LETTERS_RESERVE, NUMBER_LETTER_TILEHOLDER } from './../constants/general-constants';
 import { BoardService } from './board.service';
 import { SocketClientService } from './socket-client.service';
 import { TileHolderService } from './tile-holder/tile-holder.service';
@@ -29,12 +30,12 @@ export class ChatService {
     player2Username: string = '';
     player1Turn: string = 'tour';
     player2Turn: string = '';
-    player1ChevaletLetters: number = 7;
-    player2ChevaletLetters: number = 7;
-    reserve: number = 88;
-    gameOver:boolean=false;
-    winner:string = '';
-    timer:number =0;
+    player1ChevaletLetters: number = NUMBER_LETTER_TILEHOLDER;
+    player2ChevaletLetters: number = NUMBER_LETTER_TILEHOLDER;
+    reserve: number = INITIAL_NUMBER_LETTERS_RESERVE;
+    gameOver: boolean = false;
+    winner: string = '';
+    timer: number = 0;
     constructor(public socketService: SocketClientService, public boardService: BoardService, public tileHolderService: TileHolderService) {}
 
     get socketId() {
@@ -98,17 +99,15 @@ export class ChatService {
             this.player1Username = player1;
             this.player2Username = player2;
         });
-        this.socketService.socket.on('endGame', (winner:string) => {
-            
-            this.gameOver= true;
-            this.winner =winner;
-            console.log(winner);
-        });    
+        this.socketService.socket.on('endGame', (winner: string) => {
+            this.gameOver = true;
+            this.winner = winner;
+        });
         this.socketService.on('refusing', (obj: InfoToJoin) => {
             this.informationToJoin = obj;
             this.gotRefused = true;
         });
-        this.socketService.on('timer', (timer:number) => {
+        this.socketService.on('timer', (timer: number) => {
             this.timer = timer;
         });
 
@@ -154,7 +153,7 @@ export class ChatService {
         this.socketService.socket.emit('joinRoom', this.informationToJoin.username, this.informationToJoin.roomObj);
         this.updateRooms();
     }
-    passerTour(){
+    passerTour() {
         this.socketService.send('passer');
     }
     sendToRoom() {

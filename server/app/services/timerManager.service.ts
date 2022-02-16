@@ -1,10 +1,11 @@
 import * as io from 'socket.io';
+import { NO_TIME_LEFT, ONE_SECOND_MS, SECONDS_IN_MINUTE } from './../../../common/constants/general-constants';
 import { Room } from './../../../common/types';
 import { Game } from './../classes/game/game';
-import { GameManager } from './gameManager.service';
+import { GameManager } from './game-manager.service';
 import { IdManager } from './idManager.service';
 export class Timer {
-    timeLeft: number = 60;
+    timeLeft: number = SECONDS_IN_MINUTE;
     start(socketId: string, identification: IdManager, sio: io.Server, gameManager: GameManager) {
         const username = identification.getUsername(socketId);
         const currentRoom = identification.getRoom(socketId);
@@ -15,7 +16,7 @@ export class Timer {
             }
         });
         setInterval(() => {
-            if (this.timeLeft === -1) return;
+            if (this.timeLeft === NO_TIME_LEFT) return;
             else if (this.timeLeft > 0) {
                 this.timeLeft--;
                 sio.to(currentRoom).emit('timer', this.timeLeft);
@@ -27,16 +28,16 @@ export class Timer {
                     player: 'server',
                 });
                 sio.to(currentRoom).emit('modification', game.gameBoard.cases, game.playerTurn().name);
-                this.timeLeft = 60;
+                this.timeLeft = SECONDS_IN_MINUTE;
             }
-        }, 1000);
+        }, ONE_SECOND_MS);
     }
 
     reset() {
-        this.timeLeft = 60;
+        this.timeLeft = SECONDS_IN_MINUTE;
     }
 
     stop() {
-        this.timeLeft = -1;
+        this.timeLeft = NO_TIME_LEFT;
     }
 }

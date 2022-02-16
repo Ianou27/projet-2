@@ -1,5 +1,5 @@
 .container {
-    width:300px;
+    width: 300px;
     height: 80vh;
     min-height: 98vh;
     border: 1px solid black;
@@ -8,65 +8,57 @@
     display: flex;
     flex-direction: column;
     justify-content: end;
-  
+}
 
+#serverBroadcastList {
+    list-style-type: none;
 }
-#serverBroadcastList{
-  list-style-type: none;
-}
-.messageContainer{
-    width:100%;
+
+.messageContainer {
+    width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column-reverse;
     overflow-y: auto;
-
-
 }
 
 .messageContainer::-webkit-scrollbar-track {
-  
-  background-color: rgb(218, 210, 210);
+    background-color: rgb(218, 210, 210);
 }
+
 .messageContainer::-webkit-scrollbar {
-  width: 5px;
+    width: 5px;
 }
 
 .messageContainer::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-  background-color: #737272;
-  border: 1px solid #000;
-}
-#broadcastMessage{
- 
- width: 100%;
- 
-margin-bottom: 0.25rem;
-
- 
- 
-  
-  
+    border-radius: 10px;
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #737272;
+    border: 1px solid #000;
 }
 
-.messageContainer{
-    
+#broadcastMessage {
+    width: 100%;
+
+    margin-bottom: 0.25rem;
+}
+
+.messageContainer {
     word-wrap: break-word;
-    
 }
-.inputMessage{
+
+.inputMessage {
     display: flex;
     justify-content: center;
 }
 
-.player1{
-  color:red;
+.player1 {
+    color: red;
 }
 
-.player2{
-  color:blue;
+.player2 {
+    color: blue;
 }
-.sa{
-  color:red;
+.sa {
+    color: red;
 }

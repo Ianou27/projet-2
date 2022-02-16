@@ -1,4 +1,4 @@
-import { GameBoardService } from '@app/services/gameBoard.service';
+import { GameBoardService } from '@app/services/game-board.service';
 import { CaseProperty } from '@common/assets/case-property';
 import { letterValue } from '@common/assets/reserve-letters';
 import { Tile } from '@common/tile/Tile';

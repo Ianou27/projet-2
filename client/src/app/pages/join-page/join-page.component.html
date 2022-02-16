@@ -13,9 +13,6 @@
     </a>
     <mat-tab-group mat-stretch-tabs>
         <mat-tab label="Partie solo (Prochainement)">
-            <!-- <mat-toolbar>
-                <marquee direction="left"> Choisissez la difficulté du joueur vituel (bientôt disponible) </marquee>
-            </mat-toolbar> -->
             <div mat-dialog-content [formGroup]="form" class="dialog">
                 <div>
                     <form [formGroup]="form">
@@ -62,16 +59,13 @@
                             mat-dialog-close="true"
                             disabled
                         >
-                            <!-- [disabled]="form.invalid" -->
                             Confirmer
                         </button>
                     </div>
                 </div>
             </div>
         </mat-tab>
-        <!-- <button mat-raised-button color="primary" mat-dialog-close="true" id="solo">Jouer</button> -->
         <mat-tab label="Créer une partie multijoueur">
-            <!-- <mat-toolbar> </mat-toolbar> -->
             <div mat-dialog-content [formGroup]="form" class="dialog">
                 <div>
                     <form [formGroup]="form">
@@ -140,8 +134,6 @@
                                         <mat-error *ngIf="myError('name', 'required')">Veuillez entrer un nom</mat-error>
                                         <mat-error *ngIf="myError('name', 'minLength')">Veuillez entrer un nom d'au moins 3 lettres</mat-error>
                                         <mat-error *ngIf="myError('name', 'pattern')">Pas de chiffres et/ou caractères spéciaux</mat-error>
-                                        <!-- <mat-error *ngIf="myError('name', 'pattern')">Choisissez un nom différent que le joueur 1</mat-error> -->
-                                        <!-- <mat-error *ngIf="f.confirmName.errors.mustMatch">Choisissez un nom différent que le joueur 1</mat-error> -->
                                     </mat-form-field>
                                 </form>
                                 <p><b>Choisir un nom différent que celui du joueur 1</b></p>

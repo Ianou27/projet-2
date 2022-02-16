@@ -10,11 +10,11 @@
     </div>
     <div>
         <div class="row-numbers">
-            <p class="number-text" *ngFor="let number of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]">{{ number }}</p>
+            <p class="number-text" *ngFor="let number of numbers">{{ number }}</p>
         </div>
         <div class="wrapper">
             <div class="col-letters">
-                <p class="letters-text" *ngFor="let letter of ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O']">
+                <p class="letters-text" *ngFor="let letter of letters">
                     {{ letter }}
                 </p>
             </div>

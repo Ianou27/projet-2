@@ -2,7 +2,7 @@ import { CaseProperty } from './../../../../common/assets/case-property';
 import { letterNumber, letterValue } from './../../../../common/assets/reserve-letters';
 import { MAXIMUM_PASSES_COUNT, NUMBER_TILEHOLDER } from './../../../../common/constants/general-constants';
 import { Tile } from './../../../../common/tile/Tile';
-import { GameBoardService } from './../../services/gameBoard.service';
+import { GameBoardService } from './../../services/game-board.service';
 import { Timer } from './../../services/timerManager.service';
 import { Player } from './../player/player';
 

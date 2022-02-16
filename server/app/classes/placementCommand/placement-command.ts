@@ -10,7 +10,7 @@ import {
     MINIMUM_ROW_COLUMN_COMPARISON_LIMIT,
 } from './../../../../common/constants/general-constants';
 import { Tile } from './../../../../common/tile/Tile';
-import { RowTest } from './../../../assets/row';
+import { rowNumber } from './../../../assets/row';
 import { PlacementInformations } from './../../placement-informations';
 import { Game } from './../game/game';
 import { PointsCalculator } from './../pointsCalculator/points-calculator';
@@ -56,12 +56,6 @@ export class PlacementCommand {
             }
         }
         if (!this.newWordsValid(commandInformations, game, letterPositions)) {
-            // Retirer les lettres du chevalet et les mettre sur la grid
-            // Les fcts dans le timeout retire les lettres de la grid et les remettent dans le chevalet après 3 sec (VERIFY_WORD)
-            /*             setTimeout(() => {
-                this.restoreBoard(commandInformations, game, letterPositions);
-                return false;
-            }, VERIFY_WORD); */
             this.restoreBoard(commandInformations, game, letterPositions);
             return false;
         } else {
@@ -137,7 +131,7 @@ export class PlacementCommand {
 
     private static separatePlaceCommandInformations(commandInformations: string[]): PlacementInformations {
         const positionOrientation = commandInformations[1].split('');
-        const row = RowTest[positionOrientation[0]];
+        const row = rowNumber[positionOrientation[0]];
         const numberLetters = commandInformations[2].length;
         const numberLettersCommand = commandInformations[1].length;
         const letters = commandInformations[2].split('');

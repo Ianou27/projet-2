@@ -31,13 +31,6 @@ export class BoardService {
         }
     }
 
-    /* configureFeatures() {
-        console.log('configuration');
-        this.socketService.on('modification', (updatedBoard: Tile[][]) => {
-            console.log('Received');
-            this.board = updatedBoard;
-        });
-    }*/
     getBoard() {
         return this.board;
     }

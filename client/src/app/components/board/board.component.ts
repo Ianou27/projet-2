@@ -1,4 +1,4 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { ChatService } from '@app/services/chat.service';
 
 @Component({
@@ -6,7 +6,6 @@ import { ChatService } from '@app/services/chat.service';
     templateUrl: './board.component.html',
     styleUrls: ['./board.component.scss'],
 })
-export class BoardComponent implements AfterViewInit {
+export class BoardComponent {
     constructor(public chatService: ChatService) {}
-    ngAfterViewInit(): void {}
 }

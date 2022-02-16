@@ -1,8 +1,11 @@
+/* eslint-disable complexity */
+/* eslint-disable @typescript-eslint/no-shadow */
+/* eslint-disable no-console */
 import { Game } from '@app/classes/game/game';
 import { InfoToJoin, Room } from '@common/types';
 import * as http from 'http';
 import * as io from 'socket.io';
-import { GameManager } from './gameManager.service';
+import { GameManager } from './game-manager.service';
 import { IdManager } from './idManager.service';
 import { RoomManager } from './roomManager.service';
 export class SocketManager {
@@ -10,7 +13,7 @@ export class SocketManager {
     identification: IdManager = new IdManager();
     roomManager: RoomManager = new RoomManager();
     sio: io.Server;
-    timeLeft: number = 10;
+    timeLeft: number;
     constructor(server: http.Server) {
         this.sio = new io.Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
     }
@@ -191,6 +194,7 @@ export class SocketManager {
 
                         console.log(game.winner);
                         this.sio.to(currentRoom).emit('endGame', this.identification.getWinner(username, game.winner));
+                        game.timer.stop();
                     }
                 } else if (this.gameManager.messageVerification(message) === 'valide') {
                     this.identification.roomMessages[currentRoom].push({ username, message });
@@ -227,11 +231,9 @@ export class SocketManager {
                     }
                 } else {
                     this.sio.to(currentRoom).emit('endGame', this.identification.getWinner(username, game.winner));
+                    game.timer.stop();
                 }
             });
-
-            socket.on('timer', () => {});
-            socket.on('finPartie', () => {});
 
             socket.on('cancelCreation', () => {
                 this.roomManager.cancelCreation(socket.id, this.identification);

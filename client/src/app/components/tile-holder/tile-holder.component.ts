@@ -1,4 +1,4 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { ChatService } from '@app/services/chat.service';
 
 @Component({
@@ -6,7 +6,6 @@ import { ChatService } from '@app/services/chat.service';
     templateUrl: './tile-holder.component.html',
     styleUrls: ['./tile-holder.component.scss'],
 })
-export class TileHolderComponent implements AfterViewInit {
+export class TileHolderComponent {
     constructor(public chatService: ChatService) {}
-    ngAfterViewInit(): void {}
 }

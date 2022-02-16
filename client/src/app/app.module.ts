@@ -18,7 +18,6 @@ import { QuitGameDialogComponent } from './components/quit-game-dialog/quit-game
 import { SizeSelectorComponent } from './components/size-selector/size-selector.component';
 import { TileHolderComponent } from './components/tile-holder/tile-holder.component';
 import { TileComponent } from './components/tile/tile.component';
-import { WaitingDialogComponent } from './components/waiting-dialog/waiting-dialog.component';
 import { WaitingPlayerDialogComponent } from './components/waiting-player-dialog/waiting-player-dialog.component';
 import { WaitingPlayerTwoComponent } from './components/waiting-player-two/waiting-player-two.component';
 import { JoinPageComponent } from './pages/join-page/join-page.component';
@@ -45,7 +44,6 @@ import { FormatTimePipe } from './pipes/format-time.pipe';
         CommunicationAreaComponent,
         QuitGameDialogComponent,
         CommunicationAreaComponent,
-        WaitingDialogComponent,
         JoinPageComponent,
         WaitingPlayerDialogComponent,
         WaitingPlayerTwoComponent,

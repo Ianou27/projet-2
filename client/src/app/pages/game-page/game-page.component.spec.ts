@@ -10,9 +10,6 @@ describe('GamePageComponent', () => {
     let component: GamePageComponent;
     let fixture: ComponentFixture<GamePageComponent>;
     let pushSpy: jasmine.Spy<(data: unknown, unused: string, url?: string | URL | null | undefined) => void>;
-    // let popStateSpy: jasmine.Spy<(fn: LocationChangeListener) => void>;
-    // let location: LocationStrategy;
-    // let dialog: MatDialog;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
