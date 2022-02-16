@@ -194,6 +194,7 @@ export class SocketManager {
 
                         console.log(game.winner);
                         this.sio.to(currentRoom).emit('endGame', this.identification.getWinner(username, game.winner));
+                        game.timer.stop();
                     }
                 } else if (this.gameManager.messageVerification(message) === 'valide') {
                     this.identification.roomMessages[currentRoom].push({ username, message });
@@ -230,6 +231,7 @@ export class SocketManager {
                     }
                 } else {
                     this.sio.to(currentRoom).emit('endGame', this.identification.getWinner(username, game.winner));
+                    game.timer.stop();
                 }
             });
 
