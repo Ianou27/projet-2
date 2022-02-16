@@ -1,4 +1,4 @@
-import { MINIMUM_LETTER_RESERVE_FOR_EXCHANGE } from '@common/constants/general-constants';
+import { MINIMUM_LETTER_RESERVE_FOR_EXCHANGE } from './../../../../common/constants/general-constants';
 import { Game } from './../game/game';
 import { Player } from './../player/player';
 

@@ -1,6 +1,6 @@
-import { Game } from '@app/classes/game/game';
-import { Room } from '@common/types';
 import * as io from 'socket.io';
+import { Room } from './../../../common/types';
+import { Game } from './../classes/game/game';
 import { GameManager } from './gameManager.service';
 import { IdManager } from './idManager.service';
 export class Timer {

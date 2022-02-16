@@ -3,6 +3,7 @@ import { letterNumber, letterValue } from './../../../../common/assets/reserve-l
 import { MAXIMUM_PASSES_COUNT, NUMBER_TILEHOLDER } from './../../../../common/constants/general-constants';
 import { Tile } from './../../../../common/tile/Tile';
 import { GameBoardService } from './../../services/gameBoard.service';
+import { Timer } from './../../services/timerManager.service';
 import { Player } from './../player/player';
 
 export class Game {
@@ -14,6 +15,7 @@ export class Game {
     reserveLetters: string[] = [];
     gameFinished: boolean;
     winner: string;
+    timer: Timer;
 
     constructor() {
         this.reserveLetters = this.initializeReserveLetters();

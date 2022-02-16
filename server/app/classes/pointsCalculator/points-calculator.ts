@@ -1,4 +1,4 @@
-import { CaseProperty } from '@common/assets/case-property';
+import { CaseProperty } from './../../../../common/assets/case-property';
 import {
     INDEX_OF_NOT_FOUND,
     NUMBER_TILEHOLDER,
@@ -6,8 +6,8 @@ import {
     WORD_LETTER_2X_MULTIPLIER,
     WORD_LETTER_3X_MULTIPLIER,
     WORD_LETTER_NO_MULTIPLIER,
-} from '@common/constants/general-constants';
-import { Tile } from '@common/tile/Tile';
+} from './../../../../common/constants/general-constants';
+import { Tile } from './../../../../common/tile/Tile';
 import { PlacementInformations } from './../../placement-informations';
 import { Game } from './../game/game';
 export class PointsCalculator {

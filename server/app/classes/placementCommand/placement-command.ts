@@ -1,3 +1,4 @@
+import * as fs from 'fs';
 import {
     CENTER_ROW_COLUMN,
     COLUMN_ROWS_MINIMUM,
@@ -7,9 +8,8 @@ import {
     MAXIMUM_ROW_COLUMN_COMPARISON_LIMIT,
     MINIMUM_LETTERS_PLACE_COMMAND,
     MINIMUM_ROW_COLUMN_COMPARISON_LIMIT,
-} from '@common/constants/general-constants';
-import { Tile } from '@common/tile/Tile';
-import * as fs from 'fs';
+} from './../../../../common/constants/general-constants';
+import { Tile } from './../../../../common/tile/Tile';
 import { RowTest } from './../../../assets/row';
 import { PlacementInformations } from './../../placement-informations';
 import { Game } from './../game/game';

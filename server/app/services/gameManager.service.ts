@@ -1,8 +1,8 @@
-import { ExchangeCommand } from '@app/classes/exchangeCommand/exchange-command';
-import { Game } from '@app/classes/game/game';
-import { PassCommand } from '@app/classes/passCommand/pass-command';
-import { PlacementCommand } from '@app/classes/placementCommand/placement-command';
-import { MAXIMUM_CHARACTERS_MESSAGE } from '@common/constants/general-constants';
+import { MAXIMUM_CHARACTERS_MESSAGE } from './../../../common/constants/general-constants';
+import { ExchangeCommand } from './../classes/exchangeCommand/exchange-command';
+import { Game } from './../classes/game/game';
+import { PassCommand } from './../classes/passCommand/pass-command';
+import { PlacementCommand } from './../classes/placementCommand/placement-command';
 
 export class GameManager {
     private commandsList: string[] = ['!placer', '!echanger', '!passer', '!indice'];

@@ -1,4 +1,4 @@
-import { Room, User } from '@common/types';
+import { Room, User } from './../../../common/types';
 
 export class IdManager {
     users: User[] = [];
