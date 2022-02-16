@@ -4,7 +4,7 @@ import { Room, User } from '@common/types';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
 import * as io from 'socket.io';
-import { GameManager } from './gameManager.service';
+import { GameManager } from './game-manager.service';
 import { IdManager } from './idManager.service';
 
 describe('IdManager tests', () => {
