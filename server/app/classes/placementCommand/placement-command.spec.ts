@@ -205,6 +205,14 @@ describe('Placement Command', () => {
         assert(spy.call);
     });
 
+    it('method placeWord should call verifyGameState to verify if the game has ended', () => {
+        const spy = sinon.stub(game, 'verifyGameState');
+        const firstWordCommand = '!placer H8h alle';
+        const commandInformations = firstWordCommand.split(' ');
+        PlacementCommand.placeWord(commandInformations, game);
+        assert(spy.call);
+    });
+
     it('method placeWord should return false if the letters doesnt form a word from the dictionary for a horizontal placement', () => {
         const firstWordCommand = '!placer H8h lalv';
         const commandInformations = firstWordCommand.split(' ');
