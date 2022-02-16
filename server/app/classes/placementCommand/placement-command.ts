@@ -41,7 +41,7 @@ export class PlacementCommand {
         return insideBoard && wordCondition && tileHolderContains;
     }
 
-    static placeWord(commandInformations: string[], game: Game): boolean {
+    static async placeWord(commandInformations: string[], game: Game): Promise<boolean> {
         const placementInformations = this.separatePlaceCommandInformations(commandInformations);
 
         let letterPositions: number[] = [];
@@ -56,6 +56,12 @@ export class PlacementCommand {
             }
         }
         if (!this.newWordsValid(commandInformations, game, letterPositions)) {
+            // let lettersToPlace = placementInformations.letters.length;
+            // while (lettersToPlace > 0) {
+            //     lettersToPlace--;
+            // }
+            // setTimeout(() => {
+            // }, VERIFY_WORD);
             this.restoreBoard(commandInformations, game, letterPositions);
             return false;
         } else {
