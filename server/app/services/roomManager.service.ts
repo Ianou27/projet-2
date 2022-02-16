@@ -1,11 +1,10 @@
 import { Game } from '@app/classes/game/game';
 import { Tile } from '@common/tile/Tile';
+import { Room } from '@common/types';
 import { IdManager } from './idManager.service';
-import {Room} from '@common/types'
 
 export class RoomManager {
-   
-    createRoom(username: string, room: string, socketId:string, identification :IdManager){
+    createRoom(username: string, room: string, socketId: string, identification: IdManager) {
         const user = {
             username,
             id: socketId,
@@ -13,22 +12,20 @@ export class RoomManager {
         };
         identification.users.push(user);
         identification.roomMessages[room] = [];
-        let game = new Game();
+        const game = new Game();
         const roomObj = {
             player1: username,
             player2: '',
-            game: game,
+            game,
         };
         identification.rooms.push(roomObj);
-        
     }
 
-    joinRoom(username: string, roomObj: Room, socketId:string, identification :IdManager):Tile[][]{
-
-        let tiles:Tile[][] =[];
+    joinRoom(username: string, roomObj: Room, socketId: string, identification: IdManager): Tile[][] {
+        let tiles: Tile[][] = [];
         identification.rooms.forEach((element: Room) => {
             if (roomObj.player1 === element.player1) {
-                let room = roomObj.player1;
+                const room = roomObj.player1;
                 if (element.player2.length === 0) {
                     const user = {
                         username,
@@ -38,68 +35,44 @@ export class RoomManager {
                     identification.users.push(user);
                     element.player2 = username;
 
-
                     tiles = [element.game.player1.getLetters(), element.game.player2.getLetters()];
                 }
             }
-           
         });
 
         return tiles;
     }
-    cancelCreation(socketId: string, identification :IdManager) {
-        let username = identification.getUsername(socketId);
+    cancelCreation(socketId: string, identification: IdManager) {
+        const username = identification.getUsername(socketId);
         identification.rooms.forEach((element) => {
-
-
-            if (username === element.player1 ) {
-
-                
+            if (username === element.player1) {
                 element.player2 = '-2';
-                this.deleteRoom(socketId,identification);
-                
-                
+                this.deleteRoom(socketId, identification);
             }
-            
         });
-  
-
     }
-    deleteRoom(socketId: string, identification :IdManager) {
-        let username = identification.getUsername(socketId);
-        
+    deleteRoom(socketId: string, identification: IdManager) {
+        const username = identification.getUsername(socketId);
+
         identification.rooms.forEach((element) => {
-
-
-            if (username === element.player1 ) {
-
-                if(element.player2 ===''){
-                    let index = identification.rooms.indexOf(element);
+            if (username === element.player1) {
+                if (element.player2 === '') {
+                    const index = identification.rooms.indexOf(element);
                     identification.rooms.splice(index, 1);
-                }
-
-                else if(element.player2 ==='-2'){
-                    let index = identification.rooms.indexOf(element);
+                } else if (element.player2 === '-2') {
+                    const index = identification.rooms.indexOf(element);
                     identification.rooms.splice(index, 1);
+                } else {
+                    element.player1 = '-2';
                 }
-                else{
-                    element.player1 ='-2';
-                }
-                
-                
-            }
-            else if(username === element.player2 ){
-                if(element.player1 ==='-2'){
-                    let index = identification.rooms.indexOf(element);
+            } else if (username === element.player2) {
+                if (element.player1 === '-2') {
+                    const index = identification.rooms.indexOf(element);
                     identification.rooms.splice(index, 1);
-                }
-                else{
-                    element.player2 ='-2';
+                } else {
+                    element.player2 = '-2';
                 }
             }
         });
-        
-
     }
-    
 }
