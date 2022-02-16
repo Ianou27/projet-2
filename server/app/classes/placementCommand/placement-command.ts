@@ -2,6 +2,7 @@ import {
     CENTER_ROW_COLUMN,
     COLUMN_ROWS_MINIMUM,
     COLUMN_ROWS_NUMBER,
+    MAXIMUM_LETTERS_PLACE_COMMAND,
     MAXIMUM_ROW_COLUMN,
     MAXIMUM_ROW_COLUMN_COMPARISON_LIMIT,
     MINIMUM_LETTERS_PLACE_COMMAND,
@@ -142,14 +143,13 @@ export class PlacementCommand {
         const letters = commandInformations[2].split('');
         let orientation = '';
         let column = 0;
-        if (numberLetters === 1 && MINIMUM_LETTERS_PLACE_COMMAND - 1) {
+        if (numberLetters === 1 && numberLettersCommand === MINIMUM_LETTERS_PLACE_COMMAND) {
             orientation = 'v';
             column = Number(positionOrientation[1]) - 1;
-            orientation = positionOrientation[2];
-        } else if (numberLetters === 1 && MINIMUM_LETTERS_PLACE_COMMAND) {
+        } else if (numberLetters === 1 && numberLettersCommand === MAXIMUM_LETTERS_PLACE_COMMAND) {
             orientation = positionOrientation[3];
             column = Number(positionOrientation[1] + positionOrientation[2]) - 1;
-        } else if (numberLettersCommand === MINIMUM_LETTERS_PLACE_COMMAND) {
+        } else if (numberLettersCommand === MAXIMUM_LETTERS_PLACE_COMMAND) {
             orientation = positionOrientation[2];
             column = Number(positionOrientation[1]) - 1;
         } else {

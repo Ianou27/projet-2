@@ -118,7 +118,7 @@ describe('Placement Command', () => {
         expect(result).to.equal(true);
     });
 
-    it('method validatedPlaceCommandBoard should return true if the next vertical placement touch another word on bottom', () => {
+    it('method validatedPlaceCommandBoard should return true if the next horizontal placement touch another word on bottom', () => {
         const firstWordCommand = '!placer H8h alle';
         const secondWordCommandNotValid = '!placer I8h bat';
         PlacementCommand.placeWord(firstWordCommand.split(' '), game);
@@ -166,6 +166,29 @@ describe('Placement Command', () => {
         expect(result).to.equal(true);
     });
 
+    it('method placeWord should not be able to let the player place a one letter word if its the first turn', () => {
+        const firstWordCommand = '!placer H8h l';
+        const commandInformations = firstWordCommand.split(' ');
+        const result = PlacementCommand.placeWord(commandInformations, game);
+        expect(result).equal(false);
+    });
+
+    it('method placeWord should be able to let the player place a one letter word if its not the first turn for a one digit column', () => {
+        const firstWordCommand = '!placer H8h alle';
+        const secondWordCommand = '!placer G8 t';
+        PlacementCommand.placeWord(firstWordCommand.split(' '), game);
+        const result = PlacementCommand.placeWord(secondWordCommand.split(' '), game);
+        expect(result).equal(true);
+    });
+
+    it('method placeWord should be able to let the player place a one letter word if its not the first turn for a two digit column', () => {
+        const firstWordCommand = '!placer H8h alle';
+        const secondWordCommand = '!placer G11 t';
+        PlacementCommand.placeWord(firstWordCommand.split(' '), game);
+        const result = PlacementCommand.placeWord(secondWordCommand.split(' '), game);
+        expect(result).equal(true);
+    });
+
     it('method placeWord should call changeTurnTwoPlayers of object game', () => {
         const spy = sinon.spy(game, 'changeTurnTwoPlayers');
         const firstWordCommand = '!placer H8h alle';
@@ -196,7 +219,7 @@ describe('Placement Command', () => {
         expect(result).equal(false);
     });
 
-    it('method placeWord should return false if the player try to place a one letter', () => {
+    it('method placeWord should return false if the player try to place a one letter on the first move', () => {
         const firstWordCommand = '!placer H8v l';
         const commandInformations = firstWordCommand.split(' ');
         const result = PlacementCommand.placeWord(commandInformations, game);
