@@ -2,7 +2,6 @@ import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, 
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from '@app/../../../common/constants/board';
 import { Vec2 } from '@app/../../../common/vec2';
 import { GridService } from '@app/services/grid.service';
-import { MouseService } from '@app/services/mouse.service';
 import { ResizerService } from '@app/services/resizer.service';
 
 @Component({
@@ -17,7 +16,7 @@ export class PlayAreaComponent implements AfterViewInit, OnInit, OnDestroy {
     buttonPressed = '';
     private canvasSize = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
 
-    constructor(private readonly gridService: GridService, private resizer: ResizerService, private mouseService: MouseService) {}
+    constructor(private readonly gridService: GridService, private resizer: ResizerService) {}
 
     @HostListener('keydown', ['$event'])
     buttonDetect(event: KeyboardEvent) {
@@ -47,9 +46,5 @@ export class PlayAreaComponent implements AfterViewInit, OnInit, OnDestroy {
 
     get height(): number {
         return this.canvasSize.y;
-    }
-
-    mouseHitDetect(event: MouseEvent) {
-        this.mousePosition = this.mouseService.mouseHitDetect(event);
     }
 }

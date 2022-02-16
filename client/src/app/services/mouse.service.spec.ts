@@ -16,6 +16,18 @@ describe('MouseService', () => {
         expect(service).toBeTruthy();
     });
 
+    it('mouseHitDetect should call service method', () => {
+        const mouseServiceSpy = spyOn(service, 'mouseHitDetect');
+        const expectedPosition: Vec2 = { x: 100, y: 200 };
+        mouseEvent = {
+            offsetX: expectedPosition.x,
+            offsetY: expectedPosition.y,
+            button: 0,
+        } as MouseEvent;
+        service.mouseHitDetect(mouseEvent);
+        expect(mouseServiceSpy).toHaveBeenCalled();
+    });
+
     it('mouseHitDetect should assign the mouse position to mousePosition variable', () => {
         const expectedPosition: Vec2 = { x: 100, y: 200 };
         mouseEvent = {

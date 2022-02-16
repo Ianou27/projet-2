@@ -21,19 +21,10 @@ export class JoinPageComponent implements OnInit {
 
     constructor(public waitDialog: MatDialog, public chatService: ChatService) {}
     ngOnInit(): void {
-        this.form = new FormGroup(
-            {
-                name: new FormControl('', [Validators.required, Validators.minLength(3), Validators.pattern(this.alphaNumericRegex)]),
-            },
-            // {
-            //     validator: compareName('name', 'confirmName'),
-            // },
-        );
+        this.form = new FormGroup({
+            name: new FormControl('', [Validators.required, Validators.minLength(3), Validators.pattern(this.alphaNumericRegex)]),
+        });
     }
-
-    // get f() {
-    //     return this.registerForm.controls;
-    // }
 
     myError = (controlName: string, errorName: string) => {
         // eslint-disable-next-line no-invalid-this
@@ -59,15 +50,3 @@ export class JoinPageComponent implements OnInit {
         this.waitDialog.closeAll();
     }
 }
-// export function compareName(controlName: string, matchingControlName: string) {
-//     return (formGroup: FormGroup) => {
-//         const control = formGroup.controls[controlName];
-//         const matchingControl = formGroup.controls[matchingControlName];
-
-//         if (control.value !== matchingControl.value) {
-//             matchingControl.setErrors({ mustMatch: true });
-//         } else {
-//             matchingControl.setErrors(null);
-//         }
-//     };
-// }

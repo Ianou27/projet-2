@@ -8,6 +8,4 @@ import { ChatService } from '@app/services/chat.service';
 })
 export class InformationBoardComponent {
     constructor(public chatService: ChatService) {}
-
-   
 }
