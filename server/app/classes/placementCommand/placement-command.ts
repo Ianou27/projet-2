@@ -56,12 +56,6 @@ export class PlacementCommand {
             }
         }
         if (!this.newWordsValid(commandInformations, game, letterPositions)) {
-            // Retirer les lettres du chevalet et les mettre sur la grid
-            // Les fcts dans le timeout retire les lettres de la grid et les remettent dans le chevalet après 3 sec (VERIFY_WORD)
-            /*             setTimeout(() => {
-                this.restoreBoard(commandInformations, game, letterPositions);
-                return false;
-            }, VERIFY_WORD); */
             this.restoreBoard(commandInformations, game, letterPositions);
             return false;
         } else {

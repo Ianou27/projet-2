@@ -1,8 +1,9 @@
+/* eslint-disable no-console */
 import { Game } from '@app/classes/game/game';
 import { InfoToJoin, Room } from '@common/types';
 import * as http from 'http';
 import * as io from 'socket.io';
-import { GameManager } from './gameManager.service';
+import { GameManager } from './game-manager.service';
 import { IdManager } from './idManager.service';
 import { RoomManager } from './roomManager.service';
 export class SocketManager {
@@ -10,7 +11,7 @@ export class SocketManager {
     identification: IdManager = new IdManager();
     roomManager: RoomManager = new RoomManager();
     sio: io.Server;
-    timeLeft: number = 10;
+    timeLeft: number;
     constructor(server: http.Server) {
         this.sio = new io.Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
     }

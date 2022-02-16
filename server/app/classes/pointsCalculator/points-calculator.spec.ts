@@ -86,39 +86,3 @@ describe('Points Calculator', () => {
         expect(isNew).to.equal(false);
     });
 });
-
-/* describe('Points', () => {
-    let placement: PlacementInformations;
-    let game: Game;
-    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-    let newLetterPositions: number[];
-
-    beforeEach(() => {
-        game = new Game();
-        placement = {
-            row: 7,
-            column: 7,
-            orientation: 'h',
-            letters: ['A', 'A', 'A', 'A', 'A', 'A', 'A'],
-            numberLetters: 7,
-        };
-        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-        newLetterPositions = [7, 8, 9, 10, 11, 12, 13];
-        for (let i = 0; i < placement.letters.length; i++) {
-            game.gameBoard.cases[newLetterPositions[i]][placement.row].letter = placement.letters[i];
-            game.gameBoard.cases[newLetterPositions[i]][placement.row].value = letterValue[placement.letters[i]];
-        }
-    });
-
-    it('method calculatedPointsPlacement should return the right number of points', () => {
-        const wordsFormed: Tile[][] = [];
-        const word = [];
-        for (let i = 0; i < placement.letters.length; i++) {
-            word.push(game.gameBoard.cases[newLetterPositions[i]][placement.row]);
-        }
-        wordsFormed.push(word);
-        const point = PointsCalculator.calculatedPointsPlacement(wordsFormed, newLetterPositions, placement, game);
-        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-        expect(point).to.equal(66);
-    });
-}); */

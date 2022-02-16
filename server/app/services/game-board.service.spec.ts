@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-magic-numbers */
 import { expect } from 'chai';
 import { CaseProperty } from './../../../common/assets/case-property';
-import { GameBoardService } from './gameBoard.service';
+import { GameBoardService } from './game-board.service';
 
 describe('GameBoard', () => {
     let gameBoard: GameBoardService;

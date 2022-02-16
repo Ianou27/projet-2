@@ -7,6 +7,7 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class ResizerService {
     startLetterSize = DEFAULT_LETTER_SIZE;
+    // eslint-disable-next-line no-invalid-this
     letterFontSize = new BehaviorSubject<number>(this.startLetterSize);
     changeFont(operator: string) {
         if (operator === '+' && this.letterFontSize.value < MAX_LETTER_SIZE) {

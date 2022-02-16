@@ -7,7 +7,7 @@ import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
 import { Game } from './../classes/game/game';
 import { PlacementCommand } from './../classes/placementCommand/placement-command';
-import { GameManager } from './gameManager.service';
+import { GameManager } from './game-manager.service';
 
 describe('Game Manager', () => {
     let game: Game;

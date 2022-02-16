@@ -19,3 +19,5 @@ export const WORD_LETTER_3X_MULTIPLIER = 3;
 export const MAXIMUM_CHARACTERS_MESSAGE = 512;
 export const VERIFY_WORD = 3000;
 export const MAXIMUM_PASSES_COUNT = 6;
+export const NO_TIME_LEFT = -1;
+export const ONE_SECOND_MS = 1000;
