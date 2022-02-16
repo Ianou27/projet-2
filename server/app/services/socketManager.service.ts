@@ -1,3 +1,5 @@
+/* eslint-disable complexity */
+/* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable no-console */
 import { Game } from '@app/classes/game/game';
 import { InfoToJoin, Room } from '@common/types';
@@ -192,6 +194,16 @@ export class SocketManager {
 
                         console.log(game.winner);
                         this.sio.to(currentRoom).emit('endGame', this.identification.getWinner(username, game.winner));
+                        game.timer.stop();
+                        this.sio.to(currentRoom).emit('roomMessage', {
+                            username: 'Server',
+                            message:
+                                'lettre joueuer 1 =>' +
+                                game.player1.lettersToStringArray() +
+                                ' \n lettre joueuer 2 ' +
+                                game.player2.lettersToStringArray(),
+                            player: 'server',
+                        });
                     }
                 } else if (this.gameManager.messageVerification(message) === 'valide') {
                     this.identification.roomMessages[currentRoom].push({ username, message });
@@ -228,11 +240,18 @@ export class SocketManager {
                     }
                 } else {
                     this.sio.to(currentRoom).emit('endGame', this.identification.getWinner(username, game.winner));
+                    game.timer.stop();
+                    this.sio.to(currentRoom).emit('roomMessage', {
+                        username: 'Server',
+                        message:
+                            'lettre joueuer 1 =>' +
+                            game.player1.lettersToStringArray() +
+                            ' \n lettre joueuer 2 ' +
+                            game.player2.lettersToStringArray(),
+                        player: 'server',
+                    });
                 }
             });
-
-            socket.on('timer', () => {});
-            socket.on('finPartie', () => {});
 
             socket.on('cancelCreation', () => {
                 this.roomManager.cancelCreation(socket.id, this.identification);

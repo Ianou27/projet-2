@@ -10,7 +10,7 @@ import {
     MINIMUM_ROW_COLUMN_COMPARISON_LIMIT,
 } from './../../../../common/constants/general-constants';
 import { Tile } from './../../../../common/tile/Tile';
-import { RowTest } from './../../../assets/row';
+import { rowNumber } from './../../../assets/row';
 import { PlacementInformations } from './../../placement-informations';
 import { Game } from './../game/game';
 import { PointsCalculator } from './../pointsCalculator/points-calculator';
@@ -137,7 +137,7 @@ export class PlacementCommand {
 
     private static separatePlaceCommandInformations(commandInformations: string[]): PlacementInformations {
         const positionOrientation = commandInformations[1].split('');
-        const row = RowTest[positionOrientation[0]];
+        const row = rowNumber[positionOrientation[0]];
         const numberLetters = commandInformations[2].length;
         const numberLettersCommand = commandInformations[1].length;
         const letters = commandInformations[2].split('');
