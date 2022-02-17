@@ -10,4 +10,13 @@ export class TileComponent {
     @Input() value: number = 0;
     letterFontSize: number;
     valueFontSize: number;
+
+    tileStyle: string = 'tile';
+    select() {
+        if (this.tileStyle === 'selected') {
+            this.tileStyle = 'tile';
+        } else {
+            this.tileStyle = 'selected';
+        }
+    }
 }
