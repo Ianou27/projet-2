@@ -118,11 +118,13 @@
             </mat-toolbar>
             <div>
                 <div *ngIf="this.chatService.allRooms.length !== 0">
-                    <button mat-raised-button color="primary" [disabled]="this.chatService.allRooms.length === 1">Placement aléatoire</button>
+                    <button mat-raised-button color="primary" [disabled]="this.chatService.allRooms.length === 1" (click)="randomJoin()">
+                        Placement aléatoire
+                    </button>
                 </div>
                 <mat-accordion *ngFor="let room of this.chatService.allRooms" multi>
                     <div *ngIf="room.player2 === ''">
-                        <mat-expansion-panel>
+                        <mat-expansion-panel [expanded]="selectedRoomName === room.player1">
                             <mat-expansion-panel-header>
                                 <mat-panel-title>
                                     <mat-icon>people</mat-icon>
