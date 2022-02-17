@@ -5,6 +5,7 @@ import { GameManager } from './game-manager.service';
 import { IdManager } from './id-manager.service';
 export class Timer {
     timeLeft: number = SECONDS_IN_MINUTE;
+    interval: number = 0;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     start(socketId: string, identification: IdManager, sio: any, gameManager: GameManager) {
         const username = identification.getUsername(socketId);
@@ -28,13 +29,13 @@ export class Timer {
                     player: 'server',
                 });
                 sio.to(currentRoom).emit('modification', game.gameBoard.cases, game.playerTurn().name);
-                this.timeLeft = SECONDS_IN_MINUTE;
+                this.timeLeft = this.interval;
             }
         }, ONE_SECOND_MS);
     }
 
     reset() {
-        this.timeLeft = SECONDS_IN_MINUTE;
+        this.timeLeft = this.interval;
     }
 
     stop() {

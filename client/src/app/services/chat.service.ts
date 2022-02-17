@@ -144,8 +144,8 @@ export class ChatService {
         this.socketService.socket.emit('refused', this.socketWantToJoin, this.informationToJoin);
     }
 
-    createRoom(username: string, room: string) {
-        this.socketService.socket.emit('createRoom', username, room);
+    createRoom(username: string, room: string, time: number) {
+        this.socketService.socket.emit('createRoom', username, room, time);
         this.updateRooms();
     }
 
