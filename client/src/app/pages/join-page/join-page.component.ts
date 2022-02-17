@@ -56,7 +56,6 @@ export class JoinPageComponent implements OnInit {
     }
     randomJoin() {
         this.selectedRoomName = this.chatService.allRooms[Math.floor(Math.random() * this.chatService.allRooms.length)].player1;
-        console.log(this.selectedRoomName);
     }
 
     createRoom() {
