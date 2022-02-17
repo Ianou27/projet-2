@@ -11,6 +11,7 @@ cache:
     only:
         refs:
             - master
+            - devloppement
             - merge_requests
         changes:
             - client/**/*
@@ -24,6 +25,7 @@ cache:
     only:
         refs:
             - master
+            - devloppement
             - merge_requests
         changes:
             - server/**/*
