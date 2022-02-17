@@ -16,11 +16,11 @@ export class GameManager {
     }
 
     pass(game: Game) {
-        PassCommand.passTurn(game);
+        game.passTurn();
     }
 
     exchange(command: string[], game: Game) {
-        ExchangeCommand.exchangeLetters(command, game);
+        game.exchangeLetters(command);
     }
 
     placeBoardValid(command: string[], game: Game): boolean {

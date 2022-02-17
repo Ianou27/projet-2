@@ -33,12 +33,10 @@ export class Game {
     }
 
     verifyGameState() {
-        if (this.gameState.passesCount === MAXIMUM_PASSES_COUNT) {
-            this.endGame();
-            this.setWinner();
-            return;
-        }
-        if (this.reserveLetters.letters.length === 0 && (this.player1.getNumberLetters() === 0 || this.player2.getNumberLetters() === 0)) {
+        const endGameValidation =
+            this.gameState.passesCount === MAXIMUM_PASSES_COUNT ||
+            (this.reserveLetters.letters.length === 0 && (this.player1.getNumberLetters() === 0 || this.player2.getNumberLetters() === 0));
+        if (endGameValidation) {
             this.endGame();
             this.setWinner();
             return;
@@ -60,6 +58,23 @@ export class Game {
 
     playerTurnValid(playerName: string): boolean {
         return playerName === this.playerTurn().name;
+    }
+
+    exchangeLetters(commandInformations: string[]): void {
+        const player: Player = this.playerTurn();
+        const oldLetters = commandInformations[1];
+        for (const letter of oldLetters) {
+            player.changeLetter(letter, this.reserveLetters.getRandomLetterReserve());
+            this.reserveLetters.letters.push(letter);
+        }
+        this.changeTurnTwoPlayers();
+        this.gameState.passesCount = 0;
+    }
+
+    passTurn(): void {
+        this.changeTurnTwoPlayers();
+        this.gameState.passesCount++;
+        this.verifyGameState();
     }
 
     private setWinner() {
