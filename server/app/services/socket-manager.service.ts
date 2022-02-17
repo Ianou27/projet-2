@@ -124,7 +124,7 @@ export class SocketManager {
                                     if (message !== 'placer') {
                                         this.sio.to(socket.id).emit('commandValidated', message);
                                     } else {
-                                        game.timer.reset();
+                                        // game.timer.reset();
                                         this.sio
                                             .to(currentRoom)
                                             .emit(
@@ -159,7 +159,7 @@ export class SocketManager {
 
                                 if (verification === 'valide') {
                                     this.gameManager.exchange(command, game);
-                                    game.timer.reset();
+                                    // game.timer.reset();
                                     this.sio.to(currentRoom).emit('modification', game.gameBoard.cases, game.playerTurn().name);
                                     this.sio.to(socket.id).emit('roomMessage', {
                                         username: 'Server',
@@ -194,7 +194,7 @@ export class SocketManager {
 
                         console.log(game.winner);
                         this.sio.to(currentRoom).emit('endGame', this.identification.getWinner(username, game.winner));
-                        game.timer.stop();
+                        // game.timer.stop();
                         this.sio.to(currentRoom).emit('roomMessage', {
                             username: 'Server',
                             message:
@@ -230,7 +230,7 @@ export class SocketManager {
                         this.sio.to(socket.id).emit('commandValidated', " Ce n'est pas ton tour");
                     } else {
                         this.gameManager.pass(game);
-                        game.timer.reset();
+                        // game.timer.reset();
                         this.sio.to(currentRoom).emit('roomMessage', {
                             username: 'Server',
                             message: username + ' a passé son tour ',
@@ -240,7 +240,7 @@ export class SocketManager {
                     }
                 } else {
                     this.sio.to(currentRoom).emit('endGame', this.identification.getWinner(username, game.winner));
-                    game.timer.stop();
+                    // game.timer.stop();
                     this.sio.to(currentRoom).emit('roomMessage', {
                         username: 'Server',
                         message:

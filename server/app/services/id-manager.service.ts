@@ -48,10 +48,10 @@ export class IdManager {
         this.rooms.forEach((room: Room) => {
             if (username === room.player1) {
                 winner = room.player2;
-                room.game.timer.stop();
+                // room.game.timer.stop();
             } else if (username === room.player2) {
                 winner = room.player1;
-                room.game.timer.stop();
+                // room.game.timer.stop();
             }
         });
         return winner;

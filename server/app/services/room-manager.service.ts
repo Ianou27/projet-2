@@ -37,7 +37,7 @@ export class RoomManager {
                     element.player2 = username;
 
                     tiles = [element.game.player1.getLetters(), element.game.player2.getLetters()];
-                    element.game.timer.start(socketId, identification, sio, gameManager);
+                    // element.game.timer.start(socketId, identification, sio, gameManager);
                 }
             }
         });
