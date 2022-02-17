@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+/* import * as fs from 'fs'; */
 import {
     CENTER_ROW_COLUMN,
     COLUMN_ROWS_MINIMUM,
@@ -14,10 +14,10 @@ import { rowNumber } from './../../../assets/row';
 import { PlacementInformations } from './../../placement-informations';
 import { Game } from './../game/game';
 import { PointsCalculator } from './../pointsCalculator/points-calculator';
-/* // eslint-disable-next-line @typescript-eslint/no-explicit-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare let require: any;
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-const fs = require('fs'); // eslint-disable-line @typescript-eslint/no-var-requires */
+const fs = require('fs'); // eslint-disable-line @typescript-eslint/no-var-requires
 export class PlacementCommand {
     static dictionaryArray: string[] = JSON.parse(fs.readFileSync('./assets/dictionnary.json').toString()).words;
 
@@ -34,12 +34,12 @@ export class PlacementCommand {
         const placementInformations = this.separatePlaceCommandInformations(commandInformations);
         const insideBoard: boolean = this.insideBoardGame(placementInformations, game);
         let wordCondition: boolean;
-        if (game.firstTurn) {
+        if (game.gameState.firstTurn) {
             wordCondition = this.firstWordTouchCenter(placementInformations);
         } else {
             wordCondition = this.wordHasAdjacent(placementInformations, game);
         }
-        const tileHolderContains = game.tileHolderContains(placementInformations.letters.join(''));
+        const tileHolderContains = game.playerTurn().tileHolderContains(placementInformations.letters.join(''));
         return insideBoard && wordCondition && tileHolderContains;
     }
 
@@ -63,12 +63,12 @@ export class PlacementCommand {
         } else {
             let lettersToPlace = placementInformations.letters.length;
             while (lettersToPlace > 0) {
-                game.playerTurn().changeLetter('', game.getRandomLetterReserve());
+                game.playerTurn().changeLetter('', game.reserveLetters.getRandomLetterReserve());
                 lettersToPlace--;
             }
-            game.firstTurn = false;
+            game.gameState.firstTurn = false;
             game.changeTurnTwoPlayers();
-            game.passesCount = 0;
+            game.gameState.passesCount = 0;
             game.verifyGameState();
         }
         return true;
@@ -303,7 +303,7 @@ export class PlacementCommand {
     private static newWordsValid(commandInformations: string[], game: Game, letterPositions: number[]): boolean {
         const placementInformations = this.separatePlaceCommandInformations(commandInformations);
         let wordsFormed: Tile[][] = [];
-        if (placementInformations.numberLetters === 1 && game.firstTurn) return false;
+        if (placementInformations.numberLetters === 1 && game.gameState.firstTurn) return false;
         if (placementInformations.orientation === 'h') {
             wordsFormed = this.findNewWordsHorizontal(game, placementInformations, letterPositions);
         } else {

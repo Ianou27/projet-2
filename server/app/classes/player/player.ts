@@ -57,6 +57,31 @@ export class Player {
         return counter;
     }
 
+    tileHolderContains(word: string): boolean {
+        const lettersWord = word.split('');
+        const lettersPlayer: string[] = this.lettersToStringArray();
+        for (const letter of lettersWord) {
+            if (this.isUpper(letter) && this.findLetterTileHolder('*')) {
+                lettersPlayer[lettersPlayer.indexOf('*')] = '';
+            } else if (!this.isUpper(letter) && this.findLetterTileHolder(letter.toUpperCase())) {
+                lettersPlayer[lettersPlayer.indexOf(letter)] = '';
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private findLetterTileHolder(letter: string): boolean {
+        const lettersPlayer: Tile[] = this.getLetters();
+        for (const letterPlayer of lettersPlayer) {
+            if (letterPlayer.letter === letter) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private isUpper(letter: string) {
         return /[A-Z]/.test(letter);
     }

@@ -98,7 +98,7 @@ export class SocketManager {
                         this.sio.to(socket.id).emit('commandValidated', " Ce n'est pas ton tour");
                     } else if (!this.gameManager.commandVerification(command[0])) {
                         this.sio.to(socket.id).emit('commandValidated', 'Erreur de syntaxe');
-                    } else if (!game.gameFinished) {
+                    } else if (!game.gameState.gameFinished) {
                         switch (command[0]) {
                             case '!passer': {
                                 const verification: string = this.gameManager.passVerification(command);
@@ -129,7 +129,7 @@ export class SocketManager {
                                             .to(currentRoom)
                                             .emit(
                                                 'updateReserve',
-                                                game.reserveLetters.length,
+                                                game.reserveLetters.letters.length,
                                                 game.player1.getNumberLetters(),
                                                 game.player2.getNumberLetters(),
                                             );
@@ -192,8 +192,8 @@ export class SocketManager {
                             player: 'server',
                         });
 
-                        console.log(game.winner);
-                        this.sio.to(currentRoom).emit('endGame', this.identification.getWinner(username, game.winner));
+                        console.log(game.gameState.winner);
+                        this.sio.to(currentRoom).emit('endGame', this.identification.getWinner(username, game.gameState.winner));
                         // game.timer.stop();
                         this.sio.to(currentRoom).emit('roomMessage', {
                             username: 'Server',
@@ -225,7 +225,7 @@ export class SocketManager {
                         game = room.game;
                     }
                 });
-                if (!game.gameFinished) {
+                if (!game.gameState.gameFinished) {
                     if (!game.playerTurnValid(this.identification.getPlayer(socket.id))) {
                         this.sio.to(socket.id).emit('commandValidated', " Ce n'est pas ton tour");
                     } else {
@@ -239,7 +239,7 @@ export class SocketManager {
                         this.sio.to(currentRoom).emit('modification', game.gameBoard.cases, game.playerTurn().name);
                     }
                 } else {
-                    this.sio.to(currentRoom).emit('endGame', this.identification.getWinner(username, game.winner));
+                    this.sio.to(currentRoom).emit('endGame', this.identification.getWinner(username, game.gameState.winner));
                     // game.timer.stop();
                     this.sio.to(currentRoom).emit('roomMessage', {
                         username: 'Server',

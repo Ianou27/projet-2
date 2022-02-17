@@ -10,7 +10,7 @@ export class PassCommand {
 
     static passTurn(game: Game): void {
         game.changeTurnTwoPlayers();
-        game.passesCount++;
+        game.gameState.passesCount++;
         game.verifyGameState();
     }
 }
