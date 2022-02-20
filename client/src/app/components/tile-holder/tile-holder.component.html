@@ -1,10 +1,10 @@
 <p>Touche : {{ buttonPressed }}</p>
 <div id="tile-holder">
     <app-tile
-        *ngFor="let tile of this.chatService.tileHolderService.tileHolder; let i = index"
+        *ngFor="let tile of this.chatService.tileHolderService.tileHolder"
         [letter]="tile.letter"
         [value]="tile.value"
-        (click)="swap(i)"
+        (click)="addId($event)"
     ></app-tile>
     <!-- <div *ngFor="let tile of this.chatService.tileHolderService.tileHolder">
     </div> -->
