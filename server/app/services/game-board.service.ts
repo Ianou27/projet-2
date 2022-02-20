@@ -40,6 +40,24 @@ export class GameBoardService {
         this.cases[positionX][positionY].letter = letter;
     }
 
+    nextTile(currentTile: Tile, orientation: string, revert: boolean): Tile {
+        let nextTile: Tile;
+        if (orientation === 'h') {
+            if (revert) {
+                nextTile = this.cases[currentTile.positionX - 1][currentTile.positionY];
+            } else {
+                nextTile = this.cases[currentTile.positionX + 1][currentTile.positionY];
+            }
+        } else {
+            if (revert) {
+                nextTile = this.cases[currentTile.positionX][currentTile.positionY - 1];
+            } else {
+                nextTile = this.cases[currentTile.positionX][currentTile.positionY + 1];
+            }
+        }
+        return nextTile;
+    }
+
     private verifyProperty(property: Vec2[], positionX: number, positionY: number): boolean {
         for (const position of property) {
             if (position.x === positionX && position.y === positionY) {
