@@ -1,3 +1,4 @@
+import { User } from './../../../../common/types';
 import { letterValue } from './../../../../common/assets/reserve-letters';
 import { Tile } from './../../../../common/tile/Tile';
 
@@ -6,12 +7,14 @@ export class Player {
     hisTurn: boolean;
     points: number;
     name: string;
+    user:User;
 
-    constructor(letters: Tile[], hisTurn: boolean, name: string) {
+    constructor(letters: Tile[], hisTurn: boolean, name: string, user:User) {
         this.letters = letters;
         this.hisTurn = hisTurn;
         this.points = 0;
         this.name = name;
+        this.user = user;
     }
 
     changeTurn() {

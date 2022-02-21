@@ -13,7 +13,7 @@ export class RoomManager {
         };
         identification.users.push(user);
         identification.roomMessages[room] = [];
-        const game = new Game();
+        const game = new Game(user);
         const roomObj = {
             player1: username,
             player2: '',
@@ -35,7 +35,7 @@ export class RoomManager {
                     };
                     identification.users.push(user);
                     element.player2 = username;
-
+                    element.game.player2Join(user);
                     tiles = [element.game.player1.getLetters(), element.game.player2.getLetters()];
                     // element.game.timer.start(socketId, identification, sio, gameManager);
                 }

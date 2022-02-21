@@ -1,3 +1,4 @@
+import { User } from './../../../../common/types';
 import { MAXIMUM_PASSES_COUNT } from './../../../../common/constants/general-constants';
 import { GameState } from './../../../../common/gameState';
 import { GameBoardService } from './../../services/game-board.service';
@@ -13,10 +14,9 @@ export class Game {
     timer: Timer;
     gameState: GameState;
 
-    constructor() {
+    constructor(user: User) {
         this.reserveLetters = new ReserveLetters();
-        this.player1 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player1');
-        this.player2 = new Player(this.reserveLetters.randomLettersInitialization(), false, 'player2');
+        this.player1 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player1',user);
         this.gameBoard = new GameBoardService();
         const firstTurn = true;
         const passesCount = 0;
@@ -31,7 +31,9 @@ export class Game {
         this.gameState = gameState;
         // this.timer = new Timer();
     }
-
+    player2Join(user: User){
+        this.player2 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player2',user);
+    }
     verifyGameState() {
         const endGameValidation =
             this.gameState.passesCount === MAXIMUM_PASSES_COUNT ||
