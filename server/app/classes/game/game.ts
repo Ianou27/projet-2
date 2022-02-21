@@ -5,7 +5,7 @@ import { GameBoardService } from './../../services/game-board.service';
 import { Timer } from './../../services/timer-manager.service';
 import { Player } from './../player/player';
 import { ReserveLetters } from './../reserveLetters/reserve-letters';
-
+import  * as io from 'socket.io';
 export class Game {
     gameBoard: GameBoardService;
     player1: Player;
@@ -14,7 +14,7 @@ export class Game {
     timer: Timer;
     gameState: GameState;
 
-    sio:any;
+    sio:io.Server;
 
     constructor() {
         this.reserveLetters = new ReserveLetters();
@@ -36,7 +36,7 @@ export class Game {
     player1Join(user: User){
         this.player1 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player1',user); 
        }
-    player2Join(user: User,sio:any){
+    player2Join(user: User,sio:io.Server){
         this.player2 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player2',user);
         this.sio =sio;
         this.startGame();

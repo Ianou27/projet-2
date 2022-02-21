@@ -1,3 +1,4 @@
+import  * as io from 'socket.io';
 import { NO_TIME_LEFT, ONE_SECOND_MS, SECONDS_IN_MINUTE } from './../../../common/constants/general-constants';
 
 import { Game } from './../classes/game/game';
@@ -5,7 +6,7 @@ import { Game } from './../classes/game/game';
 export class Timer {
     timeLeft: number = SECONDS_IN_MINUTE;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    start(game: Game,sio:any) {
+    start(game: Game,sio:io.Server) {
         
         setInterval(() => {
             if (this.timeLeft === NO_TIME_LEFT) return;
