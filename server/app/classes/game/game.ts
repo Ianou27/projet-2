@@ -14,9 +14,11 @@ export class Game {
     timer: Timer;
     gameState: GameState;
 
-    constructor(user: User) {
+    sio:any;
+
+    constructor() {
         this.reserveLetters = new ReserveLetters();
-        this.player1 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player1',user);
+       
         this.gameBoard = new GameBoardService();
         const firstTurn = true;
         const passesCount = 0;
@@ -29,10 +31,15 @@ export class Game {
             winner,
         };
         this.gameState = gameState;
-        // this.timer = new Timer();
+        this.timer = new Timer();
     }
-    player2Join(user: User){
+    player1Join(user: User){
+        this.player1 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player1',user); 
+       }
+    player2Join(user: User,sio:any){
         this.player2 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player2',user);
+        this.sio =sio;
+        this.startGame();
     }
     verifyGameState() {
         const endGameValidation =
@@ -45,6 +52,10 @@ export class Game {
         }
     }
 
+    startGame(){
+        this.timer.start(this,this.sio);
+       
+    }
     changeTurnTwoPlayers() {
         this.player1.changeTurn();
         this.player2.changeTurn();

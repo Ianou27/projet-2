@@ -1,15 +1,20 @@
-import { Room, User } from './../../../common/types';
+import { Game } from '@app/classes/game/game';
+import { Room } from './../../../common/types';
 
 export class IdManager {
-    users: User[] = [];
+    // users: User[] = [];
 
     roomMessages = new Map<string, Room[]>();
     rooms: Room[] = [];
+    games: Game[]=[];
     getId(username: string): string {
         let id = '';
-        this.users.forEach((element) => {
-            if (element.username === username) {
-                id = element.id;
+        this.games.forEach((game) => {
+            if (game.player1.user.username === username) {
+                id = game.player1.user.id;
+            }
+            else if (game.player2.user.username === username) {
+                id = game.player2.user.id;
             }
         });
         return id;
@@ -17,73 +22,92 @@ export class IdManager {
 
     getUsername(socketId: string): string {
         let username = '';
-        this.users.forEach((element) => {
-            if (element.id === socketId) {
-                username = element.username;
+        this.games.forEach((game) => {
+            if (game.player1.user.id === socketId) {
+                username = game.player1.user.username;
+            }
+            else if (game.player2.user.id === socketId) {
+                username = game.player2.user.username;
             }
         });
         return username;
     }
-    getWinner(username: string, playerWinner: string): string {
-        let winner = '';
-        this.rooms.forEach((room: Room) => {
-            if (playerWinner !== 'tie') {
-                if (username === room.player1 || username === room.player2) {
-                    if ('player1' === playerWinner) {
-                        winner = room.player1;
-                    } else if ('player2' === playerWinner) {
-                        winner = room.player2;
-                    }
-                }
-            } else {
-                winner = 'tie';
-            }
-        });
-        return winner;
-    }
+    // getWinner(username: string, playerWinner: string): string {
+    //     let winner = '';
+    //     this.rooms.forEach((room: Room) => {
+    //         if (playerWinner !== 'tie') {
+    //             if (username === room.player1 || username === room.player2) {
+    //                 if ('player1' === playerWinner) {
+    //                     winner = room.player1;
+    //                 } else if ('player2' === playerWinner) {
+    //                     winner = room.player2;
+    //                 }
+    //             }
+    //         } else {
+    //             winner = 'tie';
+    //         }
+    //     });
+    //     return winner;
+    // }
 
-    surrender(socketId: string): string {
-        let winner = '';
-        const username = this.getUsername(socketId);
-        this.rooms.forEach((room: Room) => {
-            if (username === room.player1) {
-                winner = room.player2;
-                // room.game.timer.stop();
-            } else if (username === room.player2) {
-                winner = room.player1;
-                // room.game.timer.stop();
-            }
-        });
-        return winner;
-    }
+    // surrender(socketId: string): string {
+    //     let winner = '';
+    //     const username = this.getUsername(socketId);
+    //     this.rooms.forEach((room: Room) => {
+    //         if (username === room.player1) {
+    //             winner = room.player2;
+    //             // room.game.timer.stop();
+    //         } else if (username === room.player2) {
+    //             winner = room.player1;
+    //             // room.game.timer.stop();
+    //         }
+    //     });
+    //     return winner;
+    // }
     getPlayer(socketId: string): string {
         let player = '';
         const username = this.getUsername(socketId);
-        this.rooms.forEach((room: Room) => {
-            if (username === room.player1) {
+        this.games.forEach((game) => {
+            if (username === game.player1.user.username) {
                 player = 'player1';
-            } else if (username === room.player2) {
+            } else if (username === game.player2.user.username) {
                 player = 'player2';
             }
         });
         return player;
     }
-    getRoom(id: string): string {
+    getRoom(socketId: string): string {
         let room = '';
-        this.users.forEach((element: User) => {
-            if (element.id === id) {
-                room = element.room;
+        this.games.forEach((game) => {
+            if (game.player1.user.id === socketId) {
+                room = game.player1.user.room;
+            }
+            else if (game.player2.user.id === socketId) {
+                room = game.player2.user.room;
             }
         });
         return room;
     }
-
-    deleteUser(socketId: string) {
-        this.users.forEach((element: User) => {
-            if (element.id === socketId) {
-                const index = this.users.indexOf(element);
-                this.users.splice(index, 1);
+    getGame(socketId: string):Game {
+        let game:Game = new Game();
+        for(let i=0; i< this.games.length;i++){
+            if (this.games[i].player1.user.id === socketId) {
+                game= this.games[i];
             }
-        });
+            else if (this.games[i].player2.user.id === socketId) {
+                game= this.games[i];
+            }
+        }
+           
+        return game;
     }
+
+    // deleteUser(socketId: string) {
+    //     this.users.forEach((element: User) => {
+    //         if (element.id === socketId) {
+    //             const index = this.users.indexOf(element);
+    //             this.users.splice(index, 1);
+    //         }
+    //     });
+    // }
 }

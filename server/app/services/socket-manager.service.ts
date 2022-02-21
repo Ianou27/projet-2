@@ -29,7 +29,7 @@ export class SocketManager {
 
             socket.on('joinRoom', (username: string, roomObj: Room) => {
                 const player1Id = this.identification.getId(roomObj.player1);
-                const letters = this.roomManager.joinRoom(username, roomObj, socket.id, this.identification, this.sio, this.gameManager);
+                const letters = this.roomManager.joinRoom(username, roomObj, socket.id, this.identification, this.sio);
                 socket.join(roomObj.player1);
 
                 this.sio.to(player1Id).emit('tileHolder', letters[0]);
@@ -256,11 +256,11 @@ export class SocketManager {
 
             socket.on('cancelCreation', () => {
                 this.roomManager.cancelCreation(socket.id, this.identification);
-                this.identification.deleteUser(socket.id);
+                // this.identification.deleteUser(socket.id);
             });
             socket.on('disconnect', (reason) => {
                 const room = this.identification.getRoom(socket.id);
-                this.sio.to(room).emit('endGame', this.identification.surrender(socket.id));
+                // this.sio.to(room).emit('endGame', this.identification.surrender(socket.id));
                 if (room !== '') {
                     socket.leave(room);
                     this.roomManager.deleteRoom(socket.id, this.identification);
@@ -269,7 +269,7 @@ export class SocketManager {
                     this.sio.to(room).emit('playerDc');
                 }
 
-                this.identification.deleteUser(socket.id);
+                // this.identification.deleteUser(socket.id);
                 console.log(`Deconnexion par l'utilisateur avec id : ${socket.id}`);
                 console.log(`Raison de deconnexion : ${reason}`);
             });

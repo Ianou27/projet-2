@@ -6,6 +6,7 @@ import { PlacementCommand } from './../classes/placementCommand/placement-comman
 
 export class GameManager {
     private commandsList: string[] = ['!placer', '!echanger', '!passer', '!indice'];
+    
     placeWord(command: string[], game: Game): string {
         let message = 'placer';
         if (!PlacementCommand.placeWord(command, game)) {
