@@ -55,10 +55,9 @@ describe('Game Manager', () => {
     });
 
     it('method pass should call PassCommand.passTurn', () => {
-        const spy = sinon.spy(PassCommand, 'passTurn');
+        const spy = sinon.spy(game, 'passTurn');
         gameManager.pass(game);
         assert(spy.called);
-        assert(spy.calledWith(game));
     });
 
     it('method passCommandValid should call PassCommand.validatedPassCommandFormat', () => {
@@ -69,10 +68,9 @@ describe('Game Manager', () => {
     });
 
     it('method exchange should call ExchangeCommand.exchangeLetters', () => {
-        const spy = sinon.spy(ExchangeCommand, 'exchangeLetters');
+        const spy = sinon.spy(game, 'exchangeLetters');
         gameManager.exchange(exchangeCommand, game);
         assert(spy.called);
-        assert(spy.calledWith(exchangeCommand, game));
     });
 
     it('method exchangeFormatValid should call ExchangeCommand.validatedExchangeCommandFormat', () => {
