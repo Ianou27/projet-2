@@ -71,8 +71,6 @@ describe('Points Calculator', () => {
         for (let i = 0; i < placementInformations.letters.length; i++) {
             game.gameBoard.cases[letterTile[i].positionX][placementInformations.row].letter = placementInformations.letters[i];
             game.gameBoard.cases[letterTile[i].positionX][placementInformations.row].value = letterValue[placementInformations.letters[i]];
-            // game.gameBoard.cases[letterPositions[i]][placementInformations.row].letter = placementInformations.letters[i];
-            // game.gameBoard.cases[letterPositions[i]][placementInformations.row].value = letterValue[placementInformations.letters[i]];
         }
         const letter = game.gameBoard.cases[placementInformations.column][placementInformations.row];
         const isNew = PointsCalculator.newLetterOnBoard(letter, letterTile);
@@ -83,8 +81,6 @@ describe('Points Calculator', () => {
         for (let i = 0; i < placementInformations.letters.length; i++) {
             game.gameBoard.cases[letterTile[i].positionX][placementInformations.row].letter = placementInformations.letters[i];
             game.gameBoard.cases[letterTile[i].positionX][placementInformations.row].value = letterValue[placementInformations.letters[i]];
-            // game.gameBoard.cases[letterPositions[i]][placementInformations.row].letter = placementInformations.letters[i];
-            // game.gameBoard.cases[letterPositions[i]][placementInformations.row].value = letterValue[placementInformations.letters[i]];
         }
         const letter = game.gameBoard.cases[placementInformations.column][placementInformations.row];
         // eslint-disable-next-line @typescript-eslint/no-magic-numbers

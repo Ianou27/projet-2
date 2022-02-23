@@ -1,4 +1,5 @@
 /* import * as fs from 'fs'; */
+import { letterValue } from './../../../../common/assets/reserve-letters';
 import {
     CENTER_ROW_COLUMN,
     COLUMN_ROWS_MINIMUM,
@@ -47,16 +48,7 @@ export class PlacementCommand {
         const placementInformations = this.separatePlaceCommandInformations(commandInformations);
 
         let letterPositions: Tile[] = [];
-        switch (placementInformations.orientation) {
-            case 'h': {
-                letterPositions = this.placeWordHorizontal(placementInformations, game);
-                break;
-            }
-            default: {
-                letterPositions = this.placeWordVertical(placementInformations, game);
-                break;
-            }
-        }
+        letterPositions = PlacementCommand.place(placementInformations, game);
         if (!this.newWordsValid(commandInformations, game, letterPositions)) {
             this.restoreBoard(game, letterPositions);
             return false;
@@ -82,43 +74,23 @@ export class PlacementCommand {
         }
     }
 
-    private static placeWordHorizontal(placementInformations: PlacementInformations, game: Game): Tile[] {
+    private static place(placementInformations: PlacementInformations, game: Game): Tile[] {
         let letterCount = placementInformations.numberLetters;
-        let iter = 0;
         let lettersIter = 0;
+        let tile: Tile = game.gameBoard.cases[placementInformations.column][placementInformations.row];
         const positions: Tile[] = [];
         while (letterCount > 0) {
-            if (game.gameBoard.tileContainsLetter(placementInformations.column + iter, placementInformations.row)) {
-                iter++;
+            if (game.gameBoard.tileContainsLetter(tile.positionX, tile.positionY)) {
+                tile = game.gameBoard.nextTile(tile, placementInformations.orientation, false);
                 continue;
             }
             const letterPlace = placementInformations.letters[lettersIter];
-            game.gameBoard.addLetterTile(placementInformations.column + iter, placementInformations.row, letterPlace);
+            tile.letter = letterPlace.toUpperCase();
+            tile.value = letterValue[letterPlace.toUpperCase()];
+            positions.push(tile);
+            tile = game.gameBoard.nextTile(tile, placementInformations.orientation, false);
             game.playerTurn().changeLetter(letterPlace, '');
-            positions.push(game.gameBoard.cases[placementInformations.column + iter][placementInformations.row]);
             lettersIter++;
-            iter++;
-            letterCount--;
-        }
-        return positions;
-    }
-
-    private static placeWordVertical(placementInformations: PlacementInformations, game: Game): Tile[] {
-        let letterCount = placementInformations.letters.length;
-        let iter = 0;
-        let lettersIter = 0;
-        const positions: Tile[] = [];
-        while (letterCount > 0) {
-            if (game.gameBoard.tileContainsLetter(placementInformations.column, placementInformations.row + iter)) {
-                iter++;
-                continue;
-            }
-            const letterPlace = placementInformations.letters[lettersIter];
-            game.gameBoard.addLetterTile(placementInformations.column, placementInformations.row + iter, letterPlace);
-            game.playerTurn().changeLetter(letterPlace, '');
-            positions.push(game.gameBoard.cases[placementInformations.column][placementInformations.row + iter]);
-            lettersIter++;
-            iter++;
             letterCount--;
         }
         return positions;
