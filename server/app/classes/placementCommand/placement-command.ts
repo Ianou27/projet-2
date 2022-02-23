@@ -173,22 +173,6 @@ export class PlacementCommand {
         return true;
     }
 
-    /* private static firstWordTouchCenter(placementInformations: PlacementInformations): boolean {
-        let letterPlacement;
-        if (placementInformations.orientation === 'h') {
-            for (let i = 0; i < placementInformations.numberLetters; i++) {
-                letterPlacement = placementInformations.column + i;
-                if (letterPlacement === CENTER_ROW_COLUMN && placementInformations.row === CENTER_ROW_COLUMN) return true;
-            }
-        } else {
-            for (let i = 0; i < placementInformations.numberLetters; i++) {
-                letterPlacement = placementInformations.row + i;
-                if (letterPlacement === CENTER_ROW_COLUMN && placementInformations.column === CENTER_ROW_COLUMN) return true;
-            }
-        }
-        return false;
-    }*/
-
     private static firstWordTouchCenter(placementInformations: PlacementInformations, game: Game): boolean {
         let tile: Tile = game.gameBoard.cases[placementInformations.column][placementInformations.row];
         for (let i = 0; i < placementInformations.numberLetters; i++) {
