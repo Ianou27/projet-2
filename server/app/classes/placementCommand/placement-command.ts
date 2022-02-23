@@ -5,7 +5,6 @@ import {
     COLUMN_ROWS_MINIMUM,
     COLUMN_ROWS_NUMBER,
     MAXIMUM_LETTERS_PLACE_COMMAND,
-    MAXIMUM_ROW_COLUMN,
     MAXIMUM_ROW_COLUMN_COMPARISON_LIMIT,
     MINIMUM_LETTERS_PLACE_COMMAND,
     MINIMUM_ROW_COLUMN_COMPARISON_LIMIT,
@@ -161,20 +160,14 @@ export class PlacementCommand {
     }
 
     private static insideBoardGame(placementInformations: PlacementInformations, game: Game): boolean {
-        let row = placementInformations.row;
-        let column = placementInformations.column;
         let numberLettersToPlace = placementInformations.numberLetters;
-        if (placementInformations.orientation === 'h') {
-            while (numberLettersToPlace > 0) {
-                if (column > MAXIMUM_ROW_COLUMN) return false;
-                if (!game.gameBoard.tileContainsLetter(column, row)) numberLettersToPlace--;
-                column++;
-            }
-        } else {
-            while (numberLettersToPlace > 0) {
-                if (row > MAXIMUM_ROW_COLUMN) return false;
-                if (!game.gameBoard.tileContainsLetter(column, row)) numberLettersToPlace--;
-                row++;
+        let tile: Tile = game.gameBoard.cases[placementInformations.column][placementInformations.row];
+        while (numberLettersToPlace > 0) {
+            try {
+                if (!game.gameBoard.tileContainsLetter(tile.positionX, tile.positionY)) numberLettersToPlace--;
+                tile = game.gameBoard.nextTile(tile, placementInformations.orientation, false);
+            } catch (error) {
+                return false;
             }
         }
         return true;
