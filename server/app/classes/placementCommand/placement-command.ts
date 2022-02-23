@@ -35,7 +35,7 @@ export class PlacementCommand {
         const insideBoard: boolean = this.insideBoardGame(placementInformations, game);
         let wordCondition: boolean;
         if (game.gameState.firstTurn) {
-            wordCondition = this.firstWordTouchCenter(placementInformations);
+            wordCondition = this.firstWordTouchCenter(placementInformations, game);
         } else {
             wordCondition = this.wordHasAdjacent(placementInformations, game);
         }
@@ -173,7 +173,7 @@ export class PlacementCommand {
         return true;
     }
 
-    private static firstWordTouchCenter(placementInformations: PlacementInformations): boolean {
+    /* private static firstWordTouchCenter(placementInformations: PlacementInformations): boolean {
         let letterPlacement;
         if (placementInformations.orientation === 'h') {
             for (let i = 0; i < placementInformations.numberLetters; i++) {
@@ -184,6 +184,19 @@ export class PlacementCommand {
             for (let i = 0; i < placementInformations.numberLetters; i++) {
                 letterPlacement = placementInformations.row + i;
                 if (letterPlacement === CENTER_ROW_COLUMN && placementInformations.column === CENTER_ROW_COLUMN) return true;
+            }
+        }
+        return false;
+    }*/
+
+    private static firstWordTouchCenter(placementInformations: PlacementInformations, game: Game): boolean {
+        let tile: Tile = game.gameBoard.cases[placementInformations.column][placementInformations.row];
+        for (let i = 0; i < placementInformations.numberLetters; i++) {
+            try {
+                if (tile.positionX === CENTER_ROW_COLUMN && tile.positionY === CENTER_ROW_COLUMN) return true;
+                tile = game.gameBoard.nextTile(tile, placementInformations.orientation, false);
+            } catch (error) {
+                return false;
             }
         }
         return false;
