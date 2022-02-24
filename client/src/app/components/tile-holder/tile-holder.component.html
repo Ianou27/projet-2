@@ -1,8 +1,11 @@
 <div id="tile-holder">
     <app-tile
-        *ngFor="let tile of this.chatService.tileHolderService.tileHolder"
+        *ngFor="let tile of this.tileHolderService.tileHolder"
         [letter]="tile.letter"
         [value]="tile.value"
         (click)="addId($event)"
+        (contextmenu)="addSwapId($event)"
     ></app-tile>
 </div>
+<button mat-button color="warn" (click)="clearSwapReserve($event)">Annuler</button>
+<button mat-button color="primary" cdkFocusInitial>Échanger</button>
