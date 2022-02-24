@@ -31,15 +31,22 @@ export class PlacementCommand {
     }
 
     static validatedPlaceCommandBoard(commandInformations: string[], game: Game): boolean {
-        const placementInformations = this.separatePlaceCommandInformations(commandInformations);
-        const insideBoard: boolean = this.insideBoardGame(placementInformations, game);
+        let tileHolderContains: boolean;
+        let insideBoard: boolean;
         let wordCondition: boolean;
-        if (game.gameState.firstTurn) {
-            wordCondition = this.firstWordTouchCenter(placementInformations, game);
-        } else {
-            wordCondition = this.wordHasAdjacent(placementInformations, game);
+        try {
+            const placementInformations = this.separatePlaceCommandInformations(commandInformations);
+            insideBoard = this.insideBoardGame(placementInformations, game);
+            if (game.gameState.firstTurn) {
+                wordCondition = this.firstWordTouchCenter(placementInformations, game);
+            } else {
+                wordCondition = this.wordHasAdjacent(placementInformations, game);
+            }
+            tileHolderContains = game.playerTurn().tileHolderContains(placementInformations.letters.join(''));
+        } catch (error) {
+            return false;
         }
-        const tileHolderContains = game.playerTurn().tileHolderContains(placementInformations.letters.join(''));
+
         return insideBoard && wordCondition && tileHolderContains;
     }
 
@@ -65,7 +72,7 @@ export class PlacementCommand {
         return true;
     }
 
-    private static restoreBoard(game: Game, letterPositions: Tile[]) {
+    static restoreBoard(game: Game, letterPositions: Tile[]) {
         for (const tile of letterPositions) {
             game.playerTurn().changeLetter('', game.gameBoard.cases[tile.positionX][tile.positionY].letter);
             game.gameBoard.cases[tile.positionX][tile.positionY].letter = '';
@@ -73,7 +80,7 @@ export class PlacementCommand {
         }
     }
 
-    private static place(placementInformations: PlacementInformations, game: Game): Tile[] {
+    static place(placementInformations: PlacementInformations, game: Game): Tile[] {
         let letterCount = placementInformations.numberLetters;
         let lettersIter = 0;
         let tile: Tile = game.gameBoard.cases[placementInformations.column][placementInformations.row];
@@ -95,7 +102,7 @@ export class PlacementCommand {
         return positions;
     }
 
-    private static separatePlaceCommandInformations(commandInformations: string[]): PlacementInformations {
+    static separatePlaceCommandInformations(commandInformations: string[]): PlacementInformations {
         const positionOrientation = commandInformations[1].split('');
         const row = rowNumber[positionOrientation[0]];
         const numberLetters = commandInformations[2].length;
@@ -126,7 +133,7 @@ export class PlacementCommand {
         return placementInformations;
     }
 
-    private static letterHasAdjacent(row: number, column: number, game: Game): boolean {
+    static letterHasAdjacent(row: number, column: number, game: Game): boolean {
         const haveTile: boolean = game.gameBoard.tileContainsLetter(column, row);
         let haveTileUp = false;
         let haveTileDown = false;
@@ -139,7 +146,7 @@ export class PlacementCommand {
         return haveTile || haveTileUp || haveTileDown || haveTileLeft || haveTileRight;
     }
 
-    private static wordHasAdjacent(placementInformations: PlacementInformations, game: Game): boolean {
+    static wordHasAdjacent(placementInformations: PlacementInformations, game: Game): boolean {
         let tile: Tile = game.gameBoard.cases[placementInformations.column][placementInformations.row];
         let numberLettersToPlace = placementInformations.numberLetters;
         while (numberLettersToPlace > 0) {
@@ -150,7 +157,7 @@ export class PlacementCommand {
         return false;
     }
 
-    private static insideBoardGame(placementInformations: PlacementInformations, game: Game): boolean {
+    static insideBoardGame(placementInformations: PlacementInformations, game: Game): boolean {
         let numberLettersToPlace = placementInformations.numberLetters;
         let tile: Tile = game.gameBoard.cases[placementInformations.column][placementInformations.row];
         while (numberLettersToPlace > 0) {
@@ -164,7 +171,7 @@ export class PlacementCommand {
         return true;
     }
 
-    private static firstWordTouchCenter(placementInformations: PlacementInformations, game: Game): boolean {
+    static firstWordTouchCenter(placementInformations: PlacementInformations, game: Game): boolean {
         let tile: Tile = game.gameBoard.cases[placementInformations.column][placementInformations.row];
         for (let i = 0; i < placementInformations.numberLetters; i++) {
             try {
@@ -177,7 +184,7 @@ export class PlacementCommand {
         return false;
     }
 
-    private static findNewWordsHorizontal(game: Game, placementInformations: PlacementInformations, letterPositions: Tile[]): Tile[][] {
+    static findNewWordsHorizontal(game: Game, placementInformations: PlacementInformations, letterPositions: Tile[]): Tile[][] {
         let column = placementInformations.column;
         let row = placementInformations.row;
         let word: Tile[] = [];
@@ -211,7 +218,7 @@ export class PlacementCommand {
         }
         return wordsFormed;
     }
-    private static findNewWordsVertical(game: Game, placementInformations: PlacementInformations, letterPositions: Tile[]): Tile[][] {
+    static findNewWordsVertical(game: Game, placementInformations: PlacementInformations, letterPositions: Tile[]): Tile[][] {
         let column = placementInformations.column;
         let row = placementInformations.row;
         let word: Tile[] = [];
@@ -248,7 +255,7 @@ export class PlacementCommand {
         return wordsFormed;
     }
 
-    private static newWordsValid(commandInformations: string[], game: Game, letterPositions: Tile[]): boolean {
+    static newWordsValid(commandInformations: string[], game: Game, letterPositions: Tile[]): boolean {
         const placementInformations = this.separatePlaceCommandInformations(commandInformations);
         let wordsFormed: Tile[][] = [];
         if (placementInformations.numberLetters === 1 && game.gameState.firstTurn) return false;
@@ -271,7 +278,7 @@ export class PlacementCommand {
         return true;
     }
 
-    private static validatedWordDictionary(word: string): boolean {
+    static validatedWordDictionary(word: string): boolean {
         let leftLimit = 0;
         let rightLimit = this.dictionaryArray.length - 1;
         while (leftLimit <= rightLimit) {
