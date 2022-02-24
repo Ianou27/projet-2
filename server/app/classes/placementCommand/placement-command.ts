@@ -2,8 +2,6 @@
 import { letterValue } from './../../../../common/assets/reserve-letters';
 import {
     CENTER_ROW_COLUMN,
-    COLUMN_ROWS_MINIMUM,
-    COLUMN_ROWS_NUMBER,
     MAXIMUM_LETTERS_PLACE_COMMAND,
     MAXIMUM_ROW_COLUMN_COMPARISON_LIMIT,
     MINIMUM_LETTERS_PLACE_COMMAND,
@@ -133,7 +131,7 @@ export class PlacementCommand {
         return placementInformations;
     }
 
-    static letterHasAdjacent(row: number, column: number, game: Game): boolean {
+    static letterHasAdjacent(column: number, row: number, game: Game): boolean {
         const haveTile: boolean = game.gameBoard.tileContainsLetter(column, row);
         let haveTileUp = false;
         let haveTileDown = false;
@@ -184,71 +182,42 @@ export class PlacementCommand {
         return false;
     }
 
-    static findNewWordsHorizontal(game: Game, placementInformations: PlacementInformations, letterPositions: Tile[]): Tile[][] {
-        let column = placementInformations.column;
-        let row = placementInformations.row;
+    static findNewWords(game: Game, placementInformations: PlacementInformations, letterPositions: Tile[]): Tile[][] {
+        const secondValidationOrientation = placementInformations.orientation === 'h' ? 'v' : 'h';
+        let tile: Tile = game.gameBoard.cases[placementInformations.column][placementInformations.row];
         let word: Tile[] = [];
         const wordsFormed: Tile[][] = [];
-        while (game.gameBoard.tileContainsLetter(column, placementInformations.row)) {
-            if (column === COLUMN_ROWS_MINIMUM) break;
-            column--;
+        while (game.gameBoard.tileContainsLetter(tile.positionX, tile.positionY)) {
+            if (game.gameBoard.isLastTile(tile, placementInformations.orientation)) break;
+            tile = game.gameBoard.nextTile(tile, placementInformations.orientation, true);
         }
-        if (column !== COLUMN_ROWS_MINIMUM) column++;
-        while (game.gameBoard.tileContainsLetter(column, placementInformations.row)) {
-            word = word.concat(game.gameBoard.cases[column][placementInformations.row]);
-            column++;
-            if (column === COLUMN_ROWS_NUMBER) break;
+        if (!game.gameBoard.isLastTile(tile, placementInformations.orientation))
+            tile = game.gameBoard.nextTile(tile, placementInformations.orientation, false);
+        word.push(tile);
+        tile = game.gameBoard.nextTile(tile, placementInformations.orientation, false);
+        while (game.gameBoard.tileContainsLetter(tile.positionX, tile.positionY)) {
+            word.push(tile);
+            if (game.gameBoard.isLastTile(tile, placementInformations.orientation)) break;
+            tile = game.gameBoard.nextTile(tile, placementInformations.orientation, false);
         }
         wordsFormed.push(word);
         word = [];
-        for (const tile of letterPositions) {
-            while (game.gameBoard.tileContainsLetter(tile.positionX, row)) {
-                if (row === COLUMN_ROWS_MINIMUM) break;
-                row--;
+        for (const letter of letterPositions) {
+            tile = letter;
+            while (game.gameBoard.tileContainsLetter(tile.positionX, tile.positionY)) {
+                if (game.gameBoard.isLastTile(tile, secondValidationOrientation)) break;
+                tile = game.gameBoard.nextTile(tile, secondValidationOrientation, true);
             }
-            if (row !== COLUMN_ROWS_MINIMUM) row++;
-            while (game.gameBoard.tileContainsLetter(tile.positionX, row)) {
-                word = word.concat(game.gameBoard.cases[tile.positionX][row]);
-                row++;
-                if (row === COLUMN_ROWS_NUMBER) break;
+            if (!game.gameBoard.isLastTile(tile, secondValidationOrientation)) {
+                tile = game.gameBoard.nextTile(tile, secondValidationOrientation, false);
             }
-            row = placementInformations.row;
-            wordsFormed.push(word);
-            word = [];
-        }
-        return wordsFormed;
-    }
-    static findNewWordsVertical(game: Game, placementInformations: PlacementInformations, letterPositions: Tile[]): Tile[][] {
-        let column = placementInformations.column;
-        let row = placementInformations.row;
-        let word: Tile[] = [];
-        const wordsFormed: Tile[][] = [];
-        while (game.gameBoard.tileContainsLetter(column, row)) {
-            if (row === COLUMN_ROWS_MINIMUM) break;
-            row--;
-        }
-        if (row !== COLUMN_ROWS_MINIMUM) row++;
-        while (game.gameBoard.tileContainsLetter(column, row)) {
-            word = word.concat(game.gameBoard.cases[column][row]);
-            row++;
-            if (row === COLUMN_ROWS_NUMBER) break;
-        }
-        wordsFormed.push(word);
-
-        word = [];
-
-        for (const tile of letterPositions) {
-            while (game.gameBoard.tileContainsLetter(column, tile.positionY)) {
-                if (column === COLUMN_ROWS_MINIMUM) break;
-                column--;
+            word.push(tile);
+            tile = game.gameBoard.nextTile(tile, secondValidationOrientation, false);
+            while (game.gameBoard.tileContainsLetter(tile.positionX, tile.positionY)) {
+                word.push(tile);
+                if (game.gameBoard.isLastTile(tile, secondValidationOrientation)) break;
+                tile = game.gameBoard.nextTile(tile, secondValidationOrientation, false);
             }
-            if (column !== COLUMN_ROWS_MINIMUM) column++;
-            while (game.gameBoard.tileContainsLetter(column, tile.positionY)) {
-                word = word.concat(game.gameBoard.cases[column][tile.positionY]);
-                column++;
-                if (column === COLUMN_ROWS_NUMBER) break;
-            }
-            column = placementInformations.column;
             wordsFormed.push(word);
             word = [];
         }
@@ -259,11 +228,7 @@ export class PlacementCommand {
         const placementInformations = this.separatePlaceCommandInformations(commandInformations);
         let wordsFormed: Tile[][] = [];
         if (placementInformations.numberLetters === 1 && game.gameState.firstTurn) return false;
-        if (placementInformations.orientation === 'h') {
-            wordsFormed = this.findNewWordsHorizontal(game, placementInformations, letterPositions);
-        } else {
-            wordsFormed = this.findNewWordsVertical(game, placementInformations, letterPositions);
-        }
+        wordsFormed = this.findNewWords(game, placementInformations, letterPositions);
         wordsFormed = wordsFormed.filter((item) => {
             return item.length > 1;
         });
