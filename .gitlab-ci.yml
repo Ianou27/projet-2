@@ -10,6 +10,7 @@ cache:
 .only-client: &only-client
     only:
         refs:
+            -devloppment
             - master
             - merge_requests
         changes:
@@ -23,6 +24,7 @@ cache:
 .only-server: &only-server
     only:
         refs:
+            -devloppment
             - master
             - merge_requests
         changes:
