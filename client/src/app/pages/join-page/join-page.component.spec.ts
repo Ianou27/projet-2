@@ -54,6 +54,10 @@ describe('JoinPageComponent', () => {
         });
     });
 
+    // it('randomJoin() should ', () => {
+    //     this.selectedRoomName = this.chatService.allRooms[Math.floor(Math.random() * this.chatService.allRooms.length)].player1;
+    // });
+
     it('createRoom() should create a room and open the dialog for the player that created the room', () => {
         const dialogMethodSpy = spyOn(component, 'openWait');
         const createSpy = spyOn(component.chatService, 'createRoom');

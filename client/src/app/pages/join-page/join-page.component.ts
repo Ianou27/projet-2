@@ -59,7 +59,7 @@ export class JoinPageComponent implements OnInit {
     }
 
     createRoom() {
-        this.chatService.createRoom(this.name, this.name, +this.selectedTime); // this.time
+        this.chatService.createRoom(this.name, this.name, +this.selectedTime);
         this.openWait();
     }
 
