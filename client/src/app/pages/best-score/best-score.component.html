@@ -1,0 +1,250 @@
+<div class="dialog-container-custom">
+    <div class="button">
+        <button mat-button (click)="goHome()">X</button>
+    </div>
+    <mat-grid-list cols="4" rows="8" rowHeight="100px" class="example-container">
+        <!-- <mat-grid-tile [colspan]="4" [rowspan]="1">OKOKOK</mat-grid-tile>
+        <mat-grid-tile [colspan]="2" [rowspan]="1">OK</mat-grid-tile>
+        <mat-grid-tile [colspan]="2" [rowspan]="1">KOKOK</mat-grid-tile> -->
+        <mat-grid-tile *ngFor="let tile of tiles" [colspan]="tile.cols" [rowspan]="tile.rows" [style.background]="tile.color">
+            {{ tile.text }}
+        </mat-grid-tile>
+    </mat-grid-list>
+</div>
+<!--
+<div id="cdk-overlay-20" class="cdk-overlay-pane init-game-dialog" style="max-width: 80vw; position: static">
+    <div tabindex="0" class="cdk-visually-hidden cdk-focus-trap-anchor" aria-hidden="true"></div>
+    <mat-dialog-container tabindex="-1" aria-modal="true" id="mat-dialog-13" role="dialog" style="transform: none">
+        <app-best-score _nghost-cnd-c108="" class="ng-star-inserted"
+            ><div id="header">
+                <button mat-icon-button="" class="mat-focus-indicator close-button mat-icon-button mat-button-base" type="button">
+                    <span class="mat-button-wrapper"
+                        ><mat-icon
+                            role="img"
+                            class="mat-icon notranslate close-icon material-icons mat-icon-no-color"
+                            aria-hidden="true"
+                            data-mat-icon-type="font"
+                            >close</mat-icon
+                        ></span
+                    ><span matripple="" class="mat-ripple mat-button-ripple mat-button-ripple-round"></span
+                    ><span class="mat-button-focus-overlay"></span>
+                </button>
+                <h2 class="title">Meilleurs scores</h2>
+            </div>
+            <div id="best-scores">
+                <table mat-table="" class="mat-table cdk-table mat-elevation-z2" role="table">
+                    <thead role="rowgroup">
+                        <tr role="row" mat-header-row="" class="mat-header-row cdk-header-row ng-star-inserted" style="">
+                            <th
+                                role="columnheader"
+                                mat-header-cell=""
+                                colspan="4"
+                                class="mat-header-cell cdk-header-cell cdk-column-Scrabble-classique mat-column-Scrabble-classique ng-star-inserted"
+                                style="text-align: center"
+                            >
+                                Scrabble classique
+                            </th>
+                            
+                        </tr>
+                        <tr role="row" mat-header-row="" class="mat-header-row cdk-header-row ng-star-inserted" style="">
+                            <th
+                                role="columnheader"
+                                mat-header-cell=""
+                                class="mat-header-cell cdk-header-cell cdk-column-score mat-column-score ng-star-inserted"
+                            >
+                                Scores
+                            </th>
+                            <th
+                                role="columnheader"
+                                mat-header-cell=""
+                                class="mat-header-cell cdk-header-cell cdk-column-name mat-column-name ng-star-inserted"
+                            >
+                                Joueurs
+                            </th>
+                            
+                        </tr>
+                        
+                    </thead>
+                    <tbody role="rowgroup">
+                        <tr role="row" mat-row="" class="mat-row cdk-row ng-star-inserted">
+                            <td role="cell" mat-cell="" class="mat-cell cdk-cell cdk-column-score mat-column-score ng-star-inserted">69</td>
+                            <td role="cell" mat-cell="" class="mat-cell cdk-cell cdk-column-name mat-column-name ng-star-inserted">asd</td>
+                            
+                        </tr>
+                        <tr role="row" mat-row="" class="mat-row cdk-row ng-star-inserted">
+                            <td role="cell" mat-cell="" class="mat-cell cdk-cell cdk-column-score mat-column-score ng-star-inserted">15</td>
+                            <td role="cell" mat-cell="" class="mat-cell cdk-cell cdk-column-name mat-column-name ng-star-inserted">Snoop</td>
+                            
+                        </tr>
+                        <tr _ngcontent-cnd-c108="" role="row" mat-row="" class="mat-row cdk-row ng-star-inserted">
+                            <td role="cell" mat-cell="" class="mat-cell cdk-cell cdk-column-score mat-column-score ng-star-inserted">12</td>
+                            <td role="cell" mat-cell="" class="mat-cell cdk-cell cdk-column-name mat-column-name ng-star-inserted">Dog</td>
+                            
+                        </tr>
+                        <tr _ngcontent-cnd-c108="" role="row" mat-row="" class="mat-row cdk-row ng-star-inserted">
+                            <td role="cell" mat-cell="" class="mat-cell cdk-cell cdk-column-score mat-column-score ng-star-inserted">11</td>
+                            <td role="cell" mat-cell="" class="mat-cell cdk-cell cdk-column-name mat-column-name ng-star-inserted">Donald</td>
+                            
+                        </tr>
+                        <tr _ngcontent-cnd-c108="" role="row" mat-row="" class="mat-row cdk-row ng-star-inserted">
+                            <td
+                                _ngcontent-cnd-c108=""
+                                role="cell"
+                                mat-cell=""
+                                class="mat-cell cdk-cell cdk-column-score mat-column-score ng-star-inserted"
+                            >
+                                10
+                            </td>
+                            <td
+                                _ngcontent-cnd-c108=""
+                                role="cell"
+                                mat-cell=""
+                                class="mat-cell cdk-cell cdk-column-name mat-column-name ng-star-inserted"
+                            >
+                                Pepe
+                            </td>
+                            
+                        </tr>
+                        
+                    </tbody>
+                    <tfoot role="rowgroup" class="mat-table-sticky" style="display: none; bottom: 0px; z-index: 10">
+                        
+                    </tfoot>
+                </table>
+                <table _ngcontent-cnd-c108="" mat-table="" class="mat-table cdk-table mat-elevation-z2" role="table">
+                    <thead role="rowgroup">
+                        <tr _ngcontent-cnd-c108="" role="row" mat-header-row="" class="mat-header-row cdk-header-row ng-star-inserted" style="">
+                            <th
+                                _ngcontent-cnd-c108=""
+                                role="columnheader"
+                                mat-header-cell=""
+                                colspan="4"
+                                class="mat-header-cell cdk-header-cell cdk-column-LOG2990 mat-column-LOG2990 ng-star-inserted"
+                                style="text-align: center"
+                            >
+                                LOG2990
+                            </th>
+                            
+                        </tr>
+                        <tr _ngcontent-cnd-c108="" role="row" mat-header-row="" class="mat-header-row cdk-header-row ng-star-inserted" style="">
+                            <th
+                                _ngcontent-cnd-c108=""
+                                role="columnheader"
+                                mat-header-cell=""
+                                class="mat-header-cell cdk-header-cell cdk-column-score mat-column-score ng-star-inserted"
+                            >
+                                Scores
+                            </th>
+                            <th
+                                _ngcontent-cnd-c108=""
+                                role="columnheader"
+                                mat-header-cell=""
+                                class="mat-header-cell cdk-header-cell cdk-column-name mat-column-name ng-star-inserted"
+                            >
+                                Joueurs
+                            </th>
+                            
+                        </tr>
+                        
+                    </thead>
+                    <tbody role="rowgroup">
+                        <tr _ngcontent-cnd-c108="" role="row" mat-row="" class="mat-row cdk-row ng-star-inserted">
+                            <td
+                                _ngcontent-cnd-c108=""
+                                role="cell"
+                                mat-cell=""
+                                class="mat-cell cdk-cell cdk-column-score mat-column-score ng-star-inserted"
+                            >
+                                396
+                            </td>
+                            <td
+                                _ngcontent-cnd-c108=""
+                                role="cell"
+                                mat-cell=""
+                                class="mat-cell cdk-cell cdk-column-name mat-column-name ng-star-inserted"
+                            >
+                                Malo
+                            </td>
+                            
+                        </tr>
+                        <tr _ngcontent-cnd-c108="" role="row" mat-row="" class="mat-row cdk-row ng-star-inserted">
+                            <td
+                                _ngcontent-cnd-c108=""
+                                role="cell"
+                                mat-cell=""
+                                class="mat-cell cdk-cell cdk-column-score mat-column-score ng-star-inserted"
+                            >
+                                307
+                            </td>
+                            <td
+                                _ngcontent-cnd-c108=""
+                                role="cell"
+                                mat-cell=""
+                                class="mat-cell cdk-cell cdk-column-name mat-column-name ng-star-inserted"
+                            >
+                                Alex
+                            </td>
+                            
+                        </tr>
+                        <tr _ngcontent-cnd-c108="" role="row" mat-row="" class="mat-row cdk-row ng-star-inserted">
+                            <td
+                                _ngcontent-cnd-c108=""
+                                role="cell"
+                                mat-cell=""
+                                class="mat-cell cdk-cell cdk-column-score mat-column-score ng-star-inserted"
+                            >
+                                120
+                            </td>
+                            <td
+                                _ngcontent-cnd-c108=""
+                                role="cell"
+                                mat-cell=""
+                                class="mat-cell cdk-cell cdk-column-name mat-column-name ng-star-inserted"
+                            >
+                                Antonin
+                            </td>
+                            
+                        </tr>
+                        <tr _ngcontent-cnd-c108="" role="row" mat-row="" class="mat-row cdk-row ng-star-inserted">
+                            <td
+                                _ngcontent-cnd-c108=""
+                                role="cell"
+                                mat-cell=""
+                                class="mat-cell cdk-cell cdk-column-score mat-column-score ng-star-inserted"
+                            >
+                                20
+                            </td>
+                            <td
+                                _ngcontent-cnd-c108=""
+                                role="cell"
+                                mat-cell=""
+                                class="mat-cell cdk-cell cdk-column-name mat-column-name ng-star-inserted"
+                            >
+                                Monty
+                            </td>
+                        </tr>
+                        <tr _ngcontent-cnd-c108="" role="row" mat-row="" class="mat-row cdk-row ng-star-inserted">
+                            <td
+                                _ngcontent-cnd-c108=""
+                                role="cell"
+                                mat-cell=""
+                                class="mat-cell cdk-cell cdk-column-score mat-column-score ng-star-inserted"
+                            >
+                                17
+                            </td>
+                            <td
+                                _ngcontent-cnd-c108=""
+                                role="cell"
+                                mat-cell=""
+                                class="mat-cell cdk-cell cdk-column-name mat-column-name ng-star-inserted"
+                            >
+                                Python
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot role="rowgroup" class="mat-table-sticky" style="display: none; bottom: 0px; z-index: 10"></tfoot>
+                </table></div
+        ></app-best-score>
+    </mat-dialog-container>
+    <div tabindex="0" class="cdk-visually-hidden cdk-focus-trap-anchor" aria-hidden="true"></div>
+</div> -->

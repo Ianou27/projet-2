@@ -22,6 +22,7 @@ import { WaitingPlayerDialogComponent } from './components/waiting-player-dialog
 import { WaitingPlayerTwoComponent } from './components/waiting-player-two/waiting-player-two.component';
 import { JoinPageComponent } from './pages/join-page/join-page.component';
 import { FormatTimePipe } from './pipes/format-time.pipe';
+import { BestScoreComponent } from './pages/best-score/best-score.component';
 
 /**
  * Main module that is used in main.ts.
@@ -48,6 +49,7 @@ import { FormatTimePipe } from './pipes/format-time.pipe';
         WaitingPlayerDialogComponent,
         WaitingPlayerTwoComponent,
         BoardComponent,
+        BestScoreComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule, MatDialogModule],
     providers: [],
