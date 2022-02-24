@@ -140,21 +140,12 @@ export class PlacementCommand {
     }
 
     private static wordHasAdjacent(placementInformations: PlacementInformations, game: Game): boolean {
+        let tile: Tile = game.gameBoard.cases[placementInformations.column][placementInformations.row];
         let numberLettersToPlace = placementInformations.numberLetters;
-        let column = placementInformations.column;
-        let row = placementInformations.row;
-        if (placementInformations.orientation === 'h') {
-            while (numberLettersToPlace > 0) {
-                if (this.letterHasAdjacent(row, column, game)) return true;
-                numberLettersToPlace--;
-                column++;
-            }
-        } else {
-            while (numberLettersToPlace > 0) {
-                if (this.letterHasAdjacent(row, column, game)) return true;
-                numberLettersToPlace--;
-                row++;
-            }
+        while (numberLettersToPlace > 0) {
+            if (this.letterHasAdjacent(tile.positionX, tile.positionY, game)) return true;
+            numberLettersToPlace--;
+            tile = game.gameBoard.nextTile(tile, placementInformations.orientation, false);
         }
         return false;
     }
