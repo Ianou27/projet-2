@@ -36,7 +36,7 @@ describe('Game', () => {
     });
 
     it('constructor should initialize the reserve', () => {
-        const reserveInitialLength = game.reserveLetters.length;
+        const reserveInitialLength = game.reserveLetters.letters.length;
         expect(reserveInitialLength).equal(numberLetterReserveMinusPlayerLetters);
     });
 
@@ -73,69 +73,69 @@ describe('Game', () => {
     });
 
     it('method getRandomLetterReserve should return a random letter of the reserve', () => {
-        const letter = game.getRandomLetterReserve();
+        const letter = game.reserveLetters.getRandomLetterReserve();
         const letterValidationVerification = /^([A-Z]|[*])$/;
         expect(letterValidationVerification.test(letter)).equal(true);
     });
 
     it('method getRandomLetterReserve should maintain the reserve up to date', () => {
-        const reserveInitialLength = game.reserveLetters.length;
-        game.getRandomLetterReserve();
-        const reserveFinalLength = game.reserveLetters.length;
+        const reserveInitialLength = game.reserveLetters.letters.length;
+        game.reserveLetters.getRandomLetterReserve();
+        const reserveFinalLength = game.reserveLetters.letters.length;
         expect(reserveInitialLength - 1).equal(reserveFinalLength);
     });
 
     it('method getRandomLetterReserve should return an empty string if the reserve is empty', () => {
-        game.reserveLetters = [];
-        const letter = game.getRandomLetterReserve();
+        game.reserveLetters.letters = [];
+        const letter = game.reserveLetters.getRandomLetterReserve();
         expect(letter).equal('');
     });
 
     it('method tileHolderContains should return true if the letters are include in the tileHolder of the player whose turn it is', () => {
         game.player1.letters = lettersTilePlayer1;
-        const result = game.tileHolderContains('aca');
+        const result = game.playerTurn().tileHolderContains('aca');
         expect(result).equal(true);
     });
 
     it('method tileHolderContains should return true if a capital letter is enter as a parameter and a * is include in the tileHolder', () => {
         game.player1.letters = lettersTilePlayer1;
-        const result = game.tileHolderContains('A');
+        const result = game.playerTurn().tileHolderContains('A');
         expect(result).equal(true);
     });
 
     it('method tileHolderContains should return false if the letters are not include in the tileHolder of the player whose turn it is', () => {
         game.player1.letters = lettersTilePlayer1;
-        const result = game.tileHolderContains('awz');
+        const result = game.playerTurn().tileHolderContains('awz');
         expect(result).equal(false);
     });
 
     it('method verifyGameState should set gameFinished to true if the passes count is 6', () => {
-        game.passesCount = 6;
-        expect(game.gameFinished).to.equal(false);
+        game.gameState.passesCount = 6;
+        expect(game.gameState.gameFinished).to.equal(false);
         game.verifyGameState();
-        expect(game.gameFinished).to.equal(true);
+        expect(game.gameState.gameFinished).to.equal(true);
     });
 
     it('method verifyGameState should set gameFinished to true if reserve length and letters of one player equal zero and calculate points', () => {
-        game.reserveLetters = [];
+        game.reserveLetters.letters = [];
         game.player1.letters = [];
         game.player2.letters = lettersTilePlayer1;
-        expect(game.gameFinished).to.equal(false);
+        expect(game.gameState.gameFinished).to.equal(false);
         game.verifyGameState();
-        expect(game.gameFinished).to.equal(true);
+        expect(game.gameState.gameFinished).to.equal(true);
         expect(game.player1.points).to.equal(expectedPoints);
         expect(game.player2.points).to.equal(-expectedPoints);
     });
 
     it('method verifyGameState should set gameFinished to true if reserve length and letters of one player equal zero and calculate points', () => {
-        game.reserveLetters = [];
+        game.reserveLetters.letters = [];
         game.player2.letters = [];
         game.player1.letters = lettersTilePlayer1;
         game.player1.points = 0;
         game.player2.points = 0;
-        expect(game.gameFinished).to.equal(false);
+        expect(game.gameState.gameFinished).to.equal(false);
         game.verifyGameState();
-        expect(game.gameFinished).to.equal(true);
+        expect(game.gameState.gameFinished).to.equal(true);
         expect(game.player2.points).to.equal(expectedPoints);
         expect(game.player1.points).to.equal(-expectedPoints);
     });
@@ -143,9 +143,9 @@ describe('Game', () => {
     it('method verifyGameState should set the winner player1 if player1 has more points', () => {
         game.player1.points = 100;
         game.player2.points = 0;
-        game.reserveLetters = [];
+        game.reserveLetters.letters = [];
         game.player1.letters = [];
         game.verifyGameState();
-        expect(game.winner).to.equal('player1');
+        expect(game.gameState.winner).to.equal('player1');
     });
 });

@@ -45,7 +45,7 @@ describe('Exchange Command', () => {
 
     it('method validatedExchangeCommandBoard should return false if the reserve has less than 7 letters', () => {
         const commandNotValid = '!echanger aabb';
-        game.reserveLetters = ['a', 'b', 'c'];
+        game.reserveLetters.letters = ['a', 'b', 'c'];
         const validation = ExchangeCommand.validatedExchangeCommandBoard(commandNotValid.split(' '), game);
         expect(validation).to.equals(false);
     });
@@ -65,8 +65,8 @@ describe('Exchange Command', () => {
     it('method exchangeLetters should be able to change *', () => {
         const commandValid = '!echanger *';
         const lettersRemainingExpect = ['A', 'A', 'A', 'B', 'B', 'B', 'C'];
-        game.reserveLetters = ['C', 'C', 'C', 'C', 'C', 'C', 'C'];
-        ExchangeCommand.exchangeLetters(commandValid.split(' '), game);
+        game.reserveLetters.letters = ['C', 'C', 'C', 'C', 'C', 'C', 'C'];
+        game.exchangeLetters(commandValid.split(' '));
         const lettersPlayer = game.player1.lettersToStringArray();
         expect(lettersRemainingExpect).to.eql(lettersPlayer);
     });
@@ -74,17 +74,17 @@ describe('Exchange Command', () => {
     it('method exchangeLetters should be able to change an occurrence of a letter', () => {
         const commandValid = '!echanger a';
         const lettersRemainingExpect = ['D', 'A', 'A', 'B', 'B', 'B', '*'];
-        game.reserveLetters = ['D', 'D', 'D', 'D', 'D', 'D', 'D'];
-        ExchangeCommand.exchangeLetters(commandValid.split(' '), game);
+        game.reserveLetters.letters = ['D', 'D', 'D', 'D', 'D', 'D', 'D'];
+        game.exchangeLetters(commandValid.split(' '));
         const lettersPlayer = game.player1.lettersToStringArray();
         expect(lettersRemainingExpect).to.eql(lettersPlayer);
     });
 
     it('method exchangeLetters should not change the number of letters in the reserve', () => {
         const commandValid = '!echanger aab';
-        const initialNumberLetters = game.reserveLetters.length;
-        ExchangeCommand.exchangeLetters(commandValid.split(' '), game);
-        const finalNumberLetters = game.reserveLetters.length;
+        const initialNumberLetters = game.reserveLetters.letters.length;
+        game.exchangeLetters(commandValid.split(' '));
+        const finalNumberLetters = game.reserveLetters.letters.length;
         expect(initialNumberLetters).to.equal(finalNumberLetters);
     });
 });

@@ -20,7 +20,7 @@ describe('Pass Command', () => {
         const spy = sinon.spy(game, 'verifyGameState');
         expect(game.player1.getHisTurn()).to.equal(true);
         expect(game.player2.getHisTurn()).to.equal(false);
-        PassCommand.passTurn(game);
+        game.passTurn();
         expect(game.player1.getHisTurn()).to.equal(false);
         expect(game.player2.getHisTurn()).to.equal(true);
         assert(spy.called);
