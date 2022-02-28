@@ -157,7 +157,20 @@ export class ChatService {
         this.socketService.send('passer');
     }
     sendToRoom() {
-        this.socketService.send('roomMessage', this.roomMessage);
+        const command = this.roomMessage.split(' ');
+        if(command[0] === '!echanger' ){
+            this.socketService.send('echanger',command);
+        }
+        else if(command[0] === '!passer' ){
+            this.socketService.send('passer');
+        }
+        else if(command[0] === '!placer' ){
+            this.socketService.send('placer',command);
+        }
+        else if(this.roomMessage !=''){
+            this.socketService.send('roomMessage', this.roomMessage);
+        }
+        
         this.roomMessage = '';
     }
 
