@@ -17,7 +17,8 @@ export class GameManager {
     }
 
     pass(game: Game) {
-        game.passTurn();
+        if(!game.gameState.gameFinished)game.passTurn();
+        
     }
 
     exchange(command: string[], game: Game) {
