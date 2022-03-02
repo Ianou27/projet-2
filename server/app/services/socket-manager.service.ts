@@ -83,16 +83,14 @@ export class SocketManager {
                     if (room.player1 === username) {
                         player = 'player1';
                     } else if (room.player2 === username) {
-                       
                         player = 'player2';
-                        
                     }
                 });
-               
-                if (this.gameManager.messageVerification(message) === 'valide') {
-                this.identification.roomMessages[currentRoom].push({ username, message });
 
-                this.sio.to(currentRoom).emit('roomMessage', { username, message, player });
+                if (this.gameManager.messageVerification(message) === 'valide') {
+                    this.identification.roomMessages[currentRoom].push({ username, message });
+
+                    this.sio.to(currentRoom).emit('roomMessage', { username, message, player });
                 }
             });
             socket.on('updateRoom', () => {
@@ -158,7 +156,6 @@ export class SocketManager {
                         });
                         this.sio.to(currentRoom).emit('modification', game.gameBoard.cases, game.playerTurn().name);
                     }
-                   
                 }
             });
 
@@ -203,15 +200,14 @@ export class SocketManager {
             });
             socket.on('cancelCreation', () => {
                 this.roomManager.cancelCreation(socket.id, this.identification);
-                
             });
             socket.on('disconnect', (reason) => {
                 const room = this.identification.getRoom(socket.id);
-                
-                
+
                 if (room !== '') {
                     const game = this.identification.getGame(socket.id);
-                    game.surrender(this.identification.surrender(socket.id));
+                    if (game.player2 !== undefined) game.surrender(this.identification.surrender(socket.id));
+
                     socket.leave(room);
                     this.roomManager.deleteRoom(socket.id, this.identification);
                     this.sio.sockets.emit('rooms', this.identification.rooms);
@@ -219,9 +215,10 @@ export class SocketManager {
                     this.sio.to(room).emit('playerDc');
                 }
 
-                
+                this.identification.deleteUser(socket.id);
                 console.log(`Deconnexion par l'utilisateur avec id : ${socket.id}`);
                 console.log(`Raison de deconnexion : ${reason}`);
+                console.log(this.identification.users);
             });
         });
     }

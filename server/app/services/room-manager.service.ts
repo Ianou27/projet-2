@@ -10,7 +10,7 @@ export class RoomManager {
             id: socketId,
             room,
         };
-        // identification.users.push(user);
+        identification.users.push(user);
         identification.roomMessages[room] = [];
         const game = new Game();
         game.player1Join(user);
@@ -18,9 +18,9 @@ export class RoomManager {
         const roomObj = {
             player1: username,
             player2: '',
-          
         };
         identification.rooms.push(roomObj);
+        console.log(identification.users);
     }
 
     joinRoom(username: string, roomObj: Room, socketId: string, identification: IdManager, sio: io.Server): Tile[][] {
@@ -34,16 +34,16 @@ export class RoomManager {
                         id: socketId,
                         room,
                     };
-                    // identification.users.push(user);
+                    identification.users.push(user);
                     element.player2 = username;
-                    let game:Game= identification.getGame(identification.getId(roomObj.player1));
-                    game.player2Join(user,sio);
+                    let game: Game = identification.getGame(identification.getId(roomObj.player1));
+                    game.player2Join(user, sio);
 
                     tiles = [game.player1.getLetters(), game.player2.getLetters()];
-                    // element.game.timer.start(socketId, identification, sio, gameManager);
                 }
             }
         });
+        console.log(identification.users);
 
         return tiles;
     }
@@ -52,7 +52,10 @@ export class RoomManager {
         identification.rooms.forEach((element) => {
             if (username === element.player1) {
                 element.player2 = '-2';
+
                 this.deleteRoom(socketId, identification);
+                identification.deleteUser(socketId);
+                console.log(identification.users);
             }
         });
     }

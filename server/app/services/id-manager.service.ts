@@ -1,19 +1,18 @@
 import { Game } from '@app/classes/game/game';
-import { Room } from './../../../common/types';
+import { Room, User } from './../../../common/types';
 
 export class IdManager {
-
+    users: User[] = [];
 
     roomMessages = new Map<string, Room[]>();
     rooms: Room[] = [];
-    games: Game[]=[];
+    games: Game[] = [];
     getId(username: string): string {
         let id = '';
         this.games.forEach((game) => {
             if (game.player1.user.username === username) {
                 id = game.player1.user.id;
-            }
-            else if (game.player2.user.username === username) {
+            } else if (game.player2.user.username === username) {
                 id = game.player2.user.id;
             }
         });
@@ -22,17 +21,13 @@ export class IdManager {
 
     getUsername(socketId: string): string {
         let username = '';
-        this.games.forEach((game) => {
-            if (game.player1.user.id === socketId) {
-                username = game.player1.user.username;
-            }
-            else if (game.player2.user.id === socketId) {
-                username = game.player2.user.username;
+        this.users.forEach((user) => {
+            if (user.id === socketId) {
+                username = user.username;
             }
         });
         return username;
     }
-    
 
     surrender(socketId: string): string {
         let winner = '';
@@ -40,10 +35,8 @@ export class IdManager {
         this.rooms.forEach((room: Room) => {
             if (username === room.player1) {
                 winner = room.player2;
-               
             } else if (username === room.player2) {
                 winner = room.player1;
-                
             }
         });
         return winner;
@@ -62,36 +55,34 @@ export class IdManager {
     }
     getRoom(socketId: string): string {
         let room = '';
-        this.games.forEach((game) => {
-            if (game.player1.user.id === socketId) {
-                room = game.player1.user.room;
-            }
-            else if (game.player2.user.id === socketId) {
-                room = game.player2.user.room;
+        this.users.forEach((user) => {
+            if (user.id === socketId) {
+                room = user.room;
             }
         });
         return room;
     }
-    getGame(socketId: string):Game {
-        let game:Game = new Game();
-        for(let i=0; i< this.games.length;i++){
+    getGame(socketId: string): Game {
+        let game: Game = new Game();
+        for (let i = 0; i < this.games.length; i++) {
             if (this.games[i].player1.user.id === socketId) {
-                game= this.games[i];
-            }
-            else if (this.games[i].player2.user.id === socketId) {
-                game= this.games[i];
+                game = this.games[i];
+            } else if (this.games[i].player2 !== undefined) {
+                if (this.games[i].player2.user.id === socketId) {
+                    game = this.games[i];
+                }
             }
         }
-           
+
         return game;
     }
 
-    // deleteUser(socketId: string) {
-    //     this.users.forEach((element: User) => {
-    //         if (element.id === socketId) {
-    //             const index = this.users.indexOf(element);
-    //             this.users.splice(index, 1);
-    //         }
-    //     });
-    // }
+    deleteUser(socketId: string) {
+        this.users.forEach((element: User) => {
+            if (element.id === socketId) {
+                const index = this.users.indexOf(element);
+                this.users.splice(index, 1);
+            }
+        });
+    }
 }
