@@ -7,6 +7,7 @@ import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
 import { Game } from './../classes/game/game';
 import { PlacementCommand } from './../classes/placementCommand/placement-command';
+import { Player } from './../classes/player/player';
 import { GameManager } from './game-manager.service';
 
 describe('Game Manager', () => {
@@ -18,6 +19,8 @@ describe('Game Manager', () => {
     let lettersTilePlayer1: Tile[] = [];
     beforeEach(() => {
         game = new Game();
+        game.player1 = new Player(game.reserveLetters.randomLettersInitialization(), true, 'player1', { username: 'a', id: '1', room: 'room1' });
+        game.player2 = new Player(game.reserveLetters.randomLettersInitialization(), true, 'player2', { username: 'b', id: '2', room: 'room1' });
         const lettersPlayer1 = ['A', 'L', 'L', '', 'E', 'E', 'V'];
         for (const letter of lettersPlayer1) {
             const tile1: Tile = new Tile(CaseProperty.Normal, 0, 0);
