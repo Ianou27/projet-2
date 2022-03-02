@@ -1,12 +1,13 @@
+import { LetterScore } from './../../../common/assets/reserve-letters';
 import { MAXIMUM_CHARACTERS_MESSAGE } from './../../../common/constants/general-constants';
 import { ExchangeCommand } from './../classes/exchangeCommand/exchange-command';
 import { Game } from './../classes/game/game';
 import { PassCommand } from './../classes/passCommand/pass-command';
 import { PlacementCommand } from './../classes/placementCommand/placement-command';
+import { ReserveCommand } from './../classes/reserveCommand/reserve-command';
 
 export class GameManager {
     private commandsList: string[] = ['!placer', '!echanger', '!passer', '!indice'];
-    
     placeWord(command: string[], game: Game): string {
         let message = 'placer';
         if (!PlacementCommand.placeWord(command, game)) {
@@ -14,6 +15,14 @@ export class GameManager {
         }
 
         return message;
+    }
+
+    reserveCommandValid(command: string[]): boolean {
+        return ReserveCommand.verifyFormat(command);
+    }
+
+    reserve(game: Game): LetterScore {
+        return ReserveCommand.reserve(game.reserveLetters.letters);
     }
 
     pass(game: Game) {

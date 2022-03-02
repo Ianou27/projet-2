@@ -83,16 +83,14 @@ export class SocketManager {
                     if (room.player1 === username) {
                         player = 'player1';
                     } else if (room.player2 === username) {
-                       
                         player = 'player2';
-                        
                     }
                 });
-               
-                if (this.gameManager.messageVerification(message) === 'valide') {
-                this.identification.roomMessages[currentRoom].push({ username, message });
 
-                this.sio.to(currentRoom).emit('roomMessage', { username, message, player });
+                if (this.gameManager.messageVerification(message) === 'valide') {
+                    this.identification.roomMessages[currentRoom].push({ username, message });
+
+                    this.sio.to(currentRoom).emit('roomMessage', { username, message, player });
                 }
             });
             socket.on('updateRoom', () => {
@@ -169,6 +167,15 @@ export class SocketManager {
                     //             game.player2.lettersToStringArray(),
                     //         player: 'server',
                     //     });
+                }
+            });
+
+            socket.on('reserve', (command: string[]) => {
+                const game = this.identification.getGame(socket.id);
+                if (this.gameManager.reserveCommandValid(command)) {
+                    this.sio.to(socket.id).emit('reserveLetters', this.gameManager.reserve(game));
+                } else {
+                    this.sio.to(socket.id).emit('reserveValidated', 'Format invalide');
                 }
             });
 

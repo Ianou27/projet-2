@@ -6,14 +6,13 @@ export class IdManager {
 
     roomMessages = new Map<string, Room[]>();
     rooms: Room[] = [];
-    games: Game[]=[];
+    games: Game[] = [];
     getId(username: string): string {
         let id = '';
         this.games.forEach((game) => {
             if (game.player1.user.username === username) {
                 id = game.player1.user.id;
-            }
-            else if (game.player2.user.username === username) {
+            } else if (game.player2.user.username === username) {
                 id = game.player2.user.id;
             }
         });
@@ -25,8 +24,7 @@ export class IdManager {
         this.games.forEach((game) => {
             if (game.player1.user.id === socketId) {
                 username = game.player1.user.username;
-            }
-            else if (game.player2.user.id === socketId) {
+            } else if (game.player2.user.id === socketId) {
                 username = game.player2.user.username;
             }
         });
@@ -81,24 +79,22 @@ export class IdManager {
         this.games.forEach((game) => {
             if (game.player1.user.id === socketId) {
                 room = game.player1.user.room;
-            }
-            else if (game.player2.user.id === socketId) {
+            } else if (game.player2.user.id === socketId) {
                 room = game.player2.user.room;
             }
         });
         return room;
     }
-    getGame(socketId: string):Game {
-        let game:Game = new Game();
-        for(let i=0; i< this.games.length;i++){
+    getGame(socketId: string): Game {
+        let game: Game = new Game();
+        for (let i = 0; i < this.games.length; i++) {
             if (this.games[i].player1.user.id === socketId) {
-                game= this.games[i];
-            }
-            else if (this.games[i].player2.user.id === socketId) {
-                game= this.games[i];
+                game = this.games[i];
+            } else if (this.games[i].player2.user.id === socketId) {
+                game = this.games[i];
             }
         }
-           
+
         return game;
     }
 
