@@ -2,7 +2,7 @@ import { Game } from '@app/classes/game/game';
 import { Room } from './../../../common/types';
 
 export class IdManager {
-    // users: User[] = [];
+
 
     roomMessages = new Map<string, Room[]>();
     rooms: Room[] = [];

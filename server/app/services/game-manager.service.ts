@@ -5,7 +5,7 @@ import { PassCommand } from './../classes/passCommand/pass-command';
 import { PlacementCommand } from './../classes/placementCommand/placement-command';
 
 export class GameManager {
-    private commandsList: string[] = ['!placer', '!echanger', '!passer', '!indice'];
+    
     
     placeWord(command: string[], game: Game): string {
         let message = 'placer';
@@ -33,15 +33,7 @@ export class GameManager {
         return PassCommand.validatedPassCommandFormat(command);
     }
 
-    commandVerification(message: string): boolean {
-        for (const command of this.commandsList) {
-            if (command === message) {
-                return true;
-            }
-        }
-        return false;
-    }
-
+   
     placeFormatValid(command: string[]) {
         return PlacementCommand.validatedPlaceCommandFormat(command);
     }

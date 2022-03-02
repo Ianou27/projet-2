@@ -36,6 +36,7 @@ export class ChatService {
     gameOver: boolean = false;
     winner: string = '';
     timer: number = 0;
+
     constructor(public socketService: SocketClientService, public boardService: BoardService, public tileHolderService: TileHolderService) {}
 
     get socketId() {
@@ -158,15 +159,21 @@ export class ChatService {
     }
     sendToRoom() {
         const command = this.roomMessage.split(' ');
-        if(command[0] === '!echanger' ){
-            this.socketService.send('echanger',command);
+        if(command[0].charAt(0)==='!'){
+                if(command[0] === '!echanger' ){
+                this.socketService.send('echanger',command);
+                }
+                else if(command[0] === '!passer' ){
+                    this.socketService.send('passer');
+                    }
+                else if(command[0] === '!placer' ){
+                this.socketService.send('placer',command);
+                }
+                else{
+                    this.roomMessages.push({ username: 'Server', message: '  Erreur de Syntaxe', player: 'server' });
+                }
         }
-        else if(command[0] === '!passer' ){
-            this.socketService.send('passer');
-        }
-        else if(command[0] === '!placer' ){
-            this.socketService.send('placer',command);
-        }
+       
         else if(this.roomMessage !=''){
             this.socketService.send('roomMessage', this.roomMessage);
         }
@@ -188,4 +195,6 @@ export class ChatService {
         this.socketService.socket.emit('cancelCreation');
         this.updateRooms();
     }
+
+
 }
