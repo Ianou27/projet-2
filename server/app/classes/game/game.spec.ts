@@ -4,6 +4,7 @@ import { letterValue } from '@common/assets/reserve-letters';
 import { Tile } from '@common/tile/Tile';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
+import { Player } from './../player/player';
 import { Game } from './game';
 
 describe('Game', () => {
@@ -24,6 +25,8 @@ describe('Game', () => {
 
     beforeEach(() => {
         game = new Game();
+        game.player1Join({ username: 'rt', id: '1', room: 'room1' }, '60');
+        game.player2 = new Player(game.reserveLetters.randomLettersInitialization(), true, 'player2', { username: 'rta', id: '2', room: 'room1' });
     });
 
     it('constructor should construct a game with two players named player1 and player2', () => {

@@ -3,6 +3,7 @@ import { letterValue } from '@common/assets/reserve-letters';
 import { Tile } from '@common/tile/Tile';
 import { expect } from 'chai';
 import { Game } from './../game/game';
+import { Player } from './../player/player';
 import { ExchangeCommand } from './exchange-command';
 
 describe('Exchange Command', () => {
@@ -12,6 +13,8 @@ describe('Exchange Command', () => {
 
     beforeEach(() => {
         game = new Game();
+        game.player1 = new Player(game.reserveLetters.randomLettersInitialization(), true, 'player1', { username: 'rt', id: '1', room: 'room1' });
+        game.player2 = new Player(game.reserveLetters.randomLettersInitialization(), true, 'player2', { username: 'aa', id: '2', room: 'room1' });
         for (const letter of letters) {
             const tile1: Tile = new Tile(CaseProperty.Normal, 0, 0);
             tile1.letter = letter;

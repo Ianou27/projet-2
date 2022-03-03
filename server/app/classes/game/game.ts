@@ -69,6 +69,12 @@ export class Game {
         }
     }
 
+    surrender(winner: string) {
+        this.gameState.gameFinished = true;
+        this.timer.stop();
+        this.sio.to(this.roomName).emit('endGame', winner);
+    }
+
     playerTurnValid(playerName: string): boolean {
         return playerName === this.playerTurn().name;
     }
@@ -107,11 +113,6 @@ export class Game {
         this.endGame();
     }
 
-    surrender(winner: string) {
-        this.gameState.gameFinished = true;
-        this.timer.stop();
-        this.sio.to(this.roomName).emit('endGame', winner);
-    }
     private endGame() {
         this.gameState.gameFinished = true;
         this.timer.stop();
