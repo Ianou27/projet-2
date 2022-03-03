@@ -159,6 +159,15 @@ export class SocketManager {
                 }
             });
 
+            socket.on('reserve', (command: string[]) => {
+                const game = this.identification.getGame(socket.id);
+                if (this.gameManager.reserveCommandValid(command)) {
+                    this.sio.to(socket.id).emit('reserveLetters', this.gameManager.reserve(game));
+                } else {
+                    this.sio.to(socket.id).emit('reserveValidated', 'Format invalide');
+                }
+            });
+
             socket.on('echanger', (command: string[]) => {
                 const game = this.identification.getGame(socket.id);
                 if (!game.playerTurnValid(this.identification.getPlayer(socket.id))) {

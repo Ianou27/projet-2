@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { LetterScore } from './../../../../common/assets/reserve-letters';
 import { Tile } from './../../../../common/tile/Tile';
 import { InfoToJoin, Message, Room } from './../../../../common/types';
 import { INITIAL_NUMBER_LETTERS_RESERVE, NUMBER_LETTER_TILEHOLDER } from './../constants/general-constants';
@@ -72,6 +73,15 @@ export class ChatService {
             } else {
                 this.player1Turn = '';
                 this.player2Turn = 'tour';
+            }
+        });
+
+        this.socketService.on('reserveLetters', (reserve: LetterScore) => {
+            for (const letter in reserve) {
+                if (Object.prototype.hasOwnProperty.call(reserve, letter)) {
+                    const value = reserve[letter];
+                    this.roomMessages.push({ player: letter, username: letter, message: value.toString() });
+                }
             }
         });
         this.socketService.socket.on('updateReserve', (reserve: number, player1: number, player2: number) => {
@@ -177,7 +187,7 @@ export class ChatService {
         else if(this.roomMessage !=''){
             this.socketService.send('roomMessage', this.roomMessage);
         }
-        
+
         this.roomMessage = '';
     }
 
