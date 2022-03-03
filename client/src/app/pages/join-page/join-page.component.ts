@@ -13,11 +13,24 @@ import { ChatService } from '@app/services/chat.service';
 export class JoinPageComponent implements OnInit {
     name: string;
     confirmName: string;
-    time: string;
     form: FormGroup;
     alphaNumericRegex = /^[a-zA-Z]*$/;
     selectedDico = 'Dictionnaire par defaut';
-    selectedTime = '1';
+    selectedTime = '60';
+
+    time = [
+        { value: '30', text: '0:30' },
+        { value: '60', text: '1:00' },
+        { value: '90', text: '1:30' },
+        { value: '120', text: '2:00' },
+        { value: '150', text: '2:30' },
+        { value: '180', text: '3:00' },
+        { value: '210', text: '3:30' },
+        { value: '240', text: '4:00' },
+        { value: '270', text: '4:30' },
+        { value: '300', text: '5:00' },
+    ];
+
 
     constructor(public waitDialog: MatDialog, public chatService: ChatService) {}
     ngOnInit(): void {
@@ -42,7 +55,7 @@ export class JoinPageComponent implements OnInit {
     }
 
     createRoom() {
-        this.chatService.createRoom(this.name, this.name);
+        this.chatService.createRoom(this.name, this.name,this.selectedTime);
         this.openWait();
     }
 

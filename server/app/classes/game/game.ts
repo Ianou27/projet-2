@@ -31,10 +31,11 @@ export class Game {
             winner,
         };
         this.gameState = gameState;
-        this.timer = new Timer();
+        
     }
-    player1Join(user: User){
+    player1Join(user: User,timer:string){
         this.player1 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player1',user); 
+        this.timer = new Timer(timer);
         this.roomName =user.room;
        }
     player2Join(user: User,sio:io.Server){

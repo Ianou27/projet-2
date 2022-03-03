@@ -4,7 +4,7 @@ import { Room } from '@common/types';
 import * as io from 'socket.io';
 import { IdManager } from './id-manager.service';
 export class RoomManager {
-    createRoom(username: string, room: string, socketId: string, identification: IdManager) {
+    createRoom(username: string, room: string, socketId: string, identification: IdManager, timer:string) {
         const user = {
             username,
             id: socketId,
@@ -13,7 +13,7 @@ export class RoomManager {
         identification.users.push(user);
         identification.roomMessages[room] = [];
         const game = new Game();
-        game.player1Join(user);
+        game.player1Join(user,timer);
         identification.games.push(game);
         const roomObj = {
             player1: username,

@@ -6,7 +6,7 @@
         matTooltip="Retourner à la page d'accueil"
         matTooltipPosition="right"
         id="tooltip"
-        href="../main-page/main-page.component.html"
+        href="/home"
         (click)="goHome()"
     >
         <mat-icon style="transform: rotate(180deg)">exit_to_app</mat-icon>
@@ -37,10 +37,14 @@
                         </mat-card-content>
                         <h2>Minuterie</h2>
                         <mat-form-field class="center">
-                            <mat-select [(value)]="selectedTime" placeholder="Temps">
-                                <mat-option value="1">1</mat-option>
+                            <mat-select [(value)]="selectedTime" placeholder="Temps (minutes)">
+                                <mat-option *ngFor="let timer of time" [value]="timer.value">
+                                    {{ timer.text }}
+                                </mat-option>
                             </mat-select>
                         </mat-form-field>
+
+                        <p>Selected Value: {{ selectedTime }}</p>
                         <h2>Dictionnaire:</h2>
                         <mat-form-field class="center">
                             <mat-select [(value)]="selectedDico" placeholder="Choisir un dictionnaire">
@@ -82,10 +86,13 @@
                         </mat-card-content>
                         <h2>Minuterie</h2>
                         <mat-form-field>
-                            <mat-select [(value)]="selectedTime" placeholder="Temps">
-                                <mat-option value="1">1</mat-option>
+                            <mat-select [(value)]="selectedTime" placeholder="Temps (minutes)">
+                                <mat-option *ngFor="let timer of time" [value]="timer.value">
+                                    {{ timer.text }}
+                                </mat-option>
                             </mat-select>
                         </mat-form-field>
+                        <p>Selected Value: {{ selectedTime }}</p>
                         <h2>Dictionnaire:</h2>
                         <mat-form-field>
                             <mat-select [(value)]="selectedDico" placeholder="Choisir un dictionnaire">
@@ -122,7 +129,7 @@
                             </mat-expansion-panel-header>
                             <h3>Détails de la salle:</h3>
                             <p>Nom de l'adversaire: {{ room.player1 }}</p>
-                            <p>Durée des tours: 1 minute</p>
+                            <p>Durée des tours: {{ +selectedTime | formatTime }} minute</p>
                             <p>Mode de jeu: classique</p>
                             <p>Dictionnaire: classique</p>
 
