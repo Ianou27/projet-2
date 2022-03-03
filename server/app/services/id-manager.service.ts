@@ -1,5 +1,5 @@
-import { Game } from '@app/classes/game/game';
 import { Room, User } from './../../../common/types';
+import { Game } from './../classes/game/game';
 
 export class IdManager {
     users: User[] = [];

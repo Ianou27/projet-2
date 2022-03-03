@@ -9,8 +9,8 @@ describe('Pass Command', () => {
 
     beforeEach(() => {
         game = new Game();
-        game.player2 = new Player(game.reserveLetters.randomLettersInitialization(), true, 'player1', { username: 'rt', id: '1', room: 'room1' });
-        game.player2 = new Player(game.reserveLetters.randomLettersInitialization(), true, 'player2', { username: 'rta', id: '2', room: 'room1' });
+        game.player1 = new Player(game.reserveLetters.randomLettersInitialization(), true, 'player1', { username: 'rt', id: '1', room: 'room1' });
+        game.player2 = new Player(game.reserveLetters.randomLettersInitialization(), false, 'player2', { username: 'rta', id: '2', room: 'room1' });
     });
 
     it('method validatedPassCommandFormat should return false if it is not one term', () => {
