@@ -11,7 +11,6 @@ cache:
     only:
         refs:
             - master
-            - devloppement
             - merge_requests
         changes:
             - client/**/*
@@ -25,7 +24,6 @@ cache:
     only:
         refs:
             - master
-            - devloppement
             - merge_requests
         changes:
             - server/**/*
@@ -187,5 +185,5 @@ deploy:server:
 
 
                 # Launch the server in background and append output to /var/log/messages for CloudWatch
-                PORT=${SERVER_PORT} forever start -a -l /var/log/messages out/index.js
+                PORT=${SERVER_PORT} forever start -a -l /var/log/messages out/server/app/index.js
             "
