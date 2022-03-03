@@ -1,11 +1,16 @@
 import  * as io from 'socket.io';
-import { NO_TIME_LEFT, ONE_SECOND_MS, SECONDS_IN_MINUTE } from './../../../common/constants/general-constants';
+import { NO_TIME_LEFT, ONE_SECOND_MS} from './../../../common/constants/general-constants';
 
 import { Game } from './../classes/game/game';
 
 export class Timer {
-    timeLeft: number = SECONDS_IN_MINUTE;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    timeLeft: number ;
+    timerMax: number;
+    constructor(maxTime: string){
+        this.timerMax = +maxTime;
+        this.timeLeft = +maxTime;
+        
+    }
     start(game: Game,sio:io.Server) {
         
         setInterval(() => {
@@ -21,13 +26,16 @@ export class Timer {
                     player: 'server',
                 });
                 sio.to(game.player1.user.room).emit('modification', game.gameBoard.cases, game.playerTurn().name);
-                this.timeLeft = SECONDS_IN_MINUTE;
+                this.timeLeft = this.timerMax;
             }
         }, ONE_SECOND_MS);
     }
 
     reset() {
-        this.timeLeft = SECONDS_IN_MINUTE;
+        if(this.timeLeft !==NO_TIME_LEFT){
+            this.timeLeft = this.timerMax;
+        }
+       
     }
 
     stop() {

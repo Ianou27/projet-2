@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { LetterScore } from './../../../../common/assets/reserve-letters';
 import { Tile } from './../../../../common/tile/Tile';
 import { InfoToJoin, Message, Room } from './../../../../common/types';
 import { INITIAL_NUMBER_LETTERS_RESERVE, NUMBER_LETTER_TILEHOLDER } from './../constants/general-constants';
@@ -36,6 +37,7 @@ export class ChatService {
     gameOver: boolean = false;
     winner: string = '';
     timer: number = 0;
+
     constructor(public socketService: SocketClientService, public boardService: BoardService, public tileHolderService: TileHolderService) {}
 
     get socketId() {
@@ -71,6 +73,15 @@ export class ChatService {
             } else {
                 this.player1Turn = '';
                 this.player2Turn = 'tour';
+            }
+        });
+
+        this.socketService.on('reserveLetters', (reserve: LetterScore) => {
+            for (const letter in reserve) {
+                if (Object.prototype.hasOwnProperty.call(reserve, letter)) {
+                    const value = reserve[letter];
+                    this.roomMessages.push({ player: letter, username: letter, message: value.toString() });
+                }
             }
         });
         this.socketService.socket.on('updateReserve', (reserve: number, player1: number, player2: number) => {
@@ -144,8 +155,8 @@ export class ChatService {
         this.socketService.socket.emit('refused', this.socketWantToJoin, this.informationToJoin);
     }
 
-    createRoom(username: string, room: string) {
-        this.socketService.socket.emit('createRoom', username, room);
+    createRoom(username: string, room: string, time:string) {
+        this.socketService.socket.emit('createRoom', username, room, time);
         this.updateRooms();
     }
 
@@ -158,19 +169,25 @@ export class ChatService {
     }
     sendToRoom() {
         const command = this.roomMessage.split(' ');
-        if(command[0] === '!echanger' ){
-            this.socketService.send('echanger',command);
+        if(command[0].charAt(0)==='!'){
+                if(command[0] === '!echanger' ){
+                this.socketService.send('echanger',command);
+                }
+                else if(command[0] === '!passer' ){
+                    this.socketService.send('passer');
+                    }
+                else if(command[0] === '!placer' ){
+                this.socketService.send('placer',command);
+                }
+                else{
+                    this.roomMessages.push({ username: 'Server', message: '  Erreur de Syntaxe', player: 'server' });
+                }
         }
-        else if(command[0] === '!passer' ){
-            this.socketService.send('passer');
-        }
-        else if(command[0] === '!placer' ){
-            this.socketService.send('placer',command);
-        }
+       
         else if(this.roomMessage !=''){
             this.socketService.send('roomMessage', this.roomMessage);
         }
-        
+
         this.roomMessage = '';
     }
 
@@ -188,4 +205,6 @@ export class ChatService {
         this.socketService.socket.emit('cancelCreation');
         this.updateRooms();
     }
+
+
 }

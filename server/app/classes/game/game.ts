@@ -13,8 +13,13 @@ export class Game {
     reserveLetters: ReserveLetters;
     timer: Timer;
     gameState: GameState;
+<<<<<<< HEAD
 
     sio: io.Server;
+=======
+    roomName:string;
+    sio:io.Server;
+>>>>>>> c0286179cdbf39924e8bd61b5605830be6cd7ed0
 
     constructor() {
         this.reserveLetters = new ReserveLetters();
@@ -31,14 +36,25 @@ export class Game {
             winner,
         };
         this.gameState = gameState;
-        this.timer = new Timer();
+        
     }
+<<<<<<< HEAD
     player1Join(user: User) {
         this.player1 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player1', user);
     }
     player2Join(user: User, sio: io.Server) {
         this.player2 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player2', user);
         this.sio = sio;
+=======
+    player1Join(user: User,timer:string){
+        this.player1 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player1',user); 
+        this.timer = new Timer(timer);
+        this.roomName =user.room;
+       }
+    player2Join(user: User,sio:io.Server){
+        this.player2 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player2',user);
+        this.sio =sio;
+>>>>>>> c0286179cdbf39924e8bd61b5605830be6cd7ed0
         this.startGame();
     }
     verifyGameState() {
@@ -90,15 +106,36 @@ export class Game {
     }
 
     private setWinner() {
-        if (this.player1.points > this.player2.points) this.gameState.winner = this.player1.name;
-        else if (this.player1.points < this.player2.points) this.gameState.winner = this.player2.name;
+        
+        if (this.player1.points > this.player2.points) this.gameState.winner = this.player1.user.username;
+        else if (this.player1.points < this.player2.points) this.gameState.winner = this.player2.user.username;
         else {
             this.gameState.winner = 'tie';
         }
+        
+        this.sio.to(this.roomName).emit('endGame', this.gameState.winner);
+                        this.sio.to(this.roomName).emit('roomMessage', {
+                            username: 'Server',
+                            message:
+                                'lettre joueuer 1 =>' +
+                                this.player1.lettersToStringArray() +
+                                ' \n lettre joueuer 2 ' +
+                                this.player2.lettersToStringArray(),
+                            player: 'server',
+                        });
+                        
+       this.endGame() ;                   
     }
 
+
+    public surrender(winner:string){
+        this.gameState.gameFinished = true;
+        this.timer.stop();
+        this.sio.to(this.roomName).emit('endGame', winner);
+    }
     private endGame() {
         this.gameState.gameFinished = true;
+        this.timer.stop();
         if (this.player1.getNumberLetters() === 0) {
             for (const letter of this.player2.getLetters()) {
                 this.player1.points += letter.value;
@@ -110,5 +147,6 @@ export class Game {
                 this.player1.points -= letter.value;
             }
         }
+        
     }
 }
