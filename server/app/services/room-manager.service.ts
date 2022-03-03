@@ -1,10 +1,10 @@
-import { Game } from '@app/classes/game/game';
 import { Tile } from '@common/tile/Tile';
 import { Room } from '@common/types';
 import * as io from 'socket.io';
+import { Game } from './../classes/game/game';
 import { IdManager } from './id-manager.service';
 export class RoomManager {
-    createRoom(username: string, room: string, socketId: string, identification: IdManager, timer:string) {
+    createRoom(username: string, room: string, socketId: string, identification: IdManager, timer: string) {
         const user = {
             username,
             id: socketId,
@@ -13,7 +13,7 @@ export class RoomManager {
         identification.users.push(user);
         identification.roomMessages[room] = [];
         const game = new Game();
-        game.player1Join(user,timer);
+        game.player1Join(user, timer);
         identification.games.push(game);
         const roomObj = {
             player1: username,
@@ -36,7 +36,7 @@ export class RoomManager {
                     };
                     identification.users.push(user);
                     element.player2 = username;
-                    let game: Game = identification.getGame(identification.getId(roomObj.player1));
+                    const game: Game = identification.getGame(identification.getId(roomObj.player1));
                     game.player2Join(user, sio);
 
                     tiles = [game.player1.getLetters(), game.player2.getLetters()];

@@ -22,7 +22,7 @@ export class SocketManager {
     handleSockets(): void {
         this.sio.on('connection', (socket) => {
             console.log(`Connexion par l'utilisateur avec id : ${socket.id}`);
-            socket.on('createRoom', (username: string, room: string, timer:string) => {
+            socket.on('createRoom', (username: string, room: string, timer: string) => {
                 this.roomManager.createRoom(username, room, socket.id, this.identification, timer);
                 socket.join(room);
             });
