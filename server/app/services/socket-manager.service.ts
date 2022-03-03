@@ -156,17 +156,6 @@ export class SocketManager {
                         });
                         this.sio.to(currentRoom).emit('modification', game.gameBoard.cases, game.playerTurn().name);
                     }
-                    // } else {
-                    //     this.sio.to(currentRoom).emit('endGame', this.identification.getWinner(username, game.gameState.winner));
-                    //     this.sio.to(currentRoom).emit('roomMessage', {
-                    //         username: 'Server',
-                    //         message:
-                    //             'lettre joueuer 1 =>' +
-                    //             game.player1.lettersToStringArray() +
-                    //             ' \n lettre joueuer 2 ' +
-                    //             game.player2.lettersToStringArray(),
-                    //         player: 'server',
-                    //     });
                 }
             });
 
@@ -220,12 +209,14 @@ export class SocketManager {
             });
             socket.on('cancelCreation', () => {
                 this.roomManager.cancelCreation(socket.id, this.identification);
-                // this.identification.deleteUser(socket.id);
             });
             socket.on('disconnect', (reason) => {
                 const room = this.identification.getRoom(socket.id);
-                // this.sio.to(room).emit('endGame', this.identification.surrender(socket.id));
+
                 if (room !== '') {
+                    const game = this.identification.getGame(socket.id);
+                    if (game.player2 !== undefined) game.surrender(this.identification.surrender(socket.id));
+
                     socket.leave(room);
                     this.roomManager.deleteRoom(socket.id, this.identification);
                     this.sio.sockets.emit('rooms', this.identification.rooms);
@@ -233,9 +224,10 @@ export class SocketManager {
                     this.sio.to(room).emit('playerDc');
                 }
 
-                // this.identification.deleteUser(socket.id);
+                this.identification.deleteUser(socket.id);
                 console.log(`Deconnexion par l'utilisateur avec id : ${socket.id}`);
                 console.log(`Raison de deconnexion : ${reason}`);
+                console.log(this.identification.users);
             });
         });
     }

@@ -27,7 +27,10 @@ export class Timer {
     }
 
     reset() {
-        this.timeLeft = SECONDS_IN_MINUTE;
+        if(this.timeLeft !==NO_TIME_LEFT){
+            this.timeLeft = SECONDS_IN_MINUTE;
+        }
+       
     }
 
     stop() {
