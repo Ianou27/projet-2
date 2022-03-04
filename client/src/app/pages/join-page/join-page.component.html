@@ -13,7 +13,7 @@
     </a>
     <mat-tab-group mat-stretch-tabs>
         <mat-tab label="Partie solo (Prochainement)">
-            <div mat-dialog-content [formGroup]="form" class="dialog">
+            <mat-dialog-content [formGroup]="form" class="dialog">
                 <div>
                     <form [formGroup]="form">
                         <mat-card-content>
@@ -67,10 +67,10 @@
                         </button>
                     </div>
                 </div>
-            </div>
+            </mat-dialog-content>
         </mat-tab>
         <mat-tab label="Créer une partie multijoueur">
-            <div mat-dialog-content [formGroup]="form" class="dialog">
+            <mat-dialog-content [formGroup]="form" class="dialog">
                 <div>
                     <form [formGroup]="form">
                         <mat-card-content>
@@ -107,7 +107,7 @@
                         </button>
                     </div>
                 </div>
-            </div>
+            </mat-dialog-content>
         </mat-tab>
         <mat-tab label="Joindre une partie">
             <mat-toolbar>

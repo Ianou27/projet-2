@@ -1,3 +1,4 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TileComponent } from './tile.component';
 
@@ -8,6 +9,7 @@ describe('TileComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [TileComponent],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
     });
 
