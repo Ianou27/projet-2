@@ -1,5 +1,4 @@
-import * as fs from 'fs'; 
-/* import * as fs from 'fs'; */
+import * as fs from 'fs';
 import { letterValue } from './../../../../common/assets/reserve-letters';
 import {
     CENTER_ROW_COLUMN,
@@ -54,7 +53,10 @@ export class PlacementCommand {
 
         let letterPositions: Tile[] = [];
         letterPositions = PlacementCommand.place(placementInformations, game);
-        if (!this.newWordsValid(commandInformations, game, letterPositions)) {
+        /*         const virtualPlayer = new VirtualPlayer();
+        console.log(virtualPlayer.exchangeLettersCommand(game)); */
+        const placementScore = this.newWordsValid(commandInformations, game, letterPositions);
+        if (placementScore === 0) {
             this.restoreBoard(game, letterPositions);
             return false;
         } else {
@@ -63,6 +65,7 @@ export class PlacementCommand {
                 game.playerTurn().changeLetter('', game.reserveLetters.getRandomLetterReserve());
                 lettersToPlace--;
             }
+            game.playerTurn().points += placementScore;
             game.gameState.firstTurn = false;
             game.changeTurnTwoPlayers();
             game.gameState.passesCount = 0;
@@ -225,10 +228,10 @@ export class PlacementCommand {
         return wordsFormed;
     }
 
-    static newWordsValid(commandInformations: string[], game: Game, letterPositions: Tile[]): boolean {
+    static newWordsValid(commandInformations: string[], game: Game, letterPositions: Tile[]): number {
         const placementInformations = this.separatePlaceCommandInformations(commandInformations);
         let wordsFormed: Tile[][] = [];
-        if (placementInformations.numberLetters === 1 && game.gameState.firstTurn) return false;
+        if (placementInformations.numberLetters === 1 && game.gameState.firstTurn) return 0;
         wordsFormed = this.findNewWords(game, placementInformations, letterPositions);
         wordsFormed = wordsFormed.filter((item) => {
             return item.length > 1;
@@ -238,10 +241,10 @@ export class PlacementCommand {
             for (const wordLetter of word) {
                 wordString = wordString.concat(wordLetter.letter);
             }
-            if (!this.validatedWordDictionary(wordString)) return false;
+            if (!this.validatedWordDictionary(wordString)) return 0;
         }
-        game.playerTurn().points += PointsCalculator.calculatedPointsPlacement(wordsFormed, letterPositions);
-        return true;
+
+        return PointsCalculator.calculatedPointsPlacement(wordsFormed, letterPositions);
     }
 
     static validatedWordDictionary(word: string): boolean {

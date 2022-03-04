@@ -1,13 +1,13 @@
 import { INDEX_OF_NOT_FOUND } from '@common/constants/general-constants';
+import { Game } from './../game/game';
 import { PlacementCommand } from './../placementCommand/placement-command';
-import { Player } from './../player/player';
 
 export class VirtualPlayer {
     words: string[] = [];
 
-    findAllWords(player: Player) {
+    findAllWords(letters: string[], letterOnBoard: string) {
         let validWords: string[] = [];
-        let combinations = this.getCombinations(player.lettersToStringArray().map((letter) => letter.toLowerCase())).filter((item) => {
+        let combinations = this.getCombinations(letters.map((letter) => letter.toLowerCase())).filter((item) => {
             return item.length < 7;
         });
         const middleIndex = Math.ceil(combinations.length);
@@ -16,6 +16,9 @@ export class VirtualPlayer {
             this.heapsPermute(combination.split(''), 0);
         }
         this.words = [...new Set(this.words)];
+        this.words = this.words.filter((item) => {
+            return item.includes(letterOnBoard);
+        });
         for (const word of this.words) {
             if (PlacementCommand.validatedWordDictionary(word)) {
                 validWords = validWords.concat(word);
@@ -25,6 +28,18 @@ export class VirtualPlayer {
             }
         }
         return validWords;
+    }
+
+    actionVirtualBeginnerPlayer(game: Game): string[] {
+        const probability = Math.floor(Math.random() * 100);
+        if (probability <= 10) {
+            game.changeTurnTwoPlayers();
+        } else if (probability <= 20) {
+            return this.exchangeLettersCommand(game);
+        } else {
+            /*             return this.placeWord(); */
+        }
+        return [];
     }
 
     heapsPermute(array: string[], n: number) {
@@ -67,7 +82,22 @@ export class VirtualPlayer {
     }
 
     getRandomLetterForBlank(): string {
-        const randomLetters = ['A', 'E', 'I', 'L', 'O', 'N'];
+        const randomLetters = ['A', 'E', 'I', 'L', 'O', 'N', 'T', 'S'];
         return randomLetters[Math.floor(Math.random() * randomLetters.length)];
+    }
+
+    exchangeLettersCommand(game: Game): string[] {
+        if (game.reserveLetters.letters.length === 0) {
+            game.changeTurnTwoPlayers();
+            return [];
+        }
+        const virtualPlayerLetters = game.playerTurn().lettersToStringArray();
+        let command = '!echanger ';
+
+        const letters = virtualPlayerLetters
+            .sort(() => Math.random() - Math.random())
+            .splice(0, Math.floor(Math.random() * virtualPlayerLetters.length));
+        command = command.concat(letters.join('')).toLowerCase();
+        return command.split(' ');
     }
 }
