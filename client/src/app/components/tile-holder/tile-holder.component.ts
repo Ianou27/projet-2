@@ -1,5 +1,9 @@
 import { Component, HostListener } from '@angular/core';
 import { TileHolderService } from '@app/services/tile-holder/tile-holder.service';
+// import { CaseProperty } from './../../../../../common/assets/case-property';
+// import { letterValue } from './../../../../../common/assets/reserve-letters';
+import { NUMBER_TILEHOLDER } from './../../../../../common/constants/general-constants';
+// import { Tile } from './../../../../../common/tile/Tile';
 
 @Component({
     selector: 'app-tile-holder',
@@ -11,6 +15,7 @@ export class TileHolderComponent {
     scrollDirection = 0;
     count = 0;
     lastKeys: string[] = [];
+    lettersToExchange: string[] = [];
     showButtonsBool: boolean = false;
     constructor(public tileHolderService: TileHolderService) {}
 
@@ -65,12 +70,15 @@ export class TileHolderComponent {
         event.preventDefault();
         const current = event.currentTarget as HTMLElement;
         this.clearSelectedId(current);
-        if (current.id === '') {
+        if (current.id === '' && current.children[0].children[0].textContent) {
             current.id = 'swap-reserve';
             current.children[0].classList.replace('tile', 'selected-reserve');
-        } else if (current.id === 'swap-reserve') {
+            this.lettersToExchange.push(current.children[0].children[0].textContent);
+        } else if (current.id === 'swap-reserve' && current.children[0].children[0].textContent) {
             current.id = '';
             current.children[0].classList.replace('selected-reserve', 'tile');
+            const index = this.lettersToExchange.indexOf(current.children[0].children[0].textContent);
+            this.lettersToExchange.splice(index, 1);
         }
         this.showButtonsBool = this.checkForID();
     }
@@ -84,7 +92,13 @@ export class TileHolderComponent {
             }
         }
         this.showButtonsBool = false;
+        this.emptyArray();
     }
+
+    /* exchange() {
+        let command = ['!echanger'];
+        const letters = this.lettersToExchange.join(',');
+    } */
 
     private checkForID() {
         const parent = document.getElementById('tile-holder');
@@ -107,6 +121,7 @@ export class TileHolderComponent {
             }
         }
         this.showButtonsBool = this.checkForID();
+        this.emptyArray();
     }
 
     private clearSelectedId(current: HTMLElement) {
@@ -223,5 +238,11 @@ export class TileHolderComponent {
             this.lastKeys.shift();
         }
         return this.lastKeys[0];
+    }
+
+    private emptyArray() {
+        for (let i = 0; i < NUMBER_TILEHOLDER; i++) {
+            this.lettersToExchange.pop();
+        }
     }
 }
