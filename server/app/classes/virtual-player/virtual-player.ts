@@ -22,7 +22,7 @@ export class VirtualPlayer {
         for (const combination of combinations) {
             words = this.heapsPermute(combination.split(''), 0, words);
         }
-        words = words.filter((item) => {
+        words = [...new Set(words)].filter((item) => {
             return item.includes(letterOnBoard.toLowerCase());
         });
 
