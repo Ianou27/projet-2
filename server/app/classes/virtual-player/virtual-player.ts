@@ -1,29 +1,36 @@
-import { INDEX_OF_NOT_FOUND } from '@common/constants/general-constants';
+import { INDEX_OF_NOT_FOUND, MAXIMUM_ROW_COLUMN } from '@common/constants/general-constants';
+import { Tile } from '@common/tile/Tile';
 import { Game } from './../game/game';
 import { PlacementCommand } from './../placementCommand/placement-command';
 
-export class VirtualPlayer {
-    words: string[] = [];
+interface TilePlacementPossible {
+    tile: Tile;
+    orientation: string;
+}
 
-    findAllWords(letters: string[], letterOnBoard: string) {
+export class VirtualPlayer {
+    findAllWords(letters: string[], letterOnBoard: string): string[] {
         let validWords: string[] = [];
+        let words: string[] = [];
         let combinations = this.getCombinations(letters.map((letter) => letter.toLowerCase())).filter((item) => {
             return item.length < 7;
         });
+
         const middleIndex = Math.ceil(combinations.length);
         combinations = combinations.splice(-middleIndex);
+
         for (const combination of combinations) {
-            this.heapsPermute(combination.split(''), 0);
+            words = this.heapsPermute(combination.split(''), 0, words);
         }
-        this.words = [...new Set(this.words)];
-        this.words = this.words.filter((item) => {
-            return item.includes(letterOnBoard);
+        words = words.filter((item) => {
+            return item.includes(letterOnBoard.toLowerCase());
         });
-        for (const word of this.words) {
+
+        for (const word of words) {
             if (PlacementCommand.validatedWordDictionary(word)) {
                 validWords = validWords.concat(word);
             }
-            if (validWords.length >= 20) {
+            if (validWords.length >= 10) {
                 break;
             }
         }
@@ -37,19 +44,19 @@ export class VirtualPlayer {
         } else if (probability <= 20) {
             return this.exchangeLettersCommand(game);
         } else {
-            /*             return this.placeWord(); */
+            return this.findPlacementWord(game);
         }
         return [];
     }
 
-    heapsPermute(array: string[], n: number) {
+    heapsPermute(array: string[], n: number, words: string[]): string[] {
         n = n || array.length;
         let j = 0;
         if (n === 1) {
-            this.words.push(array.join(''));
+            words.push(array.join(''));
         } else {
             for (let i = 1; i <= n; i += 1) {
-                this.heapsPermute(array, n - 1);
+                this.heapsPermute(array, n - 1, words);
                 if (n % 2) {
                     j = 1;
                 } else {
@@ -58,6 +65,51 @@ export class VirtualPlayer {
                 this.swap(array, j - 1, n - 1);
             }
         }
+        return words;
+    }
+
+    findPlacementWord(game: Game): string[] {
+        const playerLetters = game.playerTurn().lettersToStringArray();
+        const placementPossible = this.findAllPositionGameBoard(game);
+        let words: string[] = [];
+        for (const placement of placementPossible) {
+            const letters = playerLetters.concat(placement.tile.letter);
+            words = words.concat(this.findAllWords(letters, placement.tile.letter));
+        }
+        return words;
+    }
+
+    findAllPositionGameBoard(game: Game): TilePlacementPossible[] {
+        const gameBoard = game.gameBoard;
+        const tiles: TilePlacementPossible[] = [];
+        for (let i = 0; i < MAXIMUM_ROW_COLUMN; i++) {
+            for (let j = 0; j < MAXIMUM_ROW_COLUMN; j++) {
+                let orientation = '';
+                if (gameBoard.tileContainsLetter(i, j)) {
+                    if (
+                        gameBoard.nextTile(gameBoard.cases[i][j], 'h', false).letter === '' &&
+                        gameBoard.nextTile(gameBoard.cases[i][j], 'h', true).letter === ''
+                    ) {
+                        orientation = 'h';
+                    }
+                    if (
+                        gameBoard.nextTile(gameBoard.cases[i][j], 'v', false).letter === '' &&
+                        gameBoard.nextTile(gameBoard.cases[i][j], 'v', true).letter === ''
+                    ) {
+                        orientation = 'v';
+                    }
+
+                    if (orientation !== '') {
+                        const tilePlacement: TilePlacementPossible = {
+                            tile: gameBoard.cases[i][j],
+                            orientation,
+                        };
+                        tiles.push(tilePlacement);
+                    }
+                }
+            }
+        }
+        return tiles;
     }
 
     swap(array: string[], pos1: number, pos2: number) {

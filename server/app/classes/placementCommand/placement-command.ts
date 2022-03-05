@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import { VirtualPlayer } from '../virtual-player/virtual-player';
 import { letterValue } from './../../../../common/assets/reserve-letters';
 import {
     CENTER_ROW_COLUMN,
@@ -52,9 +53,17 @@ export class PlacementCommand {
         const placementInformations = this.separatePlaceCommandInformations(commandInformations);
 
         let letterPositions: Tile[] = [];
+        const virtualPlayer = new VirtualPlayer();
+        console.log(virtualPlayer.findPlacementWord(game));
         letterPositions = PlacementCommand.place(placementInformations, game);
-        /*         const virtualPlayer = new VirtualPlayer();
-        console.log(virtualPlayer.exchangeLettersCommand(game)); */
+
+        /* console.log(virtualPlayer.findAllPositionGameBoard(game)); */
+        /*         
+        console.log('-------------------------------------------');
+        console.log(virtualPlayer.findAllWords(game.playerTurn().lettersToStringArray(), ''));
+        console.log('-------------------------------------------');
+        console.log(virtualPlayer.findPlacementWord(game));
+        console.log('-------------------------------------------'); */
         const placementScore = this.newWordsValid(commandInformations, game, letterPositions);
         if (placementScore === 0) {
             this.restoreBoard(game, letterPositions);
