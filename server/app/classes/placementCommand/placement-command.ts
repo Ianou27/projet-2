@@ -51,19 +51,8 @@ export class PlacementCommand {
 
     static placeWord(commandInformations: string[], game: Game): boolean {
         const placementInformations = this.separatePlaceCommandInformations(commandInformations);
-
         let letterPositions: Tile[] = [];
-        const virtualPlayer = new VirtualPlayer();
-        console.log(virtualPlayer.findPlacementCommands(game));
         letterPositions = PlacementCommand.place(placementInformations, game);
-
-        /* console.log(virtualPlayer.findAllPositionGameBoard(game)); */
-        /*         
-        console.log('-------------------------------------------');
-        console.log(virtualPlayer.findAllWords(game.playerTurn().lettersToStringArray(), ''));
-        console.log('-------------------------------------------');
-        console.log(virtualPlayer.findPlacementWord(game));
-        console.log('-------------------------------------------'); */
         const placementScore = this.newWordsValid(commandInformations, game, letterPositions);
         if (placementScore === 0) {
             this.restoreBoard(game, letterPositions);
@@ -79,6 +68,8 @@ export class PlacementCommand {
             game.changeTurnTwoPlayers();
             game.gameState.passesCount = 0;
             game.verifyGameState();
+            const virtualPlayer = new VirtualPlayer();
+            console.log(virtualPlayer.findAllPlacementCommands(game));
         }
         return true;
     }
@@ -240,7 +231,7 @@ export class PlacementCommand {
     static newWordsValid(commandInformations: string[], game: Game, letterPositions: Tile[]): number {
         const placementInformations = this.separatePlaceCommandInformations(commandInformations);
         let wordsFormed: Tile[][] = [];
-        if (placementInformations.numberLetters === 1 && game.gameState.firstTurn) return 0;
+        /* if (placementInformations.numberLetters === 1 && game.gameState.firstTurn) return 0; */
         wordsFormed = this.findNewWords(game, placementInformations, letterPositions);
         wordsFormed = wordsFormed.filter((item) => {
             return item.length > 1;
@@ -252,7 +243,6 @@ export class PlacementCommand {
             }
             if (!this.validatedWordDictionary(wordString)) return 0;
         }
-
         return PointsCalculator.calculatedPointsPlacement(wordsFormed, letterPositions);
     }
 

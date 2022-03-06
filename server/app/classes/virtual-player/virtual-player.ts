@@ -1,3 +1,5 @@
+import { PlacementInformations } from '@app/placement-informations';
+import { letterValue } from '@common/assets/reserve-letters';
 import { INDEX_OF_NOT_FOUND, MAXIMUM_ROW_COLUMN } from '@common/constants/general-constants';
 import { Tile } from '@common/tile/Tile';
 import { rowLetter } from './../../../assets/row';
@@ -7,6 +9,11 @@ import { PlacementCommand } from './../placementCommand/placement-command';
 interface TilePlacementPossible {
     tile: Tile;
     orientation: string;
+}
+
+interface PlacementScore {
+    score: number;
+    command: string;
 }
 
 export class VirtualPlayer {
@@ -47,7 +54,7 @@ export class VirtualPlayer {
         } else if (probability <= 20) {
             return this.exchangeLettersCommand(game);
         } else {
-            return this.findPlacementCommands(game);
+            /* return this.findAllPlacementCommands(game); */
         }
         return [];
     }
@@ -70,8 +77,9 @@ export class VirtualPlayer {
         }
         return words;
     }
-    findPlacementCommand(words: string[], placement: TilePlacementPossible, game: Game): string[] {
-        const placementsCommands: string[] = [];
+
+    findPlacementCommand(words: string[], placement: TilePlacementPossible, game: Game): PlacementScore[] {
+        const placementsCommands: PlacementScore[] = [];
         for (const word of words) {
             try {
                 let tileStart = placement.tile;
@@ -85,18 +93,49 @@ export class VirtualPlayer {
                 command = command.concat(
                     rowLetter[tileStart.positionY] + (tileStart.positionX + 1).toString() + placement.orientation + ' ' + wordWithoutLetter,
                 );
-                placementsCommands.push(command);
+                const lettersPosition = this.findLettersPosition(PlacementCommand.separatePlaceCommandInformations(command.split(' ')), game);
+                const score = PlacementCommand.newWordsValid(command.split(' '), game, lettersPosition);
+                if (score > 0) {
+                    const placementScore: PlacementScore = {
+                        score,
+                        command,
+                    };
+                    placementsCommands.push(placementScore);
+                }
             } catch {
                 continue;
             }
         }
+
         return placementsCommands;
     }
 
-    findPlacementCommands(game: Game): string[] {
+    findLettersPosition(placementInformations: PlacementInformations, game: Game): Tile[] {
+        let letterCount = placementInformations.numberLetters;
+        let tile: Tile = game.gameBoard.cases[placementInformations.column][placementInformations.row];
+        let lettersIter = 0;
+        const positions: Tile[] = [];
+        while (letterCount > 0) {
+            if (game.gameBoard.tileContainsLetter(tile.positionX, tile.positionY)) {
+                tile = game.gameBoard.nextTile(tile, placementInformations.orientation, false);
+                continue;
+            }
+            const letterPlace = placementInformations.letters[lettersIter];
+            const newTile = new Tile(tile.specialProperty, tile.positionX, tile.positionY);
+            newTile.letter = letterPlace.toUpperCase();
+            newTile.value = letterValue[letterPlace.toUpperCase()];
+            positions.push(newTile);
+            tile = game.gameBoard.nextTile(tile, placementInformations.orientation, false);
+            lettersIter++;
+            letterCount--;
+        }
+        return positions;
+    }
+
+    findAllPlacementCommands(game: Game): PlacementScore[] {
         const playerLetters = game.playerTurn().lettersToStringArray();
         const placementPossible = this.findAllPositionGameBoard(game);
-        let commandPlacements: string[] = [];
+        let commandPlacements: PlacementScore[] = [];
         for (const placement of placementPossible) {
             const letters = playerLetters.concat(placement.tile.letter);
             const words = this.findAllWords(letters, placement.tile.letter);
