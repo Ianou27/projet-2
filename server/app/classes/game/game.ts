@@ -90,6 +90,12 @@ export class Game {
         this.verifyGameState();
     }
 
+    surrender(winner: string) {
+        this.gameState.gameFinished = true;
+        this.timer.stop();
+        this.sio.to(this.roomName).emit('endGame', winner);
+    }
+
     private setWinner() {
         if (this.player1.points > this.player2.points) this.gameState.winner = this.player1.user.username;
         else if (this.player1.points < this.player2.points) this.gameState.winner = this.player2.user.username;
@@ -107,11 +113,6 @@ export class Game {
         this.endGame();
     }
 
-    surrender(winner: string) {
-        this.gameState.gameFinished = true;
-        this.timer.stop();
-        this.sio.to(this.roomName).emit('endGame', winner);
-    }
     private endGame() {
         this.gameState.gameFinished = true;
         this.timer.stop();

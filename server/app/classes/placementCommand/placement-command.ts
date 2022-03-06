@@ -54,7 +54,7 @@ export class PlacementCommand {
 
         let letterPositions: Tile[] = [];
         const virtualPlayer = new VirtualPlayer();
-        console.log(virtualPlayer.findPlacementWord(game));
+        console.log(virtualPlayer.findPlacementCommands(game));
         letterPositions = PlacementCommand.place(placementInformations, game);
 
         /* console.log(virtualPlayer.findAllPositionGameBoard(game)); */
