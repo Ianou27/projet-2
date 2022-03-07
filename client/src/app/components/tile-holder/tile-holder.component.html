@@ -7,5 +7,5 @@
         (contextmenu)="addExchangeId($event)"
     ></app-tile>
 </div>
-<button *ngIf="showButtonsBool" mat-button color="warn" (click)="clearExchangeId($event)">Annuler</button>
-<button *ngIf="showButtonsBool" mat-button color="primary" cdkFocusInitial>Échanger</button>
+<button *ngIf="showButtonsBool" mat-button color="warn" tabindex="0" focus (mousedown)="clearExchangeId($event)">Annuler</button>
+<button *ngIf="showButtonsBool" mat-button color="primary" tabindex="0" focus (mousedown)="exchange()" cdkFocusInitial>Échanger</button>
