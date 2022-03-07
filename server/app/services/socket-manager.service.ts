@@ -110,7 +110,6 @@ export class SocketManager {
                         if (message !== 'placer') {
                             this.sio.to(socket.id).emit('commandValidated', message);
                         } else {
-                            
                             this.sio
                                 .to(currentRoom)
                                 .emit(
@@ -183,7 +182,7 @@ export class SocketManager {
 
                     if (verification === 'valide') {
                         this.gameManager.exchange(command, game);
-                        
+
                         this.sio.to(game.player1.user.room).emit('modification', game.gameBoard.cases, game.playerTurn().name);
                         this.sio.to(socket.id).emit('roomMessage', {
                             username: 'Server',
