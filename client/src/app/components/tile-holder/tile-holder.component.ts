@@ -1,9 +1,7 @@
 import { Component, HostListener } from '@angular/core';
+import { ChatService } from '@app/services/chat.service';
 import { TileHolderService } from '@app/services/tile-holder/tile-holder.service';
-// import { CaseProperty } from './../../../../../common/assets/case-property';
-// import { letterValue } from './../../../../../common/assets/reserve-letters';
 import { NUMBER_TILEHOLDER } from './../../../../../common/constants/general-constants';
-// import { Tile } from './../../../../../common/tile/Tile';
 
 @Component({
     selector: 'app-tile-holder',
@@ -17,7 +15,7 @@ export class TileHolderComponent {
     lastKeys: string[] = [];
     lettersToExchange: string[] = [];
     showButtonsBool: boolean = false;
-    constructor(public tileHolderService: TileHolderService) {}
+    constructor(public tileHolderService: TileHolderService, private chatService: ChatService) {}
 
     @HostListener('body:keydown', ['$event'])
     buttonDetect(event: KeyboardEvent) {
@@ -53,7 +51,7 @@ export class TileHolderComponent {
             this.handleSide('Right', swapper);
         }
     }
-    @HostListener('blur', ['$event'])
+
     clickOut() {
         const tile = document.getElementsByTagName('app-tile')[225] as HTMLElement;
         this.clearAllIds(tile);
@@ -73,11 +71,11 @@ export class TileHolderComponent {
         if (current.id === '' && current.children[0].children[0].textContent) {
             current.id = 'swap-reserve';
             current.children[0].classList.replace('tile', 'selected-reserve');
-            this.lettersToExchange.push(current.children[0].children[0].textContent);
+            this.lettersToExchange.push(current.children[0].children[0].textContent.toLowerCase());
         } else if (current.id === 'swap-reserve' && current.children[0].children[0].textContent) {
             current.id = '';
             current.children[0].classList.replace('selected-reserve', 'tile');
-            const index = this.lettersToExchange.indexOf(current.children[0].children[0].textContent);
+            const index = this.lettersToExchange.indexOf(current.children[0].children[0].textContent.toLowerCase());
             this.lettersToExchange.splice(index, 1);
         }
         this.showButtonsBool = this.checkForID();
@@ -95,10 +93,15 @@ export class TileHolderComponent {
         this.emptyArray();
     }
 
-    /* exchange() {
-        let command = ['!echanger'];
-        const letters = this.lettersToExchange.join(',');
-    } */
+    exchange() {
+        let command = '!echanger ';
+        const letters = this.lettersToExchange.join('');
+        command += letters;
+        this.chatService.roomMessage = command;
+        this.chatService.sendToRoom();
+        this.showButtonsBool = false;
+        this.emptyArray();
+    }
 
     private checkForID() {
         const parent = document.getElementById('tile-holder');
