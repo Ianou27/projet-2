@@ -10,7 +10,7 @@ describe('IdManager tests', () => {
     const game = new Game();
     idManager.games.push(game);
     beforeEach(() => {
-        game.player1 = new Player(game.reserveLetters.randomLettersInitialization(), true, 'player1', { username: 'rt', id: '1', room: 'room1' });
+        game.player1Join({ username: 'rt', id: '1', room: 'room1' }, '60');
         game.player2 = new Player(game.reserveLetters.randomLettersInitialization(), false, 'player2', { username: 'rta', id: '2', room: 'room1' });
         const user: User = {
             username: 'username',

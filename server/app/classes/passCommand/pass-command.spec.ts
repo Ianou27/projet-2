@@ -1,5 +1,4 @@
-import { assert, expect } from 'chai';
-import * as sinon from 'sinon';
+import { expect } from 'chai';
 import { Game } from './../game/game';
 import { Player } from './../player/player';
 import { PassCommand } from './pass-command';
@@ -17,15 +16,5 @@ describe('Pass Command', () => {
         const commandNotValid = '!passer a';
         const validation = PassCommand.validatedPassCommandFormat(commandNotValid.split(' '));
         expect(validation).to.equal(false);
-    });
-
-    it('method passTurn should change turn and call verifyGameState', () => {
-        const spy = sinon.spy(game, 'verifyGameState');
-        expect(game.player1.getHisTurn()).to.equal(true);
-        expect(game.player2.getHisTurn()).to.equal(false);
-        game.passTurn();
-        expect(game.player1.getHisTurn()).to.equal(false);
-        expect(game.player2.getHisTurn()).to.equal(true);
-        assert(spy.called);
     });
 });
