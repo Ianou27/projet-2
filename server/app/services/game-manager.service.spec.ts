@@ -19,7 +19,8 @@ describe('Game Manager', () => {
     let lettersTilePlayer1: Tile[] = [];
     beforeEach(() => {
         game = new Game();
-        game.player1 = new Player(game.reserveLetters.randomLettersInitialization(), true, 'player1', { username: 'a', id: '1', room: 'room1' });
+        game.player1Join({ username: 'a', id: '1', room: 'room1' }, '60');
+        // game.player1 = new Player(game.reserveLetters.randomLettersInitialization(), true, 'player1', { username: 'a', id: '1', room: 'room1' });
         game.player2 = new Player(game.reserveLetters.randomLettersInitialization(), true, 'player2', { username: 'b', id: '2', room: 'room1' });
         const lettersPlayer1 = ['A', 'L', 'L', '', 'E', 'E', 'V'];
         for (const letter of lettersPlayer1) {
@@ -34,6 +35,7 @@ describe('Game Manager', () => {
 
     afterEach(() => {
         lettersTilePlayer1 = [];
+        sinon.restore();
     });
 
     it('method placeWord should call PlacementCommand.placeWord', () => {
@@ -59,7 +61,11 @@ describe('Game Manager', () => {
 
     it('method pass should call PassCommand.passTurn', () => {
         const spy = sinon.spy(game, 'passTurn');
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        const fake = sinon.fake(() => {});
+        sinon.replace(game.timer, 'reset', fake);
         gameManager.pass(game);
+        assert(fake.called);
         assert(spy.called);
     });
 
