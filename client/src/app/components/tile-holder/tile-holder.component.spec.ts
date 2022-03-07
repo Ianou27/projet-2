@@ -31,9 +31,11 @@ describe('TileHolderComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [TileHolderComponent],
-            schemas: [CUSTOM_ELEMENTS_SCHEMA],
-            // providers: [{ provide: TileHolderService, useValue: tileHolderServiceSpy }],
+            declarations: [TileHolderComponent, TileComponent],
+            providers: [
+                { provide: TileHolderService, useValue: tileHolderServiceSpy },
+                { provide: ChatService, useValue: chatServiceSpy },
+            ],
         }).compileComponents();
     });
 
