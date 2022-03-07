@@ -30,6 +30,7 @@ export class GameManager {
 
     exchange(command: string[], game: Game) {
         game.exchangeLetters(command);
+        game.timer.reset();
     }
 
     placeBoardValid(command: string[], game: Game): boolean {

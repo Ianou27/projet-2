@@ -110,7 +110,7 @@ export class SocketManager {
                         if (message !== 'placer') {
                             this.sio.to(socket.id).emit('commandValidated', message);
                         } else {
-                            game.timer.reset();
+                            
                             this.sio
                                 .to(currentRoom)
                                 .emit(
@@ -148,7 +148,6 @@ export class SocketManager {
                         this.sio.to(socket.id).emit('commandValidated', " Ce n'est pas ton tour");
                     } else {
                         this.gameManager.pass(game);
-                        game.timer.reset();
                         this.sio.to(currentRoom).emit('roomMessage', {
                             username: 'Server',
                             message: username + ' a passé son tour ',
@@ -184,7 +183,7 @@ export class SocketManager {
 
                     if (verification === 'valide') {
                         this.gameManager.exchange(command, game);
-                        game.timer.reset();
+                        
                         this.sio.to(game.player1.user.room).emit('modification', game.gameBoard.cases, game.playerTurn().name);
                         this.sio.to(socket.id).emit('roomMessage', {
                             username: 'Server',

@@ -65,6 +65,7 @@ export class PlacementCommand {
             }
             game.gameState.firstTurn = false;
             game.changeTurnTwoPlayers();
+            game.timer.reset();
             game.gameState.passesCount = 0;
             game.verifyGameState();
         }
