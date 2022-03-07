@@ -144,7 +144,6 @@ export class VirtualPlayer {
                 break;
             }
         }
-        console.log(commandPlacements);
         return commandPlacements;
     }
 

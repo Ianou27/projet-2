@@ -191,7 +191,7 @@ export class PlacementCommand {
         let tile: Tile = game.gameBoard.cases[placementInformations.column][placementInformations.row];
         let word: Tile[] = [];
         const wordsFormed: Tile[][] = [];
-        while (game.gameBoard.tileContainsLetter(tile.positionX, tile.positionY)) {
+        while (this.tileContainsLetter(letterPositions, tile.positionX, tile.positionY, game)) {
             if (game.gameBoard.isLastTile(tile, placementInformations.orientation)) break;
             tile = game.gameBoard.nextTile(tile, placementInformations.orientation, true);
         }
@@ -199,7 +199,7 @@ export class PlacementCommand {
             tile = game.gameBoard.nextTile(tile, placementInformations.orientation, false);
         word.push(tile);
         tile = game.gameBoard.nextTile(tile, placementInformations.orientation, false);
-        while (game.gameBoard.tileContainsLetter(tile.positionX, tile.positionY)) {
+        while (this.tileContainsLetter(letterPositions, tile.positionX, tile.positionY, game)) {
             word.push(tile);
             if (game.gameBoard.isLastTile(tile, placementInformations.orientation)) break;
             tile = game.gameBoard.nextTile(tile, placementInformations.orientation, false);
@@ -208,7 +208,7 @@ export class PlacementCommand {
         word = [];
         for (const letter of letterPositions) {
             tile = letter;
-            while (game.gameBoard.tileContainsLetter(tile.positionX, tile.positionY)) {
+            while (this.tileContainsLetter(letterPositions, tile.positionX, tile.positionY, game)) {
                 if (game.gameBoard.isLastTile(tile, secondValidationOrientation)) break;
                 tile = game.gameBoard.nextTile(tile, secondValidationOrientation, true);
             }
@@ -217,7 +217,7 @@ export class PlacementCommand {
             }
             word.push(tile);
             tile = game.gameBoard.nextTile(tile, secondValidationOrientation, false);
-            while (game.gameBoard.tileContainsLetter(tile.positionX, tile.positionY)) {
+            while (this.tileContainsLetter(letterPositions, tile.positionX, tile.positionY, game)) {
                 word.push(tile);
                 if (game.gameBoard.isLastTile(tile, secondValidationOrientation)) break;
                 tile = game.gameBoard.nextTile(tile, secondValidationOrientation, false);
@@ -225,7 +225,14 @@ export class PlacementCommand {
             wordsFormed.push(word);
             word = [];
         }
-        return wordsFormed;
+        return this.verifyWordsFormed(wordsFormed, letterPositions);
+    }
+
+    static tileContainsLetter(letterPositions: Tile[], positionX: number, positionY: number, game: Game): boolean {
+        for (const letterPosition of letterPositions) {
+            if (letterPosition.positionX === positionX && letterPosition.positionY === positionY) return true;
+        }
+        return game.gameBoard.tileContainsLetter(positionX, positionY);
     }
 
     static newWordsValid(commandInformations: string[], game: Game, letterPositions: Tile[]): number {
@@ -244,6 +251,33 @@ export class PlacementCommand {
             if (!this.validatedWordDictionary(wordString)) return 0;
         }
         return PointsCalculator.calculatedPointsPlacement(wordsFormed, letterPositions);
+    }
+
+    static verifyWordsFormed(wordsFormed: Tile[][], letterPositions: Tile[]): Tile[][] {
+        const newWordsFormed: Tile[][] = [];
+        for (const wordFormed of wordsFormed) {
+            const words: Tile[] = [];
+            for (const letter of wordFormed) {
+                const newTile = new Tile(letter.specialProperty, letter.positionX, letter.positionY);
+                if (letter.letter === '') {
+                    newTile.letter = this.findWordLetter(letter, letterPositions);
+                    newTile.value = letterValue[newTile.letter];
+                } else {
+                    newTile.letter = letter.letter;
+                    newTile.value = letterValue[newTile.letter];
+                }
+                words.push(newTile);
+            }
+            newWordsFormed.push(words);
+        }
+        return newWordsFormed;
+    }
+
+    static findWordLetter(tile: Tile, letterPositions: Tile[]): string {
+        for (const letterPosition of letterPositions) {
+            if (letterPosition.positionX === tile.positionX && letterPosition.positionY === tile.positionY) return letterPosition.letter;
+        }
+        return '';
     }
 
     static validatedWordDictionary(word: string): boolean {
