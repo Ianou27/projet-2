@@ -151,4 +151,13 @@ describe('Game', () => {
         game.verifyGameState();
         expect(game.gameState.winner).to.equal('player1');
     });
+
+    it('method surrender should stop the timer', () => {
+        sinon.replace(game.timer, 'stop', () => {
+            return 1;
+        });
+        const spy = sinon.spy(game.timer, 'stop');
+        game.surrender('abc');
+        assert(spy.called);
+    });
 });

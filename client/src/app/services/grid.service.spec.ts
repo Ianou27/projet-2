@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { TestBed } from '@angular/core/testing';
 import { WORD_2X } from '@app/../../../common/constants/tile-information';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
@@ -31,15 +32,14 @@ describe('GridService', () => {
     });
 
     it(' draw should call other methods', () => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const gridSpy = spyOn<any>(service, 'drawGrid');
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
         const clearSpy = spyOn<any>(service, 'clear');
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
         const drawTilesSpy = spyOn<any>(service, 'drawTiles');
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
         const drawStarSpy = spyOn<any>(service, 'drawStar');
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
         const bonusTypeSpy = spyOn<any>(service, 'writeBonusTypes');
         service.draw(fontSize);
         expect(clearSpy).toHaveBeenCalled();
@@ -50,15 +50,14 @@ describe('GridService', () => {
     });
 
     it(' draw not should call other methods if fontSize <= 0', () => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const gridSpy = spyOn<any>(service, 'drawGrid');
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
         const clearSpy = spyOn<any>(service, 'clear');
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
         const drawTilesSpy = spyOn<any>(service, 'drawTiles');
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
         const drawStarSpy = spyOn<any>(service, 'drawStar');
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
         const bonusTypeSpy = spyOn<any>(service, 'writeBonusTypes');
         // eslint-disable-next-line @typescript-eslint/no-magic-numbers
         service.draw(-1);

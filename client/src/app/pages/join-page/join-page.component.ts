@@ -31,7 +31,6 @@ export class JoinPageComponent implements OnInit {
         { value: '300', text: '5:00' },
     ];
 
-
     constructor(public waitDialog: MatDialog, public chatService: ChatService) {}
     ngOnInit(): void {
         this.form = new FormGroup({
@@ -55,7 +54,7 @@ export class JoinPageComponent implements OnInit {
     }
 
     createRoom() {
-        this.chatService.createRoom(this.name, this.name,this.selectedTime);
+        this.chatService.createRoom(this.name, this.name, this.selectedTime);
         this.openWait();
     }
 
