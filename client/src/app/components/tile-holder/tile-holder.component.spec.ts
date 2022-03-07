@@ -50,7 +50,7 @@ describe('TileHolderComponent', () => {
     });
 
     it('buttonDetect should modify the buttonPressed variable', () => {
-        const expectedKey = 'a';
+        const expectedKey = 'z';
         const buttonEvent = {
             key: expectedKey,
         } as KeyboardEvent;
@@ -60,10 +60,12 @@ describe('TileHolderComponent', () => {
 
     it('clicking on a tile should change its id', (done) => {
         const tile = fixture.debugElement.nativeElement.children[0].children[0] as HTMLElement;
-        const addIdSpy = spyOn(component, 'addId');
+        const addIdSpy = spyOn(component, 'addId').and.callThrough();
         tile.click();
         fixture.whenStable().then(() => {
             expect(addIdSpy).toHaveBeenCalled();
+            expect(tile.id).toEqual('swap-selected');
+            expect(tile.children[0].className).toEqual('selected');
             done();
         });
     });
@@ -132,7 +134,7 @@ describe('TileHolderComponent', () => {
         // eslint-disable-next-line dot-notation
         component['getLastKey']();
         fixture.whenStable().then(() => {
-            expect(component.lastKeys).toBe(['a']);
+            expect(component.lastKeys).toEqual(['a']);
             done();
         });
     });
