@@ -57,8 +57,10 @@ export class ChatService {
     }
 
     configureBaseSocketFeatures() {
-        this.socketService.on('commandValidated', (message: string) => {
+        this.socketService.socket.on('commandValidated', (message: string, board: Tile[][], tileHolder: Tile[]) => {
             this.roomMessages.push({ username: 'Server', message, player: 'server' });
+            this.boardService.board = board;
+            this.tileHolderService.tileHolder = tileHolder;
         });
 
         this.socketService.on('tileHolder', (letters: Tile[]) => {

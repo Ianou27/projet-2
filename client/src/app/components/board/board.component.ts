@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { ChatService } from '@app/services/chat.service';
 
 @Component({
@@ -7,7 +7,62 @@ import { ChatService } from '@app/services/chat.service';
     styleUrls: ['./board.component.scss'],
 })
 export class BoardComponent {
+    letterPlaced: string[] = [];
     constructor(public chatService: ChatService) {}
+
+    @HostListener('body:keydown', ['$event'])
+    keyHandler(event: KeyboardEvent) {
+        const key = event.key;
+        switch (key) {
+            case 'Backspace': {
+                // move the currentSelection back
+                // letterPlaced.pop()
+                break;
+            }
+            case 'Enter': {
+                // creates command and send it
+                // clear array
+                break;
+            }
+            default: {
+                // ecrire sur le board
+                // push into array
+                // update currentSelection
+            }
+        }
+        console.log(event.key);
+    }
+    placeLetter(event: KeyboardEvent) {
+        const currentTile = document.getElementById('currentSelection');
+        const key = event.key.toUpperCase();
+        const keyInTileHolder = this.inTileHolder(key);
+        const tileHolder = document.getElementById('tile-holder');
+        if (!keyInTileHolder[0]) return;
+        if (!currentTile) return;
+        if (!currentTile.getAttribute('ng-reflect-position-y')) return;
+        if (!currentTile.getAttribute('ng-reflect-position-x')) return;
+        const posX = Number(currentTile.getAttribute('ng-reflect-position-x'));
+        const posY = Number(currentTile.getAttribute('ng-reflect-position-y'));
+        if (posX && posY) {
+            this.chatService.boardService.board[posX][posY].letter = key;
+            this.chatService.boardService.board[posX][posY].value = Number(tileHolder?.children[keyInTileHolder[1]].getAttribute('ng-reflect-value'));
+            this.letterPlaced.push(key);
+        }
+        console.log(key.toUpperCase());
+        console.log(currentTile);
+    }
+
+    inTileHolder(key: string): [boolean, number] {
+        const tileHolder = document.getElementById('tile-holder');
+        if (tileHolder) {
+            for (let i = 0; i < tileHolder.childElementCount; i++) {
+                if (key === tileHolder.children[i].getAttribute('ng-reflect-letter')) {
+                    return [true, i];
+                }
+            }
+        }
+        return [false, 0];
+    }
 
     handleLeftClick(event: MouseEvent) {
         const current = event.currentTarget as HTMLElement;
