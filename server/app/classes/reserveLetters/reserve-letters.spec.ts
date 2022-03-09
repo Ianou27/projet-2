@@ -13,6 +13,7 @@ describe('ReserveLetters', () => {
     });
 
     it('should create a reserve of 102 letters', () => {
+        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
         expect(reserve.letters.length).to.equal(102);
     });
 });

@@ -5,7 +5,7 @@ import * as sinon from 'sinon';
 import * as io from 'socket.io';
 import { IdManager } from './id-manager.service';
 
-describe('IdManager tests', () => {
+describe('Room Manager tests', () => {
     const roomManager = new RoomManager();
     const idManager = new IdManager();
     const sio = new io.Server();
