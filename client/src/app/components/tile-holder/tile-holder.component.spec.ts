@@ -61,6 +61,21 @@ describe('TileHolderComponent', () => {
         expect(component.buttonPressed).toEqual(expectedKey);
     });
 
+    it('buttonDetect should modify the buttonPressed variable', () => {
+        const expectedKey = 'a';
+        const buttonEvent = {
+            key: expectedKey,
+        } as KeyboardEvent;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const findIndexSpy = spyOn<any>(component, 'findLetterIndexes');
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const addOnKeySpy = spyOn<any>(component, 'addIdOnKey');
+        component.buttonDetect(buttonEvent);
+        expect(findIndexSpy).toHaveBeenCalled();
+        expect(addOnKeySpy).toHaveBeenCalled();
+        expect(component.buttonPressed).toEqual(expectedKey);
+    });
+
     it('Pressing the left arrow key should call handleSide method', (done) => {
         const tile = fixture.debugElement.nativeElement.children[0].children[0] as HTMLElement;
         tile.click();
@@ -432,38 +447,83 @@ describe('TileHolderComponent', () => {
         expect(getLetterSpy).toHaveBeenCalled();
     });
 
-    it('getLastKey() should return the last key that was pressed', (done) => {
-        const expectedKey = 'a';
-        const buttonEvent = {
-            key: expectedKey,
-        } as KeyboardEvent;
-        component.buttonDetect(buttonEvent);
-        fixture.whenStable().then(() => {
-            // eslint-disable-next-line dot-notation
-            expect(component['getLastKey']()).toBe('a');
-            done();
+    it('addIdOnKey() should add an id to the tile associated with letter and call getLastKey', () => {
+        component.buttonPressed = 'a';
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const lastKeySpy = spyOn<any>(component, 'getLastKey').and.callFake(() => {
+            return 'a';
         });
+        const firstTile = fixture.debugElement.nativeElement.children[0].children[0] as HTMLElement;
+        // eslint-disable-next-line dot-notation
+        component['addIdOnKey']([0]);
+        expect(component.count).toEqual(0);
+        expect(lastKeySpy).toHaveBeenCalled();
+        expect(firstTile.id).toEqual('swap-selected');
+        expect(firstTile.children[0].className).toEqual('selected');
+    });
+
+    it('addIdOnKey() should increment the count, add an id to first occurrence of a tile', () => {
+        tiles = [];
+        const letters = ['A', 'A', 'A', 'D', 'E', 'F', 'G'];
+        component.buttonPressed = 'a';
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(component, 'getLastKey').and.callFake(() => {
+            return 'a';
+        });
+        for (const letter of letters) {
+            const tile: Tile = new Tile(CaseProperty.Normal, 0, 0);
+            tile.letter = letter;
+            tile.value = letterValue[letter];
+            tiles.push(tile);
+        }
+        const firstTile = fixture.debugElement.nativeElement.children[0].children[0] as HTMLElement;
+        // eslint-disable-next-line dot-notation
+        component['addIdOnKey']([0, 1, 2]);
+        expect(component.count).toEqual(1);
+        expect(firstTile.id).toEqual('swap-selected');
+        expect(firstTile.children[0].className).toEqual('selected');
+    });
+
+    it('addIdOnKey() should increment the count, add an id to first occurrence of a tile and call getLastKey', () => {
+        tiles = [];
+        const letters = ['A', 'A', 'A', 'D', 'E', 'F', 'G'];
+        component.buttonPressed = 'a';
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(component, 'getLastKey').and.callFake(() => {
+            return 'z';
+        });
+        for (const letter of letters) {
+            const tile: Tile = new Tile(CaseProperty.Normal, 0, 0);
+            tile.letter = letter;
+            tile.value = letterValue[letter];
+            tiles.push(tile);
+        }
+        const firstTile = fixture.debugElement.nativeElement.children[0].children[0] as HTMLElement;
+        // eslint-disable-next-line dot-notation
+        component['addIdOnKey']([0, 1, 2]);
+        expect(component.count).toEqual(1);
+        expect(firstTile.id).toEqual('swap-selected');
+        expect(firstTile.children[0].className).toEqual('selected');
+    });
+
+    it('getLastKey() should return the last key that was pressed', () => {
+        component.lastKeys = ['a'];
+        // eslint-disable-next-line dot-notation
+        expect(component['getLastKey']()).toBe('a');
     });
 
     it('getLastKey() should call shift if the lastKeys array length is bigger than 2', () => {
-        const expectedKey = 'a';
-        const buttonEvent = {
-            key: expectedKey,
-        } as KeyboardEvent;
+        component.lastKeys = ['a', 'a', 'a'];
         const shiftSpy = spyOn(component.lastKeys, 'shift');
-        component.buttonDetect(buttonEvent);
-        component.buttonDetect(buttonEvent);
-        component.buttonDetect(buttonEvent);
+        // eslint-disable-next-line dot-notation
+        component['getLastKey']();
         expect(shiftSpy).toHaveBeenCalled();
     });
 
-    it('emptyArray() should empty the lettersToExchange array', (done) => {
+    it('emptyArray() should empty the lettersToExchange array', () => {
         component.lettersToExchange = ['A', 'B', 'C'];
         // eslint-disable-next-line dot-notation
         component['emptyArray']();
-        fixture.whenStable().then(() => {
-            expect(component.lettersToExchange).toEqual([]);
-            done();
-        });
+        expect(component.lettersToExchange).toEqual([]);
     });
 });
