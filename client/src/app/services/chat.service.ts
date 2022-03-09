@@ -159,25 +159,31 @@ export class ChatService {
     }
     sendToRoom() {
         const command = this.roomMessage.split(' ');
-        if(command[0].charAt(0)==='!'){
-                if(command[0] === '!echanger' ){
-                this.socketService.send('echanger',command);
+        if (command[0].charAt(0) === '!') {
+            switch (command[0]) {
+                case '!echanger': {
+                    this.socketService.send('echanger', command);
+
+                    break;
                 }
-                else if(command[0] === '!passer' ){
+                case '!passer': {
                     this.socketService.send('passer');
-                    }
-                else if(command[0] === '!placer' ){
-                this.socketService.send('placer',command);
+
+                    break;
                 }
-                else{
+                case '!placer': {
+                    this.socketService.send('placer', command);
+
+                    break;
+                }
+                default: {
                     this.roomMessages.push({ username: 'Server', message: '  Erreur de Syntaxe', player: 'server' });
                 }
-        }
-       
-        else if(this.roomMessage !=''){
+            }
+        } else if (this.roomMessage != '') {
             this.socketService.send('roomMessage', this.roomMessage);
         }
-        
+
         this.roomMessage = '';
     }
 
@@ -195,6 +201,4 @@ export class ChatService {
         this.socketService.socket.emit('cancelCreation');
         this.updateRooms();
     }
-
-
 }

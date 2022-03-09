@@ -47,6 +47,7 @@ export class Game {
             this.gameState.passesCount === MAXIMUM_PASSES_COUNT ||
             (this.reserveLetters.letters.length === 0 && (this.player1.getNumberLetters() === 0 || this.player2.getNumberLetters() === 0));
         if (endGameValidation) {
+            console.log('************************************************');
             this.endGame();
             this.setWinner();
             return;
@@ -102,30 +103,35 @@ export class Game {
         else {
             this.gameState.winner = 'tie';
         }
-
         this.sio.to(this.roomName).emit('endGame', this.gameState.winner);
         this.sio.to(this.roomName).emit('roomMessage', {
             username: 'Server',
-            message: 'lettre joueuer 1 =>' + this.player1.lettersToStringArray() + ' \n lettre joueuer 2 ' + this.player2.lettersToStringArray(),
+            message: 'lettre joueur 1 =>' + this.player1.lettersToStringArray() + ' \n lettre joueur 2 ' + this.player2.lettersToStringArray(),
             player: 'server',
         });
-
-        this.endGame();
     }
 
     private endGame() {
         this.gameState.gameFinished = true;
         this.timer.stop();
+        console.log(this.player1.points);
+        console.log(this.player2.points);
         if (this.player1.getNumberLetters() === 0) {
             for (const letter of this.player2.getLetters()) {
-                this.player1.points += letter.value;
-                this.player2.points -= letter.value;
+                if (letter.letter !== '') {
+                    this.player1.points += letter.value;
+                    this.player2.points -= letter.value;
+                }
             }
         } else if (this.player2.getNumberLetters() === 0) {
             for (const letter of this.player1.getLetters()) {
-                this.player2.points += letter.value;
-                this.player1.points -= letter.value;
+                if (letter.letter !== '') {
+                    this.player2.points += letter.value;
+                    this.player1.points -= letter.value;
+                }
             }
         }
+        console.log(this.player1.points);
+        console.log(this.player2.points);
     }
 }
