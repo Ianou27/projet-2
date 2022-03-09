@@ -1,4 +1,4 @@
-<div id="tile-holder" tabindex="0" (blur)="clickOut()">
+<div id="tile-holder" tabindex="0" (blur)="clearAllIds()">
     <app-tile
         *ngFor="let tile of this.tileHolderService.tileHolder"
         [letter]="tile.letter"
@@ -7,5 +7,5 @@
         (contextmenu)="addExchangeId($event)"
     ></app-tile>
 </div>
-<button *ngIf="showButtonsBool" mat-button color="warn" tabindex="0" focus (mousedown)="clearExchangeId($event)">Annuler</button>
+<button *ngIf="showButtonsBool" mat-button color="warn" tabindex="0" focus (mousedown)="clearAllIds()">Annuler</button>
 <button *ngIf="showButtonsBool" mat-button color="primary" tabindex="0" focus (mousedown)="exchange()" cdkFocusInitial>Échanger</button>
