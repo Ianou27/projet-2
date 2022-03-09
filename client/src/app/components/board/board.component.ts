@@ -11,10 +11,7 @@ export class BoardComponent {
 
     handleLeftClick(event: MouseEvent) {
         const current = event.currentTarget as HTMLElement;
-        console.log(current);
-
-        current.id = 'currentSelection';
-        // this.verificationSelection(current);
+        this.verificationSelection(current);
         switch (current.children[0].classList[0]) {
             case 'tileEmpty': {
                 current.children[0].classList.replace('tileEmpty', 'tileEmptyHorizontal');
@@ -28,37 +25,26 @@ export class BoardComponent {
                 current.children[0].classList.replace('tileEmptyVertical', 'tileEmptyHorizontal');
                 break;
             }
-            // No default
         }
     }
 
-    /* verificationSelection(currentSelection: HTMLElement) {
-        let currentSelectionCount = 0;
-        if (currentSelection.parentElement) {
-            for (let i = 0; i < currentSelection.parentElement.childElementCount; i++) {
-                for (let j = 0; j < currentSelection.parentElement.childElementCount; j++) {
-                    if (currentSelection.parentElement.parentElement.children[i].children[j].id) {
-                        console.log(currentSelection.parentElement.children[i]);
-                        currentSelectionCount++;
-                    }
-                    if (currentSelectionCount === 2) {
-                        console.log(currentSelectionCount);
-                        this.clearSelection(currentSelection);
-                        break;
+    verificationSelection(currentSelection: HTMLElement) {
+        const board = document.getElementsByClassName('tile-container')[0];
+        for (let i = 0; i < board.childElementCount; i++) {
+            for (let j = 0; j < board.children[i].childElementCount; j++) {
+                if (board.children[i].children[j].children[0].id === 'currentSelection') {
+                    if (board.children[i].children[j].children[0] !== currentSelection) {
+                        board.children[i].children[j].children[0].id = '';
+                        this.clearSelection(board.children[i].children[j].children[0]);
                     }
                 }
             }
         }
-        console.log('Fin de fnc' + currentSelectionCount);
-    }*/
+        currentSelection.id = 'currentSelection';
+    }
 
-    clearSelection(currentSelection: HTMLElement) {
-        if (currentSelection.parentElement) {
-            for (let i = 0; i < currentSelection.parentElement.childElementCount; i++) {
-                currentSelection.parentElement.children[i].id = '';
-                currentSelection.parentElement.children[i].children[0].classList.replace('tileEmptyHorizontal', 'tileEmpty');
-                currentSelection.parentElement.children[i].children[0].classList.replace('tileEmptyVertical', 'tileEmpty');
-            }
-        }
+    clearSelection(elementToClear: Element) {
+        elementToClear.children[0].classList.replace('tileEmptyHorizontal', 'tileEmpty');
+        elementToClear.children[0].classList.replace('tileEmptyVertical', 'tileEmpty');
     }
 }
