@@ -88,6 +88,7 @@ export class ChatService {
         });
 
         this.socketService.on('cluesMessage', (clues: string[]) => {
+            if (clues.length < 4) this.roomMessages.push({ player: 'Server', username: 'Server', message: 'Moins de 3 placements possibles' });
             clues.forEach((clue) => {
                 this.roomMessages.push({ player: 'Server', username: 'Server', message: clue });
             });
