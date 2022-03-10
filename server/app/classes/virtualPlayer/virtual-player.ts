@@ -56,9 +56,8 @@ export class VirtualPlayer {
             return '!passer'.split(' ');
         } else if (probability <= 20) {
             return this.exchangeLettersCommand(game);
-        } else {
-            return this.placementLettersCommand(game);
         }
+        return this.placementLettersCommand(game);
     }
 
     static heapsPermute(array: string[], n: number, words: string[]): string[] {

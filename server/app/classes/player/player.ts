@@ -39,12 +39,10 @@ export class Player {
 
     changeLetter(removeLetter: string, newLetter: string): void {
         for (const letterPlayer of this.letters) {
-            if (this.isUpper(removeLetter) && letterPlayer.letter === '*') {
-                letterPlayer.letter = newLetter.toUpperCase();
-                letterPlayer.value = letterValue[newLetter];
-                break;
-            }
-            if (!this.isUpper(removeLetter) && letterPlayer.letter === removeLetter.toUpperCase()) {
+            const letterIsPresent =
+                (this.isUpper(removeLetter) && letterPlayer.letter === '*') ||
+                (!this.isUpper(removeLetter) && letterPlayer.letter === removeLetter.toUpperCase());
+            if (letterIsPresent) {
                 letterPlayer.letter = newLetter.toUpperCase();
                 letterPlayer.value = letterValue[newLetter];
                 break;

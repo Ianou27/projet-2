@@ -63,8 +63,18 @@ export class IdManager {
         return room;
     }
     getGame(socketId: string): Game {
-        let game: Game = new Game();
-        for (let i = 0; i < this.games.length; i++) {
+        let gameToFind: Game = new Game();
+
+        for (const game of this.games) {
+            if (game.player1.user.id === socketId) {
+                gameToFind = game;
+            } else if (game.player2 !== undefined) {
+                if (game.player2.user.id === socketId) {
+                    gameToFind = game;
+                }
+            }
+        }
+        /*         for (let i = 0; i < this.games.length; i++) {
             if (this.games[i].player1.user.id === socketId) {
                 game = this.games[i];
             } else if (this.games[i].player2 !== undefined) {
@@ -72,9 +82,9 @@ export class IdManager {
                     game = this.games[i];
                 }
             }
-        }
+        } */
 
-        return game;
+        return gameToFind;
     }
 
     deleteUser(socketId: string) {
