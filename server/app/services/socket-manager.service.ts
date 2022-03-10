@@ -134,7 +134,11 @@ export class SocketManager {
                             }
                         }
                     } else {
-                        this.sio.to(socket.id).emit('commandValidated', verification);
+                        if (game.player1.user.id === socket.id) {
+                            this.sio.to(socket.id).emit('commandValidated', verification, game.gameBoard.cases, game.player1.getLetters());
+                        } else {
+                            this.sio.to(socket.id).emit('commandValidated', verification, game.gameBoard.cases, game.player2.getLetters());
+                        }
                     }
                 }
             });

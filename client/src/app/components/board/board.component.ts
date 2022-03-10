@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { ChatService } from '@app/services/chat.service';
 
 @Component({
@@ -7,14 +7,66 @@ import { ChatService } from '@app/services/chat.service';
     styleUrls: ['./board.component.scss'],
 })
 export class BoardComponent {
+    letterPlaced: string[] = [];
     constructor(public chatService: ChatService) {}
+
+    @HostListener('body:keydown', ['$event'])
+    /* keyHandler(event: KeyboardEvent) {
+        const key = event.key;
+        switch (key) {
+            case 'Backspace': {
+                // move the currentSelection back
+                // letterPlaced.pop()
+                break;
+            }
+            case 'Enter': {
+                // creates command and send it
+                // clear array
+                break;
+            }
+            default: {
+                // ecrire sur le board
+                // push into array
+                // update currentSelection
+            }
+        }
+        console.log(event.key);
+    } */
+    placeLetter(event: KeyboardEvent) {
+        const currentTile = document.getElementById('currentSelection');
+        const key = event.key.toUpperCase();
+        const keyInTileHolder = this.inTileHolder(key);
+        const tileHolder = document.getElementById('tile-holder');
+        if (!keyInTileHolder[0]) return;
+        if (!currentTile) return;
+        if (!currentTile.getAttribute('ng-reflect-position-y')) return;
+        if (!currentTile.getAttribute('ng-reflect-position-x')) return;
+        const posX = Number(currentTile.getAttribute('ng-reflect-position-x'));
+        const posY = Number(currentTile.getAttribute('ng-reflect-position-y'));
+        if (posX && posY) {
+            this.chatService.boardService.board[posX][posY].letter = key;
+            this.chatService.boardService.board[posX][posY].value = Number(tileHolder?.children[keyInTileHolder[1]].getAttribute('ng-reflect-value'));
+            this.letterPlaced.push(key);
+        }
+        console.log(key.toUpperCase());
+        console.log(currentTile);
+    }
+
+    inTileHolder(key: string): [boolean, number] {
+        const tileHolder = document.getElementById('tile-holder');
+        if (tileHolder) {
+            for (let i = 0; i < tileHolder.childElementCount; i++) {
+                if (key === tileHolder.children[i].getAttribute('ng-reflect-letter')) {
+                    return [true, i];
+                }
+            }
+        }
+        return [false, 0];
+    }
 
     handleLeftClick(event: MouseEvent) {
         const current = event.currentTarget as HTMLElement;
-        console.log(current);
-
-        current.id = 'currentSelection';
-        // this.verificationSelection(current);
+        this.verificationSelection(current);
         switch (current.children[0].classList[0]) {
             case 'tileEmpty': {
                 current.children[0].classList.replace('tileEmpty', 'tileEmptyHorizontal');
@@ -28,37 +80,26 @@ export class BoardComponent {
                 current.children[0].classList.replace('tileEmptyVertical', 'tileEmptyHorizontal');
                 break;
             }
-            // No default
         }
     }
 
-    /* verificationSelection(currentSelection: HTMLElement) {
-        let currentSelectionCount = 0;
-        if (currentSelection.parentElement) {
-            for (let i = 0; i < currentSelection.parentElement.childElementCount; i++) {
-                for (let j = 0; j < currentSelection.parentElement.childElementCount; j++) {
-                    if (currentSelection.parentElement.parentElement.children[i].children[j].id) {
-                        console.log(currentSelection.parentElement.children[i]);
-                        currentSelectionCount++;
-                    }
-                    if (currentSelectionCount === 2) {
-                        console.log(currentSelectionCount);
-                        this.clearSelection(currentSelection);
-                        break;
+    verificationSelection(currentSelection: HTMLElement) {
+        const board = document.getElementsByClassName('tile-container')[0];
+        for (let i = 0; i < board.childElementCount; i++) {
+            for (let j = 0; j < board.children[i].childElementCount; j++) {
+                if (board.children[i].children[j].children[0].id === 'currentSelection') {
+                    if (board.children[i].children[j].children[0] !== currentSelection) {
+                        board.children[i].children[j].children[0].id = '';
+                        this.clearSelection(board.children[i].children[j].children[0]);
                     }
                 }
             }
         }
-        console.log('Fin de fnc' + currentSelectionCount);
-    }*/
+        currentSelection.id = 'currentSelection';
+    }
 
-    clearSelection(currentSelection: HTMLElement) {
-        if (currentSelection.parentElement) {
-            for (let i = 0; i < currentSelection.parentElement.childElementCount; i++) {
-                currentSelection.parentElement.children[i].id = '';
-                currentSelection.parentElement.children[i].children[0].classList.replace('tileEmptyHorizontal', 'tileEmpty');
-                currentSelection.parentElement.children[i].children[0].classList.replace('tileEmptyVertical', 'tileEmpty');
-            }
-        }
+    clearSelection(elementToClear: Element) {
+        elementToClear.children[0].classList.replace('tileEmptyHorizontal', 'tileEmpty');
+        elementToClear.children[0].classList.replace('tileEmptyVertical', 'tileEmpty');
     }
 }
