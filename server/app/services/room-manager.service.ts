@@ -18,6 +18,7 @@ export class RoomManager {
         const roomObj = {
             player1: username,
             player2: '',
+            time: timer,
         };
         identification.rooms.push(roomObj);
         console.log(identification.users);
