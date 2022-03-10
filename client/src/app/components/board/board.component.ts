@@ -11,7 +11,7 @@ export class BoardComponent {
     constructor(public chatService: ChatService) {}
 
     @HostListener('body:keydown', ['$event'])
-    keyHandler(event: KeyboardEvent) {
+    /* keyHandler(event: KeyboardEvent) {
         const key = event.key;
         switch (key) {
             case 'Backspace': {
@@ -31,7 +31,7 @@ export class BoardComponent {
             }
         }
         console.log(event.key);
-    }
+    } */
     placeLetter(event: KeyboardEvent) {
         const currentTile = document.getElementById('currentSelection');
         const key = event.key.toUpperCase();
