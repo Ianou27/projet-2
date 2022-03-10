@@ -102,11 +102,11 @@ export class GameManager {
         return message;
     }
 
-    formatClueCommand(game: Game): string {
+    formatClueCommand(game: Game): string[] {
         const clues = ClueCommand.findClues(game);
-        let text = 'Possibilités de placements : \n';
+        const text: string[] = ['Possibilités de placements'];
         for (const clue of clues) {
-            text = text.concat(clue.command + ' pour ' + clue.score.toString() + ' points \n');
+            text.push(clue.command + ' pour ' + clue.score.toString() + ' points');
         }
         return text;
     }

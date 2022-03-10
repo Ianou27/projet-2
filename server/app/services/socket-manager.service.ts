@@ -176,11 +176,9 @@ export class SocketManager {
                     this.sio.to(socket.id).emit('commandValidated', " Ce n'est pas ton tour");
                 } else {
                     if (this.gameManager.clueCommandValid(command)) {
-                        this.sio.to(socket.id).emit('roomMessage', {
-                            username: 'Server',
-                            message: this.gameManager.formatClueCommand(game),
-                            player: 'server',
-                        });
+                        const yes = this.gameManager.formatClueCommand(game);
+                        console.log(yes);
+                        this.sio.to(socket.id).emit('cluesMessage', yes);
                     } else {
                         this.sio.to(socket.id).emit('commandValidated', 'Format invalide');
                     }

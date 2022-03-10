@@ -86,6 +86,13 @@ export class ChatService {
                 }
             }
         });
+
+        this.socketService.on('cluesMessage', (clues: string[]) => {
+            clues.forEach((clue) => {
+                this.roomMessages.push({ player: 'Server', username: 'Server', message: clue });
+            });
+        });
+
         this.socketService.socket.on('updateReserve', (reserve: number, player1: number, player2: number) => {
             this.player1ChevaletLetters = player1;
             this.player2ChevaletLetters = player2;
