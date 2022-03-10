@@ -12,7 +12,7 @@ export class BoardComponent {
 
     @HostListener('body:keydown', ['$event'])
     /* keyHandler(event: KeyboardEvent) {
-        const key = event.key;
+        const key = event.key.toUpperCase();
         switch (key) {
             case 'Backspace': {
                 // move the currentSelection back
@@ -25,17 +25,15 @@ export class BoardComponent {
                 break;
             }
             default: {
-                // ecrire sur le board
-                // push into array
+                placeLetter(key);
                 // update currentSelection
             }
         }
         console.log(event.key);
     } */
-    placeLetter(event: KeyboardEvent) {
+    placeLetter(letter: string) {
         const currentTile = document.getElementById('currentSelection');
-        const key = event.key.toUpperCase();
-        const keyInTileHolder = this.inTileHolder(key);
+        const keyInTileHolder = this.inTileHolder(letter);
         const tileHolder = document.getElementById('tile-holder');
         if (!keyInTileHolder[0]) return;
         if (!currentTile) return;
@@ -44,9 +42,9 @@ export class BoardComponent {
         const posX = Number(currentTile.getAttribute('ng-reflect-position-x'));
         const posY = Number(currentTile.getAttribute('ng-reflect-position-y'));
         if (posX && posY) {
-            this.chatService.boardService.board[posX][posY].letter = key;
+            this.chatService.boardService.board[posX][posY].letter = letter;
             this.chatService.boardService.board[posX][posY].value = Number(tileHolder?.children[keyInTileHolder[1]].getAttribute('ng-reflect-value'));
-            this.letterPlaced.push(key);
+            this.letterPlaced.push(letter);
         }
         console.log(key.toUpperCase());
         console.log(currentTile);
