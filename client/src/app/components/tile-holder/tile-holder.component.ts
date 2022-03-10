@@ -15,7 +15,7 @@ export class TileHolderComponent {
     lastKeys: string[] = [];
     lettersToExchange: string[] = [];
     showButtonsBool: boolean = false;
-    constructor(public tileHolderService: TileHolderService, private chatService: ChatService) {}
+    constructor(public tileHolderService: TileHolderService, public chatService: ChatService) {}
 
     @HostListener('keydown', ['$event'])
     buttonDetect(event: KeyboardEvent) {

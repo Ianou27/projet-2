@@ -38,9 +38,10 @@ export class Game {
         this.roomName = user.room;
     }
     player2Join(user: User, sio: io.Server) {
-        this.player2 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player2', user);
+        this.player2 = new Player(this.reserveLetters.randomLettersInitialization(), false, 'player2', user);
         this.sio = sio;
         this.startGame();
+        
     }
     verifyGameState() {
         const endGameValidation =
@@ -54,10 +55,14 @@ export class Game {
 
     startGame() {
         this.timer.start(this, this.sio);
+        this.sio.to(this.player1.user.id).emit('turn', this.player1.hisTurn);
+        this.sio.to(this.player2.user.id).emit('turn', this.player2.hisTurn);
     }
     changeTurnTwoPlayers() {
         this.player1.changeTurn();
         this.player2.changeTurn();
+        this.sio.to(this.player1.user.id).emit('turn', this.player1.hisTurn);
+        this.sio.to(this.player2.user.id).emit('turn', this.player2.hisTurn);
     }
 
     playerTurn(): Player {
