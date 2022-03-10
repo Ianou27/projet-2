@@ -1,5 +1,5 @@
 import { CaseProperty } from './../../../../common/assets/case-property';
-import { letterValue } from './../../../../common/assets/reserve-letters';
+import { letterNumber, letterValue } from './../../../../common/assets/reserve-letters';
 import { NUMBER_TILEHOLDER } from './../../../../common/constants/general-constants';
 import { Tile } from './../../../../common/tile/Tile';
 
@@ -7,7 +7,7 @@ export class ReserveLetters {
     letters: string[] = [];
 
     constructor() {
-        this.letters = ['A', 'B', 'T', 'D', 'E', 'F', 'S', 'N', 'I', 'O', 'L', 'E', 'E', 'P', 'A', 'A', 'L'];
+        this.letters = this.initializeReserveLetters();
     }
 
     getRandomLetterReserve(): string {
@@ -32,7 +32,7 @@ export class ReserveLetters {
         return letters;
     }
 
-    /*     private initializeReserveLetters(): string[] {
+    private initializeReserveLetters(): string[] {
         const reserveLettersObject = letterNumber;
         const reserve: string[] = [];
         Object.keys(reserveLettersObject).forEach((key) => {
@@ -41,5 +41,5 @@ export class ReserveLetters {
             }
         });
         return reserve;
-    } */
+    }
 }

@@ -104,6 +104,8 @@ export class Game {
         }
 
         this.sio.to(this.roomName).emit('endGame', this.gameState.winner);
+        this.sio.to(this.roomName).emit('updatePoint', 'player1', this.player1.points);
+        this.sio.to(this.roomName).emit('updatePoint', 'player2', this.player2.points);
         this.sio.to(this.roomName).emit('roomMessage', {
             username: 'Server',
             message: 'lettre joueur 1 =>' + this.player1.lettersToStringArray() + ' \n lettre joueur 2 ' + this.player2.lettersToStringArray(),
