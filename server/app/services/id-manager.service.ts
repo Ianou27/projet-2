@@ -1,15 +1,19 @@
 import { Room, User } from './../../../common/types';
+import { Game } from './../classes/game/game';
 
 export class IdManager {
     users: User[] = [];
 
     roomMessages = new Map<string, Room[]>();
     rooms: Room[] = [];
+    games: Game[] = [];
     getId(username: string): string {
         let id = '';
-        this.users.forEach((element) => {
-            if (element.username === username) {
-                id = element.id;
+        this.games.forEach((game) => {
+            if (game.player1.user.username === username) {
+                id = game.player1.user.id;
+            } else if (game.player2.user.username === username) {
+                id = game.player2.user.id;
             }
         });
         return id;
@@ -17,29 +21,12 @@ export class IdManager {
 
     getUsername(socketId: string): string {
         let username = '';
-        this.users.forEach((element) => {
-            if (element.id === socketId) {
-                username = element.username;
+        this.users.forEach((user) => {
+            if (user.id === socketId) {
+                username = user.username;
             }
         });
         return username;
-    }
-    getWinner(username: string, playerWinner: string): string {
-        let winner = '';
-        this.rooms.forEach((room: Room) => {
-            if (playerWinner !== 'tie') {
-                if (username === room.player1 || username === room.player2) {
-                    if ('player1' === playerWinner) {
-                        winner = room.player1;
-                    } else if ('player2' === playerWinner) {
-                        winner = room.player2;
-                    }
-                }
-            } else {
-                winner = 'tie';
-            }
-        });
-        return winner;
     }
 
     surrender(socketId: string): string {
@@ -48,10 +35,8 @@ export class IdManager {
         this.rooms.forEach((room: Room) => {
             if (username === room.player1) {
                 winner = room.player2;
-                room.game.timer.stop();
             } else if (username === room.player2) {
                 winner = room.player1;
-                room.game.timer.stop();
             }
         });
         return winner;
@@ -59,23 +44,47 @@ export class IdManager {
     getPlayer(socketId: string): string {
         let player = '';
         const username = this.getUsername(socketId);
-        this.rooms.forEach((room: Room) => {
-            if (username === room.player1) {
+        this.games.forEach((game) => {
+            if (username === game.player1.user.username) {
                 player = 'player1';
-            } else if (username === room.player2) {
+            } else if (username === game.player2.user.username) {
                 player = 'player2';
             }
         });
         return player;
     }
-    getRoom(id: string): string {
+    getRoom(socketId: string): string {
         let room = '';
-        this.users.forEach((element: User) => {
-            if (element.id === id) {
-                room = element.room;
+        this.users.forEach((user) => {
+            if (user.id === socketId) {
+                room = user.room;
             }
         });
         return room;
+    }
+    getGame(socketId: string): Game {
+        let gameToFind: Game = new Game();
+
+        for (const game of this.games) {
+            if (game.player1.user.id === socketId) {
+                gameToFind = game;
+            } else if (game.player2 !== undefined) {
+                if (game.player2.user.id === socketId) {
+                    gameToFind = game;
+                }
+            }
+        }
+        /*         for (let i = 0; i < this.games.length; i++) {
+            if (this.games[i].player1.user.id === socketId) {
+                game = this.games[i];
+            } else if (this.games[i].player2 !== undefined) {
+                if (this.games[i].player2.user.id === socketId) {
+                    game = this.games[i];
+                }
+            }
+        } */
+
+        return gameToFind;
     }
 
     deleteUser(socketId: string) {

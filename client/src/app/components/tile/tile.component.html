@@ -5,7 +5,7 @@
 
 <div *ngIf="letter === ''" class="tileEmpty"></div>
 
-<div *ngIf="letter !== '' && value === 0" class="tileBlankLetter">
+<div *ngIf="letter !== '' && value === 0" class="tileBlankLetter" class="tile">
     <p id="letter" [style.font-size.px]="21">{{ letter }}</p>
     <p id="value" [style.font-size.px]="12">{{ value }}</p>
 </div>

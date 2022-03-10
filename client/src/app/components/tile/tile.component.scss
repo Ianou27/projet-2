@@ -34,6 +34,26 @@
     grid-template-rows: 20px 10px;
 }
 
+.tileEmptyHorizontal {
+    z-index: 1;
+    height: 50px;
+    width: 50px;
+    border-radius: 4px;
+    display: grid;
+    grid-template-rows: 20px 10px;
+    box-shadow: inset 0 0 0 3px red;
+}
+
+.tileEmptyVertical {
+    z-index: 1;
+    height: 50px;
+    width: 50px;
+    border-radius: 4px;
+    display: grid;
+    grid-template-rows: 20px 10px;
+    box-shadow: inset 0 0 0 3px green;
+}
+
 .tileBlankLetter {
     z-index: 1;
     height: 50px;
@@ -43,4 +63,26 @@
     display: grid;
     grid-template-rows: 20px 10px;
     color: firebrick;
+}
+
+.selected {
+    z-index: 1;
+    height: 50px;
+    width: 50px;
+    border-radius: 4px;
+    background-color: #f7d8b5;
+    display: grid;
+    grid-template-rows: 20px 10px;
+    box-shadow: inset 0 0 0 3px red;
+}
+
+.selected-reserve {
+    z-index: 1;
+    height: 50px;
+    width: 50px;
+    border-radius: 4px;
+    background-color: #f7d8b5;
+    display: grid;
+    grid-template-rows: 20px 10px;
+    box-shadow: inset 0 0 0 3px blueviolet;
 }

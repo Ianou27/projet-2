@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 // import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
@@ -77,5 +77,6 @@ const modules = [
     imports: [...modules],
     exports: [...modules],
     providers: [],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppMaterialModule {}

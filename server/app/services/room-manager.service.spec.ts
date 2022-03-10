@@ -1,16 +1,13 @@
-import { Game } from '@app/classes/game/game';
 import { RoomManager } from '@app/services/room-manager.service';
 import { Room, User } from '@common/types';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
 import * as io from 'socket.io';
-import { GameManager } from './game-manager.service';
 import { IdManager } from './id-manager.service';
 
-describe('IdManager tests', () => {
+describe('Room Manager tests', () => {
     const roomManager = new RoomManager();
     const idManager = new IdManager();
-    const gameManager = new GameManager();
     const sio = new io.Server();
 
     beforeEach(() => {
@@ -33,36 +30,31 @@ describe('IdManager tests', () => {
     });
 
     it('should join a room and set player2 name if player2 name length is 0', () => {
-        const testGame = new Game();
         const username = 'player2';
         const socketId = 'id';
         const room: Room = {
             player1: 'player1',
             player2: '',
-            game: testGame,
         };
         const room2: Room = {
             player1: 'username',
             player2: 'player2Test',
-            game: testGame,
         };
         idManager.rooms.push(room);
         idManager.rooms.push(room2);
-        roomManager.joinRoom(username, room, socketId, idManager, sio, gameManager);
+        roomManager.joinRoom(username, room, socketId, idManager, sio);
         expect(room.player2).to.equal(username);
     });
 
     it('should join a room', () => {
-        const testGame = new Game();
         const username = 'username';
         const socketId = 'id';
         const room: Room = {
             player1: 'player1',
             player2: '',
-            game: testGame,
         };
         idManager.rooms.push(room);
-        roomManager.joinRoom(username, room, socketId, idManager, sio, gameManager);
+        roomManager.joinRoom(username, room, socketId, idManager, sio);
     });
 
     it('cancelCreation should call getUsername', () => {
@@ -72,12 +64,10 @@ describe('IdManager tests', () => {
     });
 
     it('should cancel creation and deleteRoom', () => {
-        const testGame = new Game();
         const socketId = 'id';
         const room: Room = {
             player1: 'username',
             player2: '',
-            game: testGame,
         };
         idManager.rooms.push(room);
         const deleteSpy = sinon.stub(roomManager, 'deleteRoom');
@@ -86,24 +76,20 @@ describe('IdManager tests', () => {
     });
 
     it('should delete room', () => {
-        const testGame = new Game();
         const socketId = 'id';
         const room: Room = {
             player1: '-2',
             player2: 'username',
-            game: testGame,
         };
         idManager.rooms.push(room);
         roomManager.deleteRoom(socketId, idManager);
     });
 
     it('deleteRoom should set player1 to -2 if player2 = username and player1 is different than -2', () => {
-        const testGame = new Game();
         const socketId = 'id';
         const room: Room = {
             player1: 'test',
             player2: 'username',
-            game: testGame,
         };
         idManager.rooms.push(room);
         roomManager.deleteRoom(socketId, idManager);
@@ -111,13 +97,11 @@ describe('IdManager tests', () => {
     });
 
     it('should delete room if there is no player2', () => {
-        const testGame = new Game();
         const spliceSpy = sinon.stub(idManager.rooms, 'splice');
         const socketId = 'id';
         const room: Room = {
             player1: 'username',
             player2: '',
-            game: testGame,
         };
         idManager.rooms.push(room);
         roomManager.deleteRoom(socketId, idManager);
@@ -125,13 +109,11 @@ describe('IdManager tests', () => {
     });
 
     it('should delete room if player2 = -2', () => {
-        const testGame = new Game();
         const spliceSpy = sinon.stub(idManager.rooms, 'splice');
         const socketId = 'id';
         const room: Room = {
             player1: 'username',
             player2: '-2',
-            game: testGame,
         };
         idManager.rooms.push(room);
         roomManager.deleteRoom(socketId, idManager);
@@ -139,12 +121,10 @@ describe('IdManager tests', () => {
     });
 
     it('deleteRoom should set player1 to -2 if player1 = username and player2 is in room', () => {
-        const testGame = new Game();
         const socketId = 'id';
         const room: Room = {
             player1: 'username',
             player2: 'player2',
-            game: testGame,
         };
         idManager.rooms.push(room);
         roomManager.deleteRoom(socketId, idManager);
@@ -157,7 +137,7 @@ describe('IdManager tests', () => {
         const socketId = 'id';
         const usersSpy = sinon.spy(idManager.users, 'push');
         const roomsSpy = sinon.spy(idManager.rooms, 'push');
-        roomManager.createRoom(username, room, socketId, idManager);
+        roomManager.createRoom(username, room, socketId, idManager, '60');
         assert(usersSpy.called);
         assert(roomsSpy.called);
     });

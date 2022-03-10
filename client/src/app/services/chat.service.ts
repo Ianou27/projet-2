@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { LetterScore } from './../../../../common/assets/reserve-letters';
 import { Tile } from './../../../../common/tile/Tile';
 import { InfoToJoin, Message, Room } from './../../../../common/types';
 import { INITIAL_NUMBER_LETTERS_RESERVE, NUMBER_LETTER_TILEHOLDER } from './../constants/general-constants';
@@ -23,7 +24,7 @@ export class ChatService {
     informationToJoin: InfoToJoin;
     gotAccepted: boolean = false;
     gotRefused: boolean = false;
-
+    myTurn: boolean = true;
     player1Point: number = 0;
     player2Point: number = 0;
     player1Username: string = '';
@@ -36,6 +37,7 @@ export class ChatService {
     gameOver: boolean = false;
     winner: string = '';
     timer: number = 0;
+
     constructor(public socketService: SocketClientService, public boardService: BoardService, public tileHolderService: TileHolderService) {}
 
     get socketId() {
@@ -55,8 +57,10 @@ export class ChatService {
     }
 
     configureBaseSocketFeatures() {
-        this.socketService.on('commandValidated', (message: string) => {
+        this.socketService.socket.on('commandValidated', (message: string, board: Tile[][], tileHolder: Tile[]) => {
             this.roomMessages.push({ username: 'Server', message, player: 'server' });
+            if (board) this.boardService.board = board;
+            if (tileHolder) this.tileHolderService.tileHolder = tileHolder;
         });
 
         this.socketService.on('tileHolder', (letters: Tile[]) => {
@@ -73,10 +77,29 @@ export class ChatService {
                 this.player2Turn = 'tour';
             }
         });
+
+        this.socketService.on('reserveLetters', (reserve: LetterScore) => {
+            for (const letter in reserve) {
+                if (Object.prototype.hasOwnProperty.call(reserve, letter)) {
+                    const value = reserve[letter];
+                    this.roomMessages.push({ player: letter, username: letter, message: value.toString() });
+                }
+            }
+        });
+
+        this.socketService.on('cluesMessage', (clues: string[]) => {
+            clues.forEach((clue) => {
+                this.roomMessages.push({ player: 'Server', username: 'Server', message: clue });
+            });
+        });
+
         this.socketService.socket.on('updateReserve', (reserve: number, player1: number, player2: number) => {
             this.player1ChevaletLetters = player1;
             this.player2ChevaletLetters = player2;
             this.reserve = reserve;
+        });
+         this.socketService.on('turn', (turn: boolean) => {
+            this.myTurn = turn;
         });
 
         this.socketService.on('roomMessage', (roomMessage: Message) => {
@@ -144,7 +167,7 @@ export class ChatService {
         this.socketService.socket.emit('refused', this.socketWantToJoin, this.informationToJoin);
     }
 
-    createRoom(username: string, room: string, time: number) {
+    createRoom(username: string, room: string, time: string) {
         this.socketService.socket.emit('createRoom', username, room, time);
         this.updateRooms();
     }
@@ -157,7 +180,38 @@ export class ChatService {
         this.socketService.send('passer');
     }
     sendToRoom() {
-        this.socketService.send('roomMessage', this.roomMessage);
+        const command = this.roomMessage.split(' ');
+        if (command[0].charAt(0) === '!') {
+            switch (command[0]) {
+                case '!echanger': {
+                    this.socketService.send('echanger', command);
+
+                    break;
+                }
+                case '!passer': {
+                    this.socketService.send('passer');
+                    break;
+                }
+                case '!placer': {
+                    this.socketService.send('placer', command);
+                    break;
+                }
+                case '!reserve': {
+                    this.socketService.send('reserve', command);
+                    break;
+                }
+                case '!indice': {
+                    this.socketService.send('indice', command);
+                    break;
+                }
+                default: {
+                    this.roomMessages.push({ username: 'Server', message: '  Erreur de Syntaxe', player: 'server' });
+                }
+            }
+        } else if (this.roomMessage !== '') {
+            this.socketService.send('roomMessage', this.roomMessage);
+        }
+
         this.roomMessage = '';
     }
 

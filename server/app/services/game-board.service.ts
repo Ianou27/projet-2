@@ -1,6 +1,6 @@
 import { CaseProperty } from './../../../common/assets/case-property';
 import { letterValue } from './../../../common/assets/reserve-letters';
-import { COLUMN_ROWS_NUMBER } from './../../../common/constants/general-constants';
+import { COLUMN_ROWS_MINIMUM, COLUMN_ROWS_NUMBER, MAXIMUM_ROW_COLUMN } from './../../../common/constants/general-constants';
 import { LETTER_2X, LETTER_3X, WORD_2X, WORD_3X } from './../../../common/constants/tile-information';
 import { Tile } from './../../../common/tile/Tile';
 import { Vec2 } from './../../../common/vec2';
@@ -38,6 +38,33 @@ export class GameBoardService {
             this.cases[positionX][positionY].value = letterValue[letter];
         }
         this.cases[positionX][positionY].letter = letter;
+    }
+
+    nextTile(currentTile: Tile, orientation: string, revert: boolean): Tile {
+        let nextTile: Tile;
+        if (orientation === 'h') {
+            if (revert) {
+                nextTile = this.cases[currentTile.positionX - 1][currentTile.positionY];
+            } else {
+                nextTile = this.cases[currentTile.positionX + 1][currentTile.positionY];
+            }
+        } else {
+            if (revert) {
+                nextTile = this.cases[currentTile.positionX][currentTile.positionY - 1];
+            } else {
+                nextTile = this.cases[currentTile.positionX][currentTile.positionY + 1];
+            }
+        }
+        return nextTile;
+    }
+
+    isLastTile(currentTile: Tile, orientation: string) {
+        if (orientation === 'h') {
+            if (currentTile.positionX === MAXIMUM_ROW_COLUMN || currentTile.positionX === COLUMN_ROWS_MINIMUM) return true;
+        } else if (currentTile.positionY === MAXIMUM_ROW_COLUMN || currentTile.positionY === COLUMN_ROWS_MINIMUM) {
+            return true;
+        }
+        return false;
     }
 
     private verifyProperty(property: Vec2[], positionX: number, positionY: number): boolean {

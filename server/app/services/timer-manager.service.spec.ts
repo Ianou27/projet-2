@@ -9,10 +9,11 @@ import { GameManager } from './game-manager.service';
 import { Timer } from './timer-manager.service';
 
 describe('IdManager tests', () => {
-    const timer = new Timer();
+    const timer = new Timer('60');
     const idManager = new IdManager();
-    const gameManager = new GameManager();
+    const game = new Game();
     const sio = new io.Server();
+    const gameManager = new GameManager();
 
     beforeEach(() => {
         timer.timeLeft = 60;
@@ -29,18 +30,16 @@ describe('IdManager tests', () => {
 
     it('start should do nothing if time is -1', (done) => {
         timer.timeLeft = -1;
-        timer.start('id', idManager, sio, gameManager);
+        timer.start(game, sio);
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         setTimeout(() => {}, 1200);
         done();
     });
 
     it('start should start counting down and emit the time', (done) => {
-        const testGame = new Game();
         const room: Room = {
             player1: 'username',
             player2: 'player2',
-            game: testGame,
         };
         const user: User = {
             username: 'username',
@@ -49,7 +48,7 @@ describe('IdManager tests', () => {
         };
         idManager.users.push(user);
         idManager.rooms.push(room);
-        timer.start('id', idManager, sio, gameManager);
+        timer.start(game, sio);
         setTimeout(() => {
             expect(timer.timeLeft).to.equal(59);
         }, 1001);
@@ -59,7 +58,7 @@ describe('IdManager tests', () => {
     it('start reset the timer when it goes below -1', (done) => {
         timer.timeLeft = -2;
         const passSpy = sinon.stub(gameManager, 'pass');
-        timer.start('id', idManager, sio, gameManager);
+        timer.start(game, sio);
         setTimeout(() => {
             assert(passSpy.called);
             expect(timer.timeLeft).to.equal(60);
@@ -70,7 +69,7 @@ describe('IdManager tests', () => {
     it('start should call getUsername and getRoom', () => {
         const userSpy = sinon.spy(idManager, 'getUsername');
         const roomSpy = sinon.spy(idManager, 'getRoom');
-        timer.start('id', idManager, sio, gameManager);
+        timer.start(game, sio);
         assert(userSpy.called);
         assert(roomSpy.called);
     });

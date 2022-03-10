@@ -18,7 +18,7 @@ describe('Player Class', () => {
             tile.value = letterValue[letter];
             lettersTile.push(tile);
         }
-        player = new Player(lettersTile, hisTurn, 'player1');
+        player = new Player(lettersTile, hisTurn, 'player1', { username: 'rt', id: '1', room: 'room1' });
     });
 
     it('constructor should construct a player with object tile as letters', () => {

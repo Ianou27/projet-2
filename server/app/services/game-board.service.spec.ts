@@ -1,13 +1,15 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 import { expect } from 'chai';
 import { CaseProperty } from './../../../common/assets/case-property';
+import { Tile } from './../../../common/tile/Tile';
 import { GameBoardService } from './game-board.service';
 
 describe('GameBoard', () => {
     let gameBoard: GameBoardService;
-
+    let currentTile: Tile;
     beforeEach(() => {
         gameBoard = new GameBoardService();
+        currentTile = gameBoard.cases[1][1];
     });
     it('constructor should construct a gameBoard of 15x15 tiles ', () => {
         let result = 0;
@@ -88,5 +90,39 @@ describe('GameBoard', () => {
         gameBoard.addLetterTile(positionX, positionY, letter);
         const result = gameBoard.tileContainsLetter(positionX, positionY);
         expect(result).equal(true);
+    });
+
+    it('nextTile should return the right tile depending on parameters', () => {
+        expect(gameBoard.nextTile(currentTile, 'h', false)).equal(gameBoard.cases[2][1]);
+    });
+
+    it('nextTile should return the left tile depending on parameters', () => {
+        expect(gameBoard.nextTile(currentTile, 'h', true)).equal(gameBoard.cases[0][1]);
+    });
+
+    it('nextTile should return the upper tile depending on parameters', () => {
+        expect(gameBoard.nextTile(currentTile, 'v', true)).equal(gameBoard.cases[1][0]);
+    });
+
+    it('nextTile should return the tile down depending on parameters', () => {
+        expect(gameBoard.nextTile(currentTile, 'v', false)).equal(gameBoard.cases[1][2]);
+    });
+
+    it('isLastTile should return true if tile position X or Y equals 0 or 14 depending on orientation', () => {
+        const tile = gameBoard.cases[0][1];
+        expect(gameBoard.isLastTile(tile, 'h')).equal(true);
+    });
+
+    it('isLastTile should return false if tile position X or Y equals 0 or 14 depending on orientation', () => {
+        expect(gameBoard.isLastTile(currentTile, 'h')).equal(false);
+    });
+
+    it('isLastTile should return true if tile position X or Y equals 0 or 14 depending on orientation', () => {
+        const tile = gameBoard.cases[2][14];
+        expect(gameBoard.isLastTile(tile, 'v')).equal(true);
+    });
+
+    it('isLastTile should return false if tile position X or Y equals 0 or 14 depending on orientation', () => {
+        expect(gameBoard.isLastTile(currentTile, 'h')).equal(false);
     });
 });
