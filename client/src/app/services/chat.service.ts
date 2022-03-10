@@ -190,6 +190,10 @@ export class ChatService {
                     this.socketService.send('reserve', command);
                     break;
                 }
+                case '!indice': {
+                    this.socketService.send('indice', command);
+                    break;
+                }
                 default: {
                     this.roomMessages.push({ username: 'Server', message: '  Erreur de Syntaxe', player: 'server' });
                 }

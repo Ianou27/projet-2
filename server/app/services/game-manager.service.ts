@@ -1,3 +1,4 @@
+import { ClueCommand } from '@app/classes/clueCommand/clue-command';
 import { LetterScore } from './../../../common/assets/reserve-letters';
 import { MAXIMUM_CHARACTERS_MESSAGE } from './../../../common/constants/general-constants';
 import { ExchangeCommand } from './../classes/exchangeCommand/exchange-command';
@@ -14,6 +15,10 @@ export class GameManager {
         }
 
         return message;
+    }
+
+    clueCommandValid(command: string[]): boolean {
+        return ClueCommand.verifyFormat(command);
     }
 
     reserveCommandValid(command: string[]): boolean {
@@ -95,5 +100,14 @@ export class GameManager {
             message = 'Format non valide';
         }
         return message;
+    }
+
+    formatClueCommand(game: Game): string {
+        const clues = ClueCommand.findClues(game);
+        let text = 'Possibilités de placements : \n';
+        for (const clue of clues) {
+            text = text.concat(clue.command + ' pour ' + clue.score.toString() + ' points \n');
+        }
+        return text;
     }
 }
