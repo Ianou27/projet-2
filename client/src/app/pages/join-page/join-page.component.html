@@ -117,9 +117,22 @@
                 </marquee>
             </mat-toolbar>
             <div>
+                <div *ngIf="this.chatService.allRooms.length !== 0" class="spaceButton">
+                    <a
+                        mat-fab
+                        color="primary"
+                        matTooltip="Placement aléatoire"
+                        matTooltipPosition="right"
+                        [disabled]="this.chatService.allRooms.length === 1"
+                        (click)="randomJoin()"
+                    >
+                        <mat-icon>sync</mat-icon>
+                    </a>
+                </div>
+
                 <mat-accordion *ngFor="let room of this.chatService.allRooms" multi>
                     <div *ngIf="room.player2 === ''">
-                        <mat-expansion-panel>
+                        <mat-expansion-panel [expanded]="selectedRoomName === room.player1">
                             <mat-expansion-panel-header>
                                 <mat-panel-title>
                                     <mat-icon>people</mat-icon>
@@ -149,8 +162,7 @@
                                     (click)="openWaitToJoin()"
                                     mat-raised-button
                                     color="primary"
-                                    [disabled]="this.name === room.player1"
-                                    [disabled]="form.invalid"
+                                    [disabled]="form.invalid || this.name === room.player1"
                                     [mat-dialog-close]
                                     cdkFocusInitial
                                     mat-dialog-close="true"

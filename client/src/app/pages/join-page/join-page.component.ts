@@ -17,6 +17,7 @@ export class JoinPageComponent implements OnInit {
     alphaNumericRegex = /^[a-zA-Z]*$/;
     selectedDico = 'Dictionnaire par defaut';
     selectedTime = '60';
+    selectedRoomName: string;
 
     time = [
         { value: '30', text: '0:30' },
@@ -51,6 +52,9 @@ export class JoinPageComponent implements OnInit {
         this.waitDialog.open(WaitingPlayerTwoComponent, {
             disableClose: true,
         });
+    }
+    randomJoin() {
+        this.selectedRoomName = this.chatService.allRooms[Math.floor(Math.random() * this.chatService.allRooms.length)].player1;
     }
 
     createRoom() {
