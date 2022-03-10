@@ -87,7 +87,7 @@ describe('ChatService', () => {
     it('createRoom() should emit an event and call updateRooms()', () => {
         const updateRoomSpy = spyOn(service, 'updateRooms');
         const emitSpy = spyOn(service.socketService.socket, 'emit');
-        service.createRoom('test', 'testRoom');
+        service.createRoom('test', 'testRoom', 30);
         expect(emitSpy).toHaveBeenCalled();
         expect(emitSpy).toHaveBeenCalledWith('createRoom', 'test', 'testRoom');
         expect(updateRoomSpy).toHaveBeenCalled();
