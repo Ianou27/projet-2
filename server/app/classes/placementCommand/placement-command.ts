@@ -1,5 +1,4 @@
 import * as fs from 'fs';
-/* import * as fs from 'fs'; */
 import { letterValue } from './../../../../common/assets/reserve-letters';
 import {
     CENTER_ROW_COLUMN,
@@ -13,10 +12,7 @@ import { rowNumber } from './../../../assets/row';
 import { PlacementInformations } from './../../placement-informations';
 import { Game } from './../game/game';
 import { PointsCalculator } from './../pointsCalculator/points-calculator';
-// // eslint-disable-next-line @typescript-eslint/no-explicit-any
-// declare let require: any;
-// // eslint-disable-next-line @typescript-eslint/no-require-imports
-// const fs = require('fs'); // eslint-disable-line @typescript-eslint/no-var-requires
+
 export class PlacementCommand {
     static dictionaryArray: string[] = JSON.parse(fs.readFileSync('./assets/dictionnary.json').toString()).words;
 
@@ -92,7 +88,7 @@ export class PlacementCommand {
             }
             const letterPlace = placementInformations.letters[lettersIter];
             tile.letter = letterPlace.toUpperCase();
-            tile.value = letterValue[letterPlace.toUpperCase()];
+            if (!this.isUpper(letterPlace)) tile.value = letterValue[letterPlace.toUpperCase()];
             positions.push(tile);
             tile = game.gameBoard.nextTile(tile, placementInformations.orientation, false);
             game.playerTurn().changeLetter(letterPlace, '');
@@ -100,6 +96,10 @@ export class PlacementCommand {
             letterCount--;
         }
         return positions;
+    }
+
+    static isUpper(letter: string): boolean {
+        return /[A-Z]/.test(letter);
     }
 
     static separatePlaceCommandInformations(commandInformations: string[]): PlacementInformations {
@@ -250,7 +250,6 @@ export class PlacementCommand {
         let rightLimit = this.dictionaryArray.length - 1;
         while (leftLimit <= rightLimit) {
             const middleLimit = leftLimit + Math.floor((rightLimit - leftLimit) / 2);
-            // localeCompare helps us know if the word is before(-1), equivalent(0) or after(1)
             const comparisonResult = word.localeCompare(this.dictionaryArray[middleLimit], 'en', { sensitivity: 'base' });
             if (comparisonResult < 0) {
                 rightLimit = middleLimit - 1;
