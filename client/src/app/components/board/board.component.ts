@@ -11,6 +11,27 @@ export class BoardComponent {
     constructor(public chatService: ChatService) {}
 
     @HostListener('body:keydown', ['$event'])
+    placeLetter(event: KeyboardEvent) {
+        console.log(event.key);
+        const currentTile = document.getElementById('currentSelection');
+        const key = event.key.toUpperCase();
+        const keyInTileHolder = this.inTileHolder(key);
+        const tileHolder = document.getElementById('tile-holder');
+        if (!keyInTileHolder[0]) return;
+        if (!currentTile) return;
+        if (!currentTile.getAttribute('ng-reflect-position-y')) return;
+        if (!currentTile.getAttribute('ng-reflect-position-x')) return;
+        const posX = Number(currentTile.getAttribute('ng-reflect-position-x'));
+        const posY = Number(currentTile.getAttribute('ng-reflect-position-y'));
+        if (posX && posY) {
+            this.chatService.boardService.board[posX][posY].letter = key;
+            this.chatService.boardService.board[posX][posY].value = Number(tileHolder?.children[keyInTileHolder[1]].getAttribute('ng-reflect-value'));
+            this.letterPlaced.push(key);
+        }
+        console.log(key.toUpperCase());
+        console.log(currentTile);
+    }
+
     /* keyHandler(event: KeyboardEvent) {
         const key = event.key;
         switch (key) {
@@ -32,25 +53,6 @@ export class BoardComponent {
         }
         console.log(event.key);
     } */
-    placeLetter(event: KeyboardEvent) {
-        const currentTile = document.getElementById('currentSelection');
-        const key = event.key.toUpperCase();
-        const keyInTileHolder = this.inTileHolder(key);
-        const tileHolder = document.getElementById('tile-holder');
-        if (!keyInTileHolder[0]) return;
-        if (!currentTile) return;
-        if (!currentTile.getAttribute('ng-reflect-position-y')) return;
-        if (!currentTile.getAttribute('ng-reflect-position-x')) return;
-        const posX = Number(currentTile.getAttribute('ng-reflect-position-x'));
-        const posY = Number(currentTile.getAttribute('ng-reflect-position-y'));
-        if (posX && posY) {
-            this.chatService.boardService.board[posX][posY].letter = key;
-            this.chatService.boardService.board[posX][posY].value = Number(tileHolder?.children[keyInTileHolder[1]].getAttribute('ng-reflect-value'));
-            this.letterPlaced.push(key);
-        }
-        console.log(key.toUpperCase());
-        console.log(currentTile);
-    }
 
     inTileHolder(key: string): [boolean, number] {
         const tileHolder = document.getElementById('tile-holder');
