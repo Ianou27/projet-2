@@ -106,7 +106,7 @@ export class GameManager {
         const clues = ClueCommand.findClues(game);
         let text = 'Possibilités de placements : \n';
         for (const clue of clues) {
-            text = text.concat(clue.command + ' pour ' + clue.score.toString() + ' points' + '\n');
+            text = text.concat(clue.command + ' pour ' + clue.score.toString() + ' points \n');
         }
         return text;
     }
