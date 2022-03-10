@@ -68,9 +68,8 @@ export class Game {
     playerTurn(): Player {
         if (this.player1.getHisTurn()) {
             return this.player1;
-        } else {
-            return this.player2;
         }
+        return this.player2;
     }
 
     surrender(winner: string) {

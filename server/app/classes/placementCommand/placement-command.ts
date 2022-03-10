@@ -54,19 +54,19 @@ export class PlacementCommand {
         if (placementScore === 0) {
             this.restoreBoard(game, letterPositions);
             return false;
-        } else {
-            let lettersToPlace = placementInformations.letters.length;
-            while (lettersToPlace > 0) {
-                game.playerTurn().changeLetter('', game.reserveLetters.getRandomLetterReserve());
-                lettersToPlace--;
-            }
-            game.playerTurn().points += placementScore;
-            game.gameState.firstTurn = false;
-            game.changeTurnTwoPlayers();
-            game.timer.reset();
-            game.gameState.passesCount = 0;
-            game.verifyGameState();
         }
+        let lettersToPlace = placementInformations.letters.length;
+        while (lettersToPlace > 0) {
+            game.playerTurn().changeLetter('', game.reserveLetters.getRandomLetterReserve());
+            lettersToPlace--;
+        }
+        game.playerTurn().points += placementScore;
+        game.gameState.firstTurn = false;
+        game.changeTurnTwoPlayers();
+        game.timer.reset();
+        game.gameState.passesCount = 0;
+        game.verifyGameState();
+
         return true;
     }
 
