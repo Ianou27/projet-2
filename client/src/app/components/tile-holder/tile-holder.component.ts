@@ -21,6 +21,7 @@ export class TileHolderComponent {
     buttonDetect(event: KeyboardEvent) {
         const swapper = document.getElementById('swap-selected');
         this.buttonPressed = event.key;
+        this.scrollDirection = 0;
         if (this.buttonPressed === 'ArrowLeft' && swapper) {
             this.handleSide('Left', swapper);
         }
@@ -43,6 +44,7 @@ export class TileHolderComponent {
     @HostListener('mousewheel', ['$event'])
     onScroll(event: WheelEvent) {
         const swapper = document.getElementById('swap-selected');
+        this.buttonPressed = '';
         this.scrollDirection = event.deltaY;
         if (this.scrollDirection < 0 && swapper) {
             this.handleSide('Left', swapper);
