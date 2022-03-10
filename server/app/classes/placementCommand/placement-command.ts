@@ -19,9 +19,9 @@ export class PlacementCommand {
     static validatedPlaceCommandFormat(commandInformations: string[]): boolean {
         if (commandInformations.length !== 3) return false;
         const command: string = commandInformations.join(' ');
-        const oneLetterValidWithoutOrientation = /^!placer ([A-O][1-9]|[A-O][1][0-5]) [a-z A-Z]$/;
-        const oneLetterValidWithOrientation = /^!placer ([A-O][1-9][hv]|[A-O][1][0-5][hv]) [a-z A-Z]$/;
-        const lettersValidPattern = /^!placer ([A-O][1-9][hv]|[A-O][1][0-5][hv]) [a-z A-Z]+$/;
+        const oneLetterValidWithoutOrientation = /^!placer ([a-o][1-9]|[a-o][1][0-5]) [a-z A-Z]$/;
+        const oneLetterValidWithOrientation = /^!placer ([a-o][1-9][hv]|[a-o][1][0-5][hv]) [a-z A-Z]$/;
+        const lettersValidPattern = /^!placer ([a-o][1-9][hv]|[a-o][1][0-5][hv]) [a-z A-Z]+$/;
         return oneLetterValidWithoutOrientation.test(command) || oneLetterValidWithOrientation.test(command) || lettersValidPattern.test(command);
     }
 
