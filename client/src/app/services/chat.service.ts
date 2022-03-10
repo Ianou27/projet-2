@@ -24,7 +24,7 @@ export class ChatService {
     informationToJoin: InfoToJoin;
     gotAccepted: boolean = false;
     gotRefused: boolean = false;
-
+    myTurn: boolean = true;
     player1Point: number = 0;
     player2Point: number = 0;
     player1Username: string = '';
@@ -97,6 +97,9 @@ export class ChatService {
             this.player1ChevaletLetters = player1;
             this.player2ChevaletLetters = player2;
             this.reserve = reserve;
+        });
+         this.socketService.on('turn', (turn: boolean) => {
+            this.myTurn = turn;
         });
 
         this.socketService.on('roomMessage', (roomMessage: Message) => {
