@@ -1,6 +1,6 @@
 // import { injectable } from 'inversify';
 import { BestScore } from '@common/types';
-import { Db, MongoClient, MongoClientOptions } from 'mongodb';
+import { Db, MongoClient } from 'mongodb';
 import 'reflect-metadata';
 import { Service } from 'typedi';
 
@@ -14,17 +14,15 @@ export class DatabaseService {
     private db: Db;
     private client: MongoClient;
 
-    private options: MongoClientOptions = {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    };
+    // private options: MongoClientOptions = {
+    //     useNewUrlParser: true,
+    //     useUnifiedTopology: true,
+    // };
 
     async start(url: string = DATABASE_URL): Promise<MongoClient | null> {
         try {
-            const client = new MongoClient(url, this.options);
-            await this.client.connect();
-            // const client = await MongoClient.connect(url, this.options);
-            // this.client = client;
+            const client = await MongoClient.connect(url /* , this.options*/);
+            this.client = client;
             this.db = client.db(DATABASE_NAME);
         } catch {
             throw new Error('Database connection error');
@@ -64,6 +62,7 @@ export class DatabaseService {
             },
         ];
 
+        // eslint-disable-next-line no-console
         console.log('THIS ADDS DATA TO THE DATABASE, DO NOT USE OTHERWISE');
         for (const bestScore of bestScores) {
             await this.db.collection(DATABASE_COLLECTION).insertOne(bestScore);
