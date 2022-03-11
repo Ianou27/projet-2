@@ -48,6 +48,7 @@ export class BoardComponent {
         const lastWrittenTile = writtenTiles[writtenTiles.length - 1];
         const keyInTileHolder = this.inTileHolder(letter);
         const tileHolder = document.getElementById('tile-holder');
+        console.log(!keyInTileHolder);
         if (!keyInTileHolder[0]) return;
         if (!currentTile) return;
         const posX = Number(lastWrittenTile.getAttribute('data-position-x'));
@@ -67,8 +68,12 @@ export class BoardComponent {
         const tileHolder = document.getElementById('tile-holder');
         if (tileHolder) {
             for (let i = 0; i < tileHolder.childElementCount; i++) {
-                if (key === tileHolder.children[i].children[0].getElementsByTagName('p')[0].innerHTML) {
-                    return [true, i];
+                try {
+                    if (key === tileHolder.children[i].children[0].getElementsByTagName('p')[0].innerHTML) {
+                        return [true, i];
+                    }
+                } catch (e) {
+                    break;
                 }
             }
         }
