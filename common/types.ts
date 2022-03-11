@@ -16,9 +16,13 @@ export type User = {
     room: string;
 };
 
-export type Message ={
-    player:string
-    username: string
-    message:string
+export type Message = {
+    player: string;
+    username: string;
+    message: string;
+};
 
+export type BestScore = {
+    player: string;
+    score: number;
 };
