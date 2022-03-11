@@ -11,7 +11,7 @@ export class BoardComponent {
     constructor(public chatService: ChatService) {}
 
     @HostListener('body:keydown', ['$event'])
-    /* keyHandler(event: KeyboardEvent) {
+    keyHandler(event: KeyboardEvent) {
         const key = event.key.toUpperCase();
         switch (key) {
             case 'Backspace': {
@@ -25,28 +25,42 @@ export class BoardComponent {
                 break;
             }
             default: {
-                placeLetter(key);
-                // update currentSelection
+                this.placeLetter(key);
             }
         }
-        console.log(event.key);
-    } */
+    }
+
+    /* nextTile(currentTile: Element) {
+        if (!currentTile) return;
+        currentTile.getAttribute()
+    }*/
+
+    /* placeLetter2(letter: string) {
+        if (!this.inTileHolder(letter)[0]) return;
+        const currentTile = document.getElementById('currentSelection');
+        currentTile?.setAttribute('class', 'written');
+
+    }*/
+
     placeLetter(letter: string) {
         const currentTile = document.getElementById('currentSelection');
+        const writtenTiles = document.getElementsByClassName('written');
+        const lastWrittenTile = writtenTiles[writtenTiles.length - 1];
+        if (lastWrittenTile) lastWrittenTile.setAttribute('class', 'written');
         const keyInTileHolder = this.inTileHolder(letter);
         const tileHolder = document.getElementById('tile-holder');
         if (!keyInTileHolder[0]) return;
         if (!currentTile) return;
-        if (!currentTile.getAttribute('ng-reflect-position-y')) return;
-        if (!currentTile.getAttribute('ng-reflect-position-x')) return;
-        const posX = Number(currentTile.getAttribute('ng-reflect-position-x'));
-        const posY = Number(currentTile.getAttribute('ng-reflect-position-y'));
+        if (!lastWrittenTile.getAttribute('ng-reflect-position-y')) return;
+        if (!lastWrittenTile.getAttribute('ng-reflect-position-x')) return;
+        const posX = Number(lastWrittenTile.getAttribute('ng-reflect-position-x'));
+        const posY = Number(lastWrittenTile.getAttribute('ng-reflect-position-y'));
         if (posX && posY) {
             this.chatService.boardService.board[posX][posY].letter = letter;
             this.chatService.boardService.board[posX][posY].value = Number(tileHolder?.children[keyInTileHolder[1]].getAttribute('ng-reflect-value'));
             this.letterPlaced.push(letter);
         }
-        console.log(key.toUpperCase());
+        console.log(letter);
         console.log(currentTile);
     }
 
@@ -88,6 +102,7 @@ export class BoardComponent {
                 if (board.children[i].children[j].children[0].id === 'currentSelection') {
                     if (board.children[i].children[j].children[0] !== currentSelection) {
                         board.children[i].children[j].children[0].id = '';
+                        board.children[i].children[j].children[0].className = '';
                         this.clearSelection(board.children[i].children[j].children[0]);
                     }
                 }
