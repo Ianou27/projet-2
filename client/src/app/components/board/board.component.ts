@@ -29,12 +29,6 @@ export class BoardComponent {
             }
         }
     }
-
-    /* nextTile(currentTile: Element) {
-        if (!currentTile) return;
-        currentTile.getAttribute()
-    }*/
-
     /* placeLetter2(letter: string) {
         if (!this.inTileHolder(letter)[0]) return;
         const currentTile = document.getElementById('currentSelection');
@@ -42,15 +36,26 @@ export class BoardComponent {
 
     }*/
 
+    nextTile(currentTile: Element) {
+        const board = document.getElementsByClassName('tile-container')[0];
+        const posX = Number(currentTile.getAttribute('data-position-x'));
+        const posY = Number(currentTile.getAttribute('data-position-y'));
+        if (currentTile.getElementsByClassName('tileEmptyHorizontal')[0]) {
+            board.children[posX + 1].children[posY].children[0].setAttribute('class', 'writing');
+        }
+        // return board.children[posX].children[posY + 1].children[0];
+    }
+
     placeLetter(letter: string) {
-        const currentTile = document.getElementById('currentSelection');
+        // const currentTile = document.getElementById('currentSelection');
         const writtenTiles = document.getElementsByClassName('writing');
         const lastWrittenTile = writtenTiles[writtenTiles.length - 1];
         const keyInTileHolder = this.inTileHolder(letter);
         const tileHolder = document.getElementById('tile-holder');
         console.log(!keyInTileHolder);
         if (!keyInTileHolder[0]) return;
-        if (!currentTile) return;
+        // if (!currentTile) return;
+        console.log(this.nextTile(lastWrittenTile));
         const posX = Number(lastWrittenTile.getAttribute('data-position-x'));
         console.log(posX);
 
@@ -61,7 +66,7 @@ export class BoardComponent {
         lastWrittenTile.setAttribute('class', 'written');
         this.letterPlaced.push(letter);
         console.log(letter);
-        console.log(currentTile);
+        // console.log(currentTile);
     }
 
     inTileHolder(key: string): [boolean, number] {
