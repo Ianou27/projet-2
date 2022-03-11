@@ -44,22 +44,21 @@ export class BoardComponent {
 
     placeLetter(letter: string) {
         const currentTile = document.getElementById('currentSelection');
-        const writtenTiles = document.getElementsByClassName('written');
+        const writtenTiles = document.getElementsByClassName('writing');
         const lastWrittenTile = writtenTiles[writtenTiles.length - 1];
-        if (lastWrittenTile) lastWrittenTile.setAttribute('class', 'written');
         const keyInTileHolder = this.inTileHolder(letter);
         const tileHolder = document.getElementById('tile-holder');
         if (!keyInTileHolder[0]) return;
         if (!currentTile) return;
-        if (!lastWrittenTile.getAttribute('ng-reflect-position-y')) return;
-        if (!lastWrittenTile.getAttribute('ng-reflect-position-x')) return;
-        const posX = Number(lastWrittenTile.getAttribute('ng-reflect-position-x'));
-        const posY = Number(lastWrittenTile.getAttribute('ng-reflect-position-y'));
-        if (posX && posY) {
-            this.chatService.boardService.board[posX][posY].letter = letter;
-            this.chatService.boardService.board[posX][posY].value = Number(tileHolder?.children[keyInTileHolder[1]].getAttribute('ng-reflect-value'));
-            this.letterPlaced.push(letter);
-        }
+        const posX = Number(lastWrittenTile.getAttribute('data-position-x'));
+        console.log(posX);
+
+        const posY = Number(lastWrittenTile.getAttribute('data-position-y'));
+        console.log(posY);
+        const value = Number(tileHolder?.children[keyInTileHolder[1]].getElementsByTagName('p')[1].innerHTML);
+        this.chatService.boardService.setLetter(posX, posY, letter, value);
+        lastWrittenTile.setAttribute('class', 'written');
+        this.letterPlaced.push(letter);
         console.log(letter);
         console.log(currentTile);
     }
@@ -68,7 +67,7 @@ export class BoardComponent {
         const tileHolder = document.getElementById('tile-holder');
         if (tileHolder) {
             for (let i = 0; i < tileHolder.childElementCount; i++) {
-                if (key === tileHolder.children[i].getAttribute('ng-reflect-letter')) {
+                if (key === tileHolder.children[i].children[0].getElementsByTagName('p')[0].innerHTML) {
                     return [true, i];
                 }
             }
@@ -109,6 +108,7 @@ export class BoardComponent {
             }
         }
         currentSelection.id = 'currentSelection';
+        currentSelection.className = 'writing';
     }
 
     clearSelection(elementToClear: Element) {

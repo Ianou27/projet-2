@@ -31,8 +31,9 @@ export class BoardService {
         }
     }
 
-    getBoard() {
-        return this.board;
+    setLetter(posX: number, posY: number, letter: string, value: number) {
+        this.board[posX][posY].letter = letter;
+        this.board[posX][posY].value = value;
     }
 
     private verifyProperty(property: Vec2[], positionX: number, positionY: number): boolean {
