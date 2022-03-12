@@ -150,6 +150,10 @@ export class ChatService {
         this.updateRooms();
     }
 
+    createSoloGame(username: string) {
+        this.socketService.socket.emit('createSoloGame', username);
+    }
+
     joinRoom() {
         this.socketService.socket.emit('joinRoom', this.informationToJoin.username, this.informationToJoin.roomObj);
         this.updateRooms();
@@ -180,7 +184,7 @@ export class ChatService {
                     this.roomMessages.push({ username: 'Server', message: '  Erreur de Syntaxe', player: 'server' });
                 }
             }
-        } else if (this.roomMessage != '') {
+        } else if (this.roomMessage !== '') {
             this.socketService.send('roomMessage', this.roomMessage);
         }
 

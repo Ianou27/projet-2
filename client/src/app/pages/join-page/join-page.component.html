@@ -12,7 +12,7 @@
         <mat-icon style="transform: rotate(180deg)">exit_to_app</mat-icon>
     </a>
     <mat-tab-group mat-stretch-tabs>
-        <mat-tab label="Partie solo (Prochainement)">
+        <mat-tab label="Partie solo ">
             <div mat-dialog-content [formGroup]="form" class="dialog">
                 <div>
                     <form [formGroup]="form">
@@ -51,13 +51,13 @@
                     </form>
                     <div mat-dialog-actions id="confirm-button">
                         <button
-                            (click)="createRoom()"
+                            (click)="createSoloGame()"
                             mat-raised-button
                             color="primary"
                             [mat-dialog-close]
                             cdkFocusInitial
                             mat-dialog-close="true"
-                            disabled
+                            [disabled]="form.invalid"
                         >
                             Confirmer
                         </button>

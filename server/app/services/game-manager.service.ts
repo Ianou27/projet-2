@@ -5,8 +5,6 @@ import { PassCommand } from './../classes/passCommand/pass-command';
 import { PlacementCommand } from './../classes/placementCommand/placement-command';
 
 export class GameManager {
-    
-    
     placeWord(command: string[], game: Game): string {
         let message = 'placer';
         if (!PlacementCommand.placeWord(command, game)) {
@@ -17,8 +15,7 @@ export class GameManager {
     }
 
     pass(game: Game) {
-        if(!game.gameState.gameFinished)game.passTurn();
-        
+        if (!game.gameState.gameFinished) game.passTurn();
     }
 
     exchange(command: string[], game: Game) {
@@ -33,7 +30,6 @@ export class GameManager {
         return PassCommand.validatedPassCommandFormat(command);
     }
 
-   
     placeFormatValid(command: string[]) {
         return PlacementCommand.validatedPlaceCommandFormat(command);
     }

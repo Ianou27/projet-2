@@ -18,13 +18,12 @@ interface PlacementScore {
 }
 
 export class VirtualPlayer {
-    dictionaryArray: string[] = JSON.parse(fs.readFileSync('./assets/dictionnary.json').toString()).words;
-
-    findAllWords(letters: string[], letterOnBoard: string): string[] {
+    static findAllWords(letters: string[], letterOnBoard: string): string[] {
+        const dictionaryArray: string[] = JSON.parse(fs.readFileSync('./assets/dictionnary.json').toString()).words;
         let validWords: string[] = [];
         let words: string[] = [];
         let combinations = this.getCombinations(letters.map((letter) => letter.toLowerCase())).filter((item) => {
-            return item.length < 7;
+            return item.length < 6;
         });
 
         const middleIndex = Math.ceil(combinations.length);
@@ -40,7 +39,7 @@ export class VirtualPlayer {
         );
 
         for (const word of words) {
-            if (PlacementCommand.validatedWordDictionary(word, this.dictionaryArray)) {
+            if (PlacementCommand.validatedWordDictionary(word, dictionaryArray)) {
                 validWords = validWords.concat(word);
             }
             if (validWords.length >= 5) {
@@ -50,18 +49,7 @@ export class VirtualPlayer {
         return validWords;
     }
 
-    actionVirtualBeginnerPlayer(game: Game): string[] {
-        const probability = Math.floor(Math.random() * 100);
-        if (probability <= 10) {
-            return '!passer'.split(' ');
-        } else if (probability <= 20) {
-            return this.exchangeLettersCommand(game);
-        } else {
-            return this.placementLettersCommand(game);
-        }
-    }
-
-    heapsPermute(array: string[], n: number, words: string[]): string[] {
+    static heapsPermute(array: string[], n: number, words: string[]): string[] {
         n = n || array.length;
         let j = 0;
         if (n === 1) {
@@ -80,7 +68,7 @@ export class VirtualPlayer {
         return words;
     }
 
-    findPlacementCommand(words: string[], placement: TilePlacementPossible, game: Game): PlacementScore[] {
+    static findPlacementCommand(words: string[], placement: TilePlacementPossible, game: Game): PlacementScore[] {
         const placementsCommands: PlacementScore[] = [];
         for (const word of words) {
             try {
@@ -112,7 +100,7 @@ export class VirtualPlayer {
         return placementsCommands;
     }
 
-    findLettersPosition(placementInformations: PlacementInformations, game: Game): Tile[] {
+    static findLettersPosition(placementInformations: PlacementInformations, game: Game): Tile[] {
         let letterCount = placementInformations.numberLetters;
         let tile: Tile = game.gameBoard.cases[placementInformations.column][placementInformations.row];
         let lettersIter = 0;
@@ -134,22 +122,22 @@ export class VirtualPlayer {
         return positions;
     }
 
-    findAllPlacementCommands(game: Game): PlacementScore[] {
+    static findAllPlacementCommands(game: Game): PlacementScore[] {
         const playerLetters = game.playerTurn().lettersToStringArray();
-        const placementPossible = this.findAllPositionGameBoard(game);
+        const placementPossible = this.findAllPositionGameBoard(game).slice(0, 15);
         let commandPlacements: PlacementScore[] = [];
         for (const placement of placementPossible) {
             const letters = playerLetters.concat(placement.tile.letter);
             const words = this.findAllWords(letters, placement.tile.letter);
             commandPlacements = commandPlacements.concat(this.findPlacementCommand(words, placement, game));
-            if (commandPlacements.length >= 15) {
+            if (commandPlacements.length >= 10) {
                 break;
             }
         }
         return commandPlacements;
     }
 
-    placementLettersCommand(game: Game): string[] {
+    static placementLettersCommand(game: Game): string[] {
         const allPlacementCommands = this.findAllPlacementCommands(game);
         let placementCommand = '';
         const probability = Math.floor(Math.random() * 100);
@@ -163,14 +151,14 @@ export class VirtualPlayer {
         return placementCommand.split(' ');
     }
 
-    findPlacementScoreRange(minScore: number, maxScore: number, commandPlacements: PlacementScore[]): string {
+    static findPlacementScoreRange(minScore: number, maxScore: number, commandPlacements: PlacementScore[]): string {
         for (const commandPlacement of commandPlacements) {
             if (minScore < commandPlacement.score && commandPlacement.score < maxScore) return commandPlacement.command;
         }
         return commandPlacements[0].command;
     }
 
-    findAllPositionGameBoard(game: Game): TilePlacementPossible[] {
+    static findAllPositionGameBoard(game: Game): TilePlacementPossible[] {
         const gameBoard = game.gameBoard;
         const tiles: TilePlacementPossible[] = [];
         for (let i = 0; i < MAXIMUM_ROW_COLUMN; i++) {
@@ -205,20 +193,20 @@ export class VirtualPlayer {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    shuffleArray(array: any[]): any[] {
+    static shuffleArray(array: any[]): any[] {
         return array
             .map((value) => ({ value, sort: Math.random() }))
             .sort((a, b) => a.sort - b.sort)
             .map(({ value }) => value);
     }
 
-    swap(array: string[], pos1: number, pos2: number) {
+    static swap(array: string[], pos1: number, pos2: number) {
         const temp = array[pos1];
         array[pos1] = array[pos2];
         array[pos2] = temp;
     }
 
-    getCombinations(chars: string[]) {
+    static getCombinations(chars: string[]) {
         const result: string[] = [];
         if (chars.indexOf('*') !== INDEX_OF_NOT_FOUND) {
             chars[chars.indexOf('*')] = this.getRandomLetterForBlank();
@@ -233,12 +221,12 @@ export class VirtualPlayer {
         return result;
     }
 
-    getRandomLetterForBlank(): string {
+    static getRandomLetterForBlank(): string {
         const randomLetters = ['A', 'E', 'I', 'L', 'O', 'N', 'T', 'S'];
         return randomLetters[Math.floor(Math.random() * randomLetters.length)];
     }
 
-    exchangeLettersCommand(game: Game): string[] {
+    static exchangeLettersCommand(game: Game): string[] {
         if (game.reserveLetters.letters.length === 0) {
             game.changeTurnTwoPlayers();
             return [];

@@ -27,6 +27,11 @@ export class SocketManager {
                 socket.join(room);
             });
 
+            socket.on('createSoloGame', (username: string) => {
+                this.roomManager.createSoloGame(username, socket.id, this.identification, this.sio);
+                socket.join(username);
+            });
+
             socket.on('joinRoom', (username: string, roomObj: Room) => {
                 const player1Id = this.identification.getId(roomObj.player1);
                 const letters = this.roomManager.joinRoom(username, roomObj, socket.id, this.identification, this.sio);
