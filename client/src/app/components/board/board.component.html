@@ -1,13 +1,7 @@
 <div class="tile-container">
     <div *ngFor="let row of this.chatService.boardService.board">
         <div *ngFor="let tile of row">
-            <app-tile
-                [letter]="tile.letter"
-                [value]="tile.value"
-                (click)="handleLeftClick($event)"
-                [positionX]="tile.positionX"
-                [positionY]="tile.positionY"
-            ></app-tile>
+            <app-tile [letter]="tile.letter" [value]="tile.value" [positionX]="tile.positionX" [positionY]="tile.positionY"></app-tile>
         </div>
     </div>
 </div>

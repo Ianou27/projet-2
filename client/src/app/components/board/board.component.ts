@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component } from '@angular/core';
 import { ChatService } from '@app/services/chat.service';
 
 @Component({
@@ -9,7 +9,7 @@ import { ChatService } from '@app/services/chat.service';
 export class BoardComponent {
     letterPlaced: string[] = [];
     constructor(public chatService: ChatService) {}
-
+    /*
     @HostListener('body:keydown', ['$event'])
     placeLetter(event: KeyboardEvent) {
         console.log(event.key);
@@ -55,7 +55,7 @@ export class BoardComponent {
             }
         }
         console.log(event.key);
-    } */
+    }
 
     inTileHolder(key: string): [boolean, number] {
         const tileHolder = document.getElementById('tile-holder');
@@ -106,5 +106,5 @@ export class BoardComponent {
     clearSelection(elementToClear: Element) {
         elementToClear.children[0].classList.replace('tileEmptyHorizontal', 'tileEmpty');
         elementToClear.children[0].classList.replace('tileEmptyVertical', 'tileEmpty');
-    }
+    } */
 }
