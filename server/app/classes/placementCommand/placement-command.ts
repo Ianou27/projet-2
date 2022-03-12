@@ -45,30 +45,6 @@ export class PlacementCommand {
         return insideBoard && wordCondition && tileHolderContains;
     }
 
-    static placeWord(commandInformations: string[], game: Game): boolean {
-        const placementInformations = this.separatePlaceCommandInformations(commandInformations);
-        let letterPositions: Tile[] = [];
-        letterPositions = PlacementCommand.place(placementInformations, game);
-        const placementScore = this.newWordsValid(commandInformations, game, letterPositions);
-        if (placementScore === 0) {
-            this.restoreBoard(game, letterPositions);
-            return false;
-        }
-        let lettersToPlace = placementInformations.letters.length;
-        while (lettersToPlace > 0) {
-            game.playerTurn().changeLetter('', game.reserveLetters.getRandomLetterReserve());
-            lettersToPlace--;
-        }
-        game.playerTurn().points += placementScore;
-        game.gameState.firstTurn = false;
-        game.changeTurnTwoPlayers();
-        game.timer.reset();
-        game.gameState.passesCount = 0;
-        game.verifyGameState();
-
-        return true;
-    }
-
     static restoreBoard(game: Game, letterPositions: Tile[]) {
         for (const tile of letterPositions) {
             game.playerTurn().changeLetter('', game.gameBoard.cases[tile.positionX][tile.positionY].letter);
@@ -279,13 +255,13 @@ export class PlacementCommand {
         return '';
     }
 
-    static validatedWordDictionary(word: string, dictionnary: string[]): boolean {
+    static validatedWordDictionary(word: string, dictionary: string[]): boolean {
         let leftLimit = 0;
-        let rightLimit = dictionnary.length - 1;
+        let rightLimit = dictionary.length - 1;
         while (leftLimit <= rightLimit) {
             const middleLimit = leftLimit + Math.floor((rightLimit - leftLimit) / 2);
             // localeCompare helps us know if the word is before(-1), equivalent(0) or after(1)
-            const comparisonResult = word.localeCompare(dictionnary[middleLimit], 'en', { sensitivity: 'base' });
+            const comparisonResult = word.localeCompare(dictionary[middleLimit], 'en', { sensitivity: 'base' });
             if (comparisonResult < 0) {
                 rightLimit = middleLimit - 1;
             } else if (comparisonResult > 0) {

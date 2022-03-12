@@ -1,3 +1,4 @@
+import { Tile } from '@common/tile/Tile';
 import * as io from 'socket.io';
 import { MAXIMUM_PASSES_COUNT } from './../../../../common/constants/general-constants';
 import { GameState } from './../../../../common/gameState';
@@ -59,6 +60,7 @@ export class Game {
         this.sio.to(this.player1.user.id).emit('turn', this.player1.hisTurn);
         this.sio.to(this.player2.user.id).emit('turn', this.player2.hisTurn);
     }
+
     startSoloGame(user: User, sio: io.Server) {
         this.timer = new Timer('60');
         this.player1 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player1', user, false);
@@ -73,16 +75,20 @@ export class Game {
         this.sio.to(user.id).emit('tileHolder', this.player1.letters);
         this.timer.start(this, this.sio);
     }
+
     changeTurnTwoPlayers() {
         this.player1.changeTurn();
         this.player2.changeTurn();
         this.sio.to(this.player1.user.id).emit('turn', this.player1.hisTurn);
         this.sio.to(this.player2.user.id).emit('turn', this.player2.hisTurn);
         if (this.playerTurn().hisBot) {
-            const command = this.actionVirtualBeginnerPlayer();
-            this.placementBot(command);
+            setTimeout(() => {
+                const command = this.actionVirtualBeginnerPlayer();
+                this.placementBot(command);
+            }, 3000);
         }
     }
+
     placementBot(command: string[]) {
         switch (command[0]) {
             case '!echanger': {
@@ -106,7 +112,7 @@ export class Game {
                 break;
             }
             case '!placer': {
-                PlacementCommand.placeWord(command, this);
+                this.placeWord(command);
                 this.sio
                     .to(this.player1.user.room)
                     .emit('updateReserve', this.reserveLetters.letters.length, this.player1.getNumberLetters(), this.player2.getNumberLetters());
@@ -117,7 +123,6 @@ export class Game {
                 });
                 this.sio.to(this.player1.user.room).emit('modification', this.gameBoard.cases, this.playerTurn().name);
                 this.sio.to(this.player1.user.room).emit('updatePoint', 'player2', this.player2.points);
-
                 break;
             }
         }
@@ -148,6 +153,30 @@ export class Game {
         }
         this.changeTurnTwoPlayers();
         this.gameState.passesCount = 0;
+    }
+
+    placeWord(commandInformations: string[]): boolean {
+        const placementInformations = PlacementCommand.separatePlaceCommandInformations(commandInformations);
+        let letterPositions: Tile[] = [];
+        letterPositions = PlacementCommand.place(placementInformations, this);
+        const placementScore = PlacementCommand.newWordsValid(commandInformations, this, letterPositions);
+        if (placementScore === 0) {
+            PlacementCommand.restoreBoard(this, letterPositions);
+            return false;
+        }
+        let lettersToPlace = placementInformations.letters.length;
+        while (lettersToPlace > 0) {
+            this.playerTurn().changeLetter('', this.reserveLetters.getRandomLetterReserve());
+            lettersToPlace--;
+        }
+        this.playerTurn().points += placementScore;
+        this.gameState.firstTurn = false;
+        this.changeTurnTwoPlayers();
+        this.timer.reset();
+        this.gameState.passesCount = 0;
+        this.verifyGameState();
+
+        return true;
     }
 
     passTurn(): void {

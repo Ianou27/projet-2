@@ -10,7 +10,7 @@ import { ReserveCommand } from './../classes/reserveCommand/reserve-command';
 export class GameManager {
     placeWord(command: string[], game: Game): string {
         let message = 'placer';
-        if (!PlacementCommand.placeWord(command, game)) {
+        if (!game.placeWord(command)) {
             message = 'commande impossible à realisé';
         }
 
