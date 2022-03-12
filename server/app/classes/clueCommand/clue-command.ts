@@ -1,5 +1,5 @@
 import { Game } from './../game/game';
-import { VirtualPlayer } from './../virtualPlayer/virtual-player';
+import { VirtualPlayer } from './../virtual-player/virtual-player';
 
 export class ClueCommand {
     static verifyFormat(commandInformations: string[]): boolean {

@@ -23,6 +23,25 @@ export class RoomManager {
         identification.rooms.push(roomObj);
         console.log(identification.users);
     }
+    createSoloGame(username: string, socketId: string, identification: IdManager, sio: io.Server) {
+        const user = {
+            username,
+            id: socketId,
+            room: username,
+        };
+        const roomObj = {
+            player1: username,
+            player2: 'bot',
+            time: '60',
+        };
+        identification.rooms.push(roomObj);
+        identification.users.push(user);
+        identification.roomMessages[username] = [];
+        const game = new Game();
+
+        game.startSoloGame(user, sio);
+        identification.games.push(game);
+    }
 
     joinRoom(username: string, roomObj: Room, socketId: string, identification: IdManager, sio: io.Server): Tile[][] {
         let tiles: Tile[][] = [];

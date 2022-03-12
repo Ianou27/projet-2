@@ -47,7 +47,6 @@ export class PlacementCommand {
 
     static placeWord(commandInformations: string[], game: Game): boolean {
         const placementInformations = this.separatePlaceCommandInformations(commandInformations);
-
         let letterPositions: Tile[] = [];
         letterPositions = PlacementCommand.place(placementInformations, game);
         const placementScore = this.newWordsValid(commandInformations, game, letterPositions);
@@ -248,7 +247,7 @@ export class PlacementCommand {
             for (const wordLetter of word) {
                 wordString = wordString.concat(wordLetter.letter);
             }
-            if (!this.validatedWordDictionary(wordString)) return 0;
+            if (!this.validatedWordDictionary(wordString, this.dictionaryArray)) return 0;
         }
         return PointsCalculator.calculatedPointsPlacement(wordsFormed, letterPositions);
     }
@@ -280,12 +279,13 @@ export class PlacementCommand {
         return '';
     }
 
-    static validatedWordDictionary(word: string): boolean {
+    static validatedWordDictionary(word: string, dictionnary: string[]): boolean {
         let leftLimit = 0;
-        let rightLimit = this.dictionaryArray.length - 1;
+        let rightLimit = dictionnary.length - 1;
         while (leftLimit <= rightLimit) {
             const middleLimit = leftLimit + Math.floor((rightLimit - leftLimit) / 2);
-            const comparisonResult = word.localeCompare(this.dictionaryArray[middleLimit], 'en', { sensitivity: 'base' });
+            // localeCompare helps us know if the word is before(-1), equivalent(0) or after(1)
+            const comparisonResult = word.localeCompare(dictionnary[middleLimit], 'en', { sensitivity: 'base' });
             if (comparisonResult < 0) {
                 rightLimit = middleLimit - 1;
             } else if (comparisonResult > 0) {

@@ -4,8 +4,10 @@ import { GameState } from './../../../../common/gameState';
 import { User } from './../../../../common/types';
 import { GameBoardService } from './../../services/game-board.service';
 import { Timer } from './../../services/timer-manager.service';
+import { PlacementCommand } from './../placementCommand/placement-command';
 import { Player } from './../player/player';
 import { ReserveLetters } from './../reserveLetters/reserve-letters';
+import { VirtualPlayer } from './../virtual-player/virtual-player';
 export class Game {
     gameBoard: GameBoardService;
     player1: Player;
@@ -33,15 +35,14 @@ export class Game {
         this.gameState = gameState;
     }
     player1Join(user: User, timer: string) {
-        this.player1 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player1', user);
-        this.timer = new Timer(timer);
+        this.player1 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player1', user, false);
         this.roomName = user.room;
+        this.timer = new Timer(timer);
     }
     player2Join(user: User, sio: io.Server) {
-        this.player2 = new Player(this.reserveLetters.randomLettersInitialization(), false, 'player2', user);
+        this.player2 = new Player(this.reserveLetters.randomLettersInitialization(), false, 'player2', user, false);
         this.sio = sio;
         this.startGame();
-        
     }
     verifyGameState() {
         const endGameValidation =
@@ -58,13 +59,69 @@ export class Game {
         this.sio.to(this.player1.user.id).emit('turn', this.player1.hisTurn);
         this.sio.to(this.player2.user.id).emit('turn', this.player2.hisTurn);
     }
+    startSoloGame(user: User, sio: io.Server) {
+        this.timer = new Timer('60');
+        this.player1 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player1', user, false);
+        this.roomName = user.room;
+        const userBot = {
+            username: 'Bot',
+            id: '',
+            room: user.room,
+        };
+        this.player2 = new Player(this.reserveLetters.randomLettersInitialization(), false, 'player2', userBot, true);
+        this.sio = sio;
+        this.sio.to(user.id).emit('tileHolder', this.player1.letters);
+        this.timer.start(this, this.sio);
+    }
     changeTurnTwoPlayers() {
         this.player1.changeTurn();
         this.player2.changeTurn();
         this.sio.to(this.player1.user.id).emit('turn', this.player1.hisTurn);
         this.sio.to(this.player2.user.id).emit('turn', this.player2.hisTurn);
+        if (this.playerTurn().hisBot) {
+            const command = this.actionVirtualBeginnerPlayer();
+            this.placementBot(command);
+        }
     }
+    placementBot(command: string[]) {
+        switch (command[0]) {
+            case '!echanger': {
+                this.exchangeLetters(command);
+                this.sio.to(this.player1.user.room).emit('modification', this.gameBoard.cases, this.playerTurn().name);
+                this.sio.to(this.player1.user.id).emit('roomMessage', {
+                    username: 'Server',
+                    message: 'votre adversaire a echangé ' + command[1].length + ' lettres',
+                    player: 'server',
+                });
+                break;
+            }
+            case '!passer': {
+                this.passTurn();
+                this.sio.to(this.player1.user.room).emit('roomMessage', {
+                    username: 'Server',
+                    message: this.player2.user.username + ' a passé son tour ',
+                    player: 'server',
+                });
+                this.sio.to(this.player1.user.room).emit('modification', this.gameBoard.cases, this.playerTurn().name);
+                break;
+            }
+            case '!placer': {
+                PlacementCommand.placeWord(command, this);
+                this.sio
+                    .to(this.player1.user.room)
+                    .emit('updateReserve', this.reserveLetters.letters.length, this.player1.getNumberLetters(), this.player2.getNumberLetters());
+                this.sio.to(this.player1.user.room).emit('roomMessage', {
+                    username: 'Server',
+                    message: this.player2.user.username + ' a placé le mot ' + command[2] + ' en ' + command[1],
+                    player: 'server',
+                });
+                this.sio.to(this.player1.user.room).emit('modification', this.gameBoard.cases, this.playerTurn().name);
+                this.sio.to(this.player1.user.room).emit('updatePoint', 'player2', this.player2.points);
 
+                break;
+            }
+        }
+    }
     playerTurn(): Player {
         if (this.player1.getHisTurn()) {
             return this.player1;
@@ -100,6 +157,17 @@ export class Game {
         this.timer.reset();
     }
 
+    actionVirtualBeginnerPlayer(): string[] {
+        const probability = Math.floor(Math.random() * 100);
+        if (probability <= 10) {
+            return '!passer'.split(' ');
+        } else if (probability <= 20) {
+            return VirtualPlayer.exchangeLettersCommand(this);
+        } else {
+            return VirtualPlayer.placementLettersCommand(this);
+        }
+    }
+
     private setWinner() {
         if (this.player1.points > this.player2.points) this.gameState.winner = this.player1.user.username;
         else if (this.player1.points < this.player2.points) this.gameState.winner = this.player2.user.username;
@@ -124,6 +192,7 @@ export class Game {
             for (const letter of this.player2.getLetters()) {
                 if (letter.letter !== '') {
                     this.player1.points += letter.value;
+                    this.player2.points -= letter.value;
                 }
             }
         } else if (this.player2.getNumberLetters() === 0) {
