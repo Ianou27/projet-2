@@ -1,10 +1,26 @@
-.example-container {
-    flex-direction: column;
-    max-height: 500px;
-    min-width: 300px;
-    font-size: 50px;
+.mat-tab-label {
+    color: black;
+    font-size: 40px;
+}
+
+.mat-cell,
+.mat-header-cell {
+    text-align: center;
+    font-size: 30px;
+    justify-content: center;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
 }
 
 .button {
-    text-align: right;
+    position: relative;
+    right: 1px;
+}
+
+.title {
+    font-size: 50px;
+    padding-left: 37%;
 }
