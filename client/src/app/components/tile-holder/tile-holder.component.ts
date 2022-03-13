@@ -17,7 +17,7 @@ export class TileHolderComponent {
     showButtonsBool: boolean = false;
     constructor(public tileHolderService: TileHolderService, private chatService: ChatService) {}
 
-    @HostListener('body:keydown', ['$event'])
+    @HostListener('keydown', ['$event'])
     buttonDetect(event: KeyboardEvent) {
         const swapper = document.getElementById('swap-selected');
         this.buttonPressed = event.key;

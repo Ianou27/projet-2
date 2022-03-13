@@ -1,5 +1,6 @@
 import { Component, HostListener } from '@angular/core';
 import { ChatService } from '@app/services/chat.service';
+import { MAXIMUM_ROW_COLUMN } from './../../../../../common/constants/general-constants';
 
 @Component({
     selector: 'app-board',
@@ -8,11 +9,13 @@ import { ChatService } from '@app/services/chat.service';
 })
 export class BoardComponent {
     letterPlaced: string[] = [];
+    orientation: string = '';
     constructor(public chatService: ChatService) {}
 
-    @HostListener('body:keydown', ['$event'])
+    @HostListener('keydown', ['$event'])
     keyHandler(event: KeyboardEvent) {
         const key = event.key.toUpperCase();
+        console.log(key);
         switch (key) {
             case 'Backspace': {
                 // move the currentSelection back
@@ -38,35 +41,35 @@ export class BoardComponent {
 
     nextTile(currentTile: Element) {
         const board = document.getElementsByClassName('tile-container')[0];
+        try {
+            currentTile.getAttribute('data-position-x');
+            currentTile.getAttribute('data-position-y');
+        } catch (e) {
+            return;
+        }
         const posX = Number(currentTile.getAttribute('data-position-x'));
         const posY = Number(currentTile.getAttribute('data-position-y'));
-        if (currentTile.getElementsByClassName('tileEmptyHorizontal')[0]) {
+        if (posX === MAXIMUM_ROW_COLUMN || posY === MAXIMUM_ROW_COLUMN) return;
+        if (this.orientation === 'h') {
             board.children[posX + 1].children[posY].children[0].setAttribute('class', 'writing');
+        } else {
+            board.children[posX].children[posY + 1].children[0].setAttribute('class', 'writing');
         }
-        // return board.children[posX].children[posY + 1].children[0];
     }
 
     placeLetter(letter: string) {
         // const currentTile = document.getElementById('currentSelection');
-        const writtenTiles = document.getElementsByClassName('writing');
-        const lastWrittenTile = writtenTiles[writtenTiles.length - 1];
+        const lastWrittenTile = document.getElementsByClassName('writing')[0];
         const keyInTileHolder = this.inTileHolder(letter);
         const tileHolder = document.getElementById('tile-holder');
-        console.log(!keyInTileHolder);
         if (!keyInTileHolder[0]) return;
-        // if (!currentTile) return;
-        console.log(this.nextTile(lastWrittenTile));
+        this.nextTile(lastWrittenTile);
         const posX = Number(lastWrittenTile.getAttribute('data-position-x'));
-        console.log(posX);
-
         const posY = Number(lastWrittenTile.getAttribute('data-position-y'));
-        console.log(posY);
         const value = Number(tileHolder?.children[keyInTileHolder[1]].getElementsByTagName('p')[1].innerHTML);
         this.chatService.boardService.setLetter(posX, posY, letter, value);
         lastWrittenTile.setAttribute('class', 'written');
         this.letterPlaced.push(letter);
-        console.log(letter);
-        // console.log(currentTile);
     }
 
     inTileHolder(key: string): [boolean, number] {
@@ -87,25 +90,30 @@ export class BoardComponent {
 
     handleLeftClick(event: MouseEvent) {
         const current = event.currentTarget as HTMLElement;
-        this.verificationSelection(current);
+        if (!this.verificationSelection(current)) return;
         switch (current.children[0].classList[0]) {
             case 'tileEmpty': {
                 current.children[0].classList.replace('tileEmpty', 'tileEmptyHorizontal');
+                this.orientation = 'h';
                 break;
             }
             case 'tileEmptyHorizontal': {
                 current.children[0].classList.replace('tileEmptyHorizontal', 'tileEmptyVertical');
+                this.orientation = 'v';
                 break;
             }
             case 'tileEmptyVertical': {
                 current.children[0].classList.replace('tileEmptyVertical', 'tileEmptyHorizontal');
+                this.orientation = 'h';
                 break;
             }
         }
     }
 
-    verificationSelection(currentSelection: HTMLElement) {
+    verificationSelection(currentSelection: HTMLElement): boolean {
         const board = document.getElementsByClassName('tile-container')[0];
+        const alreadyWriting = document.getElementsByClassName('writing')[0];
+        if (alreadyWriting) return false;
         for (let i = 0; i < board.childElementCount; i++) {
             for (let j = 0; j < board.children[i].childElementCount; j++) {
                 if (board.children[i].children[j].children[0].id === 'currentSelection') {
@@ -119,6 +127,7 @@ export class BoardComponent {
         }
         currentSelection.id = 'currentSelection';
         currentSelection.className = 'writing';
+        return true;
     }
 
     clearSelection(elementToClear: Element) {
