@@ -173,8 +173,8 @@ export class ChatService {
         this.updateRooms();
     }
 
-    createSoloGame(username: string) {
-        this.socketService.socket.emit('createSoloGame', username);
+    createSoloGame(username: string, time: string) {
+        this.socketService.socket.emit('createSoloGame', username, time);
     }
 
     joinRoom() {

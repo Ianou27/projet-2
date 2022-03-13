@@ -63,7 +63,7 @@ export class JoinPageComponent implements OnInit {
     }
 
     createSoloGame() {
-        this.chatService.createSoloGame(this.name);
+        this.chatService.createSoloGame(this.name, this.selectedTime);
     }
 
     goHome() {

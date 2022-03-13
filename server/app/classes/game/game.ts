@@ -61,8 +61,8 @@ export class Game {
         this.sio.to(this.player2.user.id).emit('turn', this.player2.hisTurn);
     }
 
-    startSoloGame(user: User, sio: io.Server) {
-        this.timer = new Timer('60');
+    startSoloGame(user: User, sio: io.Server, timer: string) {
+        this.timer = new Timer(timer);
         this.player1 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player1', user, false);
         this.roomName = user.room;
         const userBot = {

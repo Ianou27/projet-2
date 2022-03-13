@@ -23,7 +23,7 @@ export class RoomManager {
         identification.rooms.push(roomObj);
         console.log(identification.users);
     }
-    createSoloGame(username: string, socketId: string, identification: IdManager, sio: io.Server) {
+    createSoloGame(username: string, socketId: string, identification: IdManager, sio: io.Server, timer: string) {
         const user = {
             username,
             id: socketId,
@@ -32,14 +32,14 @@ export class RoomManager {
         const roomObj = {
             player1: username,
             player2: 'bot',
-            time: '60',
+            time: timer,
         };
         identification.rooms.push(roomObj);
         identification.users.push(user);
         identification.roomMessages[username] = [];
         const game = new Game();
 
-        game.startSoloGame(user, sio);
+        game.startSoloGame(user, sio, timer);
         identification.games.push(game);
     }
 

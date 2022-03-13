@@ -27,8 +27,8 @@ export class SocketManager {
                 socket.join(room);
             });
 
-            socket.on('createSoloGame', (username: string) => {
-                this.roomManager.createSoloGame(username, socket.id, this.identification, this.sio);
+            socket.on('createSoloGame', (username: string, timer: string) => {
+                this.roomManager.createSoloGame(username, socket.id, this.identification, this.sio, timer);
                 socket.join(username);
                 this.sio.to(socket.id).emit('startGame', username, 'bot');
             });
