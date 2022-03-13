@@ -29,15 +29,10 @@ export class BoardComponent {
             }
             default: {
                 this.placeLetter(key);
+                this.chatService.tileHolderService.removeLetter(key);
             }
         }
     }
-    /* placeLetter2(letter: string) {
-        if (!this.inTileHolder(letter)[0]) return;
-        const currentTile = document.getElementById('currentSelection');
-        currentTile?.setAttribute('class', 'written');
-
-    }*/
 
     nextTile(currentTile: Element) {
         const board = document.getElementsByClassName('tile-container')[0];
@@ -58,7 +53,6 @@ export class BoardComponent {
     }
 
     placeLetter(letter: string) {
-        // const currentTile = document.getElementById('currentSelection');
         const lastWrittenTile = document.getElementsByClassName('writing')[0];
         const keyInTileHolder = this.inTileHolder(letter);
         const tileHolder = document.getElementById('tile-holder');
@@ -90,7 +84,8 @@ export class BoardComponent {
 
     handleLeftClick(event: MouseEvent) {
         const current = event.currentTarget as HTMLElement;
-        if (!this.verificationSelection(current)) return;
+        if (!this.verificationSelection(current))
+            if (!document.getElementsByClassName('tileEmptyHorizontal')[0] || !document.getElementsByClassName('tileEmptyVertical')) return;
         switch (current.children[0].classList[0]) {
             case 'tileEmpty': {
                 current.children[0].classList.replace('tileEmpty', 'tileEmptyHorizontal');
@@ -112,7 +107,7 @@ export class BoardComponent {
 
     verificationSelection(currentSelection: HTMLElement): boolean {
         const board = document.getElementsByClassName('tile-container')[0];
-        const alreadyWriting = document.getElementsByClassName('writing')[0];
+        const alreadyWriting = document.getElementsByClassName('written')[0];
         if (alreadyWriting) return false;
         for (let i = 0; i < board.childElementCount; i++) {
             for (let j = 0; j < board.children[i].childElementCount; j++) {
