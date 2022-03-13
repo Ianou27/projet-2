@@ -17,12 +17,11 @@ export class BoardComponent {
         const key = event.key.toUpperCase();
         console.log(key);
         switch (key) {
-            case 'Backspace': {
-                // move the currentSelection back
-                // letterPlaced.pop()
+            case 'BACKSPACE': {
+                this.removeLetter();
                 break;
             }
-            case 'Enter': {
+            case 'ENTER': {
                 // creates command and send it
                 // clear array
                 break;
@@ -32,6 +31,32 @@ export class BoardComponent {
                 this.chatService.tileHolderService.removeLetter(key);
             }
         }
+    }
+
+    getPosition(tile: Element): [number, number] {
+        try {
+            tile.getAttribute('data-position-x');
+            tile.getAttribute('data-position-y');
+        } catch (e) {
+            return [0, 0];
+        }
+        return [Number(tile.getAttribute('data-position-x')), Number(tile.getAttribute('data-position-y'))];
+    }
+
+    removeLetter() {
+        if (this.letterPlaced.length === 0) return;
+        const letter = this.letterPlaced[this.letterPlaced.length - 1];
+        this.chatService.tileHolderService.addLetter(letter);
+        this.letterPlaced.pop();
+        console.log('in remove');
+        const writtenLetters = document.getElementsByClassName('written');
+        const lastWrittenLetter = writtenLetters[writtenLetters.length - 1];
+        if (!lastWrittenLetter) return;
+        lastWrittenLetter.setAttribute('class', 'writing');
+        console.log('removing');
+        const position = this.getPosition(lastWrittenLetter);
+        console.log(position);
+        this.chatService.boardService.removeLetter(position[0], position[1]);
     }
 
     nextTile(currentTile: Element) {

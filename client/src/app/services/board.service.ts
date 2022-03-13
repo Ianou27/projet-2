@@ -36,6 +36,11 @@ export class BoardService {
         this.board[posX][posY].value = value;
     }
 
+    removeLetter(posX: number, posY: number) {
+        this.board[posX][posY].letter = '';
+        this.board[posX][posY].value = 0;
+    }
+
     private verifyProperty(property: Vec2[], positionX: number, positionY: number): boolean {
         for (const position of property) {
             if (position.x === positionX && position.y === positionY) {
