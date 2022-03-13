@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { ChatService } from '@app/services/chat.service';
 
 @Component({
     selector: 'app-best-score',
@@ -36,14 +37,29 @@ export class BestScoreComponent implements OnInit {
         { text: '7', cols: 1, rows: 1, color: '#DDBDF1' },
         { text: 'Bobépine', cols: 1, rows: 1, color: '#DDBDF1' },
     ];
-    constructor(public waitDialog: MatDialog) {}
 
-    ngOnInit(): void {}
+
+    classiqueBestScores:any =[];
+    constructor(public waitDialog: MatDialog,  public chatService: ChatService) {
+        this.chatService.connect();
+        
+        this.getScores();
+    }
+
+    getScores(){
+        await this.chatService.getClassiqueScores();
+        this.classiqueBestScores = this.chatService.bestClassiqueScores;
+    }
+    ngOnInit() {
+        this.getScores();
+        
+    }
 
     // displayedColumns = ['score', 'name', 'weight', 'name2'];
     // dataSource = ELEMENT_DATA;
     goHome() {
         this.waitDialog.closeAll();
+        this.chatService.disconnect();
     }
 }
 

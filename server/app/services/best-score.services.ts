@@ -22,7 +22,7 @@ export class DatabaseService {
         } catch {
             throw new Error('Database connection error');
         }
-
+        
         if ((await this.db.collection(DATABASE_COLLECTION).countDocuments()) === 0) {
             await this.populateDB();
         }
@@ -66,5 +66,12 @@ export class DatabaseService {
 
     get database(): Db {
         return this.db;
+    }
+    async BestScoreClassique(): Promise< any>{
+        return await this.db.collection(DATABASE_COLLECTION).find().toArray();
+
+        
+        
+
     }
 }

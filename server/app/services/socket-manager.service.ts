@@ -5,20 +5,33 @@ import { Game } from '@app/classes/game/game';
 import { InfoToJoin, Room } from '@common/types';
 import * as http from 'http';
 import * as io from 'socket.io';
+import { DatabaseService } from './best-score.services';
 import { GameManager } from './game-manager.service';
 import { IdManager } from './id-manager.service';
 import { RoomManager } from './room-manager.service';
+
 export class SocketManager {
     gameManager: GameManager = new GameManager();
     identification: IdManager = new IdManager();
     roomManager: RoomManager = new RoomManager();
     sio: io.Server;
     timeLeft: number;
-    constructor(server: http.Server) {
+    constructor(server: http.Server,private readonly databaseService: DatabaseService) {
         this.sio = new io.Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
+
+ 
+    }
+    async dbConnectionn(){
+        try {
+            await this.databaseService.start();
+            console.log('Database connection successful !');
+        } catch {
+            console.error('Database connection failed !');
+            process.exit(1);
+        }
     }
 
-    handleSockets(): void {
+    async handleSockets(): Promise<void> {
         this.sio.on('connection', (socket) => {
             console.log(`Connexion par l'utilisateur avec id : ${socket.id}`);
             socket.on('createRoom', (username: string, room: string, time: number) => {
@@ -252,7 +265,13 @@ export class SocketManager {
                     });
                 }
             });
+            socket.on('forceDisconnect', () => {
+                socket.disconnect();
+            });
 
+            socket.on('getBestScoreClassique', async () => {
+                this.sio.to(socket.id).emit('getBestScoreClassique',await this.databaseService.BestScoreClassique());
+            });
             socket.on('cancelCreation', () => {
                 this.roomManager.cancelCreation(socket.id, this.identification);
                 this.identification.deleteUser(socket.id);

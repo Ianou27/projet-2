@@ -23,6 +23,7 @@ export type Message = {
 };
 
 export type BestScore = {
+    id?: string;
     player: string;
     score: number;
 };

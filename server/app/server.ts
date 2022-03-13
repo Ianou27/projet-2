@@ -28,7 +28,7 @@ export class Server {
 
         this.server = http.createServer(this.application.app);
 
-        this.socketManger = new SocketManager(this.server);
+        this.socketManger = new SocketManager(this.server, this.databaseService);
         this.socketManger.handleSockets();
 
         this.server.listen(Server.appPort);
