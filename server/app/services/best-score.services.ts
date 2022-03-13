@@ -5,23 +5,18 @@ import 'reflect-metadata';
 import { Service } from 'typedi';
 
 // CHANGE the URL for your database information
-const DATABASE_URL = 'mongodb+srv://daveringuet:ziksaz21@cluster0.2xy12.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
-const DATABASE_NAME = 'BestScore';
-const DATABASE_COLLECTION = 'classqique';
+const DATABASE_URL = 'mongodb+srv://riad:tpUUYHQYgUZuXvgY@cluster0.pwwqd.mongodb.net/DataBase?retryWrites=true&w=majority';
+const DATABASE_NAME = 'DataBase';
+const DATABASE_COLLECTION = 'bestScoreClassique';
 
 @Service()
 export class DatabaseService {
     private db: Db;
     private client: MongoClient;
 
-    // private options: MongoClientOptions = {
-    //     useNewUrlParser: true,
-    //     useUnifiedTopology: true,
-    // };
-
     async start(url: string = DATABASE_URL): Promise<MongoClient | null> {
         try {
-            const client = await MongoClient.connect(url /* , this.options*/);
+            const client = await MongoClient.connect(url);
             this.client = client;
             this.db = client.db(DATABASE_NAME);
         } catch {
