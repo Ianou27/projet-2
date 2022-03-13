@@ -14,9 +14,6 @@ export class MainPageComponent {
     constructor(public dialog: MatDialog) {}
 
     openDialog(): void {
-        this.dialog.open(BestScoreComponent, {
-            width: '1300px',
-            height: '855px',
-        });
+        this.dialog.open(BestScoreComponent, {});
     }
 }

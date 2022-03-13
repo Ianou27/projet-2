@@ -152,7 +152,7 @@ export class ChatService {
     disconnect(){
         this.socketService.socket.emit('forceDisconnect');
     }
-    getClassiqueScores(){
+    async getClassiqueScores(){
         this.socketService.socket.emit('getBestScoreClassique');
     }
 
