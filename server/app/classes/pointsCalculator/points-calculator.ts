@@ -26,7 +26,7 @@ export class PointsCalculator {
         if (newTile.length === NUMBER_TILEHOLDER) {
             total += POINTS_SEVEN_LETTERS_PLACEMENT;
         }
-        return total + 1;
+        return total;
     }
 
     static specialPropertyLetter(letterTile: Tile): number {

@@ -64,8 +64,11 @@ export class PlacementCommand {
                 continue;
             }
             const letterPlace = placementInformations.letters[lettersIter];
+            if (!this.isUpper(letterPlace)) {
+                tile.value = letterValue[letterPlace.toUpperCase()];
+            }
             tile.letter = letterPlace.toUpperCase();
-            if (!this.isUpper(letterPlace)) tile.value = letterValue[letterPlace.toUpperCase()];
+
             positions.push(tile);
             tile = game.gameBoard.nextTile(tile, placementInformations.orientation, false);
             game.playerTurn().changeLetter(letterPlace, '');
@@ -239,7 +242,7 @@ export class PlacementCommand {
                     newTile.value = letterValue[newTile.letter];
                 } else {
                     newTile.letter = letter.letter;
-                    newTile.value = letterValue[newTile.letter];
+                    newTile.value = letter.value;
                 }
                 words.push(newTile);
             }
