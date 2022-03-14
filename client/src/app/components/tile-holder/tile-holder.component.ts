@@ -15,12 +15,13 @@ export class TileHolderComponent {
     lastKeys: string[] = [];
     lettersToExchange: string[] = [];
     showButtonsBool: boolean = false;
-    constructor(public tileHolderService: TileHolderService, private chatService: ChatService) {}
+    constructor(public tileHolderService: TileHolderService, public chatService: ChatService) {}
 
     @HostListener('keydown', ['$event'])
     buttonDetect(event: KeyboardEvent) {
         const swapper = document.getElementById('swap-selected');
         this.buttonPressed = event.key;
+        this.scrollDirection = 0;
         if (this.buttonPressed === 'ArrowLeft' && swapper) {
             this.handleSide('Left', swapper);
         }
@@ -37,12 +38,13 @@ export class TileHolderComponent {
             !(this.buttonPressed === 'ArrowRight')
         ) {
             this.count = 0;
-            this.clearAllIds(swapper);
+            this.clearAllIds();
         }
     }
     @HostListener('mousewheel', ['$event'])
     onScroll(event: WheelEvent) {
         const swapper = document.getElementById('swap-selected');
+        this.buttonPressed = '';
         this.scrollDirection = event.deltaY;
         if (this.scrollDirection < 0 && swapper) {
             this.handleSide('Left', swapper);
@@ -52,14 +54,22 @@ export class TileHolderComponent {
         }
     }
 
-    clickOut() {
-        const tile = document.getElementsByTagName('app-tile')[225] as HTMLElement;
-        this.clearAllIds(tile);
+    clearAllIds() {
+        const tileHolder = document.getElementById('tile-holder');
+        if (tileHolder) {
+            for (let i = 0; i < tileHolder.childElementCount; i++) {
+                tileHolder.children[i].id = '';
+                tileHolder.children[i].children[0].classList.replace('selected', 'tile');
+                tileHolder.children[i].children[0].classList.replace('selected-reserve', 'tile');
+            }
+        }
+        this.showButtonsBool = this.checkForID();
+        this.emptyArray();
     }
 
     addId(event: MouseEvent) {
         const current = event.currentTarget as HTMLElement;
-        this.clearAllIds(current);
+        this.clearAllIds();
         current.id = 'swap-selected';
         current.children[0].classList.replace('tile', 'selected');
     }
@@ -67,7 +77,7 @@ export class TileHolderComponent {
     addExchangeId(event: MouseEvent) {
         event.preventDefault();
         const current = event.currentTarget as HTMLElement;
-        this.clearSelectedId(current);
+        this.clearSelectedId();
         if (current.id === '' && current.children[0].children[0].textContent) {
             current.id = 'swap-reserve';
             current.children[0].classList.replace('tile', 'selected-reserve');
@@ -79,18 +89,6 @@ export class TileHolderComponent {
             this.lettersToExchange.splice(index, 1);
         }
         this.showButtonsBool = this.checkForID();
-    }
-
-    clearExchangeId(event: MouseEvent) {
-        const current = event.currentTarget as HTMLElement;
-        if (current.previousElementSibling) {
-            for (let i = 0; i < current.previousElementSibling.childElementCount; i++) {
-                current.previousElementSibling.children[i].id = '';
-                current.previousElementSibling.children[i].children[0].classList.replace('selected-reserve', 'tile');
-            }
-        }
-        this.showButtonsBool = false;
-        this.emptyArray();
     }
 
     exchange() {
@@ -115,24 +113,13 @@ export class TileHolderComponent {
         return false;
     }
 
-    private clearAllIds(current: HTMLElement) {
-        if (current.parentElement) {
-            for (let i = 0; i < current.parentElement.childElementCount; i++) {
-                current.parentElement.children[i].id = '';
-                current.parentElement.children[i].children[0].classList.replace('selected', 'tile');
-                current.parentElement.children[i].children[0].classList.replace('selected-reserve', 'tile');
-            }
-        }
-        this.showButtonsBool = this.checkForID();
-        this.emptyArray();
-    }
-
-    private clearSelectedId(current: HTMLElement) {
-        if (current.parentElement) {
-            for (let i = 0; i < current.parentElement.childElementCount; i++) {
-                if (current.parentElement.children[i].id === 'swap-selected') {
-                    current.parentElement.children[i].id = '';
-                    current.parentElement.children[i].children[0].classList.replace('selected', 'tile');
+    private clearSelectedId() {
+        const tileHolder = document.getElementById('tile-holder');
+        if (tileHolder) {
+            for (let i = 0; i < tileHolder.childElementCount; i++) {
+                if (tileHolder.children[i].id === 'swap-selected') {
+                    tileHolder.children[i].id = '';
+                    tileHolder.children[i].children[0].classList.replace('selected', 'tile');
                 }
             }
         }
@@ -229,7 +216,7 @@ export class TileHolderComponent {
             this.count++;
         }
         if (current) {
-            this.clearAllIds(current);
+            this.clearAllIds();
             current.id = 'swap-selected';
             current.children[0].classList.replace('tile', 'selected');
         }

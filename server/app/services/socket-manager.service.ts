@@ -170,6 +170,21 @@ export class SocketManager {
                 }
             });
 
+            socket.on('indice', (command: string[]) => {
+                const game = this.identification.getGame(socket.id);
+                if (!game.playerTurnValid(this.identification.getPlayer(socket.id))) {
+                    this.sio.to(socket.id).emit('commandValidated', " Ce n'est pas ton tour");
+                } else {
+                    if (this.gameManager.clueCommandValid(command)) {
+                        const yes = this.gameManager.formatClueCommand(game);
+                        console.log(yes);
+                        this.sio.to(socket.id).emit('cluesMessage', yes);
+                    } else {
+                        this.sio.to(socket.id).emit('commandValidated', 'Format invalide');
+                    }
+                }
+            });
+
             socket.on('echanger', (command: string[]) => {
                 const game = this.identification.getGame(socket.id);
                 if (!game.playerTurnValid(this.identification.getPlayer(socket.id))) {

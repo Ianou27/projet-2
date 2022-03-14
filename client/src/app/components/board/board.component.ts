@@ -12,8 +12,37 @@ export class BoardComponent {
     orientation: string = '';
     constructor(public chatService: ChatService) {}
 
+<<<<<<< HEAD
     @HostListener('keydown', ['$event'])
     keyHandler(event: KeyboardEvent) {
+=======
+    @HostListener('body:keydown', ['$event'])
+    placeLetter(event: KeyboardEvent) {
+        console.log(event.key);
+        const currentTile = document.getElementById('currentSelection');
+        const key = event.key.toUpperCase();
+        const keyInTileHolder = this.inTileHolder(key);
+        const tileHolder = document.getElementById('tile-holder');
+        console.log(keyInTileHolder);
+        if (!keyInTileHolder[0]) return;
+        if (!currentTile) return;
+        if (!currentTile.getAttribute('ng-reflect-position-y')) return;
+        console.log(currentTile.getAttribute('ng-reflect-position-y'));
+        if (!currentTile.getAttribute('ng-reflect-position-x')) return;
+         console.log(currentTile.getAttribute('ng-reflect-position-x'));
+        const posX = Number(currentTile.getAttribute('ng-reflect-position-x'));
+        const posY = Number(currentTile.getAttribute('ng-reflect-position-y'));
+        if (posX && posY) {
+            this.chatService.boardService.board[posX][posY].letter = key;
+            this.chatService.boardService.board[posX][posY].value = Number(tileHolder?.children[keyInTileHolder[1]].getAttribute('ng-reflect-value'));
+            this.letterPlaced.push(key);
+        }
+        console.log(key.toUpperCase());
+        console.log(currentTile);
+    }
+
+    /* keyHandler(event: KeyboardEvent) {
+>>>>>>> devloppement
         const key = event.key;
 
         switch (key) {
@@ -31,6 +60,7 @@ export class BoardComponent {
                 console.log(this.letterPlaced);
             }
         }
+<<<<<<< HEAD
     }
 
     getPosition(tile: Element): [number, number] {
@@ -112,11 +142,16 @@ export class BoardComponent {
         if (letter === letter.toUpperCase()) return true;
         return false;
     }
+=======
+        console.log(event.key);
+    } */
+>>>>>>> devloppement
 
     inTileHolder(key: string): [boolean, number] {
         const tileHolder = document.getElementById('tile-holder');
         if (tileHolder) {
             for (let i = 0; i < tileHolder.childElementCount; i++) {
+<<<<<<< HEAD
                 try {
                     if (this.isUpper(key)) {
                         if ('*' === tileHolder.children[i].children[0].getElementsByTagName('p')[0].innerHTML) return [true, i];
@@ -127,6 +162,10 @@ export class BoardComponent {
                     }
                 } catch (e) {
                     break;
+=======
+                if (key === tileHolder.children[i].children[0].getElementsByTagName('p')[0].innerHTML) {
+                    return [true, i];
+>>>>>>> devloppement
                 }
             }
         }

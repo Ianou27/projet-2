@@ -61,8 +61,8 @@ export class GameBoardService {
     isLastTile(currentTile: Tile, orientation: string) {
         if (orientation === 'h') {
             if (currentTile.positionX === MAXIMUM_ROW_COLUMN || currentTile.positionX === COLUMN_ROWS_MINIMUM) return true;
-        } else {
-            if (currentTile.positionY === MAXIMUM_ROW_COLUMN || currentTile.positionY === COLUMN_ROWS_MINIMUM) return true;
+        } else if (currentTile.positionY === MAXIMUM_ROW_COLUMN || currentTile.positionY === COLUMN_ROWS_MINIMUM) {
+            return true;
         }
         return false;
     }

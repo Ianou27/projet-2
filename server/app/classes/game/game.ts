@@ -48,9 +48,10 @@ export class Game {
         this.roomName = user.room;
     }
     player2Join(user: User, sio: io.Server) {
-        this.player2 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player2', user);
+        this.player2 = new Player(this.reserveLetters.randomLettersInitialization(), false, 'player2', user);
         this.sio = sio;
         this.startGame();
+        
     }
     verifyGameState() {
         const endGameValidation =
@@ -64,18 +65,21 @@ export class Game {
 
     startGame() {
         this.timer.start(this, this.sio);
+        this.sio.to(this.player1.user.id).emit('turn', this.player1.hisTurn);
+        this.sio.to(this.player2.user.id).emit('turn', this.player2.hisTurn);
     }
     changeTurnTwoPlayers() {
         this.player1.changeTurn();
         this.player2.changeTurn();
+        this.sio.to(this.player1.user.id).emit('turn', this.player1.hisTurn);
+        this.sio.to(this.player2.user.id).emit('turn', this.player2.hisTurn);
     }
 
     playerTurn(): Player {
         if (this.player1.getHisTurn()) {
             return this.player1;
-        } else {
-            return this.player2;
         }
+        return this.player2;
     }
 
     surrender(winner: string) {
@@ -114,13 +118,13 @@ export class Game {
         }
 
         this.sio.to(this.roomName).emit('endGame', this.gameState.winner);
+        this.sio.to(this.roomName).emit('updatePoint', 'player1', this.player1.points);
+        this.sio.to(this.roomName).emit('updatePoint', 'player2', this.player2.points);
         this.sio.to(this.roomName).emit('roomMessage', {
             username: 'Server',
-            message: 'lettre joueuer 1 =>' + this.player1.lettersToStringArray() + ' \n lettre joueuer 2 ' + this.player2.lettersToStringArray(),
+            message: 'lettre joueur 1 =>' + this.player1.lettersToStringArray() + ' \n lettre joueur 2 ' + this.player2.lettersToStringArray(),
             player: 'server',
         });
-
-        this.endGame();
     }
 
     private endGame() {
@@ -128,13 +132,25 @@ export class Game {
         this.timer.stop();
         if (this.player1.getNumberLetters() === 0) {
             for (const letter of this.player2.getLetters()) {
-                this.player1.points += letter.value;
-                this.player2.points -= letter.value;
+                if (letter.letter !== '') {
+                    this.player1.points += letter.value;
+                }
             }
         } else if (this.player2.getNumberLetters() === 0) {
             for (const letter of this.player1.getLetters()) {
-                this.player2.points += letter.value;
-                this.player1.points -= letter.value;
+                if (letter.letter !== '') {
+                    this.player2.points += letter.value;
+                }
+            }
+        }
+        for (const letter of this.player1.getLetters()) {
+            if (letter.letter !== '') {
+                if (this.player1.points - letter.value >= 0) this.player1.points -= letter.value;
+            }
+        }
+        for (const letter of this.player2.getLetters()) {
+            if (letter.letter !== '') {
+                if (this.player2.points - letter.value >= 0) this.player2.points -= letter.value;
             }
         }
     }
