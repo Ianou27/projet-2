@@ -20,7 +20,11 @@ export class TileHolderService {
     removeLetter(letter: string) {
         for (let i = 0; i < this.tileHolder.length; i++) {
             if (letter.toUpperCase() === letter) {
-                if (this.tileHolder[i].letter === '*') this.tileHolder.splice(i, 1);
+                if (this.tileHolder[i].letter === '*') {
+                    this.tileHolder.splice(i, 1);
+                    this.removedLetters.push('*');
+                    break;
+                }
             } else if (this.tileHolder[i].letter === letter.toUpperCase()) {
                 this.tileHolder.splice(i, 1);
                 this.removedLetters.push(letter.toUpperCase());
@@ -30,6 +34,7 @@ export class TileHolderService {
     }
 
     addLetter(letter: string) {
+        console.log(this.removedLetters);
         for (let i = 0; i < this.removedLetters.length; i++) {
             if (this.removedLetters[i] === letter.toUpperCase()) {
                 const tile: Tile = new Tile(CaseProperty.Normal, 0, 0);

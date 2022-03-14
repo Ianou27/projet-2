@@ -47,6 +47,7 @@ export class BoardComponent {
         if (document.getElementsByClassName('writing')[0]) document.getElementsByClassName('writing')[0].className = '';
         if (this.letterPlaced.length === 0) return;
         const letter = this.letterPlaced[this.letterPlaced.length - 1];
+        console.log(letter + 'is being removed');
         this.chatService.tileHolderService.addLetter(letter);
         this.letterPlaced.pop();
         const writtenLetters = document.getElementsByClassName('written');
@@ -86,7 +87,12 @@ export class BoardComponent {
         const value = Number(tileHolder?.children[keyInTileHolder[1]].getElementsByTagName('p')[1].innerHTML);
         this.chatService.boardService.setLetter(posX, posY, letter, value);
         lastWrittenTile.setAttribute('class', 'written');
-        this.letterPlaced.push(letter);
+        console.log(letter + 'is being placed');
+        if (this.isUpper(letter)) {
+            this.letterPlaced.push('*');
+        } else {
+            this.letterPlaced.push(letter);
+        }
     }
 
     isUpper(letter: string) {
