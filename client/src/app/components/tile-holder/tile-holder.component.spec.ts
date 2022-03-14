@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 /* eslint-disable max-lines */
->>>>>>> devloppement
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CaseProperty } from './../../../../../common/assets/case-property';
@@ -20,13 +17,8 @@ describe('TileHolderComponent', () => {
 
     beforeEach(() => {
         tiles = [];
-<<<<<<< HEAD
-        // chatServiceSpy = jasmine.createSpyObj('ChatService', ['sendToRoom'], ['roomMessage']);
-        const letters = ['A', 'A', 'A', 'A', 'A', 'A', 'A'];
-=======
         chatServiceSpy = jasmine.createSpyObj('ChatService', ['sendToRoom'], ['roomMessage']);
         const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
->>>>>>> devloppement
         for (const letter of letters) {
             const tile: Tile = new Tile(CaseProperty.Normal, 0, 0);
             tile.letter = letter;
