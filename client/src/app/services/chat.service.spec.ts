@@ -103,6 +103,12 @@ describe('ChatService', () => {
         expect(emitSpy).toHaveBeenCalledWith('createRoom', 'test', 'testRoom', '60');
         expect(updateRoomSpy).toHaveBeenCalled();
     });
+    it('createSoloGame() should emit an event createSoloGame', () => {
+        const emitSpy = spyOn(service.socketService.socket, 'emit');
+        service.createSoloGame('test', '60');
+        expect(emitSpy).toHaveBeenCalled();
+        expect(emitSpy).toHaveBeenCalledWith('createSoloGame', 'test', '60');
+    });
     it('updateRoom() should send an event and updateRooms ', () => {
         const sendSpy = spyOn(service.socketService, 'send');
         service.updateRooms();
@@ -289,6 +295,12 @@ describe('ChatService', () => {
             rooms.push(room);
             socketTestHelper.peerSideEmit('rooms', rooms);
             expect(service.allRooms).toEqual(rooms);
+        });
+
+        it('should handle turn event and update the attribute myTurn', () => {
+            service.myTurn = false;
+            socketTestHelper.peerSideEmit('turn', true);
+            expect(service.myTurn).toBeTruthy();
         });
 
         it('should handle didJoin event', () => {
