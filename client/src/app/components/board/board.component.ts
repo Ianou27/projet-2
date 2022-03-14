@@ -28,6 +28,7 @@ export class BoardComponent {
             }
             default: {
                 this.placeLetter(key);
+                console.log(this.letterPlaced);
             }
         }
     }
@@ -41,6 +42,19 @@ export class BoardComponent {
         }
         return [Number(tile.getAttribute('data-position-x')), Number(tile.getAttribute('data-position-y'))];
     }
+
+    placeWord() {
+        // besoin de déplacer rowNumber dans common
+        /* let command = '!placer';
+        const posX = document.getElementsByClassName('written')[0].getAttribute('data-position-x');
+        const posY = document.getElementsByClassName('written')[0].getAttribute('data-position-y');
+        
+        for (const letter of this.letterPlaced) {
+            
+        }*/
+    }
+
+    // voir lettre majuscule sans lettre etoile
 
     removeLetter() {
         if (document.getElementsByClassName('writing')[0]) document.getElementsByClassName('writing')[0].className = '';
@@ -106,6 +120,7 @@ export class BoardComponent {
                 try {
                     if (this.isUpper(key)) {
                         if ('*' === tileHolder.children[i].children[0].getElementsByTagName('p')[0].innerHTML) return [true, i];
+                        return [false, 0];
                     }
                     if (key.toUpperCase() === tileHolder.children[i].children[0].getElementsByTagName('p')[0].innerHTML) {
                         return [true, i];
