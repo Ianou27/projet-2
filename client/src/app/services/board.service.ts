@@ -32,7 +32,7 @@ export class BoardService {
     }
 
     setLetter(posX: number, posY: number, letter: string, value: number) {
-        this.board[posX][posY].letter = letter;
+        this.board[posX][posY].letter = letter.toUpperCase();
         this.board[posX][posY].value = value;
     }
 

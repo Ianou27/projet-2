@@ -14,14 +14,14 @@ export class BoardComponent {
 
     @HostListener('keydown', ['$event'])
     keyHandler(event: KeyboardEvent) {
-        const key = event.key.toUpperCase();
+        const key = event.key;
         console.log(key);
         switch (key) {
-            case 'BACKSPACE': {
+            case 'Backspace': {
                 this.removeLetter();
                 break;
             }
-            case 'ENTER': {
+            case 'Enter': {
                 // creates command and send it
                 // clear array
                 break;
@@ -44,18 +44,16 @@ export class BoardComponent {
     }
 
     removeLetter() {
+        if (document.getElementsByClassName('writing')[0]) document.getElementsByClassName('writing')[0].className = '';
         if (this.letterPlaced.length === 0) return;
         const letter = this.letterPlaced[this.letterPlaced.length - 1];
         this.chatService.tileHolderService.addLetter(letter);
         this.letterPlaced.pop();
-        console.log('in remove');
         const writtenLetters = document.getElementsByClassName('written');
         const lastWrittenLetter = writtenLetters[writtenLetters.length - 1];
         if (!lastWrittenLetter) return;
         lastWrittenLetter.setAttribute('class', 'writing');
-        console.log('removing');
         const position = this.getPosition(lastWrittenLetter);
-        console.log(position);
         this.chatService.boardService.removeLetter(position[0], position[1]);
     }
 
@@ -91,12 +89,20 @@ export class BoardComponent {
         this.letterPlaced.push(letter);
     }
 
+    isUpper(letter: string) {
+        if (letter === letter.toUpperCase()) return true;
+        return false;
+    }
+
     inTileHolder(key: string): [boolean, number] {
         const tileHolder = document.getElementById('tile-holder');
         if (tileHolder) {
             for (let i = 0; i < tileHolder.childElementCount; i++) {
                 try {
-                    if (key === tileHolder.children[i].children[0].getElementsByTagName('p')[0].innerHTML) {
+                    if (this.isUpper(key)) {
+                        if ('*' === tileHolder.children[i].children[0].getElementsByTagName('p')[0].innerHTML) return [true, i];
+                    }
+                    if (key.toUpperCase() === tileHolder.children[i].children[0].getElementsByTagName('p')[0].innerHTML) {
                         return [true, i];
                     }
                 } catch (e) {
