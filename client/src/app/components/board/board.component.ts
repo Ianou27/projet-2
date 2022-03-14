@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { ChatService } from '@app/services/chat.service';
 import { MAXIMUM_ROW_COLUMN } from './../../../../../common/constants/general-constants';
 
@@ -179,5 +179,5 @@ export class BoardComponent {
     clearSelection(elementToClear: Element) {
         elementToClear.children[0].classList.replace('tileEmptyHorizontal', 'tileEmpty');
         elementToClear.children[0].classList.replace('tileEmptyVertical', 'tileEmpty');
-    } */
+    }
 }

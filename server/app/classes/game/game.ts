@@ -45,7 +45,7 @@ export class Game {
             tile.value = letterValue[tile.letter];
             letters.push(tile);
         }
-        this.player1 = new Player(letters, true, 'player1', user);
+        this.player1 = new Player(letters, true, 'player1', user, false);
         this.timer = new Timer(timer);
         this.roomName = user.room;
         this.timer = new Timer(timer);
