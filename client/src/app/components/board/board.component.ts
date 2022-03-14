@@ -15,7 +15,7 @@ export class BoardComponent {
     @HostListener('keydown', ['$event'])
     keyHandler(event: KeyboardEvent) {
         const key = event.key;
-        console.log(key);
+
         switch (key) {
             case 'Backspace': {
                 this.removeLetter();
@@ -28,7 +28,6 @@ export class BoardComponent {
             }
             default: {
                 this.placeLetter(key);
-                this.chatService.tileHolderService.removeLetter(key);
             }
         }
     }
@@ -47,7 +46,6 @@ export class BoardComponent {
         if (document.getElementsByClassName('writing')[0]) document.getElementsByClassName('writing')[0].className = '';
         if (this.letterPlaced.length === 0) return;
         const letter = this.letterPlaced[this.letterPlaced.length - 1];
-        console.log(letter + 'is being removed');
         this.chatService.tileHolderService.addLetter(letter);
         this.letterPlaced.pop();
         const writtenLetters = document.getElementsByClassName('written');
@@ -77,6 +75,7 @@ export class BoardComponent {
     }
 
     placeLetter(letter: string) {
+        if (/[^a-zA-Z]/.test(letter)) return;
         const lastWrittenTile = document.getElementsByClassName('writing')[0];
         const keyInTileHolder = this.inTileHolder(letter);
         const tileHolder = document.getElementById('tile-holder');
@@ -87,12 +86,12 @@ export class BoardComponent {
         const value = Number(tileHolder?.children[keyInTileHolder[1]].getElementsByTagName('p')[1].innerHTML);
         this.chatService.boardService.setLetter(posX, posY, letter, value);
         lastWrittenTile.setAttribute('class', 'written');
-        console.log(letter + 'is being placed');
         if (this.isUpper(letter)) {
             this.letterPlaced.push('*');
         } else {
             this.letterPlaced.push(letter);
         }
+        this.chatService.tileHolderService.removeLetter(letter);
     }
 
     isUpper(letter: string) {
