@@ -12,10 +12,4 @@ describe('BoardService', () => {
     it('should be created', () => {
         expect(service).toBeTruthy();
     });
-
-    it('getBoard should return board', () => {
-        const boardTest = new BoardService();
-        const board = service.getBoard();
-        expect(board).toEqual(boardTest.board);
-    });
 });
