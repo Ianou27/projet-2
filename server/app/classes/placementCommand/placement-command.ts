@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import { rowNumber } from '../../../../common/assets/row';
 import { letterValue } from './../../../../common/assets/reserve-letters';
 import {
     CENTER_ROW_COLUMN,
@@ -8,7 +9,6 @@ import {
     MINIMUM_ROW_COLUMN_COMPARISON_LIMIT,
 } from './../../../../common/constants/general-constants';
 import { Tile } from './../../../../common/tile/Tile';
-import { rowNumber } from './../../../assets/row';
 import { PlacementInformations } from './../../placement-informations';
 import { Game } from './../game/game';
 import { PointsCalculator } from './../pointsCalculator/points-calculator';
@@ -264,7 +264,7 @@ export class PlacementCommand {
                     newTile.value = letterValue[newTile.letter];
                 } else {
                     newTile.letter = letter.letter;
-                    newTile.value = letterValue[newTile.letter];
+                    newTile.value = letter.value;
                 }
                 words.push(newTile);
             }

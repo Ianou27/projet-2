@@ -34,7 +34,6 @@ export class TileHolderService {
     }
 
     addLetter(letter: string) {
-        console.log(this.removedLetters);
         for (let i = 0; i < this.removedLetters.length; i++) {
             if (this.removedLetters[i] === letter.toUpperCase()) {
                 const tile: Tile = new Tile(CaseProperty.Normal, 0, 0);

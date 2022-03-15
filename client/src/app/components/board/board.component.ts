@@ -1,5 +1,6 @@
 import { Component, HostListener } from '@angular/core';
 import { ChatService } from '@app/services/chat.service';
+import { rowLetter } from './../../../../../common/assets/row';
 import { MAXIMUM_ROW_COLUMN } from './../../../../../common/constants/general-constants';
 
 @Component({
@@ -14,22 +15,34 @@ export class BoardComponent {
 
     @HostListener('keydown', ['$event'])
     keyHandler(event: KeyboardEvent) {
-        const key = event.key;
-
+        // utilisation de code ne provenant pas de nous, source :
+        // https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript
+        const key = event.key.normalize('NFD').replace(/\p{Diacritic}/gu, '');
+        console.log(key);
         switch (key) {
+            case 'Escape': {
+                this.clearAll();
+                break;
+            }
             case 'Backspace': {
                 this.removeLetter();
                 break;
             }
             case 'Enter': {
-                // creates command and send it
-                // clear array
+                this.placeWord();
+                this.letterPlaced = [];
                 break;
             }
             default: {
                 this.placeLetter(key);
-                console.log(this.letterPlaced);
             }
+        }
+    }
+
+    clearAll() {
+        if (!document.getElementsByClassName('written')[0]) return;
+        while (this.letterPlaced.length !== 0) {
+            this.removeLetter();
         }
     }
 
@@ -44,17 +57,26 @@ export class BoardComponent {
     }
 
     placeWord() {
-        // besoin de déplacer rowNumber dans common
-        /* let command = '!placer';
-        const posX = document.getElementsByClassName('written')[0].getAttribute('data-position-x');
-        const posY = document.getElementsByClassName('written')[0].getAttribute('data-position-y');
-        
-        for (const letter of this.letterPlaced) {
-            
-        }*/
+        let command = '!placer';
+        try {
+            document.getElementsByClassName('written')[0].getAttribute('data-position-x');
+            document.getElementsByClassName('written')[0].getAttribute('data-position-y');
+        } catch (e) {
+            return;
+        }
+        const posX = Number(document.getElementsByClassName('written')[0].getAttribute('data-position-x')) + 1;
+        const posY = rowLetter[Number(document.getElementsByClassName('written')[0].getAttribute('data-position-y'))];
+        command += ' ' + posY + posX + this.orientation + ' ';
+        for (let i = 0; i < this.letterPlaced.length; i++) {
+            if (this.letterPlaced[i] === '*') {
+                command += document.getElementsByClassName('written')[i].getElementsByTagName('p')[0].innerHTML;
+                continue;
+            }
+            command += this.letterPlaced[i];
+        }
+        this.chatService.roomMessage = command;
+        this.chatService.sendToRoom();
     }
-
-    // voir lettre majuscule sans lettre etoile
 
     removeLetter() {
         if (document.getElementsByClassName('writing')[0]) document.getElementsByClassName('writing')[0].className = '';
@@ -82,9 +104,17 @@ export class BoardComponent {
         const posY = Number(currentTile.getAttribute('data-position-y'));
         if (posX === MAXIMUM_ROW_COLUMN || posY === MAXIMUM_ROW_COLUMN) return;
         if (this.orientation === 'h') {
-            board.children[posX + 1].children[posY].children[0].setAttribute('class', 'writing');
+            if (board.children[posX + 1].children[posY].children[0].getElementsByTagName('p')[0]) {
+                this.nextTile(board.children[posX + 1].children[posY].children[0]);
+            } else {
+                board.children[posX + 1].children[posY].children[0].setAttribute('class', 'writing');
+            }
         } else {
-            board.children[posX].children[posY + 1].children[0].setAttribute('class', 'writing');
+            if (board.children[posX].children[posY + 1].children[0].getElementsByTagName('p')[0]) {
+                this.nextTile(board.children[posX].children[posY + 1].children[0]);
+            } else {
+                board.children[posX].children[posY + 1].children[0].setAttribute('class', 'writing');
+            }
         }
     }
 

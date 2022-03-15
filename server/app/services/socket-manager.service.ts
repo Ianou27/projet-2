@@ -101,7 +101,11 @@ export class SocketManager {
                 const currentRoom = this.identification.getRoom(socket.id);
                 const game = this.identification.getGame(socket.id);
                 if (!game.playerTurnValid(this.identification.getPlayer(socket.id))) {
-                    this.sio.to(socket.id).emit('commandValidated', " Ce n'est pas ton tour");
+                    if (game.player1.user.id === socket.id) {
+                        this.sio.to(socket.id).emit('commandValidated', " Ce n'est pas ton tour", game.gameBoard.cases, game.player1.letters);
+                    } else {
+                        this.sio.to(socket.id).emit('commandValidated', " Ce n'est pas ton tour", game.gameBoard.cases, game.player2.letters);
+                    }
                 } else {
                     const verification: string = this.gameManager.placeVerification(command, game);
 
