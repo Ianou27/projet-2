@@ -58,6 +58,7 @@ describe('IdManager tests', () => {
         const room: Room = {
             player1: 'username',
             player2: 'player2',
+            time: '60',
         };
         idManager.rooms.push(room);
         const returnVal = idManager.getPlayer('id');
@@ -68,6 +69,7 @@ describe('IdManager tests', () => {
         const room: Room = {
             player1: 'player1',
             player2: 'username',
+            time: '60',
         };
         idManager.rooms.push(room);
         const returnVal = idManager.getPlayer('id');

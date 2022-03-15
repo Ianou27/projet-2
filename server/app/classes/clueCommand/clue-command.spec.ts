@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-magic-numbers */
+import { Timer } from '@app/services/timer-manager.service';
 import { CaseProperty } from '@common/assets/case-property';
 import { letterValue } from '@common/assets/reserve-letters';
 import { Tile } from '@common/tile/Tile';
@@ -6,7 +8,7 @@ import * as sinon from 'sinon';
 import { Game } from './../game/game';
 import { PlacementCommand } from './../placementCommand/placement-command';
 import { Player } from './../player/player';
-import { VirtualPlayer } from './../virtualPlayer/virtual-player';
+import { VirtualPlayer } from './../virtual-player/virtual-player';
 import { ClueCommand } from './clue-command';
 
 describe('ClueCommand', () => {
@@ -25,7 +27,8 @@ describe('ClueCommand', () => {
         }
 
         game.player1 = new Player(lettersTilePlayer, true, 'player1', { username: 'rt', id: '1', room: 'room1' });
-        game.player2 = new Player(lettersTilePlayer, true, 'player2', { username: 'aa', id: '2', room: 'room1' });
+        game.player2 = new Player(lettersTilePlayer, false, 'player2', { username: 'aa', id: '2', room: 'room1' });
+        game.timer = new Timer('60');
     });
 
     afterEach(() => {

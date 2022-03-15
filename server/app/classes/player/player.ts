@@ -10,13 +10,13 @@ export class Player {
     user: User;
     hisBot: boolean;
 
-    constructor(letters: Tile[], hisTurn: boolean, name: string, user: User, hisBot: boolean) {
+    constructor(letters: Tile[], hisTurn: boolean, name: string, user: User) {
         this.letters = letters;
         this.hisTurn = hisTurn;
         this.points = 0;
         this.name = name;
         this.user = user;
-        this.hisBot = hisBot;
+        this.hisBot = false;
     }
 
     changeTurn() {
@@ -29,6 +29,10 @@ export class Player {
 
     getHisTurn(): boolean {
         return this.hisTurn;
+    }
+
+    changeHisBot(hisBot: boolean) {
+        this.hisBot = hisBot;
     }
 
     lettersToStringArray(): string[] {

@@ -275,4 +275,28 @@ export class PlacementCommand {
         }
         return false;
     }
+
+    static placeWord(commandInformations: string[], game: Game): boolean {
+        const placementInformations = PlacementCommand.separatePlaceCommandInformations(commandInformations);
+        let letterPositions: Tile[] = [];
+        letterPositions = PlacementCommand.place(placementInformations, game);
+        const placementScore = PlacementCommand.newWordsValid(commandInformations, game, letterPositions);
+        if (placementScore === 0) {
+            PlacementCommand.restoreBoard(game, letterPositions);
+            return false;
+        }
+        let lettersToPlace = placementInformations.letters.length;
+        while (lettersToPlace > 0) {
+            game.playerTurn().changeLetter('', game.reserveLetters.getRandomLetterReserve());
+            lettersToPlace--;
+        }
+        game.playerTurn().points += placementScore;
+        game.gameState.firstTurn = false;
+        game.changeTurnTwoPlayers();
+        game.timer.reset();
+        game.gameState.passesCount = 0;
+        game.verifyGameState();
+
+        return true;
+    }
 }

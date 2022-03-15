@@ -7,7 +7,6 @@ import { Player } from './../player/player';
 import { VirtualPlayer } from './virtual-player';
 describe('Virtual Player', () => {
     let game: Game;
-    const virtualPlayer: VirtualPlayer = new VirtualPlayer();
     const lettersPlayer1 = ['T', 'O', 'R'];
     let lettersTilePlayer1: Tile[] = [];
 
@@ -29,8 +28,7 @@ describe('Virtual Player', () => {
 
     it('method getCombinations should return all of the different combination possible', () => {
         const expectedCombinations = ['TO', 'TOR', 'TR', 'TRO', 'OR', 'OT', 'ORT', 'OTR', 'RO', 'RT', 'ROT', 'RTO'];
-        const allCombinations = virtualPlayer.getCombinations(lettersPlayer1);
-        console.log(allCombinations);
+        const allCombinations = VirtualPlayer.getCombinations(lettersPlayer1);
         allCombinations.forEach((element) => {
             expect(expectedCombinations.includes(element)).to.equal(true);
         });

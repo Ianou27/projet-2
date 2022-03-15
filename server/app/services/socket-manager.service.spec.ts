@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable max-lines */
 // import { Game } from '@app/classes/game/game';
 // import { CaseProperty } from '@common/assets/case-property';
@@ -8,7 +9,7 @@ import { Player } from '@app/classes/player/player';
 import { Tile } from '@common/tile/Tile';
 // import { Game } from '@app/classes/game/game';
 import { Server } from 'app/server';
-import { assert, expect} from 'chai';
+import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
 import { io as ioClient, Socket } from 'socket.io-client';
 import { Container } from 'typedi';
@@ -27,7 +28,6 @@ describe('SocketManager service tests', () => {
         // eslint-disable-next-line dot-notation
         service = server['socketManger'];
         clientSocket = ioClient(urlString);
-        
     });
 
     afterEach(() => {
@@ -59,8 +59,10 @@ describe('SocketManager service tests', () => {
             player2: '',
         };
 
-        let tiles: Tile[][] = [];
-        sinon.replace(service.roomManager, 'joinRoom', () => {return tiles });
+        const tiles: Tile[][] = [];
+        sinon.replace(service.roomManager, 'joinRoom', () => {
+            return tiles;
+        });
         const spy = sinon.spy(service.roomManager, 'joinRoom');
         clientSocket.emit('joinRoom', username, roomObj);
         setTimeout(() => {
@@ -74,6 +76,7 @@ describe('SocketManager service tests', () => {
         const roomObj = {
             player1: username,
             player2: '',
+            time: '60',
         };
         service.identification.rooms.push(roomObj);
         clientSocket.emit('askJoin', username, roomObj);
@@ -84,10 +87,10 @@ describe('SocketManager service tests', () => {
     });
 
     it('should handle a accepted event ', (done) => {
-        
         const roomObject = {
             player1: 'username',
             player2: '',
+            time: '60',
         };
         const infoObj = {
             username: 'username',
@@ -97,15 +100,16 @@ describe('SocketManager service tests', () => {
         clientSocket.emit('accepted', 'socketId', infoObj);
         setTimeout(() => {
             expect(service.identification.rooms[0].player1).to.equal('username');
-            
+
             done();
         }, RESPONSE_DELAY);
     });
- 
+
     it('should handle a refused event ', (done) => {
         const roomObject = {
             player1: 'username',
             player2: '',
+            time: '60',
         };
         const infoObj = {
             username: 'username',
@@ -115,11 +119,10 @@ describe('SocketManager service tests', () => {
         clientSocket.emit('refused', 'socketId', infoObj);
         setTimeout(() => {
             expect(service.identification.rooms[0].player1).to.equal('username');
-    
+
             done();
         }, RESPONSE_DELAY);
     });
-
 
     // it('should not broadcast message to room if origin socket is not in room', (done) => {
     //     const testMessage = 'Hello World';
@@ -131,10 +134,12 @@ describe('SocketManager service tests', () => {
 
     it('should handle a roomMessage event', (done) => {
         const message = 'HELLO';
-      
-        sinon.replace(service.gameManager, 'messageVerification', () => {return ''});
+
+        sinon.replace(service.gameManager, 'messageVerification', () => {
+            return '';
+        });
         const spyVerification = sinon.spy(service.gameManager, 'messageVerification');
-        clientSocket.emit('roomMessage',message);
+        clientSocket.emit('roomMessage', message);
         setTimeout(() => {
             assert(spyVerification.called);
             done();
@@ -146,20 +151,26 @@ describe('SocketManager service tests', () => {
         const roomObject = {
             player1: 'username',
             player2: '',
+            time: '60',
         };
         service.identification.rooms.push(roomObject);
-        service.identification.roomMessages['room'] = [];
-        sinon.replace(service.gameManager, 'messageVerification', () => {return 'valide'});
-        sinon.replace(service.identification, 'getRoom', () => {return 'room'});
-        sinon.replace(service.identification, 'getUsername', () => {return 'username'});
+        service.identification.roomMessages = new Map();
+        sinon.replace(service.gameManager, 'messageVerification', () => {
+            return 'valide';
+        });
+        sinon.replace(service.identification, 'getRoom', () => {
+            return 'room';
+        });
+        sinon.replace(service.identification, 'getUsername', () => {
+            return 'username';
+        });
         const spyVerification = sinon.spy(service.gameManager, 'messageVerification');
         clientSocket.emit('roomMessage', message);
         setTimeout(() => {
             assert(spyVerification.called);
-    
+
             done();
         }, RESPONSE_DELAY);
-        
     });
 
     it('should handle roomMessage if valide player 2', (done) => {
@@ -167,20 +178,26 @@ describe('SocketManager service tests', () => {
         const roomObject = {
             player1: '',
             player2: 'username',
+            time: '60',
         };
         service.identification.rooms.push(roomObject);
-        service.identification.roomMessages['room'] = [];
-        sinon.replace(service.gameManager, 'messageVerification', () => {return 'valide'});
-        sinon.replace(service.identification, 'getRoom', () => {return 'room'});
-        sinon.replace(service.identification, 'getUsername', () => {return 'username'});
+        service.identification.roomMessages = new Map();
+        sinon.replace(service.gameManager, 'messageVerification', () => {
+            return 'valide';
+        });
+        sinon.replace(service.identification, 'getRoom', () => {
+            return 'room';
+        });
+        sinon.replace(service.identification, 'getUsername', () => {
+            return 'username';
+        });
         const spyVerification = sinon.spy(service.gameManager, 'messageVerification');
         clientSocket.emit('roomMessage', message);
         setTimeout(() => {
             assert(spyVerification.called);
-    
+
             done();
         }, RESPONSE_DELAY);
-        
     });
     // it('should handle placer event ', (done) => {
     //     const command = ['!placer'];
@@ -190,7 +207,7 @@ describe('SocketManager service tests', () => {
     //     //     player2: '',
     //     // };
     //     // service.identification.rooms.push(roomObject);
-        
+
     //     sinon.replace(game, 'playerTurnValid', () => {return false});
     //     // sinon.replace(service.identification, 'getRoom', () => {return 'room'});
     //     // sinon.replace(service.identification, 'getUsername', () => {return 'username'});
@@ -200,17 +217,17 @@ describe('SocketManager service tests', () => {
     //     clientSocket.emit('placer', command);
     //     setTimeout(() => {
     //         assert(spyVerification122.called);
-    
+
     //         done();
     //     }, RESPONSE_DELAY);
-        
-    // });
 
+    // });
 
     it('should handle  updateRoom event', (done) => {
         const roomObj = {
             player1: 'username',
             player2: '',
+            time: '60',
         };
         service.identification.rooms.push(roomObj);
         clientSocket.emit('updateRoom');
@@ -221,8 +238,9 @@ describe('SocketManager service tests', () => {
     });
 
     it('should handle  reserve event if valid', (done) => {
-        
-        sinon.replace(service.gameManager, 'reserveCommandValid', () => {return true });
+        sinon.replace(service.gameManager, 'reserveCommandValid', () => {
+            return true;
+        });
         const reserveSpy = sinon.spy(service.gameManager, 'reserveCommandValid');
         clientSocket.emit('reserve', ['!reserve']);
         setTimeout(() => {
@@ -232,8 +250,9 @@ describe('SocketManager service tests', () => {
     });
 
     it('should handle  reserve event if Invalid', (done) => {
-        
-        sinon.replace(service.gameManager, 'reserveCommandValid', () => {return false });
+        sinon.replace(service.gameManager, 'reserveCommandValid', () => {
+            return false;
+        });
         const reserveSpy = sinon.spy(service.gameManager, 'reserveCommandValid');
         clientSocket.emit('reserve', ['!reserve']);
         setTimeout(() => {
@@ -241,9 +260,6 @@ describe('SocketManager service tests', () => {
             done();
         }, RESPONSE_DELAY);
     });
-
-
-
 
     // it('should handle roomMessage event with !passer', (done) => {
     //     const gameObj = new Game();
@@ -269,10 +285,12 @@ describe('SocketManager service tests', () => {
         const user = {
             username: 'player1',
             id: 'socketId',
-            room:'room1',
+            room: 'room1',
         };
-        gameObj.player1Join(user,'60')
-        sinon.replace(service.identification, 'getGame', () => {return gameObj });
+        gameObj.player1Join(user, '60');
+        sinon.replace(service.identification, 'getGame', () => {
+            return gameObj;
+        });
         const passerSpy = sinon.spy(service.identification, 'getGame');
         clientSocket.emit('passer', ['!passer']);
         setTimeout(() => {
@@ -280,19 +298,25 @@ describe('SocketManager service tests', () => {
             done();
         }, RESPONSE_DELAY);
     });
-    
+
     it('should handle passer Event Invalid turn', (done) => {
         const gameObj = new Game();
         const user1 = {
             username: 'player1',
             id: 'socketId',
-            room:'room1',
+            room: 'room1',
         };
         gameObj.player1 = new Player(gameObj.reserveLetters.randomLettersInitialization(), false, 'player1', user1);
-        sinon.replace(gameObj, 'playerTurnValid', () => {return true });
+        sinon.replace(gameObj, 'playerTurnValid', () => {
+            return true;
+        });
         sinon.replace(service.gameManager, 'pass', () => {});
-        sinon.replace(gameObj, 'playerTurn', () => {return gameObj.player1});
-        sinon.replace(service.identification, 'getGame', () => {return gameObj });
+        sinon.replace(gameObj, 'playerTurn', () => {
+            return gameObj.player1;
+        });
+        sinon.replace(service.identification, 'getGame', () => {
+            return gameObj;
+        });
         const passerSpy = sinon.spy(service.identification, 'getGame');
         clientSocket.emit('passer', ['!passer']);
         setTimeout(() => {
@@ -303,27 +327,37 @@ describe('SocketManager service tests', () => {
 
     it('should handle valid place command', (done) => {
         const gameObj = new Game();
-       
-        let a:any =clientSocket.disconnected;
+
+        const a: boolean = clientSocket.disconnected;
         const user1 = {
             username: 'player1',
-            id: a,
-            room:'room1',
+            id: a.toString(),
+            room: 'room1',
         };
         const user2 = {
             username: 'player2',
             id: 'b',
-            room:'room1',
+            room: 'room1',
         };
         gameObj.player1 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user1);
         gameObj.player2 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user2);
-        sinon.replace(gameObj, 'playerTurnValid', () => {return true });
-        sinon.replace(service.gameManager, 'placeVerification', () => {return 'valide' });
-        sinon.replace(service.gameManager, 'placeWord', () => {return 'placer' });
+        sinon.replace(gameObj, 'playerTurnValid', () => {
+            return true;
+        });
+        sinon.replace(service.gameManager, 'placeVerification', () => {
+            return 'valide';
+        });
+        sinon.replace(service.gameManager, 'placeWord', () => {
+            return 'placer';
+        });
         sinon.replace(service.gameManager, 'pass', () => {});
-        sinon.replace(gameObj, 'playerTurn', () => {return gameObj.player1});
-        
-        sinon.replace(service.identification, 'getGame', () => {return gameObj });
+        sinon.replace(gameObj, 'playerTurn', () => {
+            return gameObj.player1;
+        });
+
+        sinon.replace(service.identification, 'getGame', () => {
+            return gameObj;
+        });
         const passerSpy = sinon.spy(service.identification, 'getGame');
         clientSocket.emit('placer', ['!placer ']);
         setTimeout(() => {
@@ -336,17 +370,21 @@ describe('SocketManager service tests', () => {
         const user1 = {
             username: 'player1',
             id: clientSocket.id,
-            room:'room1',
+            room: 'room1',
         };
         const user2 = {
             username: 'player2',
             id: clientSocket.id,
-            room:'room1',
+            room: 'room1',
         };
         gameObj.player1 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user1);
         gameObj.player2 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user2);
-        sinon.replace(gameObj, 'playerTurnValid', () => {return false });
-        sinon.replace(service.identification, 'getGame', () => {return gameObj });
+        sinon.replace(gameObj, 'playerTurnValid', () => {
+            return false;
+        });
+        sinon.replace(service.identification, 'getGame', () => {
+            return gameObj;
+        });
         const passerSpy = sinon.spy(service.identification, 'getGame');
         clientSocket.emit('placer', ['!placer ']);
         setTimeout(() => {
@@ -355,26 +393,36 @@ describe('SocketManager service tests', () => {
         }, RESPONSE_DELAY);
     });
 
-    it('should handle invalid place command if not placer' , (done) => {
+    it('should handle invalid place command if not placer', (done) => {
         const gameObj = new Game();
         const user1 = {
             username: 'player1',
             id: clientSocket.id,
-            room:'room1',
+            room: 'room1',
         };
         const user2 = {
             username: 'player2',
             id: clientSocket.id,
-            room:'room1',
+            room: 'room1',
         };
         gameObj.player1 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user1);
         gameObj.player2 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user2);
-        sinon.replace(gameObj, 'playerTurnValid', () => {return true });
-        sinon.replace(service.gameManager, 'placeVerification', () => {return 'Invalide' });
-        sinon.replace(service.gameManager, 'placeWord', () => {return 'placer' });
+        sinon.replace(gameObj, 'playerTurnValid', () => {
+            return true;
+        });
+        sinon.replace(service.gameManager, 'placeVerification', () => {
+            return 'Invalide';
+        });
+        sinon.replace(service.gameManager, 'placeWord', () => {
+            return 'placer';
+        });
         sinon.replace(service.gameManager, 'pass', () => {});
-        sinon.replace(gameObj, 'playerTurn', () => {return gameObj.player1});
-        sinon.replace(service.identification, 'getGame', () => {return gameObj });
+        sinon.replace(gameObj, 'playerTurn', () => {
+            return gameObj.player1;
+        });
+        sinon.replace(service.identification, 'getGame', () => {
+            return gameObj;
+        });
         const passerSpy = sinon.spy(service.identification, 'getGame');
         clientSocket.emit('placer', ['!placer ']);
         setTimeout(() => {
@@ -383,26 +431,36 @@ describe('SocketManager service tests', () => {
         }, RESPONSE_DELAY);
     });
 
-    it('should handle invalid place command if not placer2' , (done) => {
+    it('should handle invalid place command if not placer2', (done) => {
         const gameObj = new Game();
         const user1 = {
             username: 'player1',
             id: clientSocket.id,
-            room:'room1',
+            room: 'room1',
         };
         const user2 = {
             username: 'player2',
             id: clientSocket.id,
-            room:'room1',
+            room: 'room1',
         };
         gameObj.player1 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user1);
         gameObj.player2 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user2);
-        sinon.replace(gameObj, 'playerTurnValid', () => {return true });
-        sinon.replace(service.gameManager, 'placeVerification', () => {return 'valide' });
-        sinon.replace(service.gameManager, 'placeWord', () => {return 'pssslacer' });
+        sinon.replace(gameObj, 'playerTurnValid', () => {
+            return true;
+        });
+        sinon.replace(service.gameManager, 'placeVerification', () => {
+            return 'valide';
+        });
+        sinon.replace(service.gameManager, 'placeWord', () => {
+            return 'pssslacer';
+        });
         sinon.replace(service.gameManager, 'pass', () => {});
-        sinon.replace(gameObj, 'playerTurn', () => {return gameObj.player1});
-        sinon.replace(service.identification, 'getGame', () => {return gameObj });
+        sinon.replace(gameObj, 'playerTurn', () => {
+            return gameObj.player1;
+        });
+        sinon.replace(service.identification, 'getGame', () => {
+            return gameObj;
+        });
         const passerSpy = sinon.spy(service.identification, 'getGame');
         clientSocket.emit('placer', ['!placer ']);
         setTimeout(() => {
@@ -413,61 +471,76 @@ describe('SocketManager service tests', () => {
 
     it('should handle valid echanger command', (done) => {
         const gameObj = new Game();
-       
-        let a:any =clientSocket.disconnected;
+
+        const a: boolean = clientSocket.disconnected;
         const user1 = {
             username: 'player1',
-            id: a,
-            room:'room1',
+            id: a.toString(),
+            room: 'room1',
         };
         const user2 = {
             username: 'player2',
             id: 'b',
-            room:'room1',
+            room: 'room1',
         };
         gameObj.player1 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user1);
         gameObj.player2 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user2);
-        sinon.replace(gameObj, 'playerTurnValid', () => {return true });
-        sinon.replace(service.gameManager, 'exchangeVerification', () => {return 'valide' });
-       
+        sinon.replace(gameObj, 'playerTurnValid', () => {
+            return true;
+        });
+        sinon.replace(service.gameManager, 'exchangeVerification', () => {
+            return 'valide';
+        });
+
         sinon.replace(service.gameManager, 'exchange', () => {});
-        sinon.replace(gameObj, 'playerTurn', () => {return gameObj.player1});
-        
-        sinon.replace(service.identification, 'getGame', () => {return gameObj });
+        sinon.replace(gameObj, 'playerTurn', () => {
+            return gameObj.player1;
+        });
+
+        sinon.replace(service.identification, 'getGame', () => {
+            return gameObj;
+        });
         const passerSpy = sinon.spy(service.identification, 'getGame');
-        clientSocket.emit('echanger', [['!echanger '],['aaa']]);
+        clientSocket.emit('echanger', [['!echanger '], ['aaa']]);
         setTimeout(() => {
             assert(passerSpy.called);
             done();
         }, RESPONSE_DELAY);
     });
 
-
     it('should handle Invalid echanger command', (done) => {
         const gameObj = new Game();
-       
-        let a:any =clientSocket.disconnected;
+
+        const a: boolean = clientSocket.disconnected;
         const user1 = {
             username: 'player1',
-            id: a,
-            room:'room1',
+            id: a.toString(),
+            room: 'room1',
         };
         const user2 = {
             username: 'player2',
             id: 'b',
-            room:'room1',
+            room: 'room1',
         };
         gameObj.player1 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user1);
         gameObj.player2 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user2);
-        sinon.replace(gameObj, 'playerTurnValid', () => {return true });
-        sinon.replace(service.gameManager, 'exchangeVerification', () => {return 'invalide' });
-       
+        sinon.replace(gameObj, 'playerTurnValid', () => {
+            return true;
+        });
+        sinon.replace(service.gameManager, 'exchangeVerification', () => {
+            return 'invalide';
+        });
+
         sinon.replace(service.gameManager, 'exchange', () => {});
-        sinon.replace(gameObj, 'playerTurn', () => {return gameObj.player1});
-        
-        sinon.replace(service.identification, 'getGame', () => {return gameObj });
+        sinon.replace(gameObj, 'playerTurn', () => {
+            return gameObj.player1;
+        });
+
+        sinon.replace(service.identification, 'getGame', () => {
+            return gameObj;
+        });
         const passerSpy = sinon.spy(service.identification, 'getGame');
-        clientSocket.emit('echanger', [['!echanger '],['aaa']]);
+        clientSocket.emit('echanger', [['!echanger '], ['aaa']]);
         setTimeout(() => {
             assert(passerSpy.called);
             done();
@@ -476,29 +549,37 @@ describe('SocketManager service tests', () => {
 
     it('should handle valid echanger command not turn', (done) => {
         const gameObj = new Game();
-       
-        let a:any =clientSocket.disconnected;
+
+        const a: boolean = clientSocket.disconnected;
         const user1 = {
             username: 'player1',
-            id: a,
-            room:'room1',
+            id: a.toString(),
+            room: 'room1',
         };
         const user2 = {
             username: 'player2',
             id: 'b',
-            room:'room1',
+            room: 'room1',
         };
         gameObj.player1 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user1);
         gameObj.player2 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user2);
-        sinon.replace(gameObj, 'playerTurnValid', () => {return false });
-        sinon.replace(service.gameManager, 'exchangeVerification', () => {return 'valide' });
-       
+        sinon.replace(gameObj, 'playerTurnValid', () => {
+            return false;
+        });
+        sinon.replace(service.gameManager, 'exchangeVerification', () => {
+            return 'valide';
+        });
+
         sinon.replace(service.gameManager, 'exchange', () => {});
-        sinon.replace(gameObj, 'playerTurn', () => {return gameObj.player1});
-        
-        sinon.replace(service.identification, 'getGame', () => {return gameObj });
+        sinon.replace(gameObj, 'playerTurn', () => {
+            return gameObj.player1;
+        });
+
+        sinon.replace(service.identification, 'getGame', () => {
+            return gameObj;
+        });
         const passerSpy = sinon.spy(service.identification, 'getGame');
-        clientSocket.emit('echanger', [['!echanger '],['aaa']]);
+        clientSocket.emit('echanger', [['!echanger '], ['aaa']]);
         setTimeout(() => {
             assert(passerSpy.called);
             done();
@@ -634,7 +715,7 @@ describe('SocketManager service tests', () => {
     //     }, RESPONSE_DELAY);
     // });
 
-    /*it('should handle passer event1', () => {
+    /* it('should handle passer event1', () => {
 
       
         sinon.replace(service.identification, 'getUsername', () => {

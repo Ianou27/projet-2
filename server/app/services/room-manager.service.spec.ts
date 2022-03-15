@@ -35,10 +35,12 @@ describe('Room Manager tests', () => {
         const room: Room = {
             player1: 'player1',
             player2: '',
+            time: '60',
         };
         const room2: Room = {
             player1: 'username',
             player2: 'player2Test',
+            time: '60',
         };
         idManager.rooms.push(room);
         idManager.rooms.push(room2);
@@ -52,6 +54,7 @@ describe('Room Manager tests', () => {
         const room: Room = {
             player1: 'player1',
             player2: '',
+            time: '60',
         };
         idManager.rooms.push(room);
         roomManager.joinRoom(username, room, socketId, idManager, sio);
@@ -68,6 +71,7 @@ describe('Room Manager tests', () => {
         const room: Room = {
             player1: 'username',
             player2: '',
+            time: '60',
         };
         idManager.rooms.push(room);
         const deleteSpy = sinon.stub(roomManager, 'deleteRoom');
@@ -80,6 +84,7 @@ describe('Room Manager tests', () => {
         const room: Room = {
             player1: '-2',
             player2: 'username',
+            time: '60',
         };
         idManager.rooms.push(room);
         roomManager.deleteRoom(socketId, idManager);
@@ -90,6 +95,7 @@ describe('Room Manager tests', () => {
         const room: Room = {
             player1: 'test',
             player2: 'username',
+            time: '60',
         };
         idManager.rooms.push(room);
         roomManager.deleteRoom(socketId, idManager);
@@ -102,6 +108,7 @@ describe('Room Manager tests', () => {
         const room: Room = {
             player1: 'username',
             player2: '',
+            time: '60',
         };
         idManager.rooms.push(room);
         roomManager.deleteRoom(socketId, idManager);
@@ -114,6 +121,7 @@ describe('Room Manager tests', () => {
         const room: Room = {
             player1: 'username',
             player2: '-2',
+            time: '60',
         };
         idManager.rooms.push(room);
         roomManager.deleteRoom(socketId, idManager);
@@ -125,6 +133,7 @@ describe('Room Manager tests', () => {
         const room: Room = {
             player1: 'username',
             player2: 'player2',
+            time: '60',
         };
         idManager.rooms.push(room);
         roomManager.deleteRoom(socketId, idManager);

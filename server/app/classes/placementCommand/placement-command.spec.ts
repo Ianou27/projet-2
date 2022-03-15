@@ -3,6 +3,7 @@ import { CaseProperty } from '@common/assets/case-property';
 import { letterValue } from '@common/assets/reserve-letters';
 import { Tile } from '@common/tile/Tile';
 import { assert, expect } from 'chai';
+import * as fs from 'fs';
 import * as sinon from 'sinon';
 import { Game } from './../game/game';
 import { PlacementCommand } from './../placementCommand/placement-command';
@@ -15,6 +16,7 @@ describe('Placement Command', () => {
     let lettersTilePlayer2: Tile[] = [];
     const lettersPlayer1 = ['A', 'L', 'L', '*', 'E', 'E', 'V'];
     const lettersPlayer2 = ['B', 'A', 'T', '*', 'E', 'V', 'A'];
+    const dictionaryArray: string[] = JSON.parse(fs.readFileSync('./assets/dictionnary.json').toString()).words;
 
     beforeEach(() => {
         game = new Game();
@@ -273,49 +275,49 @@ describe('Placement Command', () => {
 
     it('method validatedWordDictionary should return True when a word is in the dictionary', () => {
         const word = 'ourson';
-        const result = PlacementCommand.validatedWordDictionary(word);
+        const result = PlacementCommand.validatedWordDictionary(word, dictionaryArray);
         expect(result).to.equals(true);
     });
 
     it('method validatedWordDictionary should return False when a word is not in the dictionary', () => {
         const word = 'aaaaaaa';
-        const result = PlacementCommand.validatedWordDictionary(word);
+        const result = PlacementCommand.validatedWordDictionary(word, dictionaryArray);
         expect(result).to.equals(false);
     });
 
     it('method validatedWordDictionary should return False when a word is smaller than 2 letters', () => {
         const word = 'a';
-        const result = PlacementCommand.validatedWordDictionary(word);
+        const result = PlacementCommand.validatedWordDictionary(word, dictionaryArray);
         expect(result).to.equals(false);
     });
 
     it('method validatedWordDictionary should return False if a word contains an apostrophe', () => {
         const word = "aujourd'hui";
-        const result = PlacementCommand.validatedWordDictionary(word);
+        const result = PlacementCommand.validatedWordDictionary(word, dictionaryArray);
         expect(result).to.equals(false);
     });
 
     it('method validatedWordDictionary should return False if a word contains an hyphen', () => {
         const word = 'arc-en-ciel';
-        const result = PlacementCommand.validatedWordDictionary(word);
+        const result = PlacementCommand.validatedWordDictionary(word, dictionaryArray);
         expect(result).to.equals(false);
     });
 
     it('method validatedWordDictionary should return true if the word is in the dictionary even if it contains an accent', () => {
         const word = 'éléphant';
-        const result = PlacementCommand.validatedWordDictionary(word);
+        const result = PlacementCommand.validatedWordDictionary(word, dictionaryArray);
         expect(result).to.equals(true);
     });
 
     it('method validatedWordDictionary should return true if the word is in the dictionary even if it contains an cedilla', () => {
         const word = 'garçon';
-        const result = PlacementCommand.validatedWordDictionary(word);
+        const result = PlacementCommand.validatedWordDictionary(word, dictionaryArray);
         expect(result).to.equals(true);
     });
 
     it('method validatedWordDictionary should return true if the word is in the dictionary even if it contains an diaeresis', () => {
         const word = 'noël';
-        const result = PlacementCommand.validatedWordDictionary(word);
+        const result = PlacementCommand.validatedWordDictionary(word, dictionaryArray);
         expect(result).to.equals(true);
     });
 });

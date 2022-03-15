@@ -1,8 +1,5 @@
-import { CaseProperty } from '@common/assets/case-property';
-import { letterValue } from '@common/assets/reserve-letters';
-import { Tile } from '@common/tile/Tile';
 import * as io from 'socket.io';
-import { MAXIMUM_PASSES_COUNT, NUMBER_TILEHOLDER } from './../../../../common/constants/general-constants';
+import { MAXIMUM_PASSES_COUNT } from './../../../../common/constants/general-constants';
 import { GameState } from './../../../../common/gameState';
 import { User } from './../../../../common/types';
 import { GameBoardService } from './../../services/game-board.service';
@@ -38,20 +35,13 @@ export class Game {
         this.gameState = gameState;
     }
     player1Join(user: User, timer: string) {
-        const letters: Tile[] = [];
-        for (let i = 0; i < NUMBER_TILEHOLDER; i++) {
-            const tile: Tile = new Tile(CaseProperty.Normal, 0, i);
-            tile.letter = '*';
-            tile.value = letterValue[tile.letter];
-            letters.push(tile);
-        }
-        this.player1 = new Player(letters, true, 'player1', user, false);
+        this.player1 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player1', user);
         this.timer = new Timer(timer);
         this.roomName = user.room;
         this.timer = new Timer(timer);
     }
     player2Join(user: User, sio: io.Server) {
-        this.player2 = new Player(this.reserveLetters.randomLettersInitialization(), false, 'player2', user, false);
+        this.player2 = new Player(this.reserveLetters.randomLettersInitialization(), false, 'player2', user);
         this.sio = sio;
         this.startGame();
     }
@@ -73,26 +63,27 @@ export class Game {
 
     startSoloGame(user: User, sio: io.Server, timer: string) {
         this.timer = new Timer(timer);
-        this.player1 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player1', user, false);
+        this.player1 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player1', user);
         this.roomName = user.room;
         const userBot = {
             username: 'Bot',
             id: '',
             room: user.room,
         };
-        this.player2 = new Player(this.reserveLetters.randomLettersInitialization(), false, 'player2', userBot, true);
+        this.player2 = new Player(this.reserveLetters.randomLettersInitialization(), false, 'player2', userBot);
+        this.player2.changeHisBot(true);
         this.sio = sio;
         this.sio.to(user.id).emit('tileHolder', this.player1.letters);
         this.timer.start(this, this.sio);
     }
 
-    changeTurnTwoPlayers() {
+    async changeTurnTwoPlayers() {
         this.player1.changeTurn();
         this.player2.changeTurn();
         this.sio.to(this.player1.user.id).emit('turn', this.player1.hisTurn);
         this.sio.to(this.player2.user.id).emit('turn', this.player2.hisTurn);
         if (this.playerTurn().hisBot) {
-            setTimeout(() => {
+            await setTimeout(() => {
                 const command = this.actionVirtualBeginnerPlayer();
                 this.placementBot(command);
             }, 3000);
@@ -122,7 +113,7 @@ export class Game {
                 break;
             }
             case '!placer': {
-                this.placeWord(command);
+                PlacementCommand.placeWord(command, this);
                 this.sio
                     .to(this.player1.user.room)
                     .emit('updateReserve', this.reserveLetters.letters.length, this.player1.getNumberLetters(), this.player2.getNumberLetters());
@@ -163,30 +154,6 @@ export class Game {
         }
         this.changeTurnTwoPlayers();
         this.gameState.passesCount = 0;
-    }
-
-    placeWord(commandInformations: string[]): boolean {
-        const placementInformations = PlacementCommand.separatePlaceCommandInformations(commandInformations);
-        let letterPositions: Tile[] = [];
-        letterPositions = PlacementCommand.place(placementInformations, this);
-        const placementScore = PlacementCommand.newWordsValid(commandInformations, this, letterPositions);
-        if (placementScore === 0) {
-            PlacementCommand.restoreBoard(this, letterPositions);
-            return false;
-        }
-        let lettersToPlace = placementInformations.letters.length;
-        while (lettersToPlace > 0) {
-            this.playerTurn().changeLetter('', this.reserveLetters.getRandomLetterReserve());
-            lettersToPlace--;
-        }
-        this.playerTurn().points += placementScore;
-        this.gameState.firstTurn = false;
-        this.changeTurnTwoPlayers();
-        this.timer.reset();
-        this.gameState.passesCount = 0;
-        this.verifyGameState();
-
-        return true;
     }
 
     passTurn(): void {

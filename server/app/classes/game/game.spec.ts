@@ -1,4 +1,5 @@
 import { GameBoardService } from '@app/services/game-board.service';
+import { Timer } from '@app/services/timer-manager.service';
 import { CaseProperty } from '@common/assets/case-property';
 import { letterValue } from '@common/assets/reserve-letters';
 import { Tile } from '@common/tile/Tile';
@@ -27,6 +28,7 @@ describe('Game', () => {
         game = new Game();
         game.player1Join({ username: 'rt', id: '1', room: 'room1' }, '60');
         game.player2 = new Player(game.reserveLetters.randomLettersInitialization(), false, 'player2', { username: 'rta', id: '2', room: 'room1' });
+        game.timer = new Timer('60');
     });
 
     it('constructor should construct a game with two players named player1 and player2', () => {
