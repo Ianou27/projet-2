@@ -72,14 +72,18 @@ export class VirtualPlayer {
         const placementsCommands: PlacementScore[] = [];
         for (const word of words) {
             try {
+                let wordWithoutLetter = word;
                 let tileStart = placement.tile;
                 let command = '!placer ';
-                for (let i = 0; i < word.indexOf(placement.tile.letter.toLowerCase()); i++) {
-                    tileStart = game.gameBoard.nextTile(tileStart, placement.orientation, true);
+                if (!game.gameState.firstTurn) {
+                    for (let i = 0; i < word.indexOf(placement.tile.letter.toLowerCase()); i++) {
+                        tileStart = game.gameBoard.nextTile(tileStart, placement.orientation, true);
+                    }
+                    wordWithoutLetter =
+                        word.slice(0, word.indexOf(placement.tile.letter.toLowerCase())) +
+                        word.slice(word.indexOf(placement.tile.letter.toLowerCase()) + 1);
                 }
-                const wordWithoutLetter =
-                    word.slice(0, word.indexOf(placement.tile.letter.toLowerCase())) +
-                    word.slice(word.indexOf(placement.tile.letter.toLowerCase()) + 1);
+
                 command = command.concat(
                     rowLetter[tileStart.positionY] + (tileStart.positionX + 1).toString() + placement.orientation + ' ' + wordWithoutLetter,
                 );
@@ -187,6 +191,13 @@ export class VirtualPlayer {
                     }
                 }
             }
+        }
+        if (tiles.length === 0) {
+            const tilePlacement: TilePlacementPossible = {
+                tile: gameBoard.cases[7][7],
+                orientation: 'h',
+            };
+            tiles.push(tilePlacement);
         }
         const tilesShuffled = this.shuffleArray(tiles);
         return tilesShuffled;

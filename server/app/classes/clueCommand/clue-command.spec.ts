@@ -48,19 +48,19 @@ describe('ClueCommand', () => {
     });
 
     it('method findClues should call findAllPlacementCommands from VirtualPlayer', () => {
-        const spy = sinon.stub(VirtualPlayer, 'findAllPlacementCommands');
+        const spy = sinon.spy(VirtualPlayer, 'findAllPlacementCommands');
         ClueCommand.findClues(game);
         assert(spy.call);
     });
 
     it('method findClues should return 3 placements on the first placement', () => {
         const placements = ClueCommand.findClues(game);
-        expect(placements.length).to.equal(4);
+        expect(placements.length).to.equal(3);
     });
 
     it('method findClues should return 3 placements on the second placement', () => {
         PlacementCommand.placeWord('!placer h8v arbre'.split(' '), game);
         const placements = ClueCommand.findClues(game);
-        expect(placements.length).to.equal(4);
+        expect(placements.length).to.equal(3);
     });
 });
