@@ -27,6 +27,12 @@ export class SocketManager {
                 socket.join(room);
             });
 
+            socket.on('createSoloGame', (username: string, timer: string) => {
+                this.roomManager.createSoloGame(username, socket.id, this.identification, this.sio, timer);
+                socket.join(username);
+                this.sio.to(socket.id).emit('startGame', username, 'bot');
+            });
+
             socket.on('joinRoom', (username: string, roomObj: Room) => {
                 const player1Id = this.identification.getId(roomObj.player1);
                 const letters = this.roomManager.joinRoom(username, roomObj, socket.id, this.identification, this.sio);
@@ -154,12 +160,12 @@ export class SocketManager {
                     if (!game.playerTurnValid(this.identification.getPlayer(socket.id))) {
                         this.sio.to(socket.id).emit('commandValidated', " Ce n'est pas ton tour");
                     } else {
-                        this.gameManager.pass(game);
                         this.sio.to(currentRoom).emit('roomMessage', {
                             username: 'Server',
                             message: username + ' a passé son tour ',
                             player: 'server',
                         });
+                        this.gameManager.pass(game);
                         this.sio.to(currentRoom).emit('modification', game.gameBoard.cases, game.playerTurn().name);
                     }
                 }
@@ -204,9 +210,6 @@ export class SocketManager {
                     }
 
                     if (verification === 'valide') {
-                        this.gameManager.exchange(command, game);
-
-                        this.sio.to(game.player1.user.room).emit('modification', game.gameBoard.cases, game.playerTurn().name);
                         this.sio.to(socket.id).emit('roomMessage', {
                             username: 'Server',
                             message: 'vous avez echangé les lettres ' + command[1],
@@ -217,6 +220,9 @@ export class SocketManager {
                             message: 'votre adversaire a echangé ' + command[1].length + ' lettres',
                             player: 'server',
                         });
+                        this.gameManager.exchange(command, game);
+
+                        this.sio.to(game.player1.user.room).emit('modification', game.gameBoard.cases, game.playerTurn().name);
 
                         if (socket.id === game.player1.user.id) {
                             this.sio.to(socket.id).emit('tileHolder', game.player1.getLetters());

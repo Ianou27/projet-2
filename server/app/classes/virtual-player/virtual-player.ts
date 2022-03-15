@@ -18,13 +18,12 @@ interface PlacementScore {
 }
 
 export class VirtualPlayer {
-    dictionaryArray: string[] = JSON.parse(fs.readFileSync('./assets/dictionnary.json').toString()).words;
-
     static findAllWords(letters: string[], letterOnBoard: string): string[] {
+        const dictionaryArray: string[] = JSON.parse(fs.readFileSync('./assets/dictionnary.json').toString()).words;
         let validWords: string[] = [];
         let words: string[] = [];
         let combinations = this.getCombinations(letters.map((letter) => letter.toLowerCase())).filter((item) => {
-            return item.length < 7;
+            return item.length < 6;
         });
 
         const middleIndex = Math.ceil(combinations.length);
@@ -40,7 +39,7 @@ export class VirtualPlayer {
         );
 
         for (const word of words) {
-            if (PlacementCommand.validatedWordDictionary(word)) {
+            if (PlacementCommand.validatedWordDictionary(word, dictionaryArray)) {
                 validWords = validWords.concat(word);
             }
             if (validWords.length >= 5) {
@@ -48,16 +47,6 @@ export class VirtualPlayer {
             }
         }
         return validWords;
-    }
-
-    static actionVirtualBeginnerPlayer(game: Game): string[] {
-        const probability = Math.floor(Math.random() * 100);
-        if (probability <= 10) {
-            return '!passer'.split(' ');
-        } else if (probability <= 20) {
-            return this.exchangeLettersCommand(game);
-        }
-        return this.placementLettersCommand(game);
     }
 
     static heapsPermute(array: string[], n: number, words: string[]): string[] {
@@ -135,13 +124,13 @@ export class VirtualPlayer {
 
     static findAllPlacementCommands(game: Game): PlacementScore[] {
         const playerLetters = game.playerTurn().lettersToStringArray();
-        const placementPossible = this.findAllPositionGameBoard(game);
+        const placementPossible = this.findAllPositionGameBoard(game).slice(0, 15);
         let commandPlacements: PlacementScore[] = [];
         for (const placement of placementPossible) {
             const letters = playerLetters.concat(placement.tile.letter);
             const words = this.findAllWords(letters, placement.tile.letter);
             commandPlacements = commandPlacements.concat(this.findPlacementCommand(words, placement, game));
-            if (commandPlacements.length >= 15) {
+            if (commandPlacements.length >= 10) {
                 break;
             }
         }

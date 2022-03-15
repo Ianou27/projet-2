@@ -99,7 +99,7 @@ export class ChatService {
             this.player2ChevaletLetters = player2;
             this.reserve = reserve;
         });
-         this.socketService.on('turn', (turn: boolean) => {
+        this.socketService.on('turn', (turn: boolean) => {
             this.myTurn = turn;
         });
 
@@ -171,6 +171,10 @@ export class ChatService {
     createRoom(username: string, room: string, time: string) {
         this.socketService.socket.emit('createRoom', username, room, time);
         this.updateRooms();
+    }
+
+    createSoloGame(username: string, time: string) {
+        this.socketService.socket.emit('createSoloGame', username, time);
     }
 
     joinRoom() {
