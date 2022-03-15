@@ -13,7 +13,6 @@ import { ChatService } from '@app/services/chat.service';
 export class JoinPageComponent implements OnInit {
     name: string;
     confirmName: string;
-    // time: string;
     form: FormGroup;
     alphaNumericRegex = /^[a-zA-Z]*$/;
     selectedDico = 'Dictionnaire par defaut';
@@ -59,8 +58,12 @@ export class JoinPageComponent implements OnInit {
     }
 
     createRoom() {
-        this.chatService.createRoom(this.name, this.name, +this.selectedTime);
+        this.chatService.createRoom(this.name, this.name, this.selectedTime);
         this.openWait();
+    }
+
+    createSoloGame() {
+        this.chatService.createSoloGame(this.name, this.selectedTime);
     }
 
     goHome() {

@@ -31,8 +31,14 @@ export class BoardService {
         }
     }
 
-    getBoard() {
-        return this.board;
+    setLetter(posX: number, posY: number, letter: string, value: number) {
+        this.board[posX][posY].letter = letter.toUpperCase();
+        this.board[posX][posY].value = value;
+    }
+
+    removeLetter(posX: number, posY: number) {
+        this.board[posX][posY].letter = '';
+        this.board[posX][posY].value = 0;
     }
 
     private verifyProperty(property: Vec2[], positionX: number, positionY: number): boolean {

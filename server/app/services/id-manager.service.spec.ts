@@ -1,4 +1,5 @@
 import { Game } from '@app/classes/game/game';
+import { Player } from '@app/classes/player/player';
 import { IdManager } from '@app/services/id-manager.service';
 import { Room, User } from '@common/types';
 import { assert, expect } from 'chai';
@@ -6,8 +7,11 @@ import * as sinon from 'sinon';
 
 describe('IdManager tests', () => {
     const idManager = new IdManager();
-
+    const game = new Game();
+    idManager.games.push(game);
     beforeEach(() => {
+        game.player1Join({ username: 'rt', id: '1', room: 'room1' }, '60');
+        game.player2 = new Player(game.reserveLetters.randomLettersInitialization(), false, 'player2', { username: 'rta', id: '2', room: 'room1' });
         const user: User = {
             username: 'username',
             id: 'id',
@@ -31,8 +35,8 @@ describe('IdManager tests', () => {
     });
 
     it('should return id if player matches the username', () => {
-        const returnVal = idManager.getId('username');
-        expect(returnVal).to.equal('id');
+        const returnVal = idManager.getId('rt');
+        expect(returnVal).to.equal('1');
     });
 
     it('should return empty string if socket does not match', () => {
@@ -51,11 +55,10 @@ describe('IdManager tests', () => {
     });
 
     it('should return player1 if player1 matches the username', () => {
-        const testGame = new Game();
         const room: Room = {
             player1: 'username',
             player2: 'player2',
-            game: testGame,
+            time: '60',
         };
         idManager.rooms.push(room);
         const returnVal = idManager.getPlayer('id');
@@ -63,11 +66,10 @@ describe('IdManager tests', () => {
     });
 
     it('should return player2 if player2 matches the username', () => {
-        const testGame = new Game();
         const room: Room = {
             player1: 'player1',
             player2: 'username',
-            game: testGame,
+            time: '60',
         };
         idManager.rooms.push(room);
         const returnVal = idManager.getPlayer('id');
