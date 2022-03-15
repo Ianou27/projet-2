@@ -22,7 +22,7 @@ export class DatabaseService {
         } catch {
             throw new Error('Database connection error');
         }
-        
+
         if ((await this.db.collection(DATABASE_COLLECTION).countDocuments()) === 0) {
             await this.populateDB();
         }
@@ -67,41 +67,33 @@ export class DatabaseService {
     get database(): Db {
         return this.db;
     }
-    async BestScoreClassique(): Promise< object[]>{
+    async BestScoreClassique(): Promise<object[]> {
         await this.updateBesScoreClassique({
             player: 'all',
             score: 17,
         });
-        return await this.db.collection(DATABASE_COLLECTION).find().sort({score:-1}).toArray();
-
-        
-        
-
+        return await this.db.collection(DATABASE_COLLECTION).find().sort({ score: -1 }).toArray();
     }
 
-
-    async updateBesScoreClassique(score: BestScore){
-        let db = await this.db.collection(DATABASE_COLLECTION).find().sort({score:-1}).toArray();
-        let index= -1;
-        for(let i =0 ; i< 5; i++ ){
-            if(db[i].score <= score.score){
-                index =i;
+    async updateBesScoreClassique(score: BestScore) {
+        const db = await this.db.collection(DATABASE_COLLECTION).find().sort({ score: -1 }).toArray();
+        let index = -1;
+        for (let i = 0; i < 5; i++) {
+            if (db[i].score <= score.score) {
+                index = i;
                 break;
             }
         }
 
-        if(index != -1){
-            let player = db[index].player.split('-');
-            if(db[index].score === score.score && !player.includes(score.player)){
-                
-                await this.db.collection(DATABASE_COLLECTION).updateOne({score: db[index].score},{$set:{player:db[index].player + '-'+score.player}});
-            }
-
-            else if (db[index].score < score.score ){
-                await this.db.collection(DATABASE_COLLECTION).replaceOne({score: db[4].score},{player: score.player, score:score.score});
+        if (index != -1) {
+            const player = db[index].player.split('-');
+            if (db[index].score === score.score && !player.includes(score.player)) {
+                await this.db
+                    .collection(DATABASE_COLLECTION)
+                    .updateOne({ score: db[index].score }, { $set: { player: db[index].player + '-' + score.player } });
+            } else if (db[index].score < score.score) {
+                await this.db.collection(DATABASE_COLLECTION).replaceOne({ score: db[4].score }, { player: score.player, score: score.score });
             }
         }
-
     }
-
 }
