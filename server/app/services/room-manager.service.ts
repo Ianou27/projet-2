@@ -1,6 +1,7 @@
 import { Tile } from '@common/tile/Tile';
 import { Room } from '@common/types';
 import * as io from 'socket.io';
+import { beginnerBotName } from './../../assets/bot-name';
 import { Game } from './../classes/game/game';
 import { IdManager } from './id-manager.service';
 export class RoomManager {
@@ -102,5 +103,13 @@ export class RoomManager {
                 }
             }
         });
+    }
+
+    getRandomBotName(username: string): string {
+        let randomName = username;
+        while (randomName === username) {
+            randomName = beginnerBotName[Math.floor(Math.random() * beginnerBotName.length)];
+        }
+        return randomName.concat(' (Joueur virtuel)');
     }
 }
