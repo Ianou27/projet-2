@@ -4,30 +4,21 @@
     position: absolute;
 }
 
-#grid-container{
+#grid-container {
     display: contents;
 }
 
-.row-numbers {
-    display: grid;
-    padding-left: 25px;
-    grid-template-columns: repeat(15, 50px);
-}
-
-.number-text {
-    padding-left: 20px;
-}
-
-.col-letters {
-    display: grid;
-    grid-template-rows: repeat(15, 50px);
-}
-
-.letters-text {
-    padding-top: 20px;
-    padding-right: 15px;
-}
-
-.wrapper {
+#container {
     display: flex;
+}
+
+button {
+    width: fit-content;
+}
+
+app-size-selector {
+    width: fit-content;
+    position: relative;
+    left: 78%;
+    top: 15%;
 }

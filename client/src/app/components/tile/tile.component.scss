@@ -44,6 +44,18 @@
     box-shadow: inset 0 0 0 3px red;
 }
 
+#arrow-right::after {
+    z-index: 1;
+    position: relative;
+    content: '⌵';
+    transform: rotate(-90deg);
+    height: 50px;
+    width: 50px;
+    text-align: center;
+    left: 20%;
+    font-size: 250%;
+}
+
 .tileEmptyVertical {
     z-index: 1;
     height: 50px;
@@ -52,6 +64,17 @@
     display: grid;
     grid-template-rows: 20px 10px;
     box-shadow: inset 0 0 0 3px green;
+}
+
+#arrow-down::after {
+    z-index: 1;
+    position: relative;
+    content: '⌵';
+    height: 50px;
+    width: 50px;
+    text-align: center;
+    top: 50%;
+    font-size: 250%;
 }
 
 .tileBlankLetter {

@@ -125,16 +125,19 @@ export class BoardComponent {
         switch (current.children[0].classList[0]) {
             case 'tileEmpty': {
                 current.children[0].classList.replace('tileEmpty', 'tileEmptyHorizontal');
+                current.children[0].id = 'arrow-right';
                 this.orientation = 'h';
                 break;
             }
             case 'tileEmptyHorizontal': {
                 current.children[0].classList.replace('tileEmptyHorizontal', 'tileEmptyVertical');
+                current.children[0].id = 'arrow-down';
                 this.orientation = 'v';
                 break;
             }
             case 'tileEmptyVertical': {
                 current.children[0].classList.replace('tileEmptyVertical', 'tileEmptyHorizontal');
+                current.children[0].id = 'arrow-right';
                 this.orientation = 'h';
                 break;
             }
