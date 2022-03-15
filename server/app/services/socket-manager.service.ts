@@ -21,15 +21,7 @@ export class SocketManager {
 
  
     }
-    async dbConnectionn(){
-        try {
-            await this.databaseService.start();
-            console.log('Database connection successful !');
-        } catch {
-            console.error('Database connection failed !');
-            process.exit(1);
-        }
-    }
+
 
     async handleSockets(): Promise<void> {
         this.sio.on('connection', (socket) => {

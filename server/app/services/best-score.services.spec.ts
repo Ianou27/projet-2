@@ -5,7 +5,7 @@ import * as chaiAsPromised from 'chai-as-promised';
 import { describe } from 'mocha';
 import { MongoClient } from 'mongodb';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import { DatabaseService } from './database.service';
+import { DatabaseService } from './best-score.services';
 chai.use(chaiAsPromised); // this allows us to test for rejection
 
 describe('Database service', () => {
