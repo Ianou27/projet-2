@@ -5,15 +5,15 @@
     <h2>En attente d'un adversaire...</h2>
     <mat-spinner></mat-spinner>
     <section id="server-message">
-        <h1 *ngIf="this.chatService.playerJoined">{{this.chatService.informationToJoin.username}} voudrait rejoindre la partie</h1>
+        <h1 *ngIf="this.chatService.playerJoined">{{ this.chatService.informationToJoin.username }} voudrait rejoindre la partie</h1>
         <div class="justified">
-            
             <mat-dialog-actions class="a" align="end">
-                
-                <button mat-button color="primary" cdkFocusInitial disabled={{!this.chatService.playerJoined}} (click)="this.accept()">Accepter</button>
-                <button mat-button color="warn"  disabled= {{!this.chatService.playerJoined}} (click)="this.deny()">Refuser</button>
+                <button mat-button color="primary" cdkFocusInitial disabled="{{ !this.chatService.playerJoined }}" (click)="this.accept()">
+                    Accepter
+                </button>
+                <button mat-button color="warn" disabled="{{ !this.chatService.playerJoined }}" (click)="this.deny()">Refuser</button>
             </mat-dialog-actions>
         </div>
     </section>
 </div>
- 
+<button mat-raised-button color="primary" id="convert" mat-dialog-close="true" (click)="convertToSolo()">Convertir en mode solo</button>

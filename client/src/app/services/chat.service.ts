@@ -24,7 +24,7 @@ export class ChatService {
     informationToJoin: InfoToJoin;
     gotAccepted: boolean = false;
     gotRefused: boolean = false;
-
+    myTurn: boolean = true;
     player1Point: number = 0;
     player2Point: number = 0;
     player1Username: string = '';
@@ -86,10 +86,21 @@ export class ChatService {
                 }
             }
         });
+
+        this.socketService.on('cluesMessage', (clues: string[]) => {
+            if (clues.length < 4) this.roomMessages.push({ player: 'Server', username: 'Server', message: 'Moins de 3 placements possibles' });
+            clues.forEach((clue) => {
+                this.roomMessages.push({ player: 'Server', username: 'Server', message: clue });
+            });
+        });
+
         this.socketService.socket.on('updateReserve', (reserve: number, player1: number, player2: number) => {
             this.player1ChevaletLetters = player1;
             this.player2ChevaletLetters = player2;
             this.reserve = reserve;
+        });
+        this.socketService.on('turn', (turn: boolean) => {
+            this.myTurn = turn;
         });
 
         this.socketService.on('roomMessage', (roomMessage: Message) => {
@@ -162,6 +173,10 @@ export class ChatService {
         this.updateRooms();
     }
 
+    createSoloGame(username: string, time: string) {
+        this.socketService.socket.emit('createSoloGame', username, time);
+    }
+
     joinRoom() {
         this.socketService.socket.emit('joinRoom', this.informationToJoin.username, this.informationToJoin.roomObj);
         this.updateRooms();
@@ -188,6 +203,10 @@ export class ChatService {
                 }
                 case '!reserve': {
                     this.socketService.send('reserve', command);
+                    break;
+                }
+                case '!indice': {
+                    this.socketService.send('indice', command);
                     break;
                 }
                 default: {

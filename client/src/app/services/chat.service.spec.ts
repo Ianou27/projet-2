@@ -70,6 +70,7 @@ describe('ChatService', () => {
         const room: Room = {
             player1: 'player1',
             player2: '',
+            time: '60',
         };
         const emitSpy = spyOn(service.socketService.socket, 'emit');
         service.askJoin('test', room);
@@ -102,6 +103,12 @@ describe('ChatService', () => {
         expect(emitSpy).toHaveBeenCalledWith('createRoom', 'test', 'testRoom', '60');
         expect(updateRoomSpy).toHaveBeenCalled();
     });
+    it('createSoloGame() should emit an event createSoloGame', () => {
+        const emitSpy = spyOn(service.socketService.socket, 'emit');
+        service.createSoloGame('test', '60');
+        expect(emitSpy).toHaveBeenCalled();
+        expect(emitSpy).toHaveBeenCalledWith('createSoloGame', 'test', '60');
+    });
     it('updateRoom() should send an event and updateRooms ', () => {
         const sendSpy = spyOn(service.socketService, 'send');
         service.updateRooms();
@@ -111,6 +118,7 @@ describe('ChatService', () => {
         const room: Room = {
             player1: 'player1',
             player2: '',
+            time: '60',
         };
         const info: InfoToJoin = {
             username: 'username',
@@ -158,6 +166,15 @@ describe('ChatService', () => {
         const sendSpy = spyOn(service.socketService, 'send');
         service.sendToRoom();
         expect(sendSpy).toHaveBeenCalledWith('reserve', command.split(' '));
+        expect(service.roomMessage).toBe('');
+    });
+
+    it('sendToRoom() when !indice', () => {
+        const command = '!indice ';
+        service.roomMessage = command;
+        const sendSpy = spyOn(service.socketService, 'send');
+        service.sendToRoom();
+        expect(sendSpy).toHaveBeenCalledWith('indice', command.split(' '));
         expect(service.roomMessage).toBe('');
     });
 
@@ -218,6 +235,13 @@ describe('ChatService', () => {
             expect(pushSpy).toHaveBeenCalled();
         });
 
+        it('should handle cluesMessage event', () => {
+            const pushSpy = spyOn(service.roomMessages, 'push');
+            const clues: string[] = ['', ''];
+            socketTestHelper.peerSideEmit('cluesMessage', clues);
+            expect(pushSpy).toHaveBeenCalled();
+        });
+
         it('should handle commandValidated event', () => {
             const pushSpy = spyOn(service.roomMessages, 'push');
             socketTestHelper.peerSideEmit('commandValidated');
@@ -264,12 +288,19 @@ describe('ChatService', () => {
             const room: Room = {
                 player1: 'player1',
                 player2: 'player2',
+                time: '60',
             };
 
             const rooms: Room[] = [];
             rooms.push(room);
             socketTestHelper.peerSideEmit('rooms', rooms);
             expect(service.allRooms).toEqual(rooms);
+        });
+
+        it('should handle turn event and update the attribute myTurn', () => {
+            service.myTurn = false;
+            socketTestHelper.peerSideEmit('turn', true);
+            expect(service.myTurn).toBeTruthy();
         });
 
         it('should handle didJoin event', () => {
@@ -300,6 +331,7 @@ describe('ChatService', () => {
             const room: Room = {
                 player1: 'player1',
                 player2: '',
+                time: '60',
             };
             const info: InfoToJoin = {
                 username: 'username',
@@ -314,6 +346,7 @@ describe('ChatService', () => {
             const room: Room = {
                 player1: 'player1',
                 player2: '',
+                time: '60',
             };
             const info: InfoToJoin = {
                 username: 'username',

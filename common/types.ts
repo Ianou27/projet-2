@@ -1,8 +1,7 @@
-
 export type Room = {
     player1: string;
     player2: string;
-
+    time: string;
 };
 
 export type InfoToJoin = {
@@ -16,9 +15,8 @@ export type User = {
     room: string;
 };
 
-export type Message ={
-    player:string
-    username: string
-    message:string
-
+export type Message = {
+    player: string;
+    username: string;
+    message: string;
 };

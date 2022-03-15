@@ -28,4 +28,9 @@ export class WaitingPlayerDialogComponent {
         this.chatService.playerJoined = false;
         this.chatService.refused();
     }
+
+    convertToSolo() {
+        console.log('Partie convertie en mode solo');
+        // this.chatService.createSoloGame(this.chatService.player1Username, String(this.chatService.timer));
+    }
 }

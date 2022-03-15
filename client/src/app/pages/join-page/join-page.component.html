@@ -12,7 +12,7 @@
         <mat-icon style="transform: rotate(180deg)">exit_to_app</mat-icon>
     </a>
     <mat-tab-group mat-stretch-tabs>
-        <mat-tab label="Partie solo (Prochainement)">
+        <mat-tab label="Partie solo">
             <mat-dialog-content [formGroup]="form" class="dialog">
                 <div>
                     <form [formGroup]="form">
@@ -43,8 +43,6 @@
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
-
-                        <p>Selected Value: {{ selectedTime }}</p>
                         <h2>Dictionnaire:</h2>
                         <mat-form-field class="center">
                             <mat-select [(value)]="selectedDico" placeholder="Choisir un dictionnaire">
@@ -55,13 +53,13 @@
                     </form>
                     <div mat-dialog-actions id="confirm-button">
                         <button
-                            (click)="createRoom()"
+                            (click)="createSoloGame()"
                             mat-raised-button
                             color="primary"
                             [mat-dialog-close]
                             cdkFocusInitial
                             mat-dialog-close="true"
-                            disabled
+                            [disabled]="form.invalid"
                         >
                             Confirmer
                         </button>
@@ -92,7 +90,6 @@
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
-                        <p>Selected Value: {{ selectedTime }}</p>
                         <h2>Dictionnaire:</h2>
                         <mat-form-field>
                             <mat-select [(value)]="selectedDico" placeholder="Choisir un dictionnaire">
@@ -117,9 +114,22 @@
                 </marquee>
             </mat-toolbar>
             <div>
+                <div *ngIf="this.chatService.allRooms.length !== 0" class="spaceButton">
+                    <a
+                        mat-fab
+                        color="primary"
+                        matTooltip="Placement aléatoire"
+                        matTooltipPosition="right"
+                        [disabled]="this.chatService.allRooms.length === 1"
+                        (click)="randomJoin()"
+                    >
+                        <mat-icon>sync</mat-icon>
+                    </a>
+                </div>
+
                 <mat-accordion *ngFor="let room of this.chatService.allRooms" multi>
                     <div *ngIf="room.player2 === ''">
-                        <mat-expansion-panel>
+                        <mat-expansion-panel [expanded]="selectedRoomName === room.player1">
                             <mat-expansion-panel-header>
                                 <mat-panel-title>
                                     <mat-icon>people</mat-icon>
@@ -129,7 +139,7 @@
                             </mat-expansion-panel-header>
                             <h3>Détails de la salle:</h3>
                             <p>Nom de l'adversaire: {{ room.player1 }}</p>
-                            <p>Durée des tours: {{ +selectedTime | formatTime }} minute</p>
+                            <p>Durée des tours: {{ +room.time | formatTime }} minutes</p>
                             <p>Mode de jeu: classique</p>
                             <p>Dictionnaire: classique</p>
 
@@ -149,8 +159,7 @@
                                     (click)="openWaitToJoin()"
                                     mat-raised-button
                                     color="primary"
-                                    [disabled]="this.name === room.player1"
-                                    [disabled]="form.invalid"
+                                    [disabled]="form.invalid || this.name === room.player1"
                                     [mat-dialog-close]
                                     cdkFocusInitial
                                     mat-dialog-close="true"

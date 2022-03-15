@@ -8,13 +8,15 @@ export class Player {
     points: number;
     name: string;
     user: User;
+    hisBot: boolean;
 
-    constructor(letters: Tile[], hisTurn: boolean, name: string, user: User) {
+    constructor(letters: Tile[], hisTurn: boolean, name: string, user: User, hisBot: boolean) {
         this.letters = letters;
         this.hisTurn = hisTurn;
         this.points = 0;
         this.name = name;
         this.user = user;
+        this.hisBot = hisBot;
     }
 
     changeTurn() {
@@ -39,12 +41,10 @@ export class Player {
 
     changeLetter(removeLetter: string, newLetter: string): void {
         for (const letterPlayer of this.letters) {
-            if (this.isUpper(removeLetter) && letterPlayer.letter === '*') {
-                letterPlayer.letter = newLetter.toUpperCase();
-                letterPlayer.value = letterValue[newLetter];
-                break;
-            }
-            if (!this.isUpper(removeLetter) && letterPlayer.letter === removeLetter.toUpperCase()) {
+            const letterIsPresent =
+                (this.isUpper(removeLetter) && letterPlayer.letter === '*') ||
+                (!this.isUpper(removeLetter) && letterPlayer.letter === removeLetter.toUpperCase());
+            if (letterIsPresent) {
                 letterPlayer.letter = newLetter.toUpperCase();
                 letterPlayer.value = letterValue[newLetter];
                 break;

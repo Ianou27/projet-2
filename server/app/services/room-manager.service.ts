@@ -18,9 +18,29 @@ export class RoomManager {
         const roomObj = {
             player1: username,
             player2: '',
+            time: timer,
         };
         identification.rooms.push(roomObj);
         console.log(identification.users);
+    }
+    createSoloGame(username: string, socketId: string, identification: IdManager, sio: io.Server, timer: string) {
+        const user = {
+            username,
+            id: socketId,
+            room: username,
+        };
+        const roomObj = {
+            player1: username,
+            player2: 'bot',
+            time: timer,
+        };
+        identification.rooms.push(roomObj);
+        identification.users.push(user);
+        identification.roomMessages[username] = [];
+        const game = new Game();
+
+        game.startSoloGame(user, sio, timer);
+        identification.games.push(game);
     }
 
     joinRoom(username: string, roomObj: Room, socketId: string, identification: IdManager, sio: io.Server): Tile[][] {
