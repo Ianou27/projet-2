@@ -172,7 +172,7 @@ export class Game {
         } else if (probability <= 20) {
             return VirtualPlayer.exchangeLettersCommand(this);
         } else {
-            return VirtualPlayer.placementLettersCommand(this);
+            return VirtualPlayer.placementLettersCommand(VirtualPlayer.getProbability(), this);
         }
     }
 

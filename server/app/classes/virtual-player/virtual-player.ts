@@ -141,10 +141,9 @@ export class VirtualPlayer {
         return commandPlacements;
     }
 
-    static placementLettersCommand(game: Game): string[] {
+    static placementLettersCommand(probability: number, game: Game): string[] {
         const allPlacementCommands = this.findAllPlacementCommands(game);
         let placementCommand = '';
-        const probability = Math.floor(Math.random() * 100);
         if (probability <= 40) {
             placementCommand = this.findPlacementScoreRange(1, 6, allPlacementCommands);
         } else if (probability <= 70) {
