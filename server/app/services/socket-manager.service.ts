@@ -6,29 +6,34 @@
 import { InfoToJoin, Room } from '@common/types';
 import * as http from 'http';
 import * as io from 'socket.io';
+import { DatabaseService } from './best-score.services';
 import { GameManager } from './game-manager.service';
 import { IdManager } from './id-manager.service';
 import { RoomManager } from './room-manager.service';
+
 export class SocketManager {
     gameManager: GameManager = new GameManager();
     identification: IdManager = new IdManager();
     roomManager: RoomManager = new RoomManager();
     sio: io.Server;
     timeLeft: number;
-    constructor(server: http.Server) {
+    constructor(server: http.Server,private readonly databaseService: DatabaseService) {
         this.sio = new io.Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
+
+ 
     }
 
-    handleSockets(): void {
+
+    async handleSockets(): Promise<void> {
         this.sio.on('connection', (socket) => {
             console.log(`Connexion par l'utilisateur avec id : ${socket.id}`);
             socket.on('createRoom', (username: string, room: string, timer: string) => {
-                this.roomManager.createRoom(username, room, socket.id, this.identification, timer);
+                this.roomManager.createRoom(username, room, socket.id, this.identification, timer,this.databaseService);
                 socket.join(room);
             });
 
             socket.on('createSoloGame', (username: string, timer: string) => {
-                this.roomManager.createSoloGame(username, socket.id, this.identification, this.sio, timer);
+                this.roomManager.createSoloGame(username, socket.id, this.identification, this.sio, timer,this.databaseService);
                 socket.join(username);
                 this.sio.to(socket.id).emit('startGame', username, this.roomManager.getRandomBotName(username));
             });
@@ -175,6 +180,13 @@ export class SocketManager {
                     this.sio.to(socket.id).emit('reserveValidated', 'Format invalide');
                 }
             });
+            socket.on('forceDisconnect', () => {
+                socket.disconnect();
+            });
+
+            socket.on('getBestScoreClassique', async () => {
+                this.sio.to(socket.id).emit('getBestScoreClassique',await this.databaseService.BestScoreClassique());
+            });
 
             socket.on('indice', (command: string[]) => {
                 const game = this.identification.getGame(socket.id);
@@ -254,4 +266,5 @@ export class SocketManager {
             });
         });
     }
+    
 }

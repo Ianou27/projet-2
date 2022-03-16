@@ -63,7 +63,7 @@ export class IdManager {
         return room;
     }
     getGame(socketId: string): Game {
-        let gameToFind: Game = new Game();
+        let gameToFind: Game = this.games[0];
 
         for (const game of this.games) {
             if (game.player1.user.id === socketId) {
@@ -74,15 +74,7 @@ export class IdManager {
                 }
             }
         }
-        /*         for (let i = 0; i < this.games.length; i++) {
-            if (this.games[i].player1.user.id === socketId) {
-                game = this.games[i];
-            } else if (this.games[i].player2 !== undefined) {
-                if (this.games[i].player2.user.id === socketId) {
-                    game = this.games[i];
-                }
-            }
-        } */
+    
 
         return gameToFind;
     }

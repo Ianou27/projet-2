@@ -20,3 +20,9 @@ export type Message = {
     username: string;
     message: string;
 };
+
+export type BestScore = {
+    id?: string;
+    player: string;
+    score: number;
+};
