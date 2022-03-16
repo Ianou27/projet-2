@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component /* , ViewEncapsulation*/ } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ChatService } from '@app/services/chat.service';
 
@@ -6,16 +6,14 @@ import { ChatService } from '@app/services/chat.service';
     selector: 'app-best-score',
     templateUrl: './best-score.component.html',
     styleUrls: ['./best-score.component.scss'],
-    encapsulation: ViewEncapsulation.None,
+    // encapsulation: ViewEncapsulation.None,
 })
 export class BestScoreComponent {
-
     displayedColumns = ['score', 'name'];
 
-    constructor(public waitDialog: MatDialog,  public chatService: ChatService) {
+    constructor(public waitDialog: MatDialog, public chatService: ChatService) {
         this.chatService.connect();
         this.chatService.getClassiqueScores();
-      
     }
 
     goHome() {
@@ -23,6 +21,3 @@ export class BestScoreComponent {
         this.chatService.disconnect();
     }
 }
-
-
-
