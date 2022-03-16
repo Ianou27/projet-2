@@ -1,3 +1,4 @@
+import { DatabaseService } from '@app/services/best-score.services';
 import * as io from 'socket.io';
 import { MAXIMUM_PASSES_COUNT } from './../../../../common/constants/general-constants';
 import { GameState } from './../../../../common/gameState';
@@ -17,7 +18,7 @@ export class Game {
     gameState: GameState;
     roomName: string;
     sio: io.Server;
-
+    databaseService: DatabaseService;
     constructor() {
         this.reserveLetters = new ReserveLetters();
 
@@ -34,11 +35,12 @@ export class Game {
         };
         this.gameState = gameState;
     }
-    player1Join(user: User, timer: string) {
+    player1Join(user: User, timer: string,databaseService: DatabaseService) {
         this.player1 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player1', user);
         this.timer = new Timer(timer);
         this.roomName = user.room;
         this.timer = new Timer(timer);
+        this.databaseService= databaseService;
     }
     player2Join(user: User, sio: io.Server) {
         this.player2 = new Player(this.reserveLetters.randomLettersInitialization(), false, 'player2', user);
@@ -52,6 +54,7 @@ export class Game {
         if (endGameValidation) {
             this.endGame();
             this.setWinner();
+            
         }
     }
 
@@ -61,13 +64,14 @@ export class Game {
         this.sio.to(this.player2.user.id).emit('turn', this.player2.hisTurn);
     }
 
-    startSoloGame(user: User, sio: io.Server, timer: string) {
+    startSoloGame(user: User, sio: io.Server, timer: string,databaseService: DatabaseService) {
+        this.databaseService = databaseService;
         this.timer = new Timer(timer);
         this.player1 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player1', user);
         this.roomName = user.room;
         const userBot = {
             username: 'Bot',
-            id: '',
+            id: 'bot',
             room: user.room,
         };
         this.player2 = new Player(this.reserveLetters.randomLettersInitialization(), false, 'player2', userBot);
@@ -119,7 +123,7 @@ export class Game {
                     .emit('updateReserve', this.reserveLetters.letters.length, this.player1.getNumberLetters(), this.player2.getNumberLetters());
                 this.sio.to(this.player1.user.room).emit('roomMessage', {
                     username: 'Server',
-                    message: this.player2.user.username + ' a placé le mot ' + command[2] + ' en ' + command[1],
+                    message: this.player2.user.username + ' a placé le mot ' + command[2] + ' en ' + command[1] ,
                     player: 'server',
                 });
                 this.sio.to(this.player1.user.room).emit('modification', this.gameBoard.cases, this.playerTurn().name);
@@ -190,7 +194,7 @@ export class Game {
         });
     }
 
-    private endGame() {
+    private async endGame() {
         this.gameState.gameFinished = true;
         this.timer.stop();
         if (this.player1.getNumberLetters() === 0) {
@@ -216,5 +220,17 @@ export class Game {
                 if (this.player2.points - letter.value >= 0) this.player2.points -= letter.value;
             }
         }
+        await this.databaseService.updateBesScoreClassique({
+            player: this.player1.user.username,
+            score: this.player1.points,
+        });
+
+        if(!this.player2.hisBot){
+            await this.databaseService.updateBesScoreClassique({
+                player: this.player2.user.username,
+                score: this.player2.points,
+            });
+        }
+       
     }
 }
