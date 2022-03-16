@@ -28,12 +28,12 @@ export class SocketManager {
         this.sio.on('connection', (socket) => {
             console.log(`Connexion par l'utilisateur avec id : ${socket.id}`);
             socket.on('createRoom', (username: string, room: string, timer: string) => {
-                this.roomManager.createRoom(username, room, socket.id, this.identification, timer);
+                this.roomManager.createRoom(username, room, socket.id, this.identification, timer,this.databaseService);
                 socket.join(room);
             });
 
             socket.on('createSoloGame', (username: string, timer: string) => {
-                this.roomManager.createSoloGame(username, socket.id, this.identification, this.sio, timer);
+                this.roomManager.createSoloGame(username, socket.id, this.identification, this.sio, timer,this.databaseService);
                 socket.join(username);
                 this.sio.to(socket.id).emit('startGame', username, 'bot');
             });

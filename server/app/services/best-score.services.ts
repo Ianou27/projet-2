@@ -68,10 +68,7 @@ export class DatabaseService {
         return this.db;
     }
     async BestScoreClassique(): Promise< object[]>{
-        await this.updateBesScoreClassique({
-            player: 'all',
-            score: 17,
-        });
+       
         return await this.db.collection(DATABASE_COLLECTION).find().sort({score:-1}).toArray();
 
         
