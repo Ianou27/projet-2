@@ -1,4 +1,4 @@
-import { fail } from 'assert';
+/* import { fail } from 'assert';
 import * as chai from 'chai';
 import { expect } from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
@@ -74,3 +74,4 @@ describe('Database service', () => {
         expect(courses.length).to.equal(5);
     });
 });
+ */

@@ -13,6 +13,7 @@ import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
 import { io as ioClient, Socket } from 'socket.io-client';
 import { Container } from 'typedi';
+import { DatabaseService } from './best-score.services';
 import { SocketManager } from './socket-manager.service';
 
 const RESPONSE_DELAY = 200;
@@ -20,6 +21,7 @@ describe('SocketManager service tests', () => {
     let service: SocketManager;
     let server: Server;
     let clientSocket: Socket;
+    const databaseService: DatabaseService = new DatabaseService();
 
     const urlString = 'http://localhost:3000';
     beforeEach(async () => {
@@ -287,7 +289,7 @@ describe('SocketManager service tests', () => {
             id: 'socketId',
             room: 'room1',
         };
-        gameObj.player1Join(user, '60');
+        gameObj.player1Join(user, '60', databaseService);
         sinon.replace(service.identification, 'getGame', () => {
             return gameObj;
         });

@@ -35,12 +35,12 @@ export class Game {
         };
         this.gameState = gameState;
     }
-    player1Join(user: User, timer: string,databaseService: DatabaseService) {
+    player1Join(user: User, timer: string, databaseService: DatabaseService) {
         this.player1 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player1', user);
         this.timer = new Timer(timer);
         this.roomName = user.room;
         this.timer = new Timer(timer);
-        this.databaseService= databaseService;
+        this.databaseService = databaseService;
     }
     player2Join(user: User, sio: io.Server) {
         this.player2 = new Player(this.reserveLetters.randomLettersInitialization(), false, 'player2', user);
@@ -54,7 +54,6 @@ export class Game {
         if (endGameValidation) {
             this.endGame();
             this.setWinner();
-            
         }
     }
 
@@ -64,7 +63,7 @@ export class Game {
         this.sio.to(this.player2.user.id).emit('turn', this.player2.hisTurn);
     }
 
-    startSoloGame(user: User, sio: io.Server, timer: string,databaseService: DatabaseService) {
+    startSoloGame(user: User, sio: io.Server, timer: string, databaseService: DatabaseService) {
         this.databaseService = databaseService;
         this.timer = new Timer(timer);
         this.player1 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player1', user);
@@ -123,7 +122,7 @@ export class Game {
                     .emit('updateReserve', this.reserveLetters.letters.length, this.player1.getNumberLetters(), this.player2.getNumberLetters());
                 this.sio.to(this.player1.user.room).emit('roomMessage', {
                     username: 'Server',
-                    message: this.player2.user.username + ' a placé le mot ' + command[2] + ' en ' + command[1] ,
+                    message: this.player2.user.username + ' a placé le mot ' + command[2] + ' en ' + command[1],
                     player: 'server',
                 });
                 this.sio.to(this.player1.user.room).emit('modification', this.gameBoard.cases, this.playerTurn().name);
@@ -225,12 +224,11 @@ export class Game {
             score: this.player1.points,
         });
 
-        if(!this.player2.hisBot){
+        if (!this.player2.hisBot) {
             await this.databaseService.updateBesScoreClassique({
                 player: this.player2.user.username,
                 score: this.player2.points,
             });
         }
-       
     }
 }

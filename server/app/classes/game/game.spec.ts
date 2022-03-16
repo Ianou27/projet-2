@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 /* eslint-disable max-len */
+import { DatabaseService } from '@app/services/best-score.services';
 import { GameBoardService } from '@app/services/game-board.service';
 import { Timer } from '@app/services/timer-manager.service';
 import { CaseProperty } from '@common/assets/case-property';
@@ -19,6 +20,7 @@ describe('Game', () => {
     const letters = ['A', 'C', 'A', 'Z', 'B', 'R', '*'];
     const lettersTilePlayer1: Tile[] = [];
     const points = 100;
+    const databaseService: DatabaseService = new DatabaseService();
     for (const letter of letters) {
         const tile1: Tile = new Tile(CaseProperty.Normal, 0, 0);
         tile1.letter = letter;
@@ -33,7 +35,7 @@ describe('Game', () => {
     beforeEach(() => {
         game = new Game();
         game.sio = new io.Server();
-        game.player1Join({ username: 'player1', id: '1', room: 'room1' }, '60');
+        game.player1Join({ username: 'player1', id: '1', room: 'room1' }, '60', databaseService);
         game.player2 = new Player(game.reserveLetters.randomLettersInitialization(), false, 'player2', {
             username: 'player2',
             id: '2',
@@ -72,12 +74,12 @@ describe('Game', () => {
 
     it('method startSoloGame should set the value true to hisBot of the player2', () => {
         expect(game.player2.hisBot).equal(false);
-        game.startSoloGame(game.player1.user, game.sio, '60');
+        game.startSoloGame(game.player1.user, game.sio, '60', databaseService);
         expect(game.player2.hisBot).equal(true);
     });
 
     it('method startSoloGame should initialize the attributes of game', () => {
-        game.startSoloGame(game.player1.user, game.sio, '60');
+        game.startSoloGame(game.player1.user, game.sio, '60', databaseService);
         expect(game.roomName).equal(game.player1.user.room);
         expect(game.timer.timerMax).equal(60);
     });

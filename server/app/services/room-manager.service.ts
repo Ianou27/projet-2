@@ -6,7 +6,7 @@ import { Game } from './../classes/game/game';
 import { DatabaseService } from './best-score.services';
 import { IdManager } from './id-manager.service';
 export class RoomManager {
-    createRoom(username: string, room: string, socketId: string, identification: IdManager, timer: string,databaseService: DatabaseService) {
+    createRoom(username: string, room: string, socketId: string, identification: IdManager, timer: string, databaseService: DatabaseService) {
         const user = {
             username,
             id: socketId,
@@ -15,7 +15,7 @@ export class RoomManager {
         identification.users.push(user);
         identification.roomMessages[room] = [];
         const game = new Game();
-        game.player1Join(user, timer,databaseService);
+        game.player1Join(user, timer, databaseService);
         identification.games.push(game);
         const roomObj = {
             player1: username,
@@ -24,7 +24,7 @@ export class RoomManager {
         };
         identification.rooms.push(roomObj);
     }
-    createSoloGame(username: string, socketId: string, identification: IdManager, sio: io.Server, timer: string,databaseService: DatabaseService) {
+    createSoloGame(username: string, socketId: string, identification: IdManager, sio: io.Server, timer: string, databaseService: DatabaseService) {
         const user = {
             username,
             id: socketId,
@@ -40,7 +40,7 @@ export class RoomManager {
         identification.roomMessages[username] = [];
         const game = new Game();
 
-        game.startSoloGame(user, sio, timer,databaseService);
+        game.startSoloGame(user, sio, timer, databaseService);
         identification.games.push(game);
     }
 

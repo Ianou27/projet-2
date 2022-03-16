@@ -67,13 +67,8 @@ export class DatabaseService {
     get database(): Db {
         return this.db;
     }
-    async BestScoreClassique(): Promise< object[]>{
-       
-        return await this.db.collection(DATABASE_COLLECTION).find().sort({score:-1}).toArray();
-
-        
-        
-
+    async BestScoreClassique(): Promise<object[]> {
+        return await this.db.collection(DATABASE_COLLECTION).find().sort({ score: -1 }).toArray();
     }
 
     async updateBesScoreClassique(score: BestScore) {
@@ -86,7 +81,7 @@ export class DatabaseService {
             }
         }
 
-        if (index != -1) {
+        if (index !== -1) {
             const player = db[index].player.split('-');
             if (db[index].score === score.score && !player.includes(score.player)) {
                 await this.db

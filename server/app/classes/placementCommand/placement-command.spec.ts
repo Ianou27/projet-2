@@ -1,4 +1,5 @@
 /* eslint-disable max-lines */
+import { DatabaseService } from '@app/services/best-score.services';
 import { CaseProperty } from '@common/assets/case-property';
 import { letterValue } from '@common/assets/reserve-letters';
 import { Tile } from '@common/tile/Tile';
@@ -17,10 +18,11 @@ describe('Placement Command', () => {
     const lettersPlayer1 = ['A', 'L', 'L', '*', 'E', 'E', 'V'];
     const lettersPlayer2 = ['B', 'A', 'T', '*', 'E', 'V', 'A'];
     const dictionaryArray: string[] = JSON.parse(fs.readFileSync('./assets/dictionnary.json').toString()).words;
+    const databaseService: DatabaseService = new DatabaseService();
 
     beforeEach(() => {
         game = new Game();
-        game.player1Join({ username: 'rt1', id: '1', room: 'room1' }, '60');
+        game.player1Join({ username: 'rt1', id: '1', room: 'room1' }, '60', databaseService);
         // game.player1 = new Player(game.reserveLetters.randomLettersInitialization(), true, 'player1', { username: 'rt1', id: '1', room: 'room1' });
         game.player2 = new Player(game.reserveLetters.randomLettersInitialization(), true, 'player2', { username: 'rta', id: '2', room: 'room1' });
         for (const letter of lettersPlayer1) {

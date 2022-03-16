@@ -3,12 +3,14 @@ import { Room, User } from '@common/types';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
 import * as io from 'socket.io';
+import { DatabaseService } from './best-score.services';
 import { IdManager } from './id-manager.service';
 
 describe('Room Manager tests', () => {
     const roomManager = new RoomManager();
     const idManager = new IdManager();
     const sio = new io.Server();
+    const databaseService: DatabaseService = new DatabaseService();
 
     beforeEach(() => {
         const user: User = {
@@ -146,7 +148,7 @@ describe('Room Manager tests', () => {
         const socketId = 'id';
         const usersSpy = sinon.spy(idManager.users, 'push');
         const roomsSpy = sinon.spy(idManager.rooms, 'push');
-        roomManager.createRoom(username, room, socketId, idManager, '60');
+        roomManager.createRoom(username, room, socketId, idManager, '60', databaseService);
         assert(usersSpy.called);
         assert(roomsSpy.called);
     });

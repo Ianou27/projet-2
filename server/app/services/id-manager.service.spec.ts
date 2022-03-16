@@ -4,13 +4,15 @@ import { IdManager } from '@app/services/id-manager.service';
 import { Room, User } from '@common/types';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
+import { DatabaseService } from './best-score.services';
 
 describe('IdManager tests', () => {
     const idManager = new IdManager();
     const game = new Game();
     idManager.games.push(game);
+    const databaseService: DatabaseService = new DatabaseService();
     beforeEach(() => {
-        game.player1Join({ username: 'rt', id: '1', room: 'room1' }, '60');
+        game.player1Join({ username: 'rt', id: '1', room: 'room1' }, '60', databaseService);
         game.player2 = new Player(game.reserveLetters.randomLettersInitialization(), false, 'player2', { username: 'rta', id: '2', room: 'room1' });
         const user: User = {
             username: 'username',

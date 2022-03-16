@@ -8,6 +8,7 @@ import * as sinon from 'sinon';
 import { Game } from './../classes/game/game';
 import { PlacementCommand } from './../classes/placementCommand/placement-command';
 import { Player } from './../classes/player/player';
+import { DatabaseService } from './best-score.services';
 import { GameManager } from './game-manager.service';
 
 describe('Game Manager', () => {
@@ -17,9 +18,10 @@ describe('Game Manager', () => {
     const exchangeCommand = ['!echanger', 'all'];
     const passCommand = ['!passer'];
     let lettersTilePlayer1: Tile[] = [];
+    const databaseService: DatabaseService = new DatabaseService();
     beforeEach(() => {
         game = new Game();
-        game.player1Join({ username: 'a', id: '1', room: 'room1' }, '60');
+        game.player1Join({ username: 'a', id: '1', room: 'room1' }, '60', databaseService);
         // game.player1 = new Player(game.reserveLetters.randomLettersInitialization(), true, 'player1', { username: 'a', id: '1', room: 'room1' });
         game.player2 = new Player(game.reserveLetters.randomLettersInitialization(), true, 'player2', { username: 'b', id: '2', room: 'room1' });
         const lettersPlayer1 = ['A', 'L', 'L', '', 'E', 'E', 'V'];

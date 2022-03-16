@@ -1,8 +1,6 @@
 /* eslint-disable complexity */
 /* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable no-console */
-
-// import { Game } from '@app/classes/game/game';
 import { InfoToJoin, Room } from '@common/types';
 import * as http from 'http';
 import * as io from 'socket.io';
@@ -17,23 +15,20 @@ export class SocketManager {
     roomManager: RoomManager = new RoomManager();
     sio: io.Server;
     timeLeft: number;
-    constructor(server: http.Server,private readonly databaseService: DatabaseService) {
+    constructor(server: http.Server, private readonly databaseService: DatabaseService) {
         this.sio = new io.Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
-
- 
     }
-
 
     async handleSockets(): Promise<void> {
         this.sio.on('connection', (socket) => {
             console.log(`Connexion par l'utilisateur avec id : ${socket.id}`);
             socket.on('createRoom', (username: string, room: string, timer: string) => {
-                this.roomManager.createRoom(username, room, socket.id, this.identification, timer,this.databaseService);
+                this.roomManager.createRoom(username, room, socket.id, this.identification, timer, this.databaseService);
                 socket.join(room);
             });
 
             socket.on('createSoloGame', (username: string, timer: string) => {
-                this.roomManager.createSoloGame(username, socket.id, this.identification, this.sio, timer,this.databaseService);
+                this.roomManager.createSoloGame(username, socket.id, this.identification, this.sio, timer, this.databaseService);
                 socket.join(username);
                 this.sio.to(socket.id).emit('startGame', username, this.roomManager.getRandomBotName(username));
             });
@@ -185,7 +180,7 @@ export class SocketManager {
             });
 
             socket.on('getBestScoreClassique', async () => {
-                this.sio.to(socket.id).emit('getBestScoreClassique',await this.databaseService.BestScoreClassique());
+                this.sio.to(socket.id).emit('getBestScoreClassique', await this.databaseService.BestScoreClassique());
             });
 
             socket.on('indice', (command: string[]) => {
@@ -266,5 +261,4 @@ export class SocketManager {
             });
         });
     }
-    
 }
