@@ -47,6 +47,12 @@ describe('ClueCommand', () => {
         expect(result).to.equal(false);
     });
 
+    it('method verifyFormat should return false if the command has a length greater than 1', () => {
+        const validClueCommand = '!indice bon';
+        const result = ClueCommand.verifyFormat(validClueCommand.split(' '));
+        expect(result).to.equal(false);
+    });
+
     it('method findClues should call findAllPlacementCommands from VirtualPlayer', () => {
         const spy = sinon.spy(VirtualPlayer, 'findAllPlacementCommands');
         ClueCommand.findClues(game);

@@ -251,4 +251,8 @@ export class VirtualPlayer {
         command = command.concat(letters.join('')).toLowerCase();
         return command.split(' ');
     }
+
+    static getProbability(): number {
+        return Math.floor(Math.random() * 100);
+    }
 }

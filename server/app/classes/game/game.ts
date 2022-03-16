@@ -83,8 +83,8 @@ export class Game {
         this.sio.to(this.player1.user.id).emit('turn', this.player1.hisTurn);
         this.sio.to(this.player2.user.id).emit('turn', this.player2.hisTurn);
         if (this.playerTurn().hisBot) {
+            const command = this.actionVirtualBeginnerPlayer(VirtualPlayer.getProbability());
             await setTimeout(() => {
-                const command = this.actionVirtualBeginnerPlayer();
                 this.placementBot(command);
             }, 3000);
         }
@@ -163,8 +163,7 @@ export class Game {
         this.timer.reset();
     }
 
-    actionVirtualBeginnerPlayer(): string[] {
-        const probability = Math.floor(Math.random() * 100);
+    actionVirtualBeginnerPlayer(probability: number): string[] {
         if (probability <= 10) {
             return '!passer'.split(' ');
         } else if (probability <= 20) {
@@ -198,7 +197,6 @@ export class Game {
             for (const letter of this.player2.getLetters()) {
                 if (letter.letter !== '') {
                     this.player1.points += letter.value;
-                    this.player2.points -= letter.value;
                 }
             }
         } else if (this.player2.getNumberLetters() === 0) {
