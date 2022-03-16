@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-magic-numbers */
 import { CaseProperty } from '@common/assets/case-property';
 import { letterValue } from '@common/assets/reserve-letters';
 import { Tile } from '@common/tile/Tile';
@@ -54,5 +55,11 @@ describe('Player Class', () => {
         player.changeLetter('A', 'r');
         const playerLetters = player.lettersToStringArray();
         expect(playerLetters).to.eql(lettersWithChange);
+    });
+
+    it('method getNumberLetters return the number of letter of the player', () => {
+        player.changeLetter('A', '');
+        const result = player.getNumberLetters();
+        expect(result).to.eql(6);
     });
 });
