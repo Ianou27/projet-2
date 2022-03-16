@@ -58,6 +58,12 @@ describe('Game', () => {
         expect(reserveInitialLength).equal(numberLetterReserveMinusPlayerLetters);
     });
 
+    it('method player2Join should call startGame', () => {
+        const spy = sinon.spy(game, 'startGame');
+        game.player2Join({ username: 'player2', id: '2', room: 'room1' }, game.sio);
+        assert(spy.called);
+    });
+
     it('method changeTurnTwoPlayers should change the turn of the two player', () => {
         const turnPlayer1 = game.player1.hisTurn;
         const turnPlayer2 = game.player2.hisTurn;
