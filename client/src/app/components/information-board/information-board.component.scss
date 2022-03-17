@@ -1,72 +1,12 @@
-#info-board {
-    position: relative;
-    top: 35px;
-    right: 10px;
-}
-
-#player-info {
-    display: flex;
-    position: relative;
-    top: 20px;
-    flex-wrap: wrap;
-}
-
-.player {
-    position: relative;
-    height: 175px;
-    width: 200px;
-    display: grid;
-    grid-template-rows: 1fr 3fr 1fr;
-    background-color: #d2afb5;
-    align-items: center;
-    text-align: center;
-    border: solid black 1px;
-}
-
-/* .player-name {
-    border-bottom: solid 1px black;
-    padding: 5px;
-} */
-
-#selected-player {
-    box-shadow: inset 0 0 0 5px lightGreen;
-}
-
-#reserve {
-    position: relative;
-    top: 20px;
-    height: 75px;
-    width: 402px;
-    background-color: #b6cbcc;
-    border-bottom: black solid 1px;
-    border-left: solid black 1px;
-    border-right: solid black 1px;
-    display: grid;
-    text-align: center;
-    grid-template-rows: repeat(2, 1fr);
-}
-
 .letters-left {
     text-align: center;
-}
-
-.score {
-    text-align: center;
-}
-
-#reserve-left {
-    padding-top: 7px;
-}
-
-#timer {
-    padding-top: 7px;
-    border-top: solid black 1px;
 }
 
 .tour {
     color: green;
     font-weight: bold;
 }
+
 .winner {
     color: red;
     font-weight: bold;
@@ -74,15 +14,19 @@
     position: relative;
     top: 100 rem;
 }
-.container {
-    display: flex;
-}
 
 .player-card {
     display: flex;
     width: 300px;
-    height: 100px;
-    margin-bottom: 30px;
+    height: 75px;
+    margin-bottom: 3%;
+    align-items: center;
+}
+
+#timer {
+    margin-top: 2%;
+    font-size: 40px;
+    padding-bottom: 7px;
 }
 
 .dot {
@@ -96,5 +40,8 @@
 }
 
 .content {
+    position: relative;
+    left: 10px;
+    top: 22%;
     display: block;
 }

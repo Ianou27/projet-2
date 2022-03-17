@@ -1,51 +1,38 @@
-<!-- <div id="info-board">
-    <div id="player-info">
-        <div class="player" id="player-1">
-            <div class="{{ this.chatService.player1Turn }}" class="player-name">{{ this.chatService.player1Username }}</div>
-            <div class="score">Score : {{ this.chatService.player1Point }}</div>
+<mat-card class="player-card">
+    <div class="dot {{ this.chatService.player1Turn }}">
+        <mat-icon>person</mat-icon>
+    </div>
+    <div class="content">
+        <mat-card-title class="{{ this.chatService.player1Turn }}">{{ this.chatService.player1Username }}</mat-card-title>
+        <mat-card-content>
             <p *ngIf="this.chatService.player1ChevaletLetters < 7" class="letters-left">
                 {{ this.chatService.player1ChevaletLetters }} lettre(s) restante(s)
             </p>
-        </div>
-        <div class="player">
-            <div class="{{ this.chatService.player2Turn }}" class="player-name">{{ this.chatService.player2Username }}</div>
-            <div class="score">Score : {{ this.chatService.player2Point }}</div>
+            <div class="score">Score : {{ this.chatService.player1Point }}</div>
+        </mat-card-content>
+    </div>
+</mat-card>
+<mat-card class="player-card">
+    <div class="dot {{ this.chatService.player2Turn }}">
+        <mat-icon>person</mat-icon>
+    </div>
+    <div class="content">
+        <mat-card-title class="{{ this.chatService.player2Turn }}">{{ this.chatService.player2Username }}</mat-card-title>
+        <mat-card-content>
             <p *ngIf="this.chatService.player2ChevaletLetters < 7" class="letters-left">
                 {{ this.chatService.player2ChevaletLetters }} lettre(s) restante(s)
             </p>
-        </div>
+            <div class="score">Score : {{ this.chatService.player2Point }}</div>
+        </mat-card-content>
     </div>
-    <div id="reserve">
-        <div id="reserve-left">{{ this.chatService.reserve }} lettre(s) restante(s) dans la réserve</div>
-
-        <div id="timer">{{ this.chatService.timer | formatTime }}</div>
-    </div>
-</div>
-<div *ngIf="this.chatService.gameOver && this.chatService.winner === 'tie'" class="winner">La partie s'est terminé en égalité</div>
-<div *ngIf="this.chatService.gameOver && this.chatService.winner !== 'tie'" class="winner">
-    {{ this.chatService.winner }} a gagné la partie FÉLICITATION
-</div> -->
-<mat-card class="player-card">
-    <div class="dot">
-        <mat-icon>person</mat-icon>
-    </div>
-    <mat-card-title class="{{ this.chatService.player1Turn }}" class="player-name">{{ this.chatService.player1Username }}</mat-card-title>
-    <mat-card-content class="content">
-        <p *ngIf="this.chatService.player1ChevaletLetters < 7" class="letters-left">
-            {{ this.chatService.player1ChevaletLetters }} lettre(s) restante(s)
-        </p>
-        <div class="score">Score : {{ this.chatService.player1Point }}</div>
-    </mat-card-content>
 </mat-card>
-<mat-card class="player-card">
-    <div class="dot">
-        <mat-icon>person</mat-icon>
-    </div>
-    <mat-card-title class="{{ this.chatService.player2Turn }}" class="player-name">{{ this.chatService.player2Username }}</mat-card-title>
-    <mat-card-content class="content">
-        <p *ngIf="this.chatService.player2ChevaletLetters < 7" class="letters-left">
-            {{ this.chatService.player2ChevaletLetters }} lettre(s) restante(s)
-        </p>
-        <div class="score">Score : {{ this.chatService.player2Point }}</div>
+<mat-card>
+    <mat-card-title id="timer">{{ this.chatService.timer | formatTime }}</mat-card-title>
+    <mat-card-content>
+        {{ this.chatService.reserve }} lettre(s) restante(s) dans la réserve
+        <div *ngIf="this.chatService.gameOver && this.chatService.winner === 'tie'" class="winner">La partie s'est terminé en égalité</div>
+        <div *ngIf="this.chatService.gameOver && this.chatService.winner !== 'tie'" class="winner">
+            {{ this.chatService.winner }} a gagné la partie FÉLICITATION
+        </div>
     </mat-card-content>
 </mat-card>

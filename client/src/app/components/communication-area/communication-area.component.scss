@@ -9,10 +9,12 @@
     justify-content: end;
     position: relative;
     top: 10%;
+    background-color: white;
 }
 
 #serverBroadcastList {
     list-style-type: none;
+    padding-left: 0%;
 }
 
 .messageContainer {
