@@ -1,23 +1,26 @@
 /* eslint-disable max-lines */
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ChatService } from '@app/services/chat.service';
+import { TileHolderService } from '@app/services/tile-holder/tile-holder.service';
 import { CaseProperty } from './../../../../../common/assets/case-property';
 import { letterValue } from './../../../../../common/assets/reserve-letters';
 import { Tile } from './../../../../../common/tile/Tile';
+import { TileComponent } from './../tile/tile.component';
 import { TileHolderComponent } from './tile-holder.component';
-// import SpyObj = jasmine.SpyObj;
+import SpyObj = jasmine.SpyObj;
 
 describe('TileHolderComponent', () => {
     let component: TileHolderComponent;
     let fixture: ComponentFixture<TileHolderComponent>;
-    // let tileHolderServiceSpy: SpyObj<TileHolderService>;
-    // let chatServiceSpy: SpyObj<ChatService>;
+    let tileHolderServiceSpy: SpyObj<TileHolderService>;
+    let chatServiceSpy: SpyObj<ChatService>;
     let tiles: Tile[];
     let swapper: HTMLElement;
 
     beforeEach(() => {
         tiles = [];
-        chatServiceSpy = jasmine.createSpyObj('ChatService', ['sendToRoom'], ['roomMessage']);
+        chatServiceSpy = jasmine.createSpyObj('ChatService', ['sendToRoom'], ['roomMessage', 'reserve', 'myTurn']);
         const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
         for (const letter of letters) {
             const tile: Tile = new Tile(CaseProperty.Normal, 0, 0);
@@ -25,7 +28,7 @@ describe('TileHolderComponent', () => {
             tile.value = letterValue[letter];
             tiles.push(tile);
         }
-        // tileHolderServiceSpy = jasmine.createSpyObj('TileHolderService', {}, { tileHolder: tiles });
+        tileHolderServiceSpy = jasmine.createSpyObj('TileHolderService', {}, { tileHolder: tiles });
     });
 
     beforeEach(async () => {
@@ -193,6 +196,7 @@ describe('TileHolderComponent', () => {
         const tile = fixture.debugElement.nativeElement.children[0].children[0] as HTMLElement;
         tile.dispatchEvent(new MouseEvent('contextmenu'));
         fixture.detectChanges();
+        fixture.debugElement.nativeElement.children[2].disabled = false;
         const exchange = fixture.debugElement.nativeElement.children[2] as HTMLElement;
         const exchangeSpy = spyOn(component, 'exchange').and.callThrough();
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
