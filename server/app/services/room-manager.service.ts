@@ -24,7 +24,15 @@ export class RoomManager {
         };
         identification.rooms.push(roomObj);
     }
-    createSoloGame(username: string, socketId: string, identification: IdManager, sio: io.Server, timer: string, databaseService: DatabaseService, botName:string) {
+    createSoloGame(
+        username: string,
+        socketId: string,
+        identification: IdManager,
+        sio: io.Server,
+        timer: string,
+        databaseService: DatabaseService,
+        botName: string,
+    ) {
         const user = {
             username,
             id: socketId,
@@ -40,7 +48,7 @@ export class RoomManager {
         identification.roomMessages[username] = [];
         const game = new Game();
 
-        game.startSoloGame(user, sio, timer, databaseService,botName);
+        game.startSoloGame(user, sio, timer, databaseService, botName);
         identification.games.push(game);
     }
 

@@ -62,10 +62,13 @@ export class Game {
         this.randomTurnGame();
         this.sio.to(this.player1.user.id).emit('turn', this.player1.hisTurn);
         this.sio.to(this.player2.user.id).emit('turn', this.player2.hisTurn);
-        this.sio.to(this.player1.user.room).emit('modification', this.gameBoard.cases, this.playerTurn().name);
+        this.sio.to(this.player1.user.id).emit('modification', this.gameBoard.cases, this.playerTurn().name);
+        this.sio.to(this.player2.user.id).emit('modification', this.gameBoard.cases, this.playerTurn().name);
+
+        console.log(this.playerTurn().name);
     }
 
-    startSoloGame(user: User, sio: io.Server, timer: string, databaseService: DatabaseService,botName:string) {
+    startSoloGame(user: User, sio: io.Server, timer: string, databaseService: DatabaseService, botName: string) {
         this.databaseService = databaseService;
         this.timer = new Timer(timer);
         this.player1 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player1', user);
@@ -80,16 +83,16 @@ export class Game {
         this.sio = sio;
         this.randomTurnGame();
         this.sio.to(user.id).emit('tileHolder', this.player1.letters);
+        this.sio.to(this.player1.user.room).emit('modification', this.gameBoard.cases, this.playerTurn().name);
+
         this.timer.start(this, this.sio);
     }
 
     randomTurnGame() {
         const player1Turn = Boolean(Math.round(Math.random()));
         if (!player1Turn) {
-            this.sio.to(this.player1.user.room).emit('modification', this.gameBoard.cases, this.player2.name);
             this.changeTurnTwoPlayers();
         }
-        console.log(player1Turn);
     }
 
     async changeTurnTwoPlayers() {
@@ -99,7 +102,7 @@ export class Game {
         this.sio.to(this.player2.user.id).emit('turn', this.player2.hisTurn);
         if (this.playerTurn().hisBot) {
             const command = this.actionVirtualBeginnerPlayer(VirtualPlayer.getProbability());
-            await setTimeout(() => {
+            setTimeout(() => {
                 this.placementBot(command);
             }, 3000);
         }
