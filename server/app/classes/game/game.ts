@@ -59,8 +59,10 @@ export class Game {
 
     startGame() {
         this.timer.start(this, this.sio);
+        this.randomTurnGame();
         this.sio.to(this.player1.user.id).emit('turn', this.player1.hisTurn);
         this.sio.to(this.player2.user.id).emit('turn', this.player2.hisTurn);
+        this.sio.to(this.player1.user.room).emit('modification', this.gameBoard.cases, this.playerTurn().name);
     }
 
     startSoloGame(user: User, sio: io.Server, timer: string, databaseService: DatabaseService) {
@@ -76,8 +78,18 @@ export class Game {
         this.player2 = new Player(this.reserveLetters.randomLettersInitialization(), false, 'player2', userBot);
         this.player2.changeHisBot(true);
         this.sio = sio;
+        this.randomTurnGame();
         this.sio.to(user.id).emit('tileHolder', this.player1.letters);
         this.timer.start(this, this.sio);
+    }
+
+    randomTurnGame() {
+        const player1Turn = Boolean(Math.round(Math.random()));
+        if (!player1Turn) {
+            this.sio.to(this.player1.user.room).emit('modification', this.gameBoard.cases, this.player2.name);
+            this.changeTurnTwoPlayers();
+        }
+        console.log(player1Turn);
     }
 
     async changeTurnTwoPlayers() {
