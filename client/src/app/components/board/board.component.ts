@@ -88,6 +88,15 @@ export class BoardComponent {
         const lastWrittenLetter = writtenLetters[writtenLetters.length - 1];
         if (!lastWrittenLetter) return;
         lastWrittenLetter.setAttribute('class', 'writing');
+        let lastArrow;
+        if (this.orientation === 'h') {
+            lastArrow = document.getElementById('arrow-right');
+        } else {
+            lastArrow = document.getElementById('arrow-down');
+        }
+        if (lastArrow) {
+            lastArrow.id = '';
+        }
         const position = this.getPosition(lastWrittenLetter);
         this.chatService.boardService.removeLetter(position[0], position[1]);
     }
@@ -108,16 +117,17 @@ export class BoardComponent {
                 this.nextTile(board.children[posX + 1].children[posY].children[0]);
             } else {
                 board.children[posX + 1].children[posY].children[0].setAttribute('class', 'writing');
+                board.children[posX + 1].children[posY].children[0].children[0].id = 'arrow-right';
             }
         } else {
             if (board.children[posX].children[posY + 1].children[0].getElementsByTagName('p')[0]) {
                 this.nextTile(board.children[posX].children[posY + 1].children[0]);
             } else {
                 board.children[posX].children[posY + 1].children[0].setAttribute('class', 'writing');
+                board.children[posX].children[posY + 1].children[0].children[0].id = 'arrow-down';
             }
         }
     }
-
     placeLetter(letter: string) {
         if (/[^a-zA-Z]/.test(letter)) return;
         const lastWrittenTile = document.getElementsByClassName('writing')[0];
@@ -212,5 +222,6 @@ export class BoardComponent {
     clearSelection(elementToClear: Element) {
         elementToClear.children[0].classList.replace('tileEmptyHorizontal', 'tileEmpty');
         elementToClear.children[0].classList.replace('tileEmptyVertical', 'tileEmpty');
+        elementToClear.children[0].id = '';
     }
 }
