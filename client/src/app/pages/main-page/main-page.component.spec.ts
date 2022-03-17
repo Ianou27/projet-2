@@ -53,8 +53,6 @@ describe('MainPageComponent', () => {
     it('openDialog should call open on the dialog and disable the option to click outside to close', () => {
         const dialogSpy = spyOn(component.dialog, 'open');
         component.openDialog();
-        expect(dialogSpy).toHaveBeenCalledWith(BestScoreComponent, {
-            disableClose: true,
-        });
+        expect(dialogSpy).toHaveBeenCalledWith(BestScoreComponent, { width: '800px' });
     });
 });
