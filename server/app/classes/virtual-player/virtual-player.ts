@@ -247,6 +247,7 @@ export class VirtualPlayer {
         const letters = virtualPlayerLetters
             .sort(() => Math.random() - Math.random())
             .splice(0, Math.floor(Math.random() * virtualPlayerLetters.length));
+        if (letters.length === 0) command = command.concat(virtualPlayerLetters[0]);
         command = command.concat(letters.join('')).toLowerCase();
         return command.split(' ');
     }

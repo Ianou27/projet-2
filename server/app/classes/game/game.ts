@@ -172,6 +172,7 @@ export class Game {
         }
         this.changeTurnTwoPlayers();
         this.gameState.passesCount = 0;
+        this.timer.reset();
     }
 
     passTurn(): void {
