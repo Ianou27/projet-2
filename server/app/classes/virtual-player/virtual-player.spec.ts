@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
+import { PlacementInformations } from '@app/placement-informations';
 import { DatabaseService } from '@app/services/best-score.services';
 import { Timer } from '@app/services/timer-manager.service';
 import { CaseProperty } from '@common/assets/case-property';
@@ -7,6 +8,7 @@ import { Tile } from '@common/tile/Tile';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
 import * as io from 'socket.io';
+import { PlacementCommand } from '../placementCommand/placement-command';
 import { Game } from './../game/game';
 import { Player } from './../player/player';
 import { ReserveLetters } from './../reserveLetters/reserve-letters';
@@ -15,6 +17,11 @@ import { VirtualPlayer } from './virtual-player';
 interface PlacementScore {
     score: number;
     command: string;
+}
+
+interface TilePlacementPossible {
+    tile: Tile;
+    orientation: string;
 }
 
 describe('Virtual Player', () => {
@@ -177,4 +184,75 @@ describe('Virtual Player', () => {
         VirtualPlayer.placementLettersCommand(25, game);
         assert(spy.called);
     }); */
+
+    it('method findAllPlacementCommands should call findAllPositionGameBoard', () => {
+        const spy = sinon.spy(VirtualPlayer, 'findAllPositionGameBoard');
+        VirtualPlayer.findAllPlacementCommands(game);
+        assert(spy.called);
+    });
+
+    it('method findLettersPosition should return the new tile place by the command place', () => {
+        const placementInformations: PlacementInformations = {
+            row: 7,
+            column: 7,
+            letters: ['A', 'R', 'B', 'R', 'E'],
+            orientation: 'h',
+            numberLetters: 5,
+        };
+        const result = VirtualPlayer.findLettersPosition(placementInformations, game);
+        expect(result.length).equal(placementInformations.numberLetters);
+        expect(result[0].letter).equal(placementInformations.letters[0]);
+        expect(result[0].positionX).equal(placementInformations.row);
+        expect(result[0].positionY).equal(placementInformations.column);
+
+        expect(result[1].letter).equal(placementInformations.letters[1]);
+        expect(result[1].positionX).equal(placementInformations.row + 1);
+        expect(result[1].positionY).equal(placementInformations.column);
+
+        expect(result[2].letter).equal(placementInformations.letters[2]);
+        expect(result[2].positionX).equal(placementInformations.row + 2);
+        expect(result[2].positionY).equal(placementInformations.column);
+
+        expect(result[3].letter).equal(placementInformations.letters[3]);
+        expect(result[3].positionX).equal(placementInformations.row + 3);
+        expect(result[3].positionY).equal(placementInformations.column);
+
+        expect(result[4].letter).equal(placementInformations.letters[4]);
+        expect(result[4].positionX).equal(placementInformations.row + 4);
+        expect(result[4].positionY).equal(placementInformations.column);
+    });
+
+    it('method findPlacementCommand should call findLettersPosition', () => {
+        const spy = sinon.spy(VirtualPlayer, 'findLettersPosition');
+        const tilePlacementPossible: TilePlacementPossible = {
+            tile: game.gameBoard.cases[7][7],
+            orientation: 'h',
+        };
+        VirtualPlayer.findPlacementCommand(['bac'], tilePlacementPossible, game);
+        assert(spy.called);
+    });
+
+    it('method findPlacementCommand should return valid command place', () => {
+        const tilePlacementPossible: TilePlacementPossible = {
+            tile: game.gameBoard.cases[7][7],
+            orientation: 'h',
+        };
+        const commands = VirtualPlayer.findPlacementCommand(['bac'], tilePlacementPossible, game);
+        commands.forEach((element) => {
+            expect(element.score).not.equal(0);
+            expect(PlacementCommand.validatedPlaceCommandFormat(element.command.split(' '))).equal(true);
+            expect(PlacementCommand.validatedPlaceCommandBoard(element.command.split(' '), game)).equal(true);
+        });
+    });
+
+    it('method heapsPermute should return all the permutation possible of an array', () => {
+        const arrayToPermute = ['a', 'b', 'c'];
+        const words: string[] = [];
+        const results = VirtualPlayer.heapsPermute(arrayToPermute, 0, words);
+        const expectedElement = ['abc', 'bac', 'cab', 'acb', 'bca', 'cba'];
+
+        results.forEach((element) => {
+            expect(expectedElement).includes(element);
+        });
+    });
 });

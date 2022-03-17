@@ -49,20 +49,20 @@ export class VirtualPlayer {
         return validWords;
     }
 
-    static heapsPermute(array: string[], n: number, words: string[]): string[] {
-        n = n || array.length;
+    static heapsPermute(arrayToPermute: string[], number: number, words: string[]): string[] {
+        number = number || arrayToPermute.length;
         let j = 0;
-        if (n === 1) {
-            words.push(array.join(''));
+        if (number === 1) {
+            words.push(arrayToPermute.join(''));
         } else {
-            for (let i = 1; i <= n; i += 1) {
-                this.heapsPermute(array, n - 1, words);
-                if (n % 2) {
+            for (let i = 1; i <= number; i += 1) {
+                this.heapsPermute(arrayToPermute, number - 1, words);
+                if (number % 2) {
                     j = 1;
                 } else {
                     j = i;
                 }
-                this.swap(array, j - 1, n - 1);
+                this.swap(arrayToPermute, j - 1, number - 1);
             }
         }
         return words;
