@@ -11,7 +11,7 @@ import { Vec2 } from './../../../../common/vec2';
 export class BoardService {
     board: Tile[][];
 
-    constructor() {
+    build() {
         this.board = new Array(COLUMN_ROWS_NUMBER);
         for (let i = 0; i < COLUMN_ROWS_NUMBER; i++) {
             this.board[i] = new Array(COLUMN_ROWS_NUMBER);

@@ -1,4 +1,5 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
+import { BoardService } from '@app/services/board.service';
 import { ChatService } from '@app/services/chat.service';
 import { rowLetter } from './../../../../../common/assets/row';
 import { MAXIMUM_ROW_COLUMN } from './../../../../../common/constants/general-constants';
@@ -8,17 +9,15 @@ import { MAXIMUM_ROW_COLUMN } from './../../../../../common/constants/general-co
     templateUrl: './board.component.html',
     styleUrls: ['./board.component.scss'],
 })
-export class BoardComponent {
+export class BoardComponent implements OnInit {
     letterPlaced: string[] = [];
     orientation: string = '';
-    constructor(public chatService: ChatService) {}
-
+    constructor(public boardService: BoardService, public chatService: ChatService) {}
     @HostListener('keydown', ['$event'])
     keyHandler(event: KeyboardEvent) {
         // utilisation de code ne provenant pas de nous, source :
         // https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript
         const key = event.key.normalize('NFD').replace(/\p{Diacritic}/gu, '');
-        console.log(key);
         switch (key) {
             case 'Escape': {
                 this.clearAll();
@@ -37,6 +36,10 @@ export class BoardComponent {
                 this.placeLetter(key);
             }
         }
+    }
+
+    ngOnInit(): void {
+        this.boardService.build();
     }
 
     clearAll() {
@@ -98,10 +101,9 @@ export class BoardComponent {
             lastArrow.id = '';
         }
         const position = this.getPosition(lastWrittenLetter);
-        this.chatService.boardService.removeLetter(position[0], position[1]);
+        this.boardService.removeLetter(position[0], position[1]);
         if (this.orientation === 'h') {
             lastWrittenLetter.children[0].classList.replace('tile', 'tileEmptyHorizontal');
-            console.log(lastWrittenLetter.children[0]);
             lastWrittenLetter.children[0].id = 'arrow-right';
         }
     }
@@ -133,6 +135,7 @@ export class BoardComponent {
             }
         }
     }
+
     placeLetter(letter: string) {
         if (/[^a-zA-Z]/.test(letter)) return;
         const lastWrittenTile = document.getElementsByClassName('writing')[0];
@@ -143,9 +146,9 @@ export class BoardComponent {
         const posX = Number(lastWrittenTile.getAttribute('data-position-x'));
         const posY = Number(lastWrittenTile.getAttribute('data-position-y'));
         const value = Number(tileHolder?.children[keyInTileHolder[1]].getElementsByTagName('p')[1].innerHTML);
-        this.chatService.boardService.setLetter(posX, posY, letter, value);
+        this.boardService.setLetter(posX, posY, letter, value);
         lastWrittenTile.setAttribute('class', 'written');
-        if (this.isUpper(letter)) {
+        if (letter === letter.toUpperCase()) {
             this.letterPlaced.push('*');
         } else {
             this.letterPlaced.push(letter);
@@ -153,35 +156,10 @@ export class BoardComponent {
         this.chatService.tileHolderService.removeLetter(letter);
     }
 
-    isUpper(letter: string) {
-        if (letter === letter.toUpperCase()) return true;
-        return false;
-    }
-
-    inTileHolder(key: string): [boolean, number] {
-        const tileHolder = document.getElementById('tile-holder');
-        if (tileHolder) {
-            for (let i = 0; i < tileHolder.childElementCount; i++) {
-                try {
-                    if (this.isUpper(key)) {
-                        if ('*' === tileHolder.children[i].children[0].getElementsByTagName('p')[0].innerHTML) return [true, i];
-                        return [false, 0];
-                    }
-                    if (key.toUpperCase() === tileHolder.children[i].children[0].getElementsByTagName('p')[0].innerHTML) {
-                        return [true, i];
-                    }
-                } catch (e) {
-                    break;
-                }
-            }
-        }
-        return [false, 0];
-    }
-
     handleLeftClick(event: MouseEvent) {
         const current = event.currentTarget as HTMLElement;
-        if (!this.verificationSelection(current))
-            if (!document.getElementsByClassName('tileEmptyHorizontal')[0] || !document.getElementsByClassName('tileEmptyVertical')) return;
+        if (!this.verificationSelection(current)) return;
+        // if (!document.getElementsByClassName('tileEmptyHorizontal')[0] || !document.getElementsByClassName('tileEmptyVertical')) return;
         switch (current.children[0].classList[0]) {
             case 'tileEmpty': {
                 current.children[0].classList.replace('tileEmpty', 'tileEmptyHorizontal');
@@ -204,7 +182,11 @@ export class BoardComponent {
         }
     }
 
-    verificationSelection(currentSelection: HTMLElement): boolean {
+    private inTileHolder(key: string): [boolean, number] {
+        return this.chatService.tileHolderService.letterInTileHolder(key);
+    }
+
+    private verificationSelection(currentSelection: HTMLElement): boolean {
         const board = document.getElementsByClassName('tile-container')[0];
         const alreadyWriting = document.getElementsByClassName('written')[0];
         if (alreadyWriting) return false;
@@ -224,7 +206,7 @@ export class BoardComponent {
         return true;
     }
 
-    clearSelection(elementToClear: Element) {
+    private clearSelection(elementToClear: Element) {
         elementToClear.children[0].classList.replace('tileEmptyHorizontal', 'tileEmpty');
         elementToClear.children[0].classList.replace('tileEmptyVertical', 'tileEmpty');
         elementToClear.children[0].id = '';

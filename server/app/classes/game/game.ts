@@ -1,8 +1,6 @@
-import { CaseProperty } from '@common/assets/case-property';
-import { letterValue } from '@common/assets/reserve-letters';
 import { Tile } from '@common/tile/Tile';
 import * as io from 'socket.io';
-import { MAXIMUM_PASSES_COUNT, NUMBER_TILEHOLDER } from './../../../../common/constants/general-constants';
+import { MAXIMUM_PASSES_COUNT } from './../../../../common/constants/general-constants';
 import { GameState } from './../../../../common/gameState';
 import { User } from './../../../../common/types';
 import { GameBoardService } from './../../services/game-board.service';
@@ -38,14 +36,14 @@ export class Game {
         this.gameState = gameState;
     }
     player1Join(user: User, timer: string) {
-        const letters: Tile[] = [];
+        /* const letters: Tile[] = [];
         for (let i = 0; i < NUMBER_TILEHOLDER; i++) {
             const tile: Tile = new Tile(CaseProperty.Normal, 0, i);
             tile.letter = '*';
             tile.value = letterValue[tile.letter];
             letters.push(tile);
-        }
-        this.player1 = new Player(letters, true, 'player1', user, false);
+        }*/
+        this.player1 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player1', user, false);
         this.timer = new Timer(timer);
         this.roomName = user.room;
         this.timer = new Timer(timer);
