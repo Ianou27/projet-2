@@ -18,6 +18,9 @@ describe('BestScoreComponent', () => {
                         open: () => {
                             return;
                         },
+                        closeAll: () => {
+                            return;
+                        },
                     },
                 },
             ],
@@ -35,15 +38,9 @@ describe('BestScoreComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    // it('goHome() should close the dialog', () => {
-    //     const closeSpy = spyOn(component.waitDialog, 'closeAll');
-    //     component.goHome();
-    //     expect(closeSpy).toHaveBeenCalled();
-    // });
-
-    // it('goHome() should disconnect from chatService', () => {
-    //     const disconnectSpy = spyOn(component.chatService, 'disconnect');
-    //     component.goHome();
-    //     expect(disconnectSpy).toHaveBeenCalled();
-    // });
+    it('goHome() should close the dialog', () => {
+        const closeSpy = spyOn(component.waitDialog, 'closeAll');
+        component.goHome();
+        expect(closeSpy).toHaveBeenCalled();
+    });
 });
