@@ -1,7 +1,7 @@
 #info-board {
     position: relative;
     top: 35px;
-    right: 100px;
+    right: 10px;
 }
 
 #player-info {
@@ -23,10 +23,10 @@
     border: solid black 1px;
 }
 
-.player-name {
+/* .player-name {
     border-bottom: solid 1px black;
     padding: 5px;
-}
+} */
 
 #selected-player {
     box-shadow: inset 0 0 0 5px lightGreen;
@@ -63,17 +63,38 @@
     border-top: solid black 1px;
 }
 
-.tour{
-    color:green;
+.tour {
+    color: green;
     font-weight: bold;
 }
-.winner{
-    color:red;
+.winner {
+    color: red;
     font-weight: bold;
     font-size: 5rm;
     position: relative;
     top: 100 rem;
 }
-.container{
+.container {
     display: flex;
+}
+
+.player-card {
+    display: flex;
+    width: 300px;
+    height: 100px;
+    margin-bottom: 30px;
+}
+
+.dot {
+    height: 35px;
+    width: 35px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.content {
+    display: block;
 }

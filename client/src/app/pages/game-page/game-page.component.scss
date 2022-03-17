@@ -60,7 +60,12 @@
     display: flex;
 }
 
+.left-side-container {
+    position: relative;
+    padding-left: 1%;
+}
+
 app-information-board {
     position: relative;
-    left: 300px;
+    top: 20px;
 }
