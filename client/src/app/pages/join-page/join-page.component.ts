@@ -16,6 +16,7 @@ export class JoinPageComponent implements OnInit {
     form: FormGroup;
     alphaNumericRegex = /^[a-zA-Z]*$/;
     selectedDico = 'Dictionnaire par defaut';
+    selectedPlayer = 'Joueur débutant';
     selectedTime = '60';
     selectedRoomName: string;
 
