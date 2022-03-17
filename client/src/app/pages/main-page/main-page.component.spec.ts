@@ -1,7 +1,9 @@
 import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
+import { BestScoreComponent } from '@app/pages/best-score/best-score.component';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { CommunicationService } from '@app/services/communication.service';
 import { of } from 'rxjs';
@@ -20,7 +22,20 @@ describe('MainPageComponent', () => {
         await TestBed.configureTestingModule({
             imports: [RouterTestingModule, HttpClientModule],
             declarations: [MainPageComponent],
-            providers: [{ provide: CommunicationService, useValue: communicationServiceSpy }],
+            providers: [
+                { provide: CommunicationService, useValue: communicationServiceSpy },
+                {
+                    provide: MatDialog,
+                    useValue: {
+                        open: () => {
+                            return;
+                        },
+                        closeAll: () => {
+                            return;
+                        },
+                    },
+                },
+            ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
     });
@@ -33,5 +48,13 @@ describe('MainPageComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('openDialog should call open on the dialog and disable the option to click outside to close', () => {
+        const dialogSpy = spyOn(component.dialog, 'open');
+        component.openDialog();
+        expect(dialogSpy).toHaveBeenCalledWith(BestScoreComponent, {
+            disableClose: true,
+        });
     });
 });
