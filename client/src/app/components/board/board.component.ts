@@ -99,6 +99,11 @@ export class BoardComponent {
         }
         const position = this.getPosition(lastWrittenLetter);
         this.chatService.boardService.removeLetter(position[0], position[1]);
+        if (this.orientation === 'h') {
+            lastWrittenLetter.children[0].classList.replace('tile', 'tileEmptyHorizontal');
+            console.log(lastWrittenLetter.children[0]);
+            lastWrittenLetter.children[0].id = 'arrow-right';
+        }
     }
 
     nextTile(currentTile: Element) {
