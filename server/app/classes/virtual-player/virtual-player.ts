@@ -130,6 +130,7 @@ export class VirtualPlayer {
         const playerLetters = game.playerTurn().lettersToStringArray();
         const placementPossible = this.findAllPositionGameBoard(game).slice(0, 15);
         let commandPlacements: PlacementScore[] = [];
+        if (placementPossible.length === 0) return [];
         for (const placement of placementPossible) {
             const letters = playerLetters.concat(placement.tile.letter);
             const words = this.findAllWords(letters, placement.tile.letter);
@@ -151,10 +152,12 @@ export class VirtualPlayer {
         } else {
             placementCommand = this.findPlacementScoreRange(13, 18, allPlacementCommands);
         }
+
         return placementCommand.split(' ');
     }
 
     static findPlacementScoreRange(minScore: number, maxScore: number, commandPlacements: PlacementScore[]): string {
+        if (commandPlacements.length === 0) return '!passer';
         for (const commandPlacement of commandPlacements) {
             if (minScore < commandPlacement.score && commandPlacement.score < maxScore) return commandPlacement.command;
         }

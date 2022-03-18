@@ -54,6 +54,7 @@ export class Game {
         if (endGameValidation) {
             this.endGame();
             this.setWinner();
+            this.timer.stop();
         }
     }
 
