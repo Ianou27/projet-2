@@ -8,8 +8,8 @@ import { Tile } from '@common/tile/Tile';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
 import * as io from 'socket.io';
-import { PlacementCommand } from '../placementCommand/placement-command';
 import { Game } from './../game/game';
+import { PlacementCommand } from './../placementCommand/placement-command';
 import { Player } from './../player/player';
 import { ReserveLetters } from './../reserveLetters/reserve-letters';
 import { VirtualPlayer } from './virtual-player';
@@ -29,14 +29,14 @@ describe('Virtual Player', () => {
     const letters = ['A', 'C', 'A', 'Z', 'B', 'R', 'A'];
     let lettersTilePlayer1: Tile[] = [];
     const databaseService: DatabaseService = new DatabaseService();
-    for (const letter of letters) {
-        const tile1: Tile = new Tile(CaseProperty.Normal, 0, 0);
-        tile1.letter = letter;
-        tile1.value = letterValue[letter];
-        lettersTilePlayer1.push(tile1);
-    }
 
     beforeEach(() => {
+        for (const letter of letters) {
+            const tile1: Tile = new Tile(CaseProperty.Normal, 0, 0);
+            tile1.letter = letter;
+            tile1.value = letterValue[letter];
+            lettersTilePlayer1.push(tile1);
+        }
         game = new Game();
         game.sio = new io.Server();
         game.player1Join({ username: 'player1', id: '1', room: 'room1' }, '60', databaseService);
@@ -46,12 +46,14 @@ describe('Virtual Player', () => {
             id: '2',
             room: 'room1',
         });
+        game.player2.letters = lettersTilePlayer1;
         game.timer = new Timer('60');
         game.reserveLetters = new ReserveLetters();
     });
 
     afterEach(() => {
         lettersTilePlayer1 = [];
+        sinon.restore();
     });
 
     it('method getProbability should return a number between 1 and 100', () => {
@@ -69,7 +71,7 @@ describe('Virtual Player', () => {
     it('method exchangeLettersCommand should return a command exchange with the letters of the player', () => {
         const result = VirtualPlayer.exchangeLettersCommand(game);
         result[1].split('').forEach((element) => {
-            expect(game.player1.lettersToStringArray().includes(element.toUpperCase())).to.equal(true);
+            expect(game.playerTurn().lettersToStringArray().includes(element.toUpperCase())).to.equal(true);
         });
         expect(result[0]).equal('!echanger');
     });
@@ -173,17 +175,29 @@ describe('Virtual Player', () => {
         expect(result).equal(placementScore1.command);
     });
 
-    /*     it('method placementLettersCommand should call findAllPlacementCommands', () => {
+    it('method placementLettersCommand should call findAllPlacementCommands', () => {
         const spy = sinon.spy(VirtualPlayer, 'findAllPlacementCommands');
-        VirtualPlayer.placementLettersCommand(25, game);
+        VirtualPlayer.placementLettersCommand(5, game);
         assert(spy.called);
     });
 
     it('method placementLettersCommand should call findPlacementScoreRange with range 1 and 6 if probability is lower than 40', () => {
         const spy = sinon.spy(VirtualPlayer, 'findPlacementScoreRange');
         VirtualPlayer.placementLettersCommand(25, game);
-        assert(spy.called);
-    }); */
+        assert(spy.calledWith(1, 6));
+    });
+
+    it('method placementLettersCommand should call findPlacementScoreRange with range 7 and 12 if probability is between 40 and 70', () => {
+        const spy = sinon.spy(VirtualPlayer, 'findPlacementScoreRange');
+        VirtualPlayer.placementLettersCommand(57, game);
+        assert(spy.calledWith(7, 12));
+    });
+
+    it('method placementLettersCommand should call findPlacementScoreRange with range 13 and 18 if probability is between 70 and 100', () => {
+        const spy = sinon.spy(VirtualPlayer, 'findPlacementScoreRange');
+        VirtualPlayer.placementLettersCommand(80, game);
+        assert(spy.calledWith(13, 18));
+    });
 
     it('method findAllPlacementCommands should call findAllPositionGameBoard', () => {
         const spy = sinon.spy(VirtualPlayer, 'findAllPositionGameBoard');

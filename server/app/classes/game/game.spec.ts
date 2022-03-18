@@ -80,12 +80,12 @@ describe('Game', () => {
 
     it('method startSoloGame should set the value true to hisBot of the player2', () => {
         expect(game.player2.hisBot).equal(false);
-        game.startSoloGame(game.player1.user, game.sio, '60', databaseService);
+        game.startSoloGame(game.player1.user, game.sio, '60', databaseService, 'botname');
         expect(game.player2.hisBot).equal(true);
     });
 
     it('method startSoloGame should initialize the attributes of game', () => {
-        game.startSoloGame(game.player1.user, game.sio, '60', databaseService);
+        game.startSoloGame(game.player1.user, game.sio, '60', databaseService, 'botname');
         expect(game.roomName).equal(game.player1.user.room);
         expect(game.timer.timerMax).equal(60);
     });
