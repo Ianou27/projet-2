@@ -1,10 +1,20 @@
 <div class="container">
-    <app-communication-area></app-communication-area>
+    <div class="left-side-container">
+        <app-information-board></app-information-board>
+        <app-communication-area></app-communication-area>
+    </div>
     <div id="buttons">
         <button mat-fab color="accent" matTooltip="Quitter la partie" matTooltipPosition="right" id="tooltip" (click)="openDialog()">
             <mat-icon style="transform: rotate(180deg)">exit_to_app</mat-icon>
         </button>
-        <button mat-fab color="primary" [disabled]="!this.chatService.myTurn" matTooltip="Passer son tour" matTooltipPosition="right" (click)="this.chatService.passerTour()">
+        <button
+            mat-fab
+            color="primary"
+            [disabled]="!this.chatService.myTurn"
+            matTooltip="Passer son tour"
+            matTooltipPosition="right"
+            (click)="this.chatService.passerTour()"
+        >
             <mat-icon>skip_next</mat-icon>
         </button>
     </div>
@@ -23,5 +33,4 @@
             </section>
         </div>
     </div>
-    <app-information-board></app-information-board>
 </div>
