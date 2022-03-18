@@ -216,5 +216,86 @@ describe('BoardComponent', () => {
         expect(nextTile.className).toEqual('writing');
     });
 
-    // it('method remove letter should do nothing if no letter was placed')
+    it('method removeLetter should do nothing if no letter was placed', () => {
+        const spy = spyOn<any>(component, 'getPosition');
+        component.removeLetter();
+        expect(spy).toHaveBeenCalledTimes(0);
+    });
+
+    it('method placeLetter should call boardService setLetter method on the board', () => {
+        const tile = fixture.debugElement.nativeElement.children[0].children[0].children[0].children[0] as HTMLElement;
+        const tileInTileHolder = new Tile(CaseProperty.Normal, 0, 0);
+        tileInTileHolder.letter = 'A';
+        tileInTileHolder.value = letterValue[tileInTileHolder.letter];
+        component.chatService.tileHolderService.tileHolder = [tileInTileHolder];
+        tile.click();
+        const key = 'a';
+        const spy = spyOn<any>(component.boardService, 'setLetter').and.stub();
+        component.placeLetter(key);
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it('method removeLetter should call boardService removeLetter method on the board', () => {
+        const tile = fixture.debugElement.nativeElement.children[0].children[0].children[0].children[0] as HTMLElement;
+        const tileInTileHolder = new Tile(CaseProperty.Normal, 0, 0);
+        tileInTileHolder.letter = 'A';
+        tileInTileHolder.value = letterValue[tileInTileHolder.letter];
+        component.chatService.tileHolderService.tileHolder = [tileInTileHolder];
+        tile.click();
+        const key = 'a';
+        const spy = spyOn<any>(component.boardService, 'removeLetter').and.stub();
+        component.placeLetter(key);
+        component.removeLetter();
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it('method removeLetter should set class of last tile to writing', () => {
+        const tile = fixture.debugElement.nativeElement.children[0].children[0].children[0].children[0] as HTMLElement;
+        const tileInTileHolder = new Tile(CaseProperty.Normal, 0, 0);
+        tileInTileHolder.letter = 'A';
+        tileInTileHolder.value = letterValue[tileInTileHolder.letter];
+        component.chatService.tileHolderService.tileHolder = [tileInTileHolder];
+        tile.click();
+        const key = 'a';
+        component.placeLetter(key);
+        component.removeLetter();
+        expect(tile.className).toEqual('writing');
+    });
+
+    it('method getPosition should return good positions', () => {
+        const tile = fixture.debugElement.nativeElement.children[0].children[0].children[0].children[0] as HTMLElement;
+        const position = component.getPosition(tile);
+        expect(position[0]).toEqual(0);
+        expect(position[1]).toEqual(0);
+    });
+
+    it('method placeWord should create the right command and call chatService sendToRoom', () => {
+        const tile = fixture.debugElement.nativeElement.children[0].children[0].children[0].children[0] as HTMLElement;
+        const tileInTileHolder = new Tile(CaseProperty.Normal, 0, 0);
+        tileInTileHolder.letter = 'A';
+        tileInTileHolder.value = letterValue[tileInTileHolder.letter];
+        component.chatService.tileHolderService.tileHolder = [tileInTileHolder];
+        tile.click();
+        const key = 'a';
+        component.placeLetter(key);
+        const spy = spyOn<any>(component.chatService, 'sendToRoom').and.stub();
+        component.placeWord();
+        expect(component.chatService.roomMessage).toEqual('!placer a1h a');
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it('method clearAll should clear all letter and call removeLetter', () => {
+        const tile = fixture.debugElement.nativeElement.children[0].children[0].children[0].children[0] as HTMLElement;
+        const tileInTileHolder = new Tile(CaseProperty.Normal, 0, 0);
+        tileInTileHolder.letter = 'A';
+        tileInTileHolder.value = letterValue[tileInTileHolder.letter];
+        component.chatService.tileHolderService.tileHolder = [tileInTileHolder];
+        tile.click();
+        const spy = spyOn<any>(component, 'removeLetter').and.callThrough();
+        const key = 'a';
+        component.placeLetter(key);
+        component.clearAll();
+        expect(spy).toHaveBeenCalled();
+        expect(tile.className).toEqual('writing');
+    });
 });
