@@ -18,6 +18,10 @@ describe('Reserve Command', () => {
         expect(ReserveCommand.verifyFormat(['adada'])).to.equal(false);
     });
 
+    it('reserve should return false if the command his longer than 1', () => {
+        expect(ReserveCommand.verifyFormat(['!reserve 1234'])).to.equal(false);
+    });
+
     it('reserve should return a dictionnary with the right keys and values', () => {
         const dict: LetterScore = ReserveCommand.reserve(reserve);
         expect(dict.A).to.equal(1);

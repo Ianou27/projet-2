@@ -3,12 +3,14 @@ import { Room, User } from '@common/types';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
 import * as io from 'socket.io';
+import { DatabaseService } from './best-score.services';
 import { IdManager } from './id-manager.service';
 
 describe('Room Manager tests', () => {
     const roomManager = new RoomManager();
     const idManager = new IdManager();
     const sio = new io.Server();
+    const databaseService: DatabaseService = new DatabaseService();
 
     beforeEach(() => {
         const user: User = {
@@ -35,10 +37,12 @@ describe('Room Manager tests', () => {
         const room: Room = {
             player1: 'player1',
             player2: '',
+            time: '60',
         };
         const room2: Room = {
             player1: 'username',
             player2: 'player2Test',
+            time: '60',
         };
         idManager.rooms.push(room);
         idManager.rooms.push(room2);
@@ -52,6 +56,7 @@ describe('Room Manager tests', () => {
         const room: Room = {
             player1: 'player1',
             player2: '',
+            time: '60',
         };
         idManager.rooms.push(room);
         roomManager.joinRoom(username, room, socketId, idManager, sio);
@@ -68,6 +73,7 @@ describe('Room Manager tests', () => {
         const room: Room = {
             player1: 'username',
             player2: '',
+            time: '60',
         };
         idManager.rooms.push(room);
         const deleteSpy = sinon.stub(roomManager, 'deleteRoom');
@@ -80,6 +86,7 @@ describe('Room Manager tests', () => {
         const room: Room = {
             player1: '-2',
             player2: 'username',
+            time: '60',
         };
         idManager.rooms.push(room);
         roomManager.deleteRoom(socketId, idManager);
@@ -90,6 +97,7 @@ describe('Room Manager tests', () => {
         const room: Room = {
             player1: 'test',
             player2: 'username',
+            time: '60',
         };
         idManager.rooms.push(room);
         roomManager.deleteRoom(socketId, idManager);
@@ -102,6 +110,7 @@ describe('Room Manager tests', () => {
         const room: Room = {
             player1: 'username',
             player2: '',
+            time: '60',
         };
         idManager.rooms.push(room);
         roomManager.deleteRoom(socketId, idManager);
@@ -114,6 +123,7 @@ describe('Room Manager tests', () => {
         const room: Room = {
             player1: 'username',
             player2: '-2',
+            time: '60',
         };
         idManager.rooms.push(room);
         roomManager.deleteRoom(socketId, idManager);
@@ -125,6 +135,7 @@ describe('Room Manager tests', () => {
         const room: Room = {
             player1: 'username',
             player2: 'player2',
+            time: '60',
         };
         idManager.rooms.push(room);
         roomManager.deleteRoom(socketId, idManager);
@@ -137,7 +148,7 @@ describe('Room Manager tests', () => {
         const socketId = 'id';
         const usersSpy = sinon.spy(idManager.users, 'push');
         const roomsSpy = sinon.spy(idManager.rooms, 'push');
-        roomManager.createRoom(username, room, socketId, idManager, '60');
+        roomManager.createRoom(username, room, socketId, idManager, '60', databaseService);
         assert(usersSpy.called);
         assert(roomsSpy.called);
     });

@@ -20,7 +20,7 @@ describe('TileHolderComponent', () => {
 
     beforeEach(() => {
         tiles = [];
-        chatServiceSpy = jasmine.createSpyObj('ChatService', ['sendToRoom'], ['roomMessage']);
+        chatServiceSpy = jasmine.createSpyObj('ChatService', ['sendToRoom'], ['roomMessage', 'reserve', 'myTurn']);
         const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
         for (const letter of letters) {
             const tile: Tile = new Tile(CaseProperty.Normal, 0, 0);
@@ -196,6 +196,7 @@ describe('TileHolderComponent', () => {
         const tile = fixture.debugElement.nativeElement.children[0].children[0] as HTMLElement;
         tile.dispatchEvent(new MouseEvent('contextmenu'));
         fixture.detectChanges();
+        fixture.debugElement.nativeElement.children[2].disabled = false;
         const exchange = fixture.debugElement.nativeElement.children[2] as HTMLElement;
         const exchangeSpy = spyOn(component, 'exchange').and.callThrough();
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -482,6 +483,31 @@ describe('TileHolderComponent', () => {
         expect(component.count).toEqual(1);
         expect(firstTile.id).toEqual('swap-selected');
         expect(firstTile.children[0].className).toEqual('selected');
+    });
+
+    it('addIdOnKey() should add id to second occurrence of tile if first occurrence selected for exchange', () => {
+        tiles = [];
+        const letters = ['A', 'A', 'A', 'D', 'E', 'F', 'G'];
+        component.buttonPressed = 'a';
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(component, 'getLastKey').and.callFake(() => {
+            return 'a';
+        });
+        for (const letter of letters) {
+            const tile: Tile = new Tile(CaseProperty.Normal, 0, 0);
+            tile.letter = letter;
+            tile.value = letterValue[letter];
+            tiles.push(tile);
+        }
+        const firstTile = fixture.debugElement.nativeElement.children[0].children[0] as HTMLElement;
+        firstTile.dispatchEvent(new MouseEvent('contextmenu'));
+        fixture.detectChanges();
+        const secondTile = fixture.debugElement.nativeElement.children[0].children[1] as HTMLElement;
+        // eslint-disable-next-line dot-notation
+        component['addIdOnKey']([0, 1, 2]);
+        expect(component.count).toEqual(2);
+        expect(secondTile.id).toEqual('swap-selected');
+        expect(secondTile.children[0].className).toEqual('selected');
     });
 
     it('addIdOnKey() should increment the count, add an id to first occurrence of a tile and call getLastKey', () => {

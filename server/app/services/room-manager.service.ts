@@ -1,10 +1,12 @@
 import { Tile } from '@common/tile/Tile';
 import { Room } from '@common/types';
 import * as io from 'socket.io';
+import { beginnerBotName } from './../../assets/bot-name';
 import { Game } from './../classes/game/game';
+import { DatabaseService } from './best-score.services';
 import { IdManager } from './id-manager.service';
 export class RoomManager {
-    createRoom(username: string, room: string, socketId: string, identification: IdManager, timer: string) {
+    createRoom(username: string, room: string, socketId: string, identification: IdManager, timer: string, databaseService: DatabaseService) {
         const user = {
             username,
             id: socketId,
@@ -13,7 +15,7 @@ export class RoomManager {
         identification.users.push(user);
         identification.roomMessages[room] = [];
         const game = new Game();
-        game.player1Join(user, timer);
+        game.player1Join(user, timer, databaseService);
         identification.games.push(game);
         const roomObj = {
             player1: username,
@@ -21,9 +23,16 @@ export class RoomManager {
             time: timer,
         };
         identification.rooms.push(roomObj);
-        console.log(identification.users);
     }
-    createSoloGame(username: string, socketId: string, identification: IdManager, sio: io.Server, timer: string) {
+    createSoloGame(
+        username: string,
+        socketId: string,
+        identification: IdManager,
+        sio: io.Server,
+        timer: string,
+        databaseService: DatabaseService,
+        botName: string,
+    ) {
         const user = {
             username,
             id: socketId,
@@ -31,7 +40,7 @@ export class RoomManager {
         };
         const roomObj = {
             player1: username,
-            player2: 'bot',
+            player2: botName,
             time: timer,
         };
         identification.rooms.push(roomObj);
@@ -39,7 +48,7 @@ export class RoomManager {
         identification.roomMessages[username] = [];
         const game = new Game();
 
-        game.startSoloGame(user, sio, timer);
+        game.startSoloGame(user, sio, timer, databaseService, botName);
         identification.games.push(game);
     }
 
@@ -102,5 +111,13 @@ export class RoomManager {
                 }
             }
         });
+    }
+
+    getRandomBotName(username: string): string {
+        let randomName = username;
+        while (randomName === username) {
+            randomName = beginnerBotName[Math.floor(Math.random() * beginnerBotName.length)];
+        }
+        return randomName.concat(' (Joueur virtuel)');
     }
 }

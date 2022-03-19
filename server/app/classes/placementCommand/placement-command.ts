@@ -64,8 +64,11 @@ export class PlacementCommand {
                 continue;
             }
             const letterPlace = placementInformations.letters[lettersIter];
+            if (!this.isUpper(letterPlace)) {
+                tile.value = letterValue[letterPlace.toUpperCase()];
+            }
             tile.letter = letterPlace.toUpperCase();
-            if (!this.isUpper(letterPlace)) tile.value = letterValue[letterPlace.toUpperCase()];
+
             positions.push(tile);
             tile = game.gameBoard.nextTile(tile, placementInformations.orientation, false);
             game.playerTurn().changeLetter(letterPlace, '');
@@ -271,5 +274,29 @@ export class PlacementCommand {
             }
         }
         return false;
+    }
+
+    static placeWord(commandInformations: string[], game: Game): boolean {
+        const placementInformations = PlacementCommand.separatePlaceCommandInformations(commandInformations);
+        let letterPositions: Tile[] = [];
+        letterPositions = PlacementCommand.place(placementInformations, game);
+        const placementScore = PlacementCommand.newWordsValid(commandInformations, game, letterPositions);
+        if (placementScore === 0) {
+            PlacementCommand.restoreBoard(game, letterPositions);
+            return false;
+        }
+        let lettersToPlace = placementInformations.letters.length;
+        while (lettersToPlace > 0) {
+            game.playerTurn().changeLetter('', game.reserveLetters.getRandomLetterReserve());
+            lettersToPlace--;
+        }
+        game.playerTurn().points += placementScore;
+        game.gameState.firstTurn = false;
+        game.changeTurnTwoPlayers();
+        game.timer.reset();
+        game.gameState.passesCount = 0;
+        game.verifyGameState();
+
+        return true;
     }
 }

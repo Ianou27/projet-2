@@ -69,9 +69,11 @@ export class TileHolderComponent {
 
     addId(event: MouseEvent) {
         const current = event.currentTarget as HTMLElement;
-        this.clearAllIds();
-        current.id = 'swap-selected';
-        current.children[0].classList.replace('tile', 'selected');
+        if (current.id === '') {
+            this.clearSelectedId();
+            current.id = 'swap-selected';
+            current.children[0].classList.replace('tile', 'selected');
+        }
     }
 
     addExchangeId(event: MouseEvent) {
@@ -143,33 +145,29 @@ export class TileHolderComponent {
         }
         if ((this.buttonPressed === 'ArrowLeft' || this.scrollDirection < 0) && swapper && prevNode && swapper.parentElement) {
             swapper.parentElement.insertBefore(swapper, prevNode);
-        } else if ((this.buttonPressed === 'ArrowRight' || this.scrollDirection > 0) && nextNode && swapper && swapper.parentElement) {
+        } else if ((this.buttonPressed === 'ArrowRight' || this.scrollDirection > 0) && swapper && nextNode && swapper.parentElement) {
             swapper.parentElement.insertBefore(swapper, nextNode.nextElementSibling);
         }
     }
 
     private endToEnd(swapper: HTMLElement) {
-        if (
-            (this.buttonPressed === 'ArrowLeft' || this.scrollDirection < 0) &&
-            swapper &&
-            swapper.parentElement &&
-            swapper.parentElement.lastElementChild
-        ) {
-            swapper.parentElement.insertBefore(swapper, swapper.parentElement.lastElementChild.nextElementSibling);
-        } else if (
-            (this.buttonPressed === 'ArrowRight' || this.scrollDirection > 0) &&
-            swapper &&
-            swapper.parentElement &&
-            swapper.parentElement.firstElementChild
-        ) {
-            swapper.parentElement.insertBefore(swapper, swapper.parentElement.firstElementChild);
+        const parent = swapper.parentElement;
+        const lastChild = parent?.lastElementChild;
+        const firstChild = parent?.firstElementChild;
+        if ((this.buttonPressed === 'ArrowLeft' || this.scrollDirection < 0) && parent && lastChild) {
+            parent.insertBefore(swapper, lastChild.nextElementSibling);
+        } else if ((this.buttonPressed === 'ArrowRight' || this.scrollDirection > 0) && parent && firstChild) {
+            parent.insertBefore(swapper, firstChild);
         }
     }
 
     private isAtExtremity(node: HTMLElement) {
-        if (node.parentElement && node.parentElement.lastElementChild) {
-            if (node.isEqualNode(node.parentElement.firstElementChild)) return 'Left';
-            if (node.isEqualNode(node.parentElement.lastElementChild)) return 'Right';
+        const parent = node.parentElement;
+        const lastChild = parent?.lastElementChild;
+        const firstChild = parent?.firstElementChild;
+        if (firstChild && lastChild) {
+            if (node.isEqualNode(firstChild)) return 'Left';
+            if (node.isEqualNode(lastChild)) return 'Right';
         }
         return '';
     }
@@ -209,14 +207,18 @@ export class TileHolderComponent {
         } else {
             if (parent && this.count < indexes.length && lastKey === this.buttonPressed) {
                 current = parent.children[indexes[this.count]] as HTMLElement;
+                if (current.id !== '') {
+                    this.count++;
+                    current = parent.children[indexes[this.count]] as HTMLElement;
+                }
             } else if (parent && (this.count >= indexes.length - 1 || lastKey !== this.buttonPressed)) {
                 this.count = 0;
                 current = parent.children[indexes[this.count]] as HTMLElement;
             }
             this.count++;
         }
-        if (current) {
-            this.clearAllIds();
+        if (current && current.id === '') {
+            this.clearSelectedId();
             current.id = 'swap-selected';
             current.children[0].classList.replace('tile', 'selected');
         }

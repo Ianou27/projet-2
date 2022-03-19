@@ -1,3 +1,4 @@
+import { Timer } from '@app/services/timer-manager.service';
 import { CaseProperty } from '@common/assets/case-property';
 import { letterValue } from '@common/assets/reserve-letters';
 import { Tile } from '@common/tile/Tile';
@@ -22,6 +23,7 @@ describe('Exchange Command', () => {
             lettersTilePlayer1.push(tile1);
         }
         game.player1.letters = lettersTilePlayer1;
+        game.timer = new Timer('60');
     });
 
     afterEach(() => {

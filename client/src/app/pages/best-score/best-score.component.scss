@@ -1,0 +1,21 @@
+.mat-cell,
+.mat-header-cell {
+    text-align: center;
+    font-size: 30px;
+    justify-content: center;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.button {
+    position: relative;
+    right: 1px;
+}
+
+.title {
+    font-size: 45px;
+    padding-left: 30%;
+}

@@ -1,4 +1,4 @@
-import { Tile } from '@common/tile/Tile';
+import { DatabaseService } from '@app/services/best-score.services';
 import * as io from 'socket.io';
 import { MAXIMUM_PASSES_COUNT } from './../../../../common/constants/general-constants';
 import { GameState } from './../../../../common/gameState';
@@ -18,7 +18,7 @@ export class Game {
     gameState: GameState;
     roomName: string;
     sio: io.Server;
-
+    databaseService: DatabaseService;
     constructor() {
         this.reserveLetters = new ReserveLetters();
 
@@ -35,21 +35,15 @@ export class Game {
         };
         this.gameState = gameState;
     }
-    player1Join(user: User, timer: string) {
-        /* const letters: Tile[] = [];
-        for (let i = 0; i < NUMBER_TILEHOLDER; i++) {
-            const tile: Tile = new Tile(CaseProperty.Normal, 0, i);
-            tile.letter = '*';
-            tile.value = letterValue[tile.letter];
-            letters.push(tile);
-        }*/
-        this.player1 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player1', user, false);
+    player1Join(user: User, timer: string, databaseService: DatabaseService) {
+        this.player1 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player1', user);
         this.timer = new Timer(timer);
         this.roomName = user.room;
         this.timer = new Timer(timer);
+        this.databaseService = databaseService;
     }
     player2Join(user: User, sio: io.Server) {
-        this.player2 = new Player(this.reserveLetters.randomLettersInitialization(), false, 'player2', user, false);
+        this.player2 = new Player(this.reserveLetters.randomLettersInitialization(), false, 'player2', user);
         this.sio = sio;
         this.startGame();
     }
@@ -60,38 +54,56 @@ export class Game {
         if (endGameValidation) {
             this.endGame();
             this.setWinner();
+            this.timer.stop();
         }
     }
 
     startGame() {
         this.timer.start(this, this.sio);
+        this.randomTurnGame();
         this.sio.to(this.player1.user.id).emit('turn', this.player1.hisTurn);
         this.sio.to(this.player2.user.id).emit('turn', this.player2.hisTurn);
+        this.sio.to(this.player1.user.id).emit('modification', this.gameBoard.cases, this.playerTurn().name);
+        this.sio.to(this.player2.user.id).emit('modification', this.gameBoard.cases, this.playerTurn().name);
+
+        console.log(this.playerTurn().name);
     }
 
-    startSoloGame(user: User, sio: io.Server, timer: string) {
+    startSoloGame(user: User, sio: io.Server, timer: string, databaseService: DatabaseService, botName: string) {
+        this.databaseService = databaseService;
         this.timer = new Timer(timer);
-        this.player1 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player1', user, false);
+        this.player1 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player1', user);
         this.roomName = user.room;
         const userBot = {
-            username: 'Bot',
-            id: '',
+            username: botName,
+            id: 'bot',
             room: user.room,
         };
-        this.player2 = new Player(this.reserveLetters.randomLettersInitialization(), false, 'player2', userBot, true);
+        this.player2 = new Player(this.reserveLetters.randomLettersInitialization(), false, 'player2', userBot);
+        this.player2.changeHisBot(true);
         this.sio = sio;
+        this.randomTurnGame();
         this.sio.to(user.id).emit('tileHolder', this.player1.letters);
+        this.sio.to(this.player1.user.room).emit('modification', this.gameBoard.cases, this.playerTurn().name);
+
         this.timer.start(this, this.sio);
     }
 
-    changeTurnTwoPlayers() {
+    randomTurnGame() {
+        const player1Turn = Boolean(Math.round(Math.random()));
+        if (!player1Turn) {
+            this.changeTurnTwoPlayers();
+        }
+    }
+
+    async changeTurnTwoPlayers() {
         this.player1.changeTurn();
         this.player2.changeTurn();
         this.sio.to(this.player1.user.id).emit('turn', this.player1.hisTurn);
         this.sio.to(this.player2.user.id).emit('turn', this.player2.hisTurn);
         if (this.playerTurn().hisBot) {
+            const command = this.actionVirtualBeginnerPlayer(VirtualPlayer.getProbability());
             setTimeout(() => {
-                const command = this.actionVirtualBeginnerPlayer();
                 this.placementBot(command);
             }, 3000);
         }
@@ -120,7 +132,7 @@ export class Game {
                 break;
             }
             case '!placer': {
-                this.placeWord(command);
+                PlacementCommand.placeWord(command, this);
                 this.sio
                     .to(this.player1.user.room)
                     .emit('updateReserve', this.reserveLetters.letters.length, this.player1.getNumberLetters(), this.player2.getNumberLetters());
@@ -161,30 +173,7 @@ export class Game {
         }
         this.changeTurnTwoPlayers();
         this.gameState.passesCount = 0;
-    }
-
-    placeWord(commandInformations: string[]): boolean {
-        const placementInformations = PlacementCommand.separatePlaceCommandInformations(commandInformations);
-        let letterPositions: Tile[] = [];
-        letterPositions = PlacementCommand.place(placementInformations, this);
-        const placementScore = PlacementCommand.newWordsValid(commandInformations, this, letterPositions);
-        if (placementScore === 0) {
-            PlacementCommand.restoreBoard(this, letterPositions);
-            return false;
-        }
-        let lettersToPlace = placementInformations.letters.length;
-        while (lettersToPlace > 0) {
-            this.playerTurn().changeLetter('', this.reserveLetters.getRandomLetterReserve());
-            lettersToPlace--;
-        }
-        this.playerTurn().points += placementScore;
-        this.gameState.firstTurn = false;
-        this.changeTurnTwoPlayers();
         this.timer.reset();
-        this.gameState.passesCount = 0;
-        this.verifyGameState();
-
-        return true;
     }
 
     passTurn(): void {
@@ -194,14 +183,13 @@ export class Game {
         this.timer.reset();
     }
 
-    actionVirtualBeginnerPlayer(): string[] {
-        const probability = Math.floor(Math.random() * 100);
+    actionVirtualBeginnerPlayer(probability: number): string[] {
         if (probability <= 10) {
             return '!passer'.split(' ');
         } else if (probability <= 20) {
             return VirtualPlayer.exchangeLettersCommand(this);
         } else {
-            return VirtualPlayer.placementLettersCommand(this);
+            return VirtualPlayer.placementLettersCommand(VirtualPlayer.getProbability(), this);
         }
     }
 
@@ -222,14 +210,13 @@ export class Game {
         });
     }
 
-    private endGame() {
+    private async endGame() {
         this.gameState.gameFinished = true;
         this.timer.stop();
         if (this.player1.getNumberLetters() === 0) {
             for (const letter of this.player2.getLetters()) {
                 if (letter.letter !== '') {
                     this.player1.points += letter.value;
-                    this.player2.points -= letter.value;
                 }
             }
         } else if (this.player2.getNumberLetters() === 0) {
@@ -248,6 +235,17 @@ export class Game {
             if (letter.letter !== '') {
                 if (this.player2.points - letter.value >= 0) this.player2.points -= letter.value;
             }
+        }
+        await this.databaseService.updateBesScoreClassique({
+            player: this.player1.user.username,
+            score: this.player1.points,
+        });
+
+        if (!this.player2.hisBot) {
+            await this.databaseService.updateBesScoreClassique({
+                player: this.player2.user.username,
+                score: this.player2.points,
+            });
         }
     }
 }

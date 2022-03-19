@@ -16,14 +16,14 @@ export class Timer {
                 this.timeLeft--;
                 sio.to(game.player1.user.room).emit('timer', this.timeLeft);
             } else {
-                game.changeTurnTwoPlayers();
                 sio.to(game.player1.user.room).emit('roomMessage', {
                     username: 'Server',
                     message: ' Tour  passé , trop de temps pour jouer son tour ',
                     player: 'server',
                 });
+                game.passTurn();
                 sio.to(game.player1.user.room).emit('modification', game.gameBoard.cases, game.playerTurn().name);
-                this.timeLeft = this.timerMax;
+                if (!game.gameState.gameFinished) this.timeLeft = this.timerMax;
             }
         }, ONE_SECOND_MS);
     }

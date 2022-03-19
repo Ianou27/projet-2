@@ -40,6 +40,7 @@ describe('IdManager tests', () => {
         const room: Room = {
             player1: 'username',
             player2: 'player2',
+            time: '60',
         };
         const user: User = {
             username: 'username',

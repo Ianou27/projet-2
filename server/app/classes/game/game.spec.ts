@@ -1,10 +1,17 @@
+/* eslint-disable @typescript-eslint/no-magic-numbers */
+/* eslint-disable max-len */
+import { DatabaseService } from '@app/services/best-score.services';
 import { GameBoardService } from '@app/services/game-board.service';
+import { Timer } from '@app/services/timer-manager.service';
 import { CaseProperty } from '@common/assets/case-property';
 import { letterValue } from '@common/assets/reserve-letters';
 import { Tile } from '@common/tile/Tile';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
+import * as io from 'socket.io';
+import { PlacementCommand } from './../placementCommand/placement-command';
 import { Player } from './../player/player';
+import { VirtualPlayer } from './../virtual-player/virtual-player';
 import { Game } from './game';
 
 describe('Game', () => {
@@ -12,6 +19,8 @@ describe('Game', () => {
     const numberLetterReserveMinusPlayerLetters = 88;
     const letters = ['A', 'C', 'A', 'Z', 'B', 'R', '*'];
     const lettersTilePlayer1: Tile[] = [];
+    const points = 100;
+    const databaseService: DatabaseService = new DatabaseService();
     for (const letter of letters) {
         const tile1: Tile = new Tile(CaseProperty.Normal, 0, 0);
         tile1.letter = letter;
@@ -25,8 +34,14 @@ describe('Game', () => {
 
     beforeEach(() => {
         game = new Game();
-        game.player1Join({ username: 'rt', id: '1', room: 'room1' }, '60');
-        game.player2 = new Player(game.reserveLetters.randomLettersInitialization(), false, 'player2', { username: 'rta', id: '2', room: 'room1' });
+        game.sio = new io.Server();
+        game.player1Join({ username: 'player1', id: '1', room: 'room1' }, '60', databaseService);
+        game.player2 = new Player(game.reserveLetters.randomLettersInitialization(), false, 'player2', {
+            username: 'player2',
+            id: '2',
+            room: 'room1',
+        });
+        game.timer = new Timer('60');
     });
 
     it('constructor should construct a game with two players named player1 and player2', () => {
@@ -43,12 +58,36 @@ describe('Game', () => {
         expect(reserveInitialLength).equal(numberLetterReserveMinusPlayerLetters);
     });
 
+    it('method player2Join should call startGame', () => {
+        const spy = sinon.spy(game, 'startGame');
+        game.player2Join({ username: 'player2', id: '2', room: 'room1' }, game.sio);
+        assert(spy.called);
+    });
+
     it('method changeTurnTwoPlayers should change the turn of the two player', () => {
         const turnPlayer1 = game.player1.hisTurn;
         const turnPlayer2 = game.player2.hisTurn;
         game.changeTurnTwoPlayers();
         expect(turnPlayer1).equal(!game.player1.hisTurn);
         expect(turnPlayer2).equal(!game.player2.hisTurn);
+    });
+
+    it('method startGame should call method start from timer', () => {
+        const spy = sinon.spy(game.timer, 'start');
+        game.startGame();
+        assert(spy.called);
+    });
+
+    it('method startSoloGame should set the value true to hisBot of the player2', () => {
+        expect(game.player2.hisBot).equal(false);
+        game.startSoloGame(game.player1.user, game.sio, '60', databaseService, 'botname');
+        expect(game.player2.hisBot).equal(true);
+    });
+
+    it('method startSoloGame should initialize the attributes of game', () => {
+        game.startSoloGame(game.player1.user, game.sio, '60', databaseService, 'botname');
+        expect(game.roomName).equal(game.player1.user.room);
+        expect(game.timer.timerMax).equal(60);
     });
 
     it('method playerTurn should return the player whose turn it is', () => {
@@ -113,34 +152,49 @@ describe('Game', () => {
     });
 
     it('method verifyGameState should set gameFinished to true if the passes count is 6', () => {
-        game.gameState.passesCount = 6;
+        game.gameState.passesCount = 5;
         expect(game.gameState.gameFinished).to.equal(false);
+        game.passTurn();
         game.verifyGameState();
         expect(game.gameState.gameFinished).to.equal(true);
     });
 
-    it('method verifyGameState should set gameFinished to true if reserve length and letters of one player equal zero and calculate points', () => {
+    it('method verifyGameState should set gameFinished to true if reserve length and letters of one player equal zero and calculate points without going into negative', () => {
         game.reserveLetters.letters = [];
         game.player1.letters = [];
-        game.player2.letters = lettersTilePlayer1;
+        game.player2.letters = lettersTilePlayer1.slice(0, lettersTilePlayer1.length - 1);
         expect(game.gameState.gameFinished).to.equal(false);
+
         game.verifyGameState();
         expect(game.gameState.gameFinished).to.equal(true);
         expect(game.player1.points).to.equal(expectedPoints);
-        expect(game.player2.points).to.equal(-expectedPoints);
+        expect(game.player2.points).to.equal(0);
     });
 
-    it('method verifyGameState should set gameFinished to true if reserve length and letters of one player equal zero and calculate points', () => {
+    it('method verifyGameState should set gameFinished to true if reserve length and letters of player 2 equal zero and calculate points', () => {
         game.reserveLetters.letters = [];
         game.player2.letters = [];
-        game.player1.letters = lettersTilePlayer1;
-        game.player1.points = 0;
-        game.player2.points = 0;
+        game.player1.letters = lettersTilePlayer1.slice(0, lettersTilePlayer1.length - 1);
+        game.player1.points = points;
+        game.player2.points = points;
         expect(game.gameState.gameFinished).to.equal(false);
         game.verifyGameState();
         expect(game.gameState.gameFinished).to.equal(true);
-        expect(game.player2.points).to.equal(expectedPoints);
-        expect(game.player1.points).to.equal(-expectedPoints);
+        expect(game.player2.points).to.equal(points + expectedPoints);
+        expect(game.player1.points).to.equal(points - expectedPoints);
+    });
+
+    it('method verifyGameState should set gameFinished to true if reserve length and letters of player 1 equal zero and calculate points', () => {
+        game.reserveLetters.letters = [];
+        game.player2.letters = lettersTilePlayer1;
+        game.player1.letters = [];
+        game.player1.points = points;
+        game.player2.points = points;
+        expect(game.gameState.gameFinished).to.equal(false);
+        game.verifyGameState();
+        expect(game.gameState.gameFinished).to.equal(true);
+        expect(game.player2.points).to.equal(points - expectedPoints);
+        expect(game.player1.points).to.equal(points + expectedPoints);
     });
 
     it('method verifyGameState should set the winner player1 if player1 has more points', () => {
@@ -169,5 +223,53 @@ describe('Game', () => {
         const spy = sinon.spy(game.timer, 'stop');
         game.surrender('abc');
         assert(spy.called);
+    });
+
+    it('method actionVirtualBeginnerPlayer with probability 10 or less should return command pass', () => {
+        const command = game.actionVirtualBeginnerPlayer(10);
+        expect(command[0]).equal('!passer');
+    });
+
+    it('method actionVirtualBeginnerPlayer with probability between 10 and 20 should return command exchange', () => {
+        const spy = sinon.spy(VirtualPlayer, 'exchangeLettersCommand');
+        const command = game.actionVirtualBeginnerPlayer(15);
+        expect(command[0]).equal('!echanger');
+        assert(spy.called);
+    });
+
+    it('method actionVirtualBeginnerPlayer with probability 20 or more should return command place', () => {
+        const spy = sinon.spy(VirtualPlayer, 'placementLettersCommand');
+        const command = game.actionVirtualBeginnerPlayer(55);
+        expect(command[0]).equal('!placer');
+        assert(spy.called);
+    });
+
+    it('method placementBot with command !echanger should exchange the letters of the player', () => {
+        const spy = sinon.spy(game, 'exchangeLetters');
+        const command = '!echanger abc';
+        game.placementBot(command.split(' '));
+        assert(spy.called);
+    });
+
+    it('method placementBot with command !passer should pass the turn of the player', () => {
+        const spy = sinon.spy(game, 'passTurn');
+        const command = '!passer';
+        game.placementBot(command.split(' '));
+        assert(spy.called);
+    });
+
+    it('method placementBot with command !placer should place letters on board for the player', () => {
+        const spy = sinon.spy(PlacementCommand, 'placeWord');
+        const command = '!placer h8v car';
+        game.placementBot(command.split(' '));
+        assert(spy.called);
+    });
+
+    it('in a solo game, method changeTurnTwoPlayers should let the bot play after 3 sec', () => {
+        const spyCommand = sinon.spy(game, 'actionVirtualBeginnerPlayer');
+        game.player2.hisBot = true;
+        game.passTurn();
+        game.changeTurnTwoPlayers();
+        assert(spyCommand.called);
     });
 });

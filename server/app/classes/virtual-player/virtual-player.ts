@@ -49,20 +49,20 @@ export class VirtualPlayer {
         return validWords;
     }
 
-    static heapsPermute(array: string[], n: number, words: string[]): string[] {
-        n = n || array.length;
+    static heapsPermute(arrayToPermute: string[], number: number, words: string[]): string[] {
+        number = number || arrayToPermute.length;
         let j = 0;
-        if (n === 1) {
-            words.push(array.join(''));
+        if (number === 1) {
+            words.push(arrayToPermute.join(''));
         } else {
-            for (let i = 1; i <= n; i += 1) {
-                this.heapsPermute(array, n - 1, words);
-                if (n % 2) {
+            for (let i = 1; i <= number; i += 1) {
+                this.heapsPermute(arrayToPermute, number - 1, words);
+                if (number % 2) {
                     j = 1;
                 } else {
                     j = i;
                 }
-                this.swap(array, j - 1, n - 1);
+                this.swap(arrayToPermute, j - 1, number - 1);
             }
         }
         return words;
@@ -72,14 +72,18 @@ export class VirtualPlayer {
         const placementsCommands: PlacementScore[] = [];
         for (const word of words) {
             try {
+                let wordWithoutLetter = word;
                 let tileStart = placement.tile;
                 let command = '!placer ';
-                for (let i = 0; i < word.indexOf(placement.tile.letter.toLowerCase()); i++) {
-                    tileStart = game.gameBoard.nextTile(tileStart, placement.orientation, true);
+                if (!game.gameState.firstTurn) {
+                    for (let i = 0; i < word.indexOf(placement.tile.letter.toLowerCase()); i++) {
+                        tileStart = game.gameBoard.nextTile(tileStart, placement.orientation, true);
+                    }
+                    wordWithoutLetter =
+                        word.slice(0, word.indexOf(placement.tile.letter.toLowerCase())) +
+                        word.slice(word.indexOf(placement.tile.letter.toLowerCase()) + 1);
                 }
-                const wordWithoutLetter =
-                    word.slice(0, word.indexOf(placement.tile.letter.toLowerCase())) +
-                    word.slice(word.indexOf(placement.tile.letter.toLowerCase()) + 1);
+
                 command = command.concat(
                     rowLetter[tileStart.positionY] + (tileStart.positionX + 1).toString() + placement.orientation + ' ' + wordWithoutLetter,
                 );
@@ -126,6 +130,7 @@ export class VirtualPlayer {
         const playerLetters = game.playerTurn().lettersToStringArray();
         const placementPossible = this.findAllPositionGameBoard(game).slice(0, 15);
         let commandPlacements: PlacementScore[] = [];
+        if (placementPossible.length === 0) return [];
         for (const placement of placementPossible) {
             const letters = playerLetters.concat(placement.tile.letter);
             const words = this.findAllWords(letters, placement.tile.letter);
@@ -137,10 +142,9 @@ export class VirtualPlayer {
         return commandPlacements;
     }
 
-    static placementLettersCommand(game: Game): string[] {
+    static placementLettersCommand(probability: number, game: Game): string[] {
         const allPlacementCommands = this.findAllPlacementCommands(game);
         let placementCommand = '';
-        const probability = Math.floor(Math.random() * 100);
         if (probability <= 40) {
             placementCommand = this.findPlacementScoreRange(1, 6, allPlacementCommands);
         } else if (probability <= 70) {
@@ -148,10 +152,12 @@ export class VirtualPlayer {
         } else {
             placementCommand = this.findPlacementScoreRange(13, 18, allPlacementCommands);
         }
+
         return placementCommand.split(' ');
     }
 
     static findPlacementScoreRange(minScore: number, maxScore: number, commandPlacements: PlacementScore[]): string {
+        if (commandPlacements.length === 0) return '!passer';
         for (const commandPlacement of commandPlacements) {
             if (minScore < commandPlacement.score && commandPlacement.score < maxScore) return commandPlacement.command;
         }
@@ -187,6 +193,13 @@ export class VirtualPlayer {
                     }
                 }
             }
+        }
+        if (tiles.length === 0) {
+            const tilePlacement: TilePlacementPossible = {
+                tile: gameBoard.cases[7][7],
+                orientation: 'h',
+            };
+            tiles.push(tilePlacement);
         }
         const tilesShuffled = this.shuffleArray(tiles);
         return tilesShuffled;
@@ -237,7 +250,12 @@ export class VirtualPlayer {
         const letters = virtualPlayerLetters
             .sort(() => Math.random() - Math.random())
             .splice(0, Math.floor(Math.random() * virtualPlayerLetters.length));
+        if (letters.length === 0) command = command.concat(virtualPlayerLetters[0]);
         command = command.concat(letters.join('')).toLowerCase();
         return command.split(' ');
+    }
+
+    static getProbability(): number {
+        return Math.floor(Math.random() * 100);
     }
 }
