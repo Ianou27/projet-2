@@ -87,6 +87,8 @@ export class RoomManager {
                 console.log(identification.users);
             }
         });
+
+        identification.deleteGame(socketId);
     }
     deleteRoom(socketId: string, identification: IdManager) {
         const username = identification.getUsername(socketId);

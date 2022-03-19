@@ -63,7 +63,7 @@ export class IdManager {
         return room;
     }
     getGame(socketId: string): Game {
-        let gameToFind: Game = this.games[0];
+        let gameToFind: Game = new Game ;
 
         for (const game of this.games) {
             if (game.player1.user.id === socketId) {
@@ -78,7 +78,20 @@ export class IdManager {
 
         return gameToFind;
     }
+    deleteGame(socketId:string){
 
+        for (const game of this.games) {
+            if (game.player1.user.id === socketId) {
+                const index = this.games.indexOf(game);
+                this.games.splice(index, 1);
+            } else if (game.player2 !== undefined) {
+                if (game.player2.user.id === socketId) {
+                    const index = this.games.indexOf(game);
+                    this.games.splice(index, 1);
+                }
+            }
+        }
+    }
     deleteUser(socketId: string) {
         this.users.forEach((element: User) => {
             if (element.id === socketId) {
