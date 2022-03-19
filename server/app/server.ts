@@ -34,13 +34,7 @@ export class Server {
         this.server.listen(Server.appPort);
         this.server.on('error', (error: NodeJS.ErrnoException) => this.onError(error));
         this.server.on('listening', () => this.onListening());
-        try {
-            await this.databaseService.start();
-            console.log('Database connection successful !');
-        } catch {
-            console.error('Database connection failed !');
-            process.exit(1);
-        }
+        
     }
 
     private onError(error: NodeJS.ErrnoException): void {

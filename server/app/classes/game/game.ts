@@ -236,10 +236,12 @@ export class Game {
                 if (this.player2.points - letter.value >= 0) this.player2.points -= letter.value;
             }
         }
+        await this.databaseService.start();
         await this.databaseService.updateBesScoreClassique({
             player: this.player1.user.username,
             score: this.player1.points,
         });
+        
 
         if (!this.player2.hisBot) {
             await this.databaseService.updateBesScoreClassique({
@@ -247,5 +249,6 @@ export class Game {
                 score: this.player2.points,
             });
         }
+        await this.databaseService.closeConnection();
     }
 }

@@ -184,12 +184,24 @@ export class SocketManager {
                     this.sio.to(socket.id).emit('reserveValidated', 'Format invalide');
                 }
             });
-            socket.on('forceDisconnect', () => {
+            socket.on('forceDisconnect', async() => {
+                await this.databaseService.closeConnection();
                 socket.disconnect();
             });
 
             socket.on('getBestScoreClassique', async () => {
-                this.sio.to(socket.id).emit('getBestScoreClassique', await this.databaseService.BestScoreClassique());
+                try {
+                    await this.databaseService.start();
+                    console.log('Database connection successful !');
+                    this.sio.to(socket.id).emit('getBestScoreClassique', await this.databaseService.BestScoreClassique());
+                } catch {
+                    console.error('Database connection failed !');
+                    this.sio.to(socket.id).emit('getBestScoreClassique', [{
+                        player: 'Can not access to DB',
+                        score: 'ERROR',
+                    }]);
+                }
+                
             });
 
             socket.on('indice', (command: string[]) => {

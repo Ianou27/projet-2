@@ -30,7 +30,13 @@ export class DatabaseService {
     }
 
     async closeConnection(): Promise<void> {
-        return this.client.close();
+        try {
+            console.log("Connexion closed");
+            return this.client.close();
+        } catch (error) {
+            console.log("connexion is already closed")
+        }
+       
     }
 
     async populateDB(): Promise<void> {
