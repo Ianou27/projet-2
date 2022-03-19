@@ -154,7 +154,21 @@ export class Game {
         return this.player2;
     }
 
-    surrender(winner: string) {
+    async surrender(winner: string) {
+        await this.databaseService.start();
+        if(winner === this.player1.user.username){
+            await this.databaseService.updateBesScoreClassique({
+                player: this.player1.user.username,
+                score: this.player1.points,
+            });
+        }
+
+        else if(winner === this.player2.user.username){
+            await this.databaseService.updateBesScoreClassique({
+                player: this.player2.user.username,
+                score: this.player2.points,
+            });
+        }
         this.gameState.gameFinished = true;
         this.timer.stop();
         this.sio.to(this.roomName).emit('endGame', winner);
