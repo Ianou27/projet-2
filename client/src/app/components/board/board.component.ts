@@ -118,8 +118,8 @@ export class BoardComponent implements OnInit {
         }
         const posX = Number(currentTile.getAttribute('data-position-x'));
         const posY = Number(currentTile.getAttribute('data-position-y'));
-        if (posX === MAXIMUM_ROW_COLUMN || posY === MAXIMUM_ROW_COLUMN) return;
         if (this.orientation === 'h') {
+            if (posX === MAXIMUM_ROW_COLUMN) return;
             if (board.children[posX + 1].children[posY].children[0].getElementsByTagName('p')[0]) {
                 this.nextTile(board.children[posX + 1].children[posY].children[0]);
             } else {
@@ -127,6 +127,7 @@ export class BoardComponent implements OnInit {
                 board.children[posX + 1].children[posY].children[0].children[0].id = 'arrow-right';
             }
         } else {
+            if (posY === MAXIMUM_ROW_COLUMN) return;
             if (board.children[posX].children[posY + 1].children[0].getElementsByTagName('p')[0]) {
                 this.nextTile(board.children[posX].children[posY + 1].children[0]);
             } else {
