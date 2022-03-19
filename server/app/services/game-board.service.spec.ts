@@ -110,19 +110,19 @@ describe('GameBoard', () => {
 
     it('isLastTile should return true if tile position X or Y equals 0 or 14 depending on orientation', () => {
         const tile = gameBoard.cases[0][1];
-        expect(gameBoard.isLastTile(tile, 'h')).equal(true);
+        expect(gameBoard.isTopOrRight(tile, 'h')).equal(true);
     });
 
     it('isLastTile should return false if tile position X or Y equals 0 or 14 depending on orientation', () => {
-        expect(gameBoard.isLastTile(currentTile, 'h')).equal(false);
+        expect(gameBoard.isTopOrRight(currentTile, 'h')).equal(false);
     });
 
     it('isLastTile should return true if tile position X or Y equals 0 or 14 depending on orientation', () => {
         const tile = gameBoard.cases[2][14];
-        expect(gameBoard.isLastTile(tile, 'v')).equal(true);
+        expect(gameBoard.isBottomOrLeft(tile, 'v')).equal(true);
     });
 
     it('isLastTile should return false if tile position X or Y equals 0 or 14 depending on orientation', () => {
-        expect(gameBoard.isLastTile(currentTile, 'h')).equal(false);
+        expect(gameBoard.isBottomOrLeft(currentTile, 'h')).equal(false);
     });
 });
