@@ -102,8 +102,8 @@ export class Game {
         this.sio.to(this.player1.user.id).emit('turn', this.player1.hisTurn);
         this.sio.to(this.player2.user.id).emit('turn', this.player2.hisTurn);
         if (this.playerTurn().hisBot) {
-            const command = this.actionVirtualBeginnerPlayer(VirtualPlayer.getProbability());
             setTimeout(() => {
+                const command = this.actionVirtualBeginnerPlayer(VirtualPlayer.getProbability());
                 this.placementBot(command);
             }, 3000);
         }
