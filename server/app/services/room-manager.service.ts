@@ -25,15 +25,14 @@ export class RoomManager {
         identification.rooms.push(roomObj);
     }
     convertMultiToSolo( 
-        username: string,
         socketId: string,
         identification: IdManager,
         sio: io.Server,
-        timer: string,
-        databaseService: DatabaseService,
-        botName: string,){
+        databaseService: DatabaseService,){
+        let game =identification.getGame(socketId);
+        const botName = this.getRandomBotName(game.player1.user.username);
         this.cancelCreation(socketId, identification);
-        this.createSoloGame(username,socketId,identification,sio,timer,databaseService,botName);
+        this.createSoloGame(game.player1.user.username,socketId,identification,sio,game.timer.timerMax.toString(),databaseService,botName);
 
     }
     createSoloGame(

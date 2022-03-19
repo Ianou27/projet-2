@@ -31,7 +31,6 @@ export class SocketManager {
                 const botName = this.roomManager.getRandomBotName(username);
                 this.roomManager.createSoloGame(username, socket.id, this.identification, this.sio, timer, this.databaseService, botName);
                 socket.join(username);
-                this.sio.to(socket.id).emit('startGame', username, botName);
             });
 
             socket.on('joinRoom', (username: string, roomObj: Room) => {
@@ -184,7 +183,7 @@ export class SocketManager {
                     this.sio.to(socket.id).emit('reserveValidated', 'Format invalide');
                 }
             });
-            socket.on('forceDisconnect', async() => {
+            socket.on('forceDisconnect', async () => {
                 await this.databaseService.closeConnection();
                 socket.disconnect();
             });
@@ -193,18 +192,27 @@ export class SocketManager {
                 try {
                     await this.databaseService.start();
                     console.log('Database connection successful !');
-                    this.sio.to(socket.id).emit('getBestScore', await this.databaseService.bestScoreClassic(),await this.databaseService.bestScoreLog());
+                    this.sio
+                        .to(socket.id)
+                        .emit('getBestScore', await this.databaseService.bestScoreClassic(), await this.databaseService.bestScoreLog());
                 } catch {
                     console.error('Database connection failed !');
-                    this.sio.to(socket.id).emit('getBestScore', [{
-                        player: 'Can not access to DB',
-                        score: 'ERROR',
-                    }],[{
-                        player: 'Can not access to DB',
-                        score: 'ERROR',
-                    }]);
+                    this.sio.to(socket.id).emit(
+                        'getBestScore',
+                        [
+                            {
+                                player: 'Can not access to DB',
+                                score: 'ERROR',
+                            },
+                        ],
+                        [
+                            {
+                                player: 'Can not access to DB',
+                                score: 'ERROR',
+                            },
+                        ],
+                    );
                 }
-                
             });
 
             socket.on('indice', (command: string[]) => {
@@ -265,9 +273,8 @@ export class SocketManager {
                 this.roomManager.cancelCreation(socket.id, this.identification);
             });
 
-            socket.on('convertToSoloGame', (username: string , timer: string) => {
-                const botName = this.roomManager.getRandomBotName(username);
-                this.roomManager.convertMultiToSolo(username, socket.id, this.identification, this.sio, timer, this.databaseService, botName);
+            socket.on('convertToSoloGame', () => {
+                this.roomManager.convertMultiToSolo(socket.id, this.identification, this.sio, this.databaseService);
             });
             socket.on('disconnect', (reason) => {
                 const room = this.identification.getRoom(socket.id);

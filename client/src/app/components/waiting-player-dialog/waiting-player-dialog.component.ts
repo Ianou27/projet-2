@@ -30,7 +30,7 @@ export class WaitingPlayerDialogComponent {
     }
 
     convertToSolo() {
-        this.chatService.convertToSoloGame(this.chatService.username, this.chatService.timer.toString());
+        this.chatService.convertToSoloGame();
         this.multiplayerDialog.closeAll();
     }
 }

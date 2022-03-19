@@ -85,7 +85,7 @@ export class Game {
         this.randomTurnGame();
         this.sio.to(user.id).emit('tileHolder', this.player1.letters);
         this.sio.to(this.player1.user.room).emit('modification', this.gameBoard.cases, this.playerTurn().name);
-
+        this.sio.to(user.id).emit('startGame', user.username, botName);
         this.timer.start(this, this.sio);
     }
 

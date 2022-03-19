@@ -253,7 +253,7 @@ export class ChatService {
         this.socketService.socket.emit('cancelCreation');
         this.updateRooms();
     }
-    convertToSoloGame(username:string , timer: string){
-        this.socketService.socket.emit('convertToSoloGame', username, timer);
+    convertToSoloGame(){
+        this.socketService.socket.emit('convertToSoloGame');
     }
 }
