@@ -1,6 +1,17 @@
 .tile-container {
+    z-index: 2;
     border: 3px solid black;
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
+}
+
+.written {
+    color: green;
+    height: 50px;
+    width: 50px;
+    background-color: red;
+    display: grid;
+    grid-template-rows: 20px 10px;
 }

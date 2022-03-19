@@ -1,5 +1,5 @@
 <div class="tile-container" tabindex="0">
-    <div *ngFor="let row of this.chatService.boardService.board">
+    <div *ngFor="let row of this.boardService.board">
         <div *ngFor="let tile of row; let j">
             <app-tile
                 [attr.data-position-x]="tile.positionX"

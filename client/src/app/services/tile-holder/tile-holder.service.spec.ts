@@ -26,25 +26,26 @@ describe('TileHolderService', () => {
 
     it('removeLetter should remove a letter once when there is multiple same letter', () => {
         expect(service.tileHolder.length).toBe(7);
-        service.removeLetter('A');
+        service.removeLetter('a');
         expect(service.tileHolder.length).toBe(6);
     });
 
     it('removeLetter should add the removed letter to the array', () => {
         expect(service.removedLetters.length).toBe(0);
-        service.removeLetter('A');
+        service.removeLetter('a');
         expect(service.removedLetters.length).toBe(1);
     });
 
     it('removeLetter should not remove a letter if it is not in the tile holder', () => {
         expect(service.tileHolder.length).toBe(7);
-        service.removeLetter('B');
+        service.removeLetter('b');
         expect(service.tileHolder.length).toBe(7);
     });
 
     it('addLetter should add a new Tile', () => {
+        service.removedLetters = ['A', 'B'];
         expect(service.tileHolder.length).toBe(7);
-        service.addLetter('B');
+        service.addLetter('b');
         expect(service.tileHolder.length).toBe(8);
         expect(service.tileHolder[7].letter).toBe('B');
     });
@@ -61,5 +62,11 @@ describe('TileHolderService', () => {
         expect(service.tileHolder.length).toBe(7);
         service.addLetter('C');
         expect(service.tileHolder.length).toBe(7);
+    });
+
+    it('letterInTileHolder should return the right value', () => {
+        const answer = service.letterInTileHolder('a');
+        expect(answer[0]).toBeTrue();
+        expect(answer[1]).toEqual(0);
     });
 });
