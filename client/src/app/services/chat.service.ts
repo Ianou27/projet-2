@@ -139,6 +139,9 @@ export class ChatService {
         this.socketService.socket.on('endGame', (winner: string) => {
             this.gameOver = true;
             this.winner = winner;
+            this.player1Turn = '';
+            this.player2Turn = '';
+            this.myTurn =false;
         });
         this.socketService.on('refusing', (obj: InfoToJoin) => {
             this.informationToJoin = obj;
@@ -205,7 +208,7 @@ export class ChatService {
     }
     sendToRoom() {
         const command = this.roomMessage.split(' ');
-        if (command[0].charAt(0) === '!') {
+        if (command[0].charAt(0) === '!' && !this.gameOver) {
             switch (command[0]) {
                 case '!echanger': {
                     this.socketService.send('echanger', command);
@@ -232,7 +235,7 @@ export class ChatService {
                     this.roomMessages.push({ username: 'Server', message: '  Erreur de Syntaxe', player: 'server' });
                 }
             }
-        } else if (this.roomMessage !== '') {
+        } else if (this.roomMessage !== '' && this.roomMessage[0] !== '!') {
             this.socketService.send('roomMessage', this.roomMessage);
         }
 
