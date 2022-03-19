@@ -264,6 +264,11 @@ export class SocketManager {
             socket.on('cancelCreation', () => {
                 this.roomManager.cancelCreation(socket.id, this.identification);
             });
+
+            socket.on('convertToSoloGame', (username: string , timer: string) => {
+                const botName = this.roomManager.getRandomBotName(username);
+                this.roomManager.convertMultiToSolo(username, socket.id, this.identification, this.sio, timer, this.databaseService, botName);
+            });
             socket.on('disconnect', (reason) => {
                 const room = this.identification.getRoom(socket.id);
 

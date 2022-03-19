@@ -30,7 +30,7 @@ export class WaitingPlayerDialogComponent {
     }
 
     convertToSolo() {
-        console.log('Partie convertie en mode solo');
-        // this.chatService.createSoloGame(this.chatService.player1Username, String(this.chatService.timer));
+        this.chatService.convertToSoloGame(this.chatService.username, this.chatService.timer.toString());
+        this.multiplayerDialog.closeAll();
     }
 }

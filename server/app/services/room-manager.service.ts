@@ -24,6 +24,18 @@ export class RoomManager {
         };
         identification.rooms.push(roomObj);
     }
+    convertMultiToSolo( 
+        username: string,
+        socketId: string,
+        identification: IdManager,
+        sio: io.Server,
+        timer: string,
+        databaseService: DatabaseService,
+        botName: string,){
+        this.cancelCreation(socketId, identification);
+        this.createSoloGame(username,socketId,identification,sio,timer,databaseService,botName);
+
+    }
     createSoloGame(
         username: string,
         socketId: string,

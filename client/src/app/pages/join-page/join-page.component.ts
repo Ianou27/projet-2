@@ -60,6 +60,8 @@ export class JoinPageComponent implements OnInit {
 
     createRoom() {
         this.chatService.createRoom(this.name, this.name, this.selectedTime);
+
+        this.chatService.username = this.name;
         this.openWait();
     }
 
