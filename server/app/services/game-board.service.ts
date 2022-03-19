@@ -58,10 +58,19 @@ export class GameBoardService {
         return nextTile;
     }
 
-    isLastTile(currentTile: Tile, orientation: string) {
+    isTopOrRight(currentTile: Tile, orientation: string) {
         if (orientation === 'h') {
-            if (currentTile.positionX === MAXIMUM_ROW_COLUMN || currentTile.positionX === COLUMN_ROWS_MINIMUM) return true;
-        } else if (currentTile.positionY === MAXIMUM_ROW_COLUMN || currentTile.positionY === COLUMN_ROWS_MINIMUM) {
+            if (currentTile.positionX === COLUMN_ROWS_MINIMUM) return true;
+        } else if (currentTile.positionY === COLUMN_ROWS_MINIMUM) {
+            return true;
+        }
+        return false;
+    }
+
+    isBottomOrLeft(currentTile: Tile, orientation: string) {
+        if (orientation === 'h') {
+            if (currentTile.positionX === MAXIMUM_ROW_COLUMN) return true;
+        } else if (currentTile.positionY === MAXIMUM_ROW_COLUMN) {
             return true;
         }
         return false;

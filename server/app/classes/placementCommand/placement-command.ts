@@ -170,16 +170,19 @@ export class PlacementCommand {
         let word: Tile[] = [];
         const wordsFormed: Tile[][] = [];
         while (this.tileContainsLetter(letterPositions, tile.positionX, tile.positionY, game)) {
-            if (game.gameBoard.isLastTile(tile, placementInformations.orientation)) break;
+            if (game.gameBoard.isTopOrRight(tile, placementInformations.orientation)) break;
             tile = game.gameBoard.nextTile(tile, placementInformations.orientation, true);
         }
-        if (!game.gameBoard.isLastTile(tile, placementInformations.orientation))
+        if (
+            !(
+                game.gameBoard.isTopOrRight(tile, placementInformations.orientation) &&
+                this.tileContainsLetter(letterPositions, tile.positionX, tile.positionY, game)
+            )
+        )
             tile = game.gameBoard.nextTile(tile, placementInformations.orientation, false);
-        word.push(tile);
-        tile = game.gameBoard.nextTile(tile, placementInformations.orientation, false);
         while (this.tileContainsLetter(letterPositions, tile.positionX, tile.positionY, game)) {
             word.push(tile);
-            if (game.gameBoard.isLastTile(tile, placementInformations.orientation)) break;
+            if (game.gameBoard.isBottomOrLeft(tile, placementInformations.orientation)) break;
             tile = game.gameBoard.nextTile(tile, placementInformations.orientation, false);
         }
         wordsFormed.push(word);
@@ -187,17 +190,20 @@ export class PlacementCommand {
         for (const letter of letterPositions) {
             tile = letter;
             while (this.tileContainsLetter(letterPositions, tile.positionX, tile.positionY, game)) {
-                if (game.gameBoard.isLastTile(tile, secondValidationOrientation)) break;
+                if (game.gameBoard.isTopOrRight(tile, secondValidationOrientation)) break;
                 tile = game.gameBoard.nextTile(tile, secondValidationOrientation, true);
             }
-            if (!game.gameBoard.isLastTile(tile, secondValidationOrientation)) {
+            if (
+                !(
+                    game.gameBoard.isTopOrRight(tile, secondValidationOrientation) &&
+                    this.tileContainsLetter(letterPositions, tile.positionX, tile.positionY, game)
+                )
+            ) {
                 tile = game.gameBoard.nextTile(tile, secondValidationOrientation, false);
             }
-            word.push(tile);
-            tile = game.gameBoard.nextTile(tile, secondValidationOrientation, false);
             while (this.tileContainsLetter(letterPositions, tile.positionX, tile.positionY, game)) {
                 word.push(tile);
-                if (game.gameBoard.isLastTile(tile, secondValidationOrientation)) break;
+                if (game.gameBoard.isBottomOrLeft(tile, secondValidationOrientation)) break;
                 tile = game.gameBoard.nextTile(tile, secondValidationOrientation, false);
             }
             wordsFormed.push(word);
