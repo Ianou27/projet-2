@@ -115,11 +115,15 @@ export class SocketManager {
                     }
                 } else {
                     const verification: string = this.gameManager.placeVerification(command, game);
-
+                    console.log(verification);
                     if (verification === 'valide') {
                         const message = this.gameManager.placeWord(command, game);
                         if (message !== 'placer') {
-                            this.sio.to(socket.id).emit('commandValidated', message);
+                            if (game.player1.user.id === socket.id) {
+                                this.sio.to(socket.id).emit('commandValidated', message, game.gameBoard.cases, game.player1.letters);
+                            } else {
+                                this.sio.to(socket.id).emit('commandValidated', message, game.gameBoard.cases, game.player2.letters);
+                            }
                         } else {
                             this.sio
                                 .to(currentRoom)
@@ -144,11 +148,11 @@ export class SocketManager {
                                 this.sio.to(currentRoom).emit('updatePoint', 'player2', game.player2.points);
                             }
                         }
-                    } else {
+                    } else if (verification !== 'valide') {
                         if (game.player1.user.id === socket.id) {
-                            this.sio.to(socket.id).emit('commandValidated', verification, game.gameBoard.cases, game.player1.getLetters());
+                            this.sio.to(socket.id).emit('commandValidated', verification, game.gameBoard.cases, game.player1.letters);
                         } else {
-                            this.sio.to(socket.id).emit('commandValidated', verification, game.gameBoard.cases, game.player2.getLetters());
+                            this.sio.to(socket.id).emit('commandValidated', verification, game.gameBoard.cases, game.player2.letters);
                         }
                     }
                 }
