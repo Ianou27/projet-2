@@ -7,7 +7,7 @@ import { Service } from 'typedi';
 // CHANGE the URL for your database information
 const DATABASE_URL = 'mongodb+srv://riad:tpUUYHQYgUZuXvgY@cluster0.pwwqd.mongodb.net/DataBase?retryWrites=true&w=majority';
 const DATABASE_NAME = 'DataBase';
-const DATABASE_COLLECTION_CLASSIC = 'bestScoreClassique';
+const DATABASE_COLLECTION_CLASSIC = 'bestScoreClassic';
 const DATABASE_COLLECTION_LOG = 'bestScoreLog2990';
 @Service()
 export class DatabaseService {
@@ -83,7 +83,7 @@ export class DatabaseService {
         return await this.db.collection(DATABASE_COLLECTION_LOG).find().sort({ score: -1 }).toArray();
     }
 
-    async updateBesScoreClassique(score: BestScore) {
+    async updateBesScoreClassic(score: BestScore) {
         const db = await this.db.collection(DATABASE_COLLECTION_CLASSIC).find().sort({ score: -1 }).toArray();
         let index = -1;
         for (let i = 0; i < 5; i++) {

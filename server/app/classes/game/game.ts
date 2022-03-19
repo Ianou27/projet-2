@@ -157,14 +157,14 @@ export class Game {
     async surrender(winner: string) {
         await this.databaseService.start();
         if(winner === this.player1.user.username){
-            await this.databaseService.updateBesScoreClassique({
+            await this.databaseService.updateBesScoreClassic({
                 player: this.player1.user.username,
                 score: this.player1.points,
             });
         }
 
         else if(winner === this.player2.user.username){
-            await this.databaseService.updateBesScoreClassique({
+            await this.databaseService.updateBesScoreClassic({
                 player: this.player2.user.username,
                 score: this.player2.points,
             });
@@ -251,14 +251,14 @@ export class Game {
             }
         }
         await this.databaseService.start();
-        await this.databaseService.updateBesScoreClassique({
+        await this.databaseService.updateBesScoreClassic({
             player: this.player1.user.username,
             score: this.player1.points,
         });
         
 
         if (!this.player2.hisBot) {
-            await this.databaseService.updateBesScoreClassique({
+            await this.databaseService.updateBesScoreClassic({
                 player: this.player2.user.username,
                 score: this.player2.points,
             });
