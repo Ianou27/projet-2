@@ -24,7 +24,8 @@ export class ChatService {
     informationToJoin: InfoToJoin;
     gotAccepted: boolean = false;
     gotRefused: boolean = false;
-    bestClassiqueScores: unknown[] = [];
+    bestClassicScores: unknown[] = [];
+    bestLog2990Scores: unknown[] = [];
     myTurn: boolean = true;
     player1Point: number = 0;
     player2Point: number = 0;
@@ -116,10 +117,16 @@ export class ChatService {
             this.playerJoined = didJoin;
         });
 
-        this.socketService.on('getBestScoreClassique', (scores: unknown[]) => {
-            this.bestClassiqueScores = scores;
-            console.log(this.bestClassiqueScores);
+        this.socketService.socket.on('getBestScore', (scoresClassic: unknown[],scoresLog: unknown[]) => {
+            this.bestClassicScores = scoresClassic;
+            this.bestLog2990Scores = scoresLog;
         });
+
+        this.socketService.on('getBestScoreLog', (scores: unknown[]) => {
+         
+            
+        });
+
 
         this.socketService.on('joining', (obj: InfoToJoin) => {
             this.gotAccepted = true;
@@ -176,8 +183,8 @@ export class ChatService {
     disconnect() {
         this.socketService.socket.emit('forceDisconnect');
     }
-    async getClassiqueScores() {
-        this.socketService.socket.emit('getBestScoreClassique');
+    async getScores() {
+        this.socketService.socket.emit('getBestScore');
     }
 
     createRoom(username: string, room: string, time: string) {

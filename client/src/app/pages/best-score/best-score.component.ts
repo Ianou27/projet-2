@@ -12,7 +12,7 @@ export class BestScoreComponent {
 
     constructor(public waitDialog: MatDialog, public chatService: ChatService) {
         this.chatService.connect();
-        this.chatService.getClassiqueScores();
+        this.chatService.getScores();
     }
 
     goHome() {

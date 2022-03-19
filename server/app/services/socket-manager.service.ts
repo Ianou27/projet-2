@@ -189,14 +189,17 @@ export class SocketManager {
                 socket.disconnect();
             });
 
-            socket.on('getBestScoreClassique', async () => {
+            socket.on('getBestScore', async () => {
                 try {
                     await this.databaseService.start();
                     console.log('Database connection successful !');
-                    this.sio.to(socket.id).emit('getBestScoreClassique', await this.databaseService.BestScoreClassique());
+                    this.sio.to(socket.id).emit('getBestScore', await this.databaseService.bestScoreClassic(),await this.databaseService.bestScoreLog());
                 } catch {
                     console.error('Database connection failed !');
-                    this.sio.to(socket.id).emit('getBestScoreClassique', [{
+                    this.sio.to(socket.id).emit('getBestScore', [{
+                        player: 'Can not access to DB',
+                        score: 'ERROR',
+                    }],[{
                         player: 'Can not access to DB',
                         score: 'ERROR',
                     }]);
