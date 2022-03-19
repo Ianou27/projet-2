@@ -269,7 +269,7 @@ export class SocketManager {
 
                 if (room !== '') {
                     const game = this.identification.getGame(socket.id);
-                    if (game.player2 !== undefined) game.surrender(this.identification.surrender(socket.id));
+                    if (game.player2 !== undefined && !game.gameState.gameFinished) game.surrender(this.identification.surrender(socket.id));
 
                     socket.leave(room);
                     this.roomManager.deleteRoom(socket.id, this.identification);
