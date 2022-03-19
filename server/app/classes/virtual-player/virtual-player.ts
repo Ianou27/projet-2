@@ -3,7 +3,7 @@ import { letterValue } from '@common/assets/reserve-letters';
 import { INDEX_OF_NOT_FOUND, MAXIMUM_ROW_COLUMN } from '@common/constants/general-constants';
 import { Tile } from '@common/tile/Tile';
 import * as fs from 'fs';
-import { rowLetter } from './../../../assets/row';
+import { rowLetter } from '../../../../common/assets/row';
 import { Game } from './../game/game';
 import { PlacementCommand } from './../placementCommand/placement-command';
 
