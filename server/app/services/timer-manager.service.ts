@@ -23,6 +23,8 @@ export class Timer {
                 });
                 game.passTurn();
                 sio.to(game.player1.user.room).emit('modification', game.gameBoard.cases, game.playerTurn().name);
+                sio.to(game.player1.user.id).emit('tileHolder', game.player1.letters);
+                sio.to(game.player2.user.id).emit('tileHolder', game.player2.letters);
                 if (!game.gameState.gameFinished) this.timeLeft = this.timerMax;
             }
         }, ONE_SECOND_MS);

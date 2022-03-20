@@ -195,7 +195,11 @@ export class Game {
         this.gameState.passesCount++;
         this.verifyGameState();
         this.timer.reset();
-    }
+        this.sio.to(this.player1.user.room).emit('modification', this.gameBoard.cases, this.playerTurn().name);
+        this.sio.to(this.player1.user.id).emit('tileHolder', this.player1.letters);
+        this.sio.to(this.player2.user.id).emit('tileHolder', this.player2.letters);
+    }   
+    
 
     actionVirtualBeginnerPlayer(probability: number): string[] {
         if (probability <= 10) {
