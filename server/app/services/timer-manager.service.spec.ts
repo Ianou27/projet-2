@@ -67,13 +67,6 @@ describe('IdManager tests', () => {
         done();
     });
 
-    it('start should call getUsername and getRoom', () => {
-        const userSpy = sinon.spy(idManager, 'getUsername');
-        const roomSpy = sinon.spy(idManager, 'getRoom');
-        timer.start(game, sio);
-        assert(userSpy.called);
-        assert(roomSpy.called);
-    });
 
     it('reset should set time left to 60', () => {
         timer.reset();
