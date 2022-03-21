@@ -83,7 +83,6 @@ export class RoomManager {
                 }
             }
         });
-        console.log(identification.users);
 
         return tiles;
     }

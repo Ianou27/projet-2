@@ -1,3 +1,4 @@
+import { Game } from '@app/classes/game/game';
 import { RoomManager } from '@app/services/room-manager.service';
 import { Room, User } from '@common/types';
 import { assert, expect } from 'chai';
@@ -31,37 +32,46 @@ describe('Room Manager tests', () => {
         sinon.restore();
     });
 
-    it('should join a room and set player2 name if player2 name length is 0', () => {
-        const username = 'player2';
-        const socketId = 'id';
-        const room: Room = {
-            player1: 'player1',
+    it('should  join Game', () => {
+        let game = new Game();
+        game.player1Join({ username: 'rt', id: '1', room: 'room1' }, '60', databaseService);
+        let room:Room ={
+            player1: 'rt',
             player2: '',
-            time: '60',
-        };
-        const room2: Room = {
-            player1: 'username',
-            player2: 'player2Test',
-            time: '60',
-        };
+            time:'60',
+        }
+        sinon.replace(idManager, 'getGame', () => {return game});
+        sinon.replace(game, 'startGame', () => {});
         idManager.rooms.push(room);
-        idManager.rooms.push(room2);
-        roomManager.joinRoom(username, room, socketId, idManager, sio);
-        expect(room.player2).to.equal(username);
+        roomManager.joinRoom('rta', room,'12',idManager,sio);
+        
+        expect(idManager.rooms[0].player2).to.equal('rta');
     });
 
-    it('should join a room', () => {
-        const username = 'username';
-        const socketId = 'id';
-        const room: Room = {
-            player1: 'player1',
-            player2: '',
-            time: '60',
-        };
-        idManager.rooms.push(room);
-        roomManager.joinRoom(username, room, socketId, idManager, sio);
+    it('convertMultiToSolo should call create SoloGame', () => {
+        sinon.replace(idManager, 'getGame', () => { 
+            let game =new Game()
+            game.player1Join({ username: 'rt', id: '1', room: 'room1' }, '60', databaseService);
+
+            return game });
+        sinon.replace(roomManager, 'cancelCreation', () => { });
+        sinon.replace(roomManager, 'createSoloGame', () => { });
+        const getUserSpy = sinon.spy(roomManager, 'convertMultiToSolo');
+        roomManager.convertMultiToSolo('test', idManager,sio,databaseService);
+        assert(getUserSpy.called);
+    });
+  
+    it('should   create SoloGame and call startSoloGame', () => {
+      
+       
+        roomManager.createSoloGame('username', '1234',idManager,sio,'30',databaseService,'botName');
+        
+        expect(idManager.games.length).to.equal(1);
     });
 
+    
+
+    
     it('cancelCreation should call getUsername', () => {
         const getUserSpy = sinon.stub(idManager, 'getUsername');
         roomManager.cancelCreation('test', idManager);
@@ -152,4 +162,6 @@ describe('Room Manager tests', () => {
         assert(usersSpy.called);
         assert(roomsSpy.called);
     });
+
+    
 });
