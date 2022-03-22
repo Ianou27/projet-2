@@ -1,16 +1,18 @@
 import { Application } from '@app/app';
+import { BASE_DIX } from '@common/constants/general-constants';
 import * as http from 'http';
 import { AddressInfo } from 'net';
 import { Service } from 'typedi';
-import { SocketManager } from './services/socketManager.service';
+import { DatabaseService } from './services/best-score.services';
+import { SocketManager } from './services/socket-manager.service';
 
 @Service()
 export class Server {
     private static readonly appPort: string | number | boolean = Server.normalizePort(process.env.PORT || '3000');
-    private static readonly baseDix: number = 10;
+    private static readonly baseDix: number = BASE_DIX;
     private server: http.Server;
     private socketManger: SocketManager;
-    constructor(private readonly application: Application) {}
+    constructor(private readonly application: Application, private readonly databaseService: DatabaseService) {}
 
     private static normalizePort(val: number | string): number | string | boolean {
         const port: number = typeof val === 'string' ? parseInt(val, this.baseDix) : val;
@@ -22,12 +24,12 @@ export class Server {
             return false;
         }
     }
-    init(): void {
+    async init(): Promise<void> {
         this.application.app.set('port', Server.appPort);
 
         this.server = http.createServer(this.application.app);
 
-        this.socketManger = new SocketManager(this.server);
+        this.socketManger = new SocketManager(this.server, this.databaseService);
         this.socketManger.handleSockets();
 
         this.server.listen(Server.appPort);

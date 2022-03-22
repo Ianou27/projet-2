@@ -8,7 +8,7 @@ import { environment } from 'src/environments/environment';
 export class SocketClientService {
     socket: Socket;
 
-    isSocketAlive() {
+    isSocketAlive(): boolean {
         return this.socket && this.socket.connected;
     }
 

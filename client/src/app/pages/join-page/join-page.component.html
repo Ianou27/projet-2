@@ -1,19 +1,10 @@
 <div class="container justified">
-    <a
-        mat-fab
-        mat-dialog-close
-        color="primary"
-        matTooltip="Retourner à la page d'accueil"
-        matTooltipPosition="right"
-        id="tooltip"
-        href="/home"
-        (click)="goHome()"
-    >
+    <a mat-fab color="primary" matTooltip="Retourner à la page d'accueil" matTooltipPosition="right" id="tooltip" href="/home" (click)="goHome()">
         <mat-icon style="transform: rotate(180deg)">exit_to_app</mat-icon>
     </a>
     <mat-tab-group mat-stretch-tabs>
-        <mat-tab label="Partie solo (Prochainement)">
-            <div mat-dialog-content [formGroup]="form" class="dialog">
+        <mat-tab label="Partie solo">
+            <mat-dialog-content [formGroup]="form" class="dialog">
                 <div>
                     <form [formGroup]="form">
                         <mat-card-content>
@@ -37,36 +28,48 @@
                         </mat-card-content>
                         <h2>Minuterie</h2>
                         <mat-form-field class="center">
-                            <mat-select [(value)]="selectedTime" placeholder="Temps">
-                                <mat-option value="1">1</mat-option>
+                            <mat-select [(value)]="selectedTime" placeholder="Temps (minutes)">
+                                <mat-option *ngFor="let timer of time" [value]="timer.value">
+                                    {{ timer.text }}
+                                </mat-option>
                             </mat-select>
                         </mat-form-field>
-                        <h2>Dictionnaire:</h2>
-                        <mat-form-field class="center">
-                            <mat-select [(value)]="selectedDico" placeholder="Choisir un dictionnaire">
-                                <mat-option value="Dictionnaire par defaut">Dictionnaire par defaut</mat-option>
-                                <mat-option value="Dictionnaire 2" disabled>Dictionnaire 2 (Indisponible)</mat-option>
-                            </mat-select>
-                        </mat-form-field>
+                        <h2>Dictionnaire et niveau du joueur virtuel:</h2>
+                        <td>
+                            <mat-form-field appearance="fill">
+                                <mat-select [(value)]="selectedDico" placeholder="Choisir un dictionnaire">
+                                    <mat-option value="Dictionnaire par defaut">Dictionnaire par defaut</mat-option>
+                                    <mat-option value="Dictionnaire 2" disabled>Dictionnaire 2 (Indisponible)</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </td>
+                        <td>
+                            <mat-form-field appearance="fill">
+                                <mat-select [(value)]="selectedPlayer" placeholder="Difficulté du joueur virtuel :">
+                                    <mat-option value="Joueur débutant">Joueur débutant</mat-option>
+                                    <mat-option value="Joueur expert" disabled>Joueur expert (Indisponible)</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </td>
                     </form>
                     <div mat-dialog-actions id="confirm-button">
                         <button
-                            (click)="createRoom()"
+                            (click)="createSoloGame()"
                             mat-raised-button
                             color="primary"
                             [mat-dialog-close]
                             cdkFocusInitial
                             mat-dialog-close="true"
-                            disabled
+                            [disabled]="form.invalid"
                         >
                             Confirmer
                         </button>
                     </div>
                 </div>
-            </div>
+            </mat-dialog-content>
         </mat-tab>
         <mat-tab label="Créer une partie multijoueur">
-            <div mat-dialog-content [formGroup]="form" class="dialog">
+            <mat-dialog-content [formGroup]="form" class="dialog">
                 <div>
                     <form [formGroup]="form">
                         <mat-card-content>
@@ -82,8 +85,10 @@
                         </mat-card-content>
                         <h2>Minuterie</h2>
                         <mat-form-field>
-                            <mat-select [(value)]="selectedTime" placeholder="Temps">
-                                <mat-option value="1">1</mat-option>
+                            <mat-select [(value)]="selectedTime" placeholder="Temps (minutes)">
+                                <mat-option *ngFor="let timer of time" [value]="timer.value">
+                                    {{ timer.text }}
+                                </mat-option>
                             </mat-select>
                         </mat-form-field>
                         <h2>Dictionnaire:</h2>
@@ -100,7 +105,7 @@
                         </button>
                     </div>
                 </div>
-            </div>
+            </mat-dialog-content>
         </mat-tab>
         <mat-tab label="Joindre une partie">
             <mat-toolbar>
@@ -110,9 +115,25 @@
                 </marquee>
             </mat-toolbar>
             <div>
+                <div *ngIf="this.chatService.allRooms.length !== 0" class="spaceButton">
+                    <button mat-raised-button color="primary" [disabled]="this.chatService.allRooms.length === 1" (click)="randomJoin()">
+                        Placement aléatoire
+                    </button>
+                    <!-- <a
+                        mat-fab
+                        color="primary"
+                        matTooltip="Placement aléatoire"
+                        matTooltipPosition="right"
+                        [disabled]="this.chatService.allRooms.length === 1"
+                        (click)="randomJoin()"
+                    >
+                        <mat-icon>sync</mat-icon>
+                    </a> -->
+                </div>
+
                 <mat-accordion *ngFor="let room of this.chatService.allRooms" multi>
                     <div *ngIf="room.player2 === ''">
-                        <mat-expansion-panel>
+                        <mat-expansion-panel [expanded]="selectedRoomName === room.player1">
                             <mat-expansion-panel-header>
                                 <mat-panel-title>
                                     <mat-icon>people</mat-icon>
@@ -122,7 +143,7 @@
                             </mat-expansion-panel-header>
                             <h3>Détails de la salle:</h3>
                             <p>Nom de l'adversaire: {{ room.player1 }}</p>
-                            <p>Durée des tours: 1 minute</p>
+                            <p>Durée des tours: {{ +room.time | formatTime }} minutes</p>
                             <p>Mode de jeu: classique</p>
                             <p>Dictionnaire: classique</p>
 
@@ -142,8 +163,7 @@
                                     (click)="openWaitToJoin()"
                                     mat-raised-button
                                     color="primary"
-                                    [disabled]="this.name === room.player1"
-                                    [disabled]="form.invalid"
+                                    [disabled]="form.invalid || this.name === room.player1"
                                     [mat-dialog-close]
                                     cdkFocusInitial
                                     mat-dialog-close="true"

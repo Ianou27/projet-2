@@ -1,5 +1,5 @@
 import { HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 import { BrowserModule } from '@angular/platform-browser';
@@ -22,6 +22,7 @@ import { WaitingPlayerDialogComponent } from './components/waiting-player-dialog
 import { WaitingPlayerTwoComponent } from './components/waiting-player-two/waiting-player-two.component';
 import { JoinPageComponent } from './pages/join-page/join-page.component';
 import { FormatTimePipe } from './pipes/format-time.pipe';
+import { BestScoreComponent } from './pages/best-score/best-score.component';
 
 /**
  * Main module that is used in main.ts.
@@ -48,10 +49,12 @@ import { FormatTimePipe } from './pipes/format-time.pipe';
         WaitingPlayerDialogComponent,
         WaitingPlayerTwoComponent,
         BoardComponent,
+        BestScoreComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule, MatDialogModule],
     providers: [],
     bootstrap: [AppComponent],
     entryComponents: [],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppModule {}

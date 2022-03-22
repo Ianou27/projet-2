@@ -1,4 +1,5 @@
 import { HttpException } from '@app/classes/http.exception';
+import { INTERNAL_ERROR } from '@common/constants/general-constants';
 import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
 import * as express from 'express';
@@ -7,7 +8,7 @@ import { Service } from 'typedi';
 @Service()
 export class Application {
     app: express.Application;
-    private readonly internalError: number = 500;
+    private readonly internalError: number = INTERNAL_ERROR;
 
     constructor() {
         this.app = express();
@@ -26,7 +27,7 @@ export class Application {
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
         this.app.use(cookieParser());
-        this.app.use(cors({origin:'*'}));
+        this.app.use(cors({ origin: '*' }));
     }
 
     private errorHandling(): void {

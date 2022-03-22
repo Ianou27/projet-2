@@ -1,8 +1,10 @@
-import { Game } from '../server/app/classes/game/game';
+import { Orientation } from './orientation';
+import { Tile } from './tile/Tile';
+
 export type Room = {
     player1: string;
     player2: string;
-    game: Game;
+    time: string;
 };
 
 export type InfoToJoin = {
@@ -16,9 +18,24 @@ export type User = {
     room: string;
 };
 
-export type Message ={
-    player:string
-    username: string
-    message:string
-
+export type Message = {
+    player: string;
+    username: string;
+    message: string;
 };
+
+export type BestScore = {
+    id?: string;
+    player: string;
+    score: number;
+};
+
+export interface TilePlacementPossible {
+    tile: Tile;
+    orientation: Orientation;
+}
+
+export interface PlacementScore {
+    score: number;
+    command: string;
+}

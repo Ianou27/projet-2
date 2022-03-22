@@ -1,11 +1,13 @@
+import { ClueCommand } from '@app/classes/clueCommand/clue-command';
+import { LetterScore } from './../../../common/assets/reserve-letters';
 import { MAXIMUM_CHARACTERS_MESSAGE } from './../../../common/constants/general-constants';
 import { ExchangeCommand } from './../classes/exchangeCommand/exchange-command';
 import { Game } from './../classes/game/game';
 import { PassCommand } from './../classes/passCommand/pass-command';
 import { PlacementCommand } from './../classes/placementCommand/placement-command';
+import { ReserveCommand } from './../classes/reserveCommand/reserve-command';
 
 export class GameManager {
-    private commandsList: string[] = ['!placer', '!echanger', '!passer', '!indice'];
     placeWord(command: string[], game: Game): string {
         let message = 'placer';
         if (!PlacementCommand.placeWord(command, game)) {
@@ -15,44 +17,48 @@ export class GameManager {
         return message;
     }
 
+    clueCommandValid(command: string[]): boolean {
+        return ClueCommand.verifyFormat(command);
+    }
+
+    reserveCommandValid(command: string[]): boolean {
+        return ReserveCommand.verifyFormat(command);
+    }
+
+    reserve(game: Game): LetterScore {
+        return ReserveCommand.reserve(game.reserveLetters.letters);
+    }
+
     pass(game: Game) {
-        PassCommand.passTurn(game);
+        if (!game.gameState.gameFinished) game.passTurn();
     }
 
     exchange(command: string[], game: Game) {
-        ExchangeCommand.exchangeLetters(command, game);
+        game.exchangeLetters(command);
+        game.timer.reset();
     }
 
     placeBoardValid(command: string[], game: Game): boolean {
         return PlacementCommand.validatedPlaceCommandBoard(command, game);
     }
 
-    passCommandValid(command: string[]) {
+    passCommandValid(command: string[]): boolean {
         return PassCommand.validatedPassCommandFormat(command);
     }
 
-    commandVerification(message: string): boolean {
-        for (const command of this.commandsList) {
-            if (command === message) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    placeFormatValid(command: string[]) {
+    placeFormatValid(command: string[]): boolean {
         return PlacementCommand.validatedPlaceCommandFormat(command);
     }
 
-    exchangeFormatValid(command: string[]) {
+    exchangeFormatValid(command: string[]): boolean {
         return ExchangeCommand.validatedExchangeCommandFormat(command);
     }
 
-    exchangeTileHolderValid(command: string[], game: Game) {
+    exchangeTileHolderValid(command: string[], game: Game): boolean {
         return ExchangeCommand.validatedExchangeCommandBoard(command, game);
     }
 
-    lengthVerification(message: string) {
+    lengthVerification(message: string): boolean {
         return message.length > MAXIMUM_CHARACTERS_MESSAGE ? false : true;
     }
 
@@ -94,5 +100,14 @@ export class GameManager {
             message = 'Format non valide';
         }
         return message;
+    }
+
+    formatClueCommand(game: Game): string[] {
+        const clues = ClueCommand.findClues(game);
+        const text: string[] = ['Possibilités de placements'];
+        for (const clue of clues) {
+            text.push(clue.command + ' pour ' + clue.score.toString() + ' points');
+        }
+        return text;
     }
 }

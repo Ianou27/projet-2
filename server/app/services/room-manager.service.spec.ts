@@ -1,17 +1,18 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import { Game } from '@app/classes/game/game';
-import { RoomManager } from '@app/services/roomManager.service';
+import { RoomManager } from '@app/services/room-manager.service';
 import { Room, User } from '@common/types';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
 import * as io from 'socket.io';
-import { GameManager } from './game-manager.service';
-import { IdManager } from './idManager.service';
+import { DatabaseService } from './best-score.services';
+import { IdManager } from './id-manager.service';
 
-describe('IdManager tests', () => {
+describe('Room Manager tests', () => {
     const roomManager = new RoomManager();
     const idManager = new IdManager();
-    const gameManager = new GameManager();
     const sio = new io.Server();
+    const databaseService: DatabaseService = new DatabaseService();
 
     beforeEach(() => {
         const user: User = {
@@ -32,37 +33,42 @@ describe('IdManager tests', () => {
         sinon.restore();
     });
 
-    it('should join a room and set player2 name if player2 name length is 0', () => {
-        const testGame = new Game();
-        const username = 'player2';
-        const socketId = 'id';
+    it('should  join Game', () => {
+        const game = new Game();
+        game.player1Join({ username: 'rt', id: '1', room: 'room1' }, '60', databaseService);
         const room: Room = {
-            player1: 'player1',
+            player1: 'rt',
             player2: '',
-            game: testGame,
+            time: '60',
         };
-        const room2: Room = {
-            player1: 'username',
-            player2: 'player2Test',
-            game: testGame,
-        };
+        sinon.replace(idManager, 'getGame', () => {
+            return game;
+        });
+        sinon.replace(game, 'startGame', () => {});
         idManager.rooms.push(room);
-        idManager.rooms.push(room2);
-        roomManager.joinRoom(username, room, socketId, idManager, sio, gameManager);
-        expect(room.player2).to.equal(username);
+        roomManager.joinRoom('rta', room, '12', idManager, sio);
+
+        expect(idManager.rooms[0].player2).to.equal('rta');
     });
 
-    it('should join a room', () => {
-        const testGame = new Game();
-        const username = 'username';
-        const socketId = 'id';
-        const room: Room = {
-            player1: 'player1',
-            player2: '',
-            game: testGame,
-        };
-        idManager.rooms.push(room);
-        roomManager.joinRoom(username, room, socketId, idManager, sio, gameManager);
+    it('convertMultiToSolo should call create SoloGame', () => {
+        sinon.replace(idManager, 'getGame', () => {
+            const game = new Game();
+            game.player1Join({ username: 'rt', id: '1', room: 'room1' }, '60', databaseService);
+
+            return game;
+        });
+        sinon.replace(roomManager, 'cancelCreation', () => {});
+        sinon.replace(roomManager, 'createSoloGame', () => {});
+        const getUserSpy = sinon.spy(roomManager, 'convertMultiToSolo');
+        roomManager.convertMultiToSolo('test', idManager, sio, databaseService);
+        assert(getUserSpy.called);
+    });
+
+    it('should   create SoloGame and call startSoloGame', () => {
+        roomManager.createSoloGame('username', '1234', idManager, sio, '30', databaseService, 'botName');
+
+        expect(idManager.games.length).to.equal(1);
     });
 
     it('cancelCreation should call getUsername', () => {
@@ -72,12 +78,11 @@ describe('IdManager tests', () => {
     });
 
     it('should cancel creation and deleteRoom', () => {
-        const testGame = new Game();
         const socketId = 'id';
         const room: Room = {
             player1: 'username',
             player2: '',
-            game: testGame,
+            time: '60',
         };
         idManager.rooms.push(room);
         const deleteSpy = sinon.stub(roomManager, 'deleteRoom');
@@ -86,24 +91,22 @@ describe('IdManager tests', () => {
     });
 
     it('should delete room', () => {
-        const testGame = new Game();
         const socketId = 'id';
         const room: Room = {
             player1: '-2',
             player2: 'username',
-            game: testGame,
+            time: '60',
         };
         idManager.rooms.push(room);
         roomManager.deleteRoom(socketId, idManager);
     });
 
     it('deleteRoom should set player1 to -2 if player2 = username and player1 is different than -2', () => {
-        const testGame = new Game();
         const socketId = 'id';
         const room: Room = {
             player1: 'test',
             player2: 'username',
-            game: testGame,
+            time: '60',
         };
         idManager.rooms.push(room);
         roomManager.deleteRoom(socketId, idManager);
@@ -111,13 +114,12 @@ describe('IdManager tests', () => {
     });
 
     it('should delete room if there is no player2', () => {
-        const testGame = new Game();
         const spliceSpy = sinon.stub(idManager.rooms, 'splice');
         const socketId = 'id';
         const room: Room = {
             player1: 'username',
             player2: '',
-            game: testGame,
+            time: '60',
         };
         idManager.rooms.push(room);
         roomManager.deleteRoom(socketId, idManager);
@@ -125,13 +127,12 @@ describe('IdManager tests', () => {
     });
 
     it('should delete room if player2 = -2', () => {
-        const testGame = new Game();
         const spliceSpy = sinon.stub(idManager.rooms, 'splice');
         const socketId = 'id';
         const room: Room = {
             player1: 'username',
             player2: '-2',
-            game: testGame,
+            time: '60',
         };
         idManager.rooms.push(room);
         roomManager.deleteRoom(socketId, idManager);
@@ -139,12 +140,11 @@ describe('IdManager tests', () => {
     });
 
     it('deleteRoom should set player1 to -2 if player1 = username and player2 is in room', () => {
-        const testGame = new Game();
         const socketId = 'id';
         const room: Room = {
             player1: 'username',
             player2: 'player2',
-            game: testGame,
+            time: '60',
         };
         idManager.rooms.push(room);
         roomManager.deleteRoom(socketId, idManager);
@@ -157,7 +157,7 @@ describe('IdManager tests', () => {
         const socketId = 'id';
         const usersSpy = sinon.spy(idManager.users, 'push');
         const roomsSpy = sinon.spy(idManager.rooms, 'push');
-        roomManager.createRoom(username, room, socketId, idManager);
+        roomManager.createRoom(username, room, socketId, idManager, '60', databaseService);
         assert(usersSpy.called);
         assert(roomsSpy.called);
     });

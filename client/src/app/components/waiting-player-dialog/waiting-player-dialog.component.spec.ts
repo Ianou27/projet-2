@@ -1,3 +1,4 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { JoinPageComponent } from '@app/pages/join-page/join-page.component';
@@ -24,6 +25,7 @@ describe('WaitingPlayerDialogComponent', () => {
                     },
                 },
             ],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
     });
 
@@ -62,5 +64,14 @@ describe('WaitingPlayerDialogComponent', () => {
         component.deny();
         expect(component.chatService.playerJoined).toBeFalsy();
         expect(refusedSpy).toHaveBeenCalled();
+    });
+
+    it('convertToSolo() should call convertToSoloGame() in the chatService and close all dialogs', () => {
+        // eslint-disable-next-line dot-notation
+        const closeSpy = spyOn(component['multiplayerDialog'], 'closeAll');
+        const refusedSpy = spyOn(component.chatService, 'convertToSoloGame');
+        component.convertToSolo();
+        expect(refusedSpy).toHaveBeenCalled();
+        expect(closeSpy).toHaveBeenCalled();
     });
 });

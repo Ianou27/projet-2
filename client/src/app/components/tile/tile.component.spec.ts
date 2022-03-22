@@ -1,3 +1,4 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TileComponent } from './tile.component';
 
@@ -8,6 +9,7 @@ describe('TileComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [TileComponent],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
     });
 
@@ -24,10 +26,7 @@ describe('TileComponent', () => {
     it('tile with no letter should not be visible and assign with class tileEmpty', () => {
         component.letter = '';
         fixture.detectChanges();
-    });
-
-    it('disable not set to a value should not disabled the button ', () => {
-        component.letter = 'A';
-        fixture.detectChanges();
+        const comp = fixture.debugElement.nativeElement.children[0].className;
+        expect(comp).toEqual('tileEmpty');
     });
 });

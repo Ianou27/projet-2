@@ -28,4 +28,9 @@ export class WaitingPlayerDialogComponent {
         this.chatService.playerJoined = false;
         this.chatService.refused();
     }
+
+    convertToSolo() {
+        this.chatService.convertToSoloGame();
+        this.multiplayerDialog.closeAll();
+    }
 }

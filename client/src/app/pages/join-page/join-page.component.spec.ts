@@ -1,7 +1,9 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { WaitingPlayerDialogComponent } from '@app/components/waiting-player-dialog/waiting-player-dialog.component';
 import { WaitingPlayerTwoComponent } from '@app/components/waiting-player-two/waiting-player-two.component';
+import { Room } from './../../../../../common/types';
 import { JoinPageComponent } from './join-page.component';
 
 describe('JoinPageComponent', () => {
@@ -25,6 +27,7 @@ describe('JoinPageComponent', () => {
                     },
                 },
             ],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
     });
 
@@ -54,12 +57,29 @@ describe('JoinPageComponent', () => {
         });
     });
 
+    it('randomJoin() should change the attribute selectedRoomName to a random room of chatService', () => {
+        const room: Room = {
+            player1: 'player1',
+            player2: 'player2',
+            time: '60',
+        };
+        component.chatService.allRooms = [room];
+        component.randomJoin();
+        expect(component.selectedRoomName).toBe(room.player1);
+    });
+
     it('createRoom() should create a room and open the dialog for the player that created the room', () => {
         const dialogMethodSpy = spyOn(component, 'openWait');
         const createSpy = spyOn(component.chatService, 'createRoom');
         component.createRoom();
         expect(dialogMethodSpy).toHaveBeenCalled();
         expect(createSpy).toHaveBeenCalled();
+    });
+
+    it('createSoloGame() should call the method createSoloGame from chatService', () => {
+        const createSoloGameSpy = spyOn(component.chatService, 'createSoloGame');
+        component.createSoloGame();
+        expect(createSoloGameSpy).toHaveBeenCalled();
     });
 
     it('goHome() should close the dialog', () => {

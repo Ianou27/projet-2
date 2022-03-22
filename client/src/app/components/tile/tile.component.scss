@@ -1,8 +1,10 @@
 .tile {
+    position: relative;
     z-index: 1;
-    height: 50px;
-    width: 50px;
-    border-radius: 4px;
+    margin: 1px;
+    height: 48px;
+    width: 48px;
+    border-radius: 5px;
     background-color: #f7d8b5;
     display: grid;
     grid-template-rows: 20px 10px;
@@ -21,8 +23,8 @@
     font-family: 'Courier New';
     font-weight: bold;
     position: relative;
-    top: 5px;
-    left: 15px;
+    display: flex;
+    justify-content: center;
 }
 
 .tileEmpty {
@@ -34,6 +36,49 @@
     grid-template-rows: 20px 10px;
 }
 
+.tileEmptyHorizontal {
+    z-index: 1;
+    height: 50px;
+    width: 50px;
+    border-radius: 4px;
+    display: grid;
+    grid-template-rows: 20px 10px;
+    box-shadow: inset 0 0 0 3px red;
+}
+
+#arrow-right::after {
+    z-index: 1;
+    position: relative;
+    content: '⌵';
+    transform: rotate(-90deg);
+    height: 40px;
+    width: 40px;
+    text-align: center;
+    left: 20%;
+    font-size: 250%;
+}
+
+.tileEmptyVertical {
+    z-index: 1;
+    height: 50px;
+    width: 50px;
+    border-radius: 4px;
+    display: grid;
+    grid-template-rows: 20px 10px;
+    box-shadow: inset 0 0 0 3px green;
+}
+
+#arrow-down::after {
+    z-index: 1;
+    position: relative;
+    content: '⌵';
+    height: 40px;
+    width: 40px;
+    text-align: center;
+    top: 50%;
+    font-size: 250%;
+}
+
 .tileBlankLetter {
     z-index: 1;
     height: 50px;
@@ -43,4 +88,26 @@
     display: grid;
     grid-template-rows: 20px 10px;
     color: firebrick;
+}
+
+.selected {
+    z-index: 1;
+    height: 50px;
+    width: 50px;
+    border-radius: 4px;
+    background-color: #f7d8b5;
+    display: grid;
+    grid-template-rows: 20px 10px;
+    box-shadow: inset 0 0 0 3px red;
+}
+
+.selected-reserve {
+    z-index: 1;
+    height: 50px;
+    width: 50px;
+    border-radius: 4px;
+    background-color: #f7d8b5;
+    display: grid;
+    grid-template-rows: 20px 10px;
+    box-shadow: inset 0 0 0 3px blueviolet;
 }
