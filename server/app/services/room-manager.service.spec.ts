@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import { Game } from '@app/classes/game/game';
 import { RoomManager } from '@app/services/room-manager.service';
 import { Room, User } from '@common/types';

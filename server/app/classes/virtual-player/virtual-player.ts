@@ -22,6 +22,7 @@ import { Tile } from '@common/tile/Tile';
 import { PlacementScore, TilePlacementPossible } from '@common/types';
 import * as fs from 'fs';
 import { rowLetter } from './../../../../common/assets/row';
+import { CommandType } from './../../../../common/command-type';
 import { Game } from './../game/game';
 import { PlacementCommand } from './../placementCommand/placement-command';
 
@@ -82,7 +83,7 @@ export class VirtualPlayer {
             try {
                 let wordWithoutLetter = word;
                 let tileStart = placement.tile;
-                let command = '!placer ';
+                let command = CommandType.place + ' ';
                 if (!game.gameState.firstTurn) {
                     for (let i = 0; i < word.indexOf(placement.tile.letter.toLowerCase()); i++) {
                         tileStart = game.gameBoard.nextTile(tileStart, placement.orientation, true);
@@ -165,7 +166,7 @@ export class VirtualPlayer {
     }
 
     static findPlacementScoreRange(minScore: number, maxScore: number, commandPlacements: PlacementScore[]): string {
-        if (commandPlacements.length === 0) return '!passer';
+        if (commandPlacements.length === 0) return CommandType.pass;
         for (const commandPlacement of commandPlacements) {
             if (minScore < commandPlacement.score && commandPlacement.score < maxScore) return commandPlacement.command;
         }
@@ -252,10 +253,10 @@ export class VirtualPlayer {
 
     static exchangeLettersCommand(game: Game): string[] {
         if (game.reserveLetters.letters.length === 0) {
-            return '!passer'.split(' ');
+            return CommandType.place.split(' ');
         }
         const virtualPlayerLetters = game.playerTurn().lettersToStringArray();
-        let command = '!échanger ';
+        let command = CommandType.exchange + ' ';
 
         const letters = virtualPlayerLetters
             .sort(() => Math.random() - Math.random())

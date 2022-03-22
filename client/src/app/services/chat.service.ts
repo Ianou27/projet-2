@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { LetterScore } from './../../../../common/assets/reserve-letters';
-import { CommandType } from './../../../../common/command';
+import { CommandType } from './../../../../common/command-type';
+import { NUMBER_MAXIMUM_CLUE_COMMAND } from './../../../../common/constants/general-constants';
 import { Tile } from './../../../../common/tile/Tile';
 import { InfoToJoin, Message, Room } from './../../../../common/types';
 import { INITIAL_NUMBER_LETTERS_RESERVE, NUMBER_LETTER_TILEHOLDER } from './../constants/general-constants';
@@ -91,7 +92,8 @@ export class ChatService {
         });
 
         this.socketService.on('cluesMessage', (clues: string[]) => {
-            if (clues.length < 4) this.roomMessages.push({ player: 'Server', username: 'Server', message: 'Moins de 3 placements possibles' });
+            if (clues.length < NUMBER_MAXIMUM_CLUE_COMMAND)
+                this.roomMessages.push({ player: 'Server', username: 'Server', message: 'Moins de 3 placements possibles' });
             clues.forEach((clue) => {
                 this.roomMessages.push({ player: 'Server', username: 'Server', message: clue });
             });

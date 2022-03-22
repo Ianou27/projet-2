@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-magic-numbers */
 import { fail } from 'assert';
 // import * as chai from 'chai';
 import { expect } from 'chai';
@@ -26,7 +27,7 @@ describe('Database service', () => {
     it('should connect to the database when start is called', async () => {
         const mongoUri = await mongoServer.getUri();
         await databaseService.start(mongoUri);
-        expect(databaseService.client).to.not.be.undefined;
+        expect(databaseService.client).to.not.equal(undefined);
     });
 
     it('should not connect to the database when start is called with wrong URL', async () => {
@@ -34,7 +35,7 @@ describe('Database service', () => {
             await databaseService.start('WRONG URL');
             fail();
         } catch {
-            expect(databaseService.client).to.be.undefined;
+            expect(databaseService.client).to.equal(undefined);
         }
     });
 

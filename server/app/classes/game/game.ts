@@ -1,5 +1,6 @@
 import { DatabaseService } from '@app/services/best-score.services';
 import * as io from 'socket.io';
+import { CommandType } from './../../../../common/command-type';
 import {
     MAXIMUM_PASSES_COUNT,
     PROBABILITY_EXCHANGE_COMMAND_BOT,
@@ -120,7 +121,7 @@ export class Game {
 
     placementBot(command: string[]) {
         switch (command[0]) {
-            case '!échanger': {
+            case CommandType.exchange: {
                 this.exchangeLetters(command);
                 this.sio.to(this.player1.user.room).emit('modification', this.gameBoard.cases, this.playerTurn().name);
                 this.sio.to(this.player1.user.id).emit('roomMessage', {
@@ -130,7 +131,7 @@ export class Game {
                 });
                 break;
             }
-            case '!passer': {
+            case CommandType.pass: {
                 this.passTurn();
                 this.sio.to(this.player1.user.room).emit('roomMessage', {
                     username: 'Server',
@@ -140,7 +141,7 @@ export class Game {
                 this.sio.to(this.player1.user.room).emit('modification', this.gameBoard.cases, this.playerTurn().name);
                 break;
             }
-            case '!placer': {
+            case CommandType.place: {
                 PlacementCommand.placeWord(command, this);
                 this.sio
                     .to(this.player1.user.room)
@@ -210,7 +211,7 @@ export class Game {
 
     actionVirtualBeginnerPlayer(probability: number): string[] {
         if (probability <= PROBABILITY_PASS_COMMAND_BOT) {
-            return '!passer'.split(' ');
+            return CommandType.pass.split(' ');
         } else if (probability <= PROBABILITY_EXCHANGE_COMMAND_BOT) {
             return VirtualPlayer.exchangeLettersCommand(this);
         } else {

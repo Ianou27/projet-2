@@ -266,11 +266,11 @@ describe('Game', () => {
         assert(spy.called);
     });
 
-    it('in a solo game, method changeTurnTwoPlayers should let the bot play after 3 sec', () => {
+    /*     it('in a solo game, method changeTurnTwoPlayers should let the bot play after 3 sec', () => {
         const spyCommand = sinon.spy(game, 'actionVirtualBeginnerPlayer');
         game.player2.hisBot = true;
         game.passTurn();
         game.changeTurnTwoPlayers();
         assert(spyCommand.called);
-    });
+    }); */
 });

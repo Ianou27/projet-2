@@ -35,10 +35,9 @@ export class DatabaseService {
 
     async closeConnection(): Promise<void> {
         try {
-            console.log('Connexion closed');
             return this.client.close();
         } catch (error) {
-            console.log('Connexion is already closed');
+            return;
         }
     }
 
@@ -73,11 +72,11 @@ export class DatabaseService {
         }
     }
 
-    async bestScoreClassic(): Promise<object[]> {
+    async bestScoreClassic(): Promise<Record<string, unknown>[]> {
         return await this.db.collection(DATABASE_COLLECTION_CLASSIC).find().sort({ score: -1 }).toArray();
     }
 
-    async bestScoreLog(): Promise<object[]> {
+    async bestScoreLog(): Promise<Record<string, unknown>[]> {
         return await this.db.collection(DATABASE_COLLECTION_LOG).find().sort({ score: -1 }).toArray();
     }
 

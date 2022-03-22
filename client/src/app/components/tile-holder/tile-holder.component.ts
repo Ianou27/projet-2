@@ -1,6 +1,7 @@
 import { Component, HostListener } from '@angular/core';
 import { ChatService } from '@app/services/chat.service';
 import { TileHolderService } from '@app/services/tile-holder/tile-holder.service';
+import { CommandType } from './../../../../../common/command-type';
 import { INDEX_OF_NOT_FOUND, NUMBER_TILE_HOLDER } from './../../../../../common/constants/general-constants';
 
 @Component({
@@ -94,7 +95,7 @@ export class TileHolderComponent {
     }
 
     exchange() {
-        let command = '!échanger ';
+        let command = CommandType.exchange + ' ';
         const letters = this.lettersToExchange.join('');
         command += letters;
         this.chatService.roomMessage = command;
