@@ -26,10 +26,7 @@ describe('TileComponent', () => {
     it('tile with no letter should not be visible and assign with class tileEmpty', () => {
         component.letter = '';
         fixture.detectChanges();
-    });
-
-    it('disable not set to a value should not disabled the button ', () => {
-        component.letter = 'A';
-        fixture.detectChanges();
+        const comp = fixture.debugElement.nativeElement.children[0].className;
+        expect(comp).toEqual('tileEmpty');
     });
 });
