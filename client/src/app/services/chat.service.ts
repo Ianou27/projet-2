@@ -117,16 +117,10 @@ export class ChatService {
             this.playerJoined = didJoin;
         });
 
-        this.socketService.socket.on('getBestScore', (scoresClassic: unknown[],scoresLog: unknown[]) => {
+        this.socketService.socket.on('getBestScore', (scoresClassic: unknown[], scoresLog: unknown[]) => {
             this.bestClassicScores = scoresClassic;
             this.bestLog2990Scores = scoresLog;
         });
-
-        this.socketService.on('getBestScoreLog', (scores: unknown[]) => {
-         
-            
-        });
-
 
         this.socketService.on('joining', (obj: InfoToJoin) => {
             this.gotAccepted = true;
@@ -141,7 +135,7 @@ export class ChatService {
             this.winner = winner;
             this.player1Turn = '';
             this.player2Turn = '';
-            this.myTurn =false;
+            this.myTurn = false;
         });
         this.socketService.on('refusing', (obj: InfoToJoin) => {
             this.informationToJoin = obj;
@@ -256,7 +250,7 @@ export class ChatService {
         this.socketService.socket.emit('cancelCreation');
         this.updateRooms();
     }
-    convertToSoloGame(){
+    convertToSoloGame() {
         this.socketService.socket.emit('convertToSoloGame');
     }
 }
