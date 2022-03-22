@@ -33,11 +33,9 @@ export class PlacementCommand {
         try {
             const placementInformations = this.separatePlaceCommandInformations(commandInformations);
             insideBoard = this.insideBoardGame(placementInformations, game);
-            if (game.gameState.firstTurn) {
-                wordCondition = this.firstWordTouchCenter(placementInformations, game);
-            } else {
-                wordCondition = this.wordHasAdjacent(placementInformations, game);
-            }
+            wordCondition = game.gameState.firstTurn
+                ? this.firstWordTouchCenter(placementInformations, game)
+                : this.wordHasAdjacent(placementInformations, game);
             tileHolderContains = game.playerTurn().tileHolderContains(placementInformations.letters.join(''));
             if (game.gameState.firstTurn && placementInformations.numberLetters === 1) return false;
         } catch (error) {
@@ -294,10 +292,8 @@ export class PlacementCommand {
 
     static placeWord(commandInformations: string[], game: Game): boolean {
         const placementInformations = PlacementCommand.separatePlaceCommandInformations(commandInformations);
-        console.log(placementInformations);
         let letterPositions: Tile[] = [];
         letterPositions = PlacementCommand.place(placementInformations, game);
-        console.log(letterPositions);
         const placementScore = PlacementCommand.newWordsValid(commandInformations, game, letterPositions);
         if (placementScore === 0) {
             PlacementCommand.restoreBoard(game, letterPositions);
