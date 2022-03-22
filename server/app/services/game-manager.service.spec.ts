@@ -1,5 +1,6 @@
 import { ExchangeCommand } from '@app/classes/exchangeCommand/exchange-command';
 import { PassCommand } from '@app/classes/passCommand/pass-command';
+import { ReserveCommand } from '@app/classes/reserveCommand/reserve-command';
 import { CaseProperty } from '@common/assets/case-property';
 import { letterValue } from '@common/assets/reserve-letters';
 import { Tile } from '@common/tile/Tile';
@@ -22,7 +23,6 @@ describe('Game Manager', () => {
     beforeEach(() => {
         game = new Game();
         game.player1Join({ username: 'a', id: '1', room: 'room1' }, '60', databaseService);
-        // game.player1 = new Player(game.reserveLetters.randomLettersInitialization(), true, 'player1', { username: 'a', id: '1', room: 'room1' });
         game.player2 = new Player(game.reserveLetters.randomLettersInitialization(), true, 'player2', { username: 'b', id: '2', room: 'room1' });
         const lettersPlayer1 = ['A', 'L', 'L', '', 'E', 'E', 'V'];
         for (const letter of lettersPlayer1) {
@@ -47,6 +47,12 @@ describe('Game Manager', () => {
         assert(spy.calledWith(placeCommand, game));
     });
 
+    it('method reserveCommandValid should call ReserveCommand.verifyFormat', () => {
+        const spy = sinon.stub(ReserveCommand, 'verifyFormat');
+        gameManager.reserveCommandValid(['a']);
+        assert(spy.called);
+    });
+
     it('method placeFormatValid should call PlacementCommand.validatedPlaceCommandFormat', () => {
         const spy = sinon.spy(PlacementCommand, 'validatedPlaceCommandFormat');
         gameManager.placeFormatValid(placeCommand);
@@ -62,12 +68,9 @@ describe('Game Manager', () => {
     });
 
     it('method pass should call PassCommand.passTurn', () => {
-        const spy = sinon.spy(game, 'passTurn');
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        const fake = sinon.fake(() => {});
-        sinon.replace(game.timer, 'reset', fake);
+        game.gameState.gameFinished = false;
+        const spy = sinon.stub(game, 'passTurn');
         gameManager.pass(game);
-        assert(fake.called);
         assert(spy.called);
     });
 
@@ -139,6 +142,12 @@ describe('Game Manager', () => {
     });
 
     it('method placeVerification should call placeFormatValid and placeBoardValid if command is valid and return "valide"', () => {
+        sinon.replace(gameManager, 'placeFormatValid', () => {
+            return true;
+        });
+        sinon.replace(gameManager, 'placeBoardValid', () => {
+            return true;
+        });
         const spyFormat = sinon.spy(gameManager, 'placeFormatValid');
         const spyBoard = sinon.spy(gameManager, 'placeBoardValid');
         const validation = gameManager.placeVerification(placeCommand, game);
@@ -149,6 +158,18 @@ describe('Game Manager', () => {
         expect(validation).to.equal('valide');
     });
 
+    it('method placeVerification should return Commande impossible à réaliser if invalid', () => {
+        sinon.replace(gameManager, 'placeBoardValid', () => {
+            return false;
+        });
+        sinon.replace(gameManager, 'placeFormatValid', () => {
+            return true;
+        });
+        const validation = gameManager.placeVerification(placeCommand, game);
+
+        expect(validation).to.equal('Commande impossible à réaliser');
+    });
+
     it('method placeVerification should return "Entrée invalide" if format is not valid and not call placeBoardValid', () => {
         const spyBoard = sinon.spy(gameManager, 'placeBoardValid');
         const wrongCommand = ['!placer', 'Z0h', 'abz'];
@@ -156,13 +177,13 @@ describe('Game Manager', () => {
         assert(spyBoard.notCalled);
     });
 
-    it('method placeVerification should return "Commande impossible à réaliser" if placeBoardValid returns false', () => {
-        const wrongCommand = ['!placer', 'N14h', 'abcde'];
-        const validation = gameManager.placeVerification(wrongCommand, game);
-        expect(validation).to.equal('Commande impossible à réaliser');
-    });
-
     it('method exchangeVerification should call exchangeFormatValid and exchangeTileHolderValid if command is valid and return "valide"', () => {
+        sinon.replace(gameManager, 'exchangeFormatValid', () => {
+            return true;
+        });
+        sinon.replace(gameManager, 'exchangeTileHolderValid', () => {
+            return true;
+        });
         const spyFormat = sinon.spy(gameManager, 'exchangeFormatValid');
         const spyBoard = sinon.spy(gameManager, 'exchangeTileHolderValid');
         const validation = gameManager.exchangeVerification(exchangeCommand, game);
@@ -174,14 +195,15 @@ describe('Game Manager', () => {
     });
 
     it('method exchangeVerification should return "Entrée invalide" if format is not valid and not call exchangeTileHolderValid', () => {
-        const spyBoard = sinon.spy(gameManager, 'exchangeTileHolderValid');
+        sinon.replace(gameManager, 'exchangeFormatValid', () => {
+            return false;
+        });
         const wrongCommand = ['!echanger', 'zkjhhdasddalkda'];
         expect(gameManager.placeVerification(wrongCommand, game)).to.equal('Entrée invalide');
-        assert(spyBoard.notCalled);
     });
 
     it('method exchangeVerification should return "Commande impossible à réaliser" if exchangeTileHolderValid returns false', () => {
-        const wrongCommand = ['!echanger', 'ax'];
+        const wrongCommand = ['!échanger', 'ax'];
         const validation = gameManager.exchangeVerification(wrongCommand, game);
         expect(validation).to.equal('Commande impossible à réaliser');
     });
