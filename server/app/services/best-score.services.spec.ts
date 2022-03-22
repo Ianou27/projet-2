@@ -1,9 +1,9 @@
-import { fail } from "assert";
+import { fail } from 'assert';
 // import * as chai from 'chai';
 import { expect } from 'chai';
 // import * as chaiAsPromised from 'chai-as-promised';
 import { describe } from 'mocha';
-import { MongoClient } from "mongodb";
+import { MongoClient } from 'mongodb';
 // import { MongoClient } from 'mongodb';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { DatabaseService } from './best-score.services';
@@ -16,27 +16,20 @@ describe('Database service', () => {
     beforeEach(async () => {
         databaseService = new DatabaseService();
 
-        
         mongoServer = new MongoMemoryServer();
     });
 
     afterEach(async () => {
-       
-            await databaseService.closeConnection();
-        
+        await databaseService.closeConnection();
     });
 
-    
     it('should connect to the database when start is called', async () => {
-        
         const mongoUri = await mongoServer.getUri();
         await databaseService.start(mongoUri);
         expect(databaseService.client).to.not.be.undefined;
-       
     });
 
     it('should not connect to the database when start is called with wrong URL', async () => {
-        
         try {
             await databaseService.start('WRONG URL');
             fail();
@@ -44,8 +37,6 @@ describe('Database service', () => {
             expect(databaseService.client).to.be.undefined;
         }
     });
-
-
 
     it('bestScoreClassic should return classic Score', async () => {
         const mongoUri = await mongoServer.getUri();
@@ -70,7 +61,7 @@ describe('Database service', () => {
         const client = await MongoClient.connect(mongoUri);
         databaseService.db = client.db('Database');
         await databaseService.populateDB('bestScoreClassic');
-        await databaseService.updateBesScoreClassic( {
+        await databaseService.updateBesScoreClassic({
             player: 'test',
             score: 10,
         });
@@ -85,7 +76,7 @@ describe('Database service', () => {
         const client = await MongoClient.connect(mongoUri);
         databaseService.db = client.db('Database');
         await databaseService.populateDB('bestScoreClassic');
-        await databaseService.updateBesScoreClassic( {
+        await databaseService.updateBesScoreClassic({
             player: 'test1',
             score: 11,
         });
@@ -95,7 +86,4 @@ describe('Database service', () => {
             score: 11,
         });
     });
-
-  
 });
-

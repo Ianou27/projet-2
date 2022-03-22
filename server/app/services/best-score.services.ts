@@ -12,8 +12,8 @@ const DATABASE_COLLECTION_CLASSIC = 'bestScoreClassic';
 const DATABASE_COLLECTION_LOG = 'bestScoreLog2990';
 @Service()
 export class DatabaseService {
-    public db: Db;
-    public client: MongoClient;
+    db: Db;
+    client: MongoClient;
 
     async start(url: string = DATABASE_URL): Promise<MongoClient | null> {
         try {
