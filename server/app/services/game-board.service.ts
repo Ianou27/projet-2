@@ -1,3 +1,4 @@
+import { Orientation } from '@common/orientation';
 import { CaseProperty } from './../../../common/assets/case-property';
 import { letterValue } from './../../../common/assets/reserve-letters';
 import { COLUMN_ROWS_MINIMUM, COLUMN_ROWS_NUMBER, MAXIMUM_ROW_COLUMN } from './../../../common/constants/general-constants';
@@ -40,9 +41,9 @@ export class GameBoardService {
         this.cases[positionX][positionY].letter = letter;
     }
 
-    nextTile(currentTile: Tile, orientation: string, revert: boolean): Tile {
+    nextTile(currentTile: Tile, orientation: Orientation, revert: boolean): Tile {
         let nextTile: Tile;
-        if (orientation === 'h') {
+        if (orientation === Orientation.h) {
             if (revert) {
                 nextTile = this.cases[currentTile.positionX - 1][currentTile.positionY];
             } else {
@@ -58,8 +59,8 @@ export class GameBoardService {
         return nextTile;
     }
 
-    isTopOrRight(currentTile: Tile, orientation: string): boolean {
-        if (orientation === 'h') {
+    isTopOrRight(currentTile: Tile, orientation: Orientation): boolean {
+        if (orientation === Orientation.h) {
             if (currentTile.positionX === COLUMN_ROWS_MINIMUM) return true;
         } else if (currentTile.positionY === COLUMN_ROWS_MINIMUM) {
             return true;
@@ -67,8 +68,8 @@ export class GameBoardService {
         return false;
     }
 
-    isBottomOrLeft(currentTile: Tile, orientation: string): boolean {
-        if (orientation === 'h') {
+    isBottomOrLeft(currentTile: Tile, orientation: Orientation): boolean {
+        if (orientation === Orientation.h) {
             if (currentTile.positionX === MAXIMUM_ROW_COLUMN) return true;
         } else if (currentTile.positionY === MAXIMUM_ROW_COLUMN) {
             return true;

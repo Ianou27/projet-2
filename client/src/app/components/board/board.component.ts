@@ -3,6 +3,7 @@ import { BoardService } from '@app/services/board.service';
 import { ChatService } from '@app/services/chat.service';
 import { rowLetter } from './../../../../../common/assets/row';
 import { MAXIMUM_ROW_COLUMN } from './../../../../../common/constants/general-constants';
+import { Orientation } from './../../../../../common/orientation';
 
 @Component({
     selector: 'app-board',
@@ -11,7 +12,7 @@ import { MAXIMUM_ROW_COLUMN } from './../../../../../common/constants/general-co
 })
 export class BoardComponent implements OnInit {
     letterPlaced: string[] = [];
-    orientation: string = '';
+    orientation = Orientation.default;
     constructor(public boardService: BoardService, public chatService: ChatService) {}
     @HostListener('keydown', ['$event'])
     keyHandler(event: KeyboardEvent) {
@@ -80,7 +81,7 @@ export class BoardComponent implements OnInit {
         if (!lastWrittenLetter) return;
         lastWrittenLetter.setAttribute('class', 'writing');
         let lastArrow;
-        if (this.orientation === 'h') {
+        if (this.orientation === Orientation.h) {
             lastArrow = document.getElementById('arrow-right');
         } else {
             lastArrow = document.getElementById('arrow-down');
@@ -90,7 +91,7 @@ export class BoardComponent implements OnInit {
         }
         const position = this.getPosition(lastWrittenLetter);
         this.boardService.removeLetter(position[0], position[1]);
-        if (this.orientation === 'h') {
+        if (this.orientation === Orientation.h) {
             lastWrittenLetter.children[0].classList.replace('tile', 'tileEmptyHorizontal');
             lastWrittenLetter.children[0].id = 'arrow-right';
         }
@@ -100,7 +101,7 @@ export class BoardComponent implements OnInit {
         const board = document.getElementsByClassName('tile-container')[0];
         const posX = Number(currentTile.getAttribute('data-position-x'));
         const posY = Number(currentTile.getAttribute('data-position-y'));
-        if (this.orientation === 'h') {
+        if (this.orientation === Orientation.h) {
             if (posX === MAXIMUM_ROW_COLUMN) return;
             if (board.children[posX + 1].children[posY].children[0].getElementsByTagName('p')[0]) {
                 this.nextTile(board.children[posX + 1].children[posY].children[0]);
@@ -123,6 +124,7 @@ export class BoardComponent implements OnInit {
         if (/[^a-zA-Z]/.test(letter)) return;
         const lastWrittenTile = document.getElementsByClassName('writing')[0];
         const keyInTileHolder = this.inTileHolder(letter);
+        console.log(letter);
         const tileHolder = document.getElementById('tile-holder');
         if (!keyInTileHolder[0]) return;
         this.nextTile(lastWrittenTile);
@@ -147,19 +149,19 @@ export class BoardComponent implements OnInit {
             case 'tileEmpty': {
                 current.children[0].classList.replace('tileEmpty', 'tileEmptyHorizontal');
                 current.children[0].id = 'arrow-right';
-                this.orientation = 'h';
+                this.orientation = Orientation.h;
                 break;
             }
             case 'tileEmptyHorizontal': {
                 current.children[0].classList.replace('tileEmptyHorizontal', 'tileEmptyVertical');
                 current.children[0].id = 'arrow-down';
-                this.orientation = 'v';
+                this.orientation = Orientation.v;
                 break;
             }
             case 'tileEmptyVertical': {
                 current.children[0].classList.replace('tileEmptyVertical', 'tileEmptyHorizontal');
                 current.children[0].id = 'arrow-right';
-                this.orientation = 'h';
+                this.orientation = Orientation.h;
                 break;
             }
         }

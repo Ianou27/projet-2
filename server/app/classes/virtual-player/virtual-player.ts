@@ -17,6 +17,7 @@ import {
     THIRD_BOT_PLACEMENT_BOTTOM_LIMIT,
     THIRD_BOT_PLACEMENT_TOP_LIMIT,
 } from '@common/constants/general-constants';
+import { Orientation } from '@common/orientation';
 import { Tile } from '@common/tile/Tile';
 import { PlacementScore, TilePlacementPossible } from '@common/types';
 import * as fs from 'fs';
@@ -176,26 +177,26 @@ export class VirtualPlayer {
         const tiles: TilePlacementPossible[] = [];
         for (let i = 0; i < MAXIMUM_ROW_COLUMN; i++) {
             for (let j = 0; j < MAXIMUM_ROW_COLUMN; j++) {
-                let orientation = '';
+                let orientation = Orientation.default;
                 if (gameBoard.tileContainsLetter(i, j)) {
                     try {
                         if (
-                            gameBoard.nextTile(gameBoard.cases[i][j], 'h', false).letter === '' &&
-                            gameBoard.nextTile(gameBoard.cases[i][j], 'h', true).letter === ''
+                            gameBoard.nextTile(gameBoard.cases[i][j], Orientation.h, false).letter === '' &&
+                            gameBoard.nextTile(gameBoard.cases[i][j], Orientation.h, true).letter === ''
                         ) {
-                            orientation = 'h';
+                            orientation = Orientation.h;
                         }
                         if (
-                            gameBoard.nextTile(gameBoard.cases[i][j], 'v', false).letter === '' &&
-                            gameBoard.nextTile(gameBoard.cases[i][j], 'v', true).letter === ''
+                            gameBoard.nextTile(gameBoard.cases[i][j], Orientation.v, false).letter === '' &&
+                            gameBoard.nextTile(gameBoard.cases[i][j], Orientation.v, true).letter === ''
                         ) {
-                            orientation = 'v';
+                            orientation = Orientation.v;
                         }
                     } catch {
                         continue;
                     }
 
-                    if (orientation !== '') {
+                    if (orientation !== Orientation.default) {
                         const tilePlacement: TilePlacementPossible = {
                             tile: gameBoard.cases[i][j],
                             orientation,
@@ -208,7 +209,7 @@ export class VirtualPlayer {
         if (tiles.length === 0) {
             const tilePlacement: TilePlacementPossible = {
                 tile: gameBoard.cases[CENTER_ROW_COLUMN][CENTER_ROW_COLUMN],
-                orientation: 'h',
+                orientation: Orientation.h,
             };
             tiles.push(tilePlacement);
         }
