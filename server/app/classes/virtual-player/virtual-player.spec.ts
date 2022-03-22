@@ -4,6 +4,7 @@ import { DatabaseService } from '@app/services/best-score.services';
 import { Timer } from '@app/services/timer-manager.service';
 import { CaseProperty } from '@common/assets/case-property';
 import { letterValue } from '@common/assets/reserve-letters';
+import { Orientation } from '@common/orientation';
 import { Tile } from '@common/tile/Tile';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
@@ -21,7 +22,7 @@ interface PlacementScore {
 
 interface TilePlacementPossible {
     tile: Tile;
-    orientation: string;
+    orientation: Orientation;
 }
 
 describe('Virtual Player', () => {
@@ -210,7 +211,7 @@ describe('Virtual Player', () => {
             row: 7,
             column: 7,
             letters: ['A', 'R', 'B', 'R', 'E'],
-            orientation: 'h',
+            orientation: Orientation.h,
             numberLetters: 5,
         };
         const result = VirtualPlayer.findLettersPosition(placementInformations, game);
@@ -240,7 +241,7 @@ describe('Virtual Player', () => {
         const spy = sinon.spy(VirtualPlayer, 'findLettersPosition');
         const tilePlacementPossible: TilePlacementPossible = {
             tile: game.gameBoard.cases[7][7],
-            orientation: 'h',
+            orientation: Orientation.h,
         };
         VirtualPlayer.findPlacementCommand(['bac'], tilePlacementPossible, game);
         assert(spy.called);
@@ -249,7 +250,7 @@ describe('Virtual Player', () => {
     it('method findPlacementCommand should return valid command place', () => {
         const tilePlacementPossible: TilePlacementPossible = {
             tile: game.gameBoard.cases[7][7],
-            orientation: 'h',
+            orientation: Orientation.h,
         };
         const commands = VirtualPlayer.findPlacementCommand(['bac'], tilePlacementPossible, game);
         commands.forEach((element) => {

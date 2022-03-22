@@ -1,5 +1,6 @@
 import { PlacementInformations } from '@app/placement-informations';
 import { WORD_LETTER_2X_MULTIPLIER, WORD_LETTER_3X_MULTIPLIER, WORD_LETTER_NO_MULTIPLIER } from '@common/constants/general-constants';
+import { Orientation } from '@common/orientation';
 import { Tile } from '@common/tile/Tile';
 import { expect } from 'chai';
 import { Game } from './../game/game';
@@ -16,7 +17,7 @@ describe('Points Calculator', () => {
         placementInformations = {
             row: 7,
             column: 7,
-            orientation: 'h',
+            orientation: Orientation.h,
             letters: ['a', 'l', 'l', 'o'],
             numberLetters: 4,
         };

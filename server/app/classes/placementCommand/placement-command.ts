@@ -1,3 +1,4 @@
+import { Orientation } from '@common/orientation';
 import * as fs from 'fs';
 import { letterValue } from './../../../../common/assets/reserve-letters';
 import { rowNumber } from './../../../../common/assets/row';
@@ -90,25 +91,27 @@ export class PlacementCommand {
         const letters = commandInformations[2].split('');
         const hasOrientation =
             positionOrientation[positionOrientation.length - 1] === 'h' || positionOrientation[positionOrientation.length - 1] === 'v';
-        let orientation = '';
+        let orientation: Orientation;
         let column = 0;
         if (numberLetters === 1 && numberLettersCommand === MINIMUM_LETTERS_PLACE_COMMAND) {
-            orientation = 'v';
+            orientation = Orientation.v;
             column = Number(positionOrientation[1]) - 1;
         } else if (numberLetters === 1 && numberLettersCommand === MIDDLE_LETTERS_PLACE_COMMAND && hasOrientation) {
-            orientation = positionOrientation[2];
+            orientation = Orientation.h;
             column = Number(positionOrientation[1]) - 1;
         } else if (numberLetters === 1 && numberLettersCommand === MIDDLE_LETTERS_PLACE_COMMAND && !hasOrientation) {
-            orientation = 'v';
+            orientation = Orientation.v;
             column = Number(positionOrientation[1] + positionOrientation[2]) - 1;
         } else if (numberLetters === 1 && numberLettersCommand === MAXIMUM_LETTERS_PLACE_COMMAND) {
-            orientation = positionOrientation[positionOrientation.length - 1];
+            orientation = Orientation.h /* positionOrientation[positionOrientation.length - 1]*/;
             column = Number(positionOrientation[1] + positionOrientation[2]) - 1;
         } else if (numberLettersCommand === 3) {
-            orientation = positionOrientation[2];
+            if (positionOrientation[2] === 'h') orientation = Orientation.h;
+            else orientation = Orientation.v;
             column = Number(positionOrientation[1]) - 1;
         } else {
-            orientation = positionOrientation[3];
+            if (positionOrientation[3] === 'h') orientation = Orientation.h;
+            else orientation = Orientation.v;
             column = Number(positionOrientation[1] + positionOrientation[2]) - 1;
         }
         const placementInformations: PlacementInformations = {
@@ -173,7 +176,7 @@ export class PlacementCommand {
     }
 
     static findNewWords(game: Game, placementInformations: PlacementInformations, letterPositions: Tile[]): Tile[][] {
-        const secondValidationOrientation = placementInformations.orientation === 'h' ? 'v' : 'h';
+        const secondValidationOrientation = placementInformations.orientation === Orientation.h ? Orientation.v : Orientation.h;
         let tile: Tile = game.gameBoard.cases[placementInformations.column][placementInformations.row];
         let word: Tile[] = [];
         const wordsFormed: Tile[][] = [];

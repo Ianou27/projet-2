@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
+import { Orientation } from '@common/orientation';
 import { expect } from 'chai';
 import { CaseProperty } from './../../../common/assets/case-property';
 import { Tile } from './../../../common/tile/Tile';
@@ -93,36 +94,36 @@ describe('GameBoard', () => {
     });
 
     it('nextTile should return the right tile depending on parameters', () => {
-        expect(gameBoard.nextTile(currentTile, 'h', false)).equal(gameBoard.cases[2][1]);
+        expect(gameBoard.nextTile(currentTile, Orientation.h, false)).equal(gameBoard.cases[2][1]);
     });
 
     it('nextTile should return the left tile depending on parameters', () => {
-        expect(gameBoard.nextTile(currentTile, 'h', true)).equal(gameBoard.cases[0][1]);
+        expect(gameBoard.nextTile(currentTile, Orientation.h, true)).equal(gameBoard.cases[0][1]);
     });
 
     it('nextTile should return the upper tile depending on parameters', () => {
-        expect(gameBoard.nextTile(currentTile, 'v', true)).equal(gameBoard.cases[1][0]);
+        expect(gameBoard.nextTile(currentTile, Orientation.v, true)).equal(gameBoard.cases[1][0]);
     });
 
     it('nextTile should return the tile down depending on parameters', () => {
-        expect(gameBoard.nextTile(currentTile, 'v', false)).equal(gameBoard.cases[1][2]);
+        expect(gameBoard.nextTile(currentTile, Orientation.v, false)).equal(gameBoard.cases[1][2]);
     });
 
     it('isLastTile should return true if tile position X or Y equals 0 or 14 depending on orientation', () => {
         const tile = gameBoard.cases[0][1];
-        expect(gameBoard.isTopOrRight(tile, 'h')).equal(true);
+        expect(gameBoard.isTopOrRight(tile, Orientation.h)).equal(true);
     });
 
     it('isLastTile should return false if tile position X or Y equals 0 or 14 depending on orientation', () => {
-        expect(gameBoard.isTopOrRight(currentTile, 'h')).equal(false);
+        expect(gameBoard.isTopOrRight(currentTile, Orientation.h)).equal(false);
     });
 
     it('isLastTile should return true if tile position X or Y equals 0 or 14 depending on orientation', () => {
         const tile = gameBoard.cases[2][14];
-        expect(gameBoard.isBottomOrLeft(tile, 'v')).equal(true);
+        expect(gameBoard.isBottomOrLeft(tile, Orientation.v)).equal(true);
     });
 
     it('isLastTile should return false if tile position X or Y equals 0 or 14 depending on orientation', () => {
-        expect(gameBoard.isBottomOrLeft(currentTile, 'h')).equal(false);
+        expect(gameBoard.isBottomOrLeft(currentTile, Orientation.h)).equal(false);
     });
 });

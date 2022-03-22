@@ -1,3 +1,4 @@
+import { Orientation } from './orientation';
 import { Tile } from './tile/Tile';
 
 export type Room = {
@@ -31,7 +32,7 @@ export type BestScore = {
 
 export interface TilePlacementPossible {
     tile: Tile;
-    orientation: string;
+    orientation: Orientation;
 }
 
 export interface PlacementScore {
