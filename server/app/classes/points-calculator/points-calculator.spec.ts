@@ -1,7 +1,7 @@
-import { PlacementInformations } from '@app/placement-informations';
 import { WORD_LETTER_2X_MULTIPLIER, WORD_LETTER_3X_MULTIPLIER, WORD_LETTER_NO_MULTIPLIER } from '@common/constants/general-constants';
 import { Orientation } from '@common/orientation';
 import { Tile } from '@common/tile/Tile';
+import { PlacementInformations } from 'assets/placement-informations';
 import { expect } from 'chai';
 import { Game } from './../game/game';
 import { PointsCalculator } from './points-calculator';
