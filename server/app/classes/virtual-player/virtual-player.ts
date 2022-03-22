@@ -253,7 +253,7 @@ export class VirtualPlayer {
 
     static exchangeLettersCommand(game: Game): string[] {
         if (game.reserveLetters.letters.length === 0) {
-            return CommandType.place.split(' ');
+            return CommandType.pass.split(' ');
         }
         const virtualPlayerLetters = game.playerTurn().lettersToStringArray();
         let command = CommandType.exchange + ' ';
