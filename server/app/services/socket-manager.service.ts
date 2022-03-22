@@ -201,14 +201,14 @@ export class SocketManager {
                         'getBestScore',
                         [
                             {
-                                player: 'Can not access to DB',
-                                score: 'ERROR',
+                                player: 'Accès à la BD impossible',
+                                score: 'ERREUR',
                             },
                         ],
                         [
                             {
-                                player: 'Can not access to DB',
-                                score: 'ERROR',
+                                player: 'Accès à la BD impossible',
+                                score: 'ERREUR',
                             },
                         ],
                     );

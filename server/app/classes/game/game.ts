@@ -1,6 +1,12 @@
 import { DatabaseService } from '@app/services/best-score.services';
 import * as io from 'socket.io';
-import { MAXIMUM_PASSES_COUNT } from './../../../../common/constants/general-constants';
+import {
+    MAXIMUM_PASSES_COUNT,
+    PROBABILITY_EXCHANGE_COMMAND_BOT,
+    PROBABILITY_PASS_COMMAND_BOT,
+    THREE_SECONDS_MS,
+    TWENTY_SECONDS_MS,
+} from './../../../../common/constants/general-constants';
 import { GameState } from './../../../../common/gameState';
 import { User } from './../../../../common/types';
 import { GameBoardService } from './../../services/game-board.service';
@@ -19,6 +25,7 @@ export class Game {
     roomName: string;
     sio: io.Server;
     databaseService: DatabaseService;
+
     constructor() {
         this.reserveLetters = new ReserveLetters();
 
@@ -35,6 +42,7 @@ export class Game {
         };
         this.gameState = gameState;
     }
+
     player1Join(user: User, timer: string, databaseService: DatabaseService) {
         this.player1 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player1', user);
         this.timer = new Timer(timer);
@@ -42,11 +50,13 @@ export class Game {
         this.timer = new Timer(timer);
         this.databaseService = databaseService;
     }
+
     player2Join(user: User, sio: io.Server) {
         this.player2 = new Player(this.reserveLetters.randomLettersInitialization(), false, 'player2', user);
         this.sio = sio;
         this.startGame();
     }
+
     verifyGameState() {
         const endGameValidation =
             this.gameState.passesCount === MAXIMUM_PASSES_COUNT ||
@@ -100,7 +110,7 @@ export class Game {
         this.sio.to(this.player2.user.id).emit('turn', this.player2.hisTurn);
         if (this.playerTurn().hisBot) {
             const probability = VirtualPlayer.getProbability();
-            const timeoutActionBot = probability <= 10 ? 20000 : 3000;
+            const timeoutActionBot = probability <= PROBABILITY_PASS_COMMAND_BOT ? TWENTY_SECONDS_MS : THREE_SECONDS_MS;
             setTimeout(() => {
                 const command = this.actionVirtualBeginnerPlayer(probability);
                 this.placementBot(command);
@@ -146,6 +156,7 @@ export class Game {
             }
         }
     }
+
     playerTurn(): Player {
         if (this.player1.getHisTurn()) {
             return this.player1;
@@ -198,9 +209,9 @@ export class Game {
     }
 
     actionVirtualBeginnerPlayer(probability: number): string[] {
-        if (probability <= 10) {
+        if (probability <= PROBABILITY_PASS_COMMAND_BOT) {
             return '!passer'.split(' ');
-        } else if (probability <= 20) {
+        } else if (probability <= PROBABILITY_EXCHANGE_COMMAND_BOT) {
             return VirtualPlayer.exchangeLettersCommand(this);
         } else {
             return VirtualPlayer.placementLettersCommand(VirtualPlayer.getProbability(), this);

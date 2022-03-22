@@ -1,6 +1,6 @@
 import * as fs from 'fs';
-import { rowNumber } from '../../../../common/assets/row';
 import { letterValue } from './../../../../common/assets/reserve-letters';
+import { rowNumber } from './../../../../common/assets/row';
 import {
     CENTER_ROW_COLUMN,
     MAXIMUM_LETTERS_PLACE_COMMAND,

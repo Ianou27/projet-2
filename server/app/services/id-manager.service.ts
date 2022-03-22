@@ -63,7 +63,7 @@ export class IdManager {
         return room;
     }
     getGame(socketId: string): Game {
-        let gameToFind: Game = new Game ;
+        let gameToFind: Game = new Game();
 
         for (const game of this.games) {
             if (game.player1.user.id === socketId) {
@@ -74,12 +74,10 @@ export class IdManager {
                 }
             }
         }
-    
 
         return gameToFind;
     }
-    deleteGame(socketId:string){
-
+    deleteGame(socketId: string) {
         for (const game of this.games) {
             if (game.player1.user.id === socketId) {
                 const index = this.games.indexOf(game);
