@@ -9,6 +9,7 @@ import { Player } from '@app/classes/player/player';
 import { Tile } from '@common/tile/Tile';
 // import { Game } from '@app/classes/game/game';
 import { Server } from 'app/server';
+import { fail } from 'assert';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
 import { io as ioClient, Socket } from 'socket.io-client';
@@ -91,17 +92,20 @@ describe('SocketManager service tests', () => {
     it('should handle a accepted event ', (done) => {
         const roomObject = {
             player1: 'username',
-            player2: '',
+            player2: 's',
             time: '60',
         };
+        service.identification.rooms=[roomObject];
         const infoObj = {
             username: 'username',
             roomObj: roomObject,
         };
-        service.identification.rooms.push(roomObject);
+        sinon.replace(service.identification, 'getUsername', () => {
+            return 'username';
+        });
         clientSocket.emit('accepted', 'socketId', infoObj);
         setTimeout(() => {
-            expect(service.identification.rooms[0].player1).to.equal('username');
+            expect(service.identification.rooms[0].player2).to.equal('');
 
             done();
         }, RESPONSE_DELAY);
@@ -110,29 +114,25 @@ describe('SocketManager service tests', () => {
     it('should handle a refused event ', (done) => {
         const roomObject = {
             player1: 'username',
-            player2: '',
+            player2: 's',
             time: '60',
         };
+        service.identification.rooms=[roomObject];
         const infoObj = {
             username: 'username',
             roomObj: roomObject,
         };
-        service.identification.rooms.push(roomObject);
+        sinon.replace(service.identification, 'getUsername', () => {
+            return 'username';
+        });
         clientSocket.emit('refused', 'socketId', infoObj);
         setTimeout(() => {
-            expect(service.identification.rooms[0].player1).to.equal('username');
+            expect(service.identification.rooms[0].player2).to.equal('');
 
             done();
         }, RESPONSE_DELAY);
     });
 
-    // it('should not broadcast message to room if origin socket is not in room', (done) => {
-    //     const testMessage = 'Hello World';
-    //     clientSocket.emit('roomMessage', testMessage);
-    //     setTimeout(() => {
-    //         done();
-    //     }, RESPONSE_DELAY);
-    // });
 
     it('should handle a roomMessage event', (done) => {
         const message = 'HELLO';
@@ -152,11 +152,11 @@ describe('SocketManager service tests', () => {
         const message = 'HELLO';
         const roomObject = {
             player1: 'username',
-            player2: '',
+            player2: 'user2',
             time: '60',
         };
-        service.identification.rooms.push(roomObject);
-        service.identification.roomMessages = new Map();
+        service.identification.rooms= [roomObject];
+        service.identification.roomMessages['room'] = [];
         sinon.replace(service.gameManager, 'messageVerification', () => {
             return 'valide';
         });
@@ -178,12 +178,12 @@ describe('SocketManager service tests', () => {
     it('should handle roomMessage if valide player 2', (done) => {
         const message = 'HELLO';
         const roomObject = {
-            player1: '',
-            player2: 'username',
+            player1: 'username',
+            player2: 'user2',
             time: '60',
         };
-        service.identification.rooms.push(roomObject);
-        service.identification.roomMessages = new Map();
+        service.identification.rooms= [roomObject];
+        service.identification.roomMessages['room'] = [];
         sinon.replace(service.gameManager, 'messageVerification', () => {
             return 'valide';
         });
@@ -191,7 +191,7 @@ describe('SocketManager service tests', () => {
             return 'room';
         });
         sinon.replace(service.identification, 'getUsername', () => {
-            return 'username';
+            return 'user2';
         });
         const spyVerification = sinon.spy(service.gameManager, 'messageVerification');
         clientSocket.emit('roomMessage', message);
@@ -202,29 +202,7 @@ describe('SocketManager service tests', () => {
         }, RESPONSE_DELAY);
     });
 
-    // it('should handle placer event ', (done) => {
-    //     const command = ['!placer'];
-    //     let game = new Game();
-    //     // const roomObject = {
-    //     //     player1: 'username',
-    //     //     player2: '',
-    //     // };
-    //     // service.identification.rooms.push(roomObject);
-
-    //     sinon.replace(game, 'playerTurnValid', () => {return false});
-    //     // sinon.replace(service.identification, 'getRoom', () => {return 'room'});
-    //     // sinon.replace(service.identification, 'getUsername', () => {return 'username'});
-    //     // sinon.replace(service.gameManager, 'placeVerification', () => {return 'sa'});
-    //     // sinon.replace(service.gameManager, 'placeWord', () => {return 'placer'});
-    //     const spyVerification122 = sinon.spy(game, 'playerTurnValid');
-    //     clientSocket.emit('placer', command);
-    //     setTimeout(() => {
-    //         assert(spyVerification122.called);
-
-    //         done();
-    //     }, RESPONSE_DELAY);
-
-    // });
+  
 
     it('should handle  updateRoom event', (done) => {
         const roomObj = {
@@ -282,24 +260,6 @@ describe('SocketManager service tests', () => {
         }, RESPONSE_DELAY);
     });
 
-    // it('should handle roomMessage event with !passer', (done) => {
-    //     const gameObj = new Game();
-    //     const username = 'username';
-    //     const roomObj = {
-    //         player1: username,
-    //         player2: '',
-    //         game: gameObj,
-    //     };
-    //     service.identification.rooms.push(roomObj);
-    //     const testMessage = '!passer';
-    //     const passSpy = sinon.spy(service.gameManager, 'passVerification');
-    //     clientSocket.emit('joinRoom', username, roomObj);
-    //     clientSocket.emit('roomMessage', testMessage);
-    //     setTimeout(() => {
-    //         assert(passSpy.called);
-    //         done();
-    //     }, RESPONSE_DELAY);
-    // });
 
     it('should handle passer Event valid turn', (done) => {
         const gameObj = new Game();
@@ -386,6 +346,7 @@ describe('SocketManager service tests', () => {
             done();
         }, RESPONSE_DELAY);
     });
+
     it('should handle invalid place command', (done) => {
         const gameObj = new Game();
         const user1 = {
@@ -777,5 +738,34 @@ describe('SocketManager service tests', () => {
             assert(spy.called);
             done();
         }, RESPONSE_DELAY);
+    });
+
+    it('should handle forceDisconnect event', (done) => {
+        sinon.replace(service.databaseService, 'closeConnection', async() => {return });
+        const spy = sinon.spy(service.databaseService, 'closeConnection');
+
+        clientSocket.emit('forceDisconnect');
+        setTimeout(() => {
+            assert(spy.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
+    it('should handle getBestScore event', (done) => {
+        const spy = sinon.spy(service.databaseService, 'start');
+        try {
+            service.databaseService.start('fgfdg');
+            fail();
+        } catch{
+            
+            clientSocket.emit('getBestScore');
+            setTimeout(() => {
+                assert(spy.called);
+                done();
+            }, RESPONSE_DELAY);        }
+        
+        
+
+       
     });
 });
