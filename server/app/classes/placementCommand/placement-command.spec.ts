@@ -115,11 +115,24 @@ describe('Placement Command', () => {
         expect(placementInformations.orientation).to.equal('h');
     });
 
+    it('method validatedPlaceCommandBoard should return false if it receive a non valid command with the try catch', () => {
+        const firstWordCommandValid = '!placer h v';
+        const result = PlacementCommand.validatedPlaceCommandBoard(firstWordCommandValid.split(' '), game);
+        expect(result).to.equal(false);
+    });
+
     it('method insideBoardGame should return false if a horizontal placement is outside the board', () => {
         const firstWordCommandNotValid = '!placer o14h alle';
         const placementInformations = PlacementCommand.separatePlaceCommandInformations(firstWordCommandNotValid.split(' '));
         const result = PlacementCommand.insideBoardGame(placementInformations, game);
         expect(result).to.equal(false);
+    });
+
+    it('method newWordsValid should return 0 for a one letter placement on first move', () => {
+        const firstWordCommandNotValid = '!placer h8h a';
+        game.gameState.firstTurn = true;
+        const result = PlacementCommand.newWordsValid(firstWordCommandNotValid.split(' '), game, []);
+        expect(result).to.equal(0);
     });
 
     it('method insideBoardGame should return false if a vertical placement is outside the board', () => {
