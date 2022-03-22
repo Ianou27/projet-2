@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ChatService } from '@app/services/chat.service';
+import { ChatService } from '@app/services/chat/chat.service';
 
 @Component({
     selector: 'app-best-score',

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Tile } from '@app/../../../common/tile/Tile';
-import { CaseProperty } from './../../../../common/assets/case-property';
-import { COLUMN_ROWS_NUMBER } from './../../../../common/constants/general-constants';
-import { LETTER_2X, LETTER_3X, WORD_2X, WORD_3X } from './../../../../common/constants/tile-information';
-import { Vec2 } from './../../../../common/vec2';
+import { Tile } from '@app/./../../../common/tile/Tile';
+import { CaseProperty } from './../../../../../common/assets/case-property';
+import { COLUMN_ROWS_NUMBER } from './../../../../../common/constants/general-constants';
+import { LETTER_2X, LETTER_3X, WORD_2X, WORD_3X } from './../../../../../common/constants/tile-information';
+import { Vec2 } from './../../../../../common/vec2';
 
 @Injectable({
     providedIn: 'root',

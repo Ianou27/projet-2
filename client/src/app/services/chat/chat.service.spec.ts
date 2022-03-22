@@ -5,9 +5,9 @@ import { TestBed } from '@angular/core/testing';
 import { SocketTestHelper } from '@app/classes/socket-test-helper';
 import { Socket } from 'socket.io-client';
 // eslint-disable-next-line no-restricted-imports
-import { Tile } from '../../../../common/tile/Tile';
-import { LetterScore } from './../../../../common/assets/reserve-letters';
-import { InfoToJoin, Message, Room } from './../../../../common/types';
+import { Tile } from '../../../../../common/tile/Tile';
+import { LetterScore } from './../../../../../common/assets/reserve-letters';
+import { InfoToJoin, Message, Room } from './../../../../../common/types';
 import { ChatService } from './chat.service';
 
 describe('ChatService', () => {
@@ -228,14 +228,16 @@ describe('ChatService', () => {
         expect(emitSpy).toHaveBeenCalledWith('convertToSoloGame');
     });
     it('should update numberOfRooms when ann empty room is added', () => {
-        service.allRooms = [{
-            player1: 'player1',
-            player2: '',
-            time: '60'
-        }]
+        service.allRooms = [
+            {
+                player1: 'player1',
+                player2: '',
+                time: '60',
+            },
+        ];
 
         service.updateRoomView();
-        
+
         expect(service.numberOfRooms).toBe(1);
     });
 

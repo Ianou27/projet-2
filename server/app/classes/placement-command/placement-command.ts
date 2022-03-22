@@ -11,7 +11,7 @@ import {
     MINIMUM_ROW_COLUMN_COMPARISON_LIMIT,
 } from './../../../../common/constants/general-constants';
 import { Tile } from './../../../../common/tile/Tile';
-import { PlacementInformations } from './../../placement-informations';
+import { PlacementInformations } from './../../../assets/placement-informations';
 import { Game } from './../game/game';
 import { PointsCalculator } from './../points-calculator/points-calculator';
 

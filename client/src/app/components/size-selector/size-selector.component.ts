@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ResizerService } from '@app/services/resizer.service';
+import { ResizerService } from '@app/services/resizer/resizer.service';
 
 @Component({
     selector: 'app-size-selector',

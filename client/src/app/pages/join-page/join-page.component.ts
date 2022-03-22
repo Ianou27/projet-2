@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { WaitingPlayerDialogComponent } from '@app/components/waiting-player-dialog/waiting-player-dialog.component';
 import { WaitingPlayerTwoComponent } from '@app/components/waiting-player-two/waiting-player-two.component';
-import { ChatService } from '@app/services/chat.service';
+import { ChatService } from '@app/services/chat/chat.service';
 
 @Component({
     selector: 'app-join-page',

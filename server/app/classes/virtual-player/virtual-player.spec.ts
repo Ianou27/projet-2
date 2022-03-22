@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
-import { PlacementInformations } from '@app/placement-informations';
 import { DatabaseService } from '@app/services/best-score/best-score.services';
 import { Timer } from '@app/services/timer-manager/timer-manager.service';
 import { CaseProperty } from '@common/assets/case-property';
 import { letterValue } from '@common/assets/reserve-letters';
 import { Orientation } from '@common/orientation';
 import { Tile } from '@common/tile/Tile';
+import { PlacementInformations } from 'assets/placement-informations';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
 import * as io from 'socket.io';

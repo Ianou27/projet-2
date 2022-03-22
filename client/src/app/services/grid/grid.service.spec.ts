@@ -2,7 +2,7 @@
 import { TestBed } from '@angular/core/testing';
 import { WORD_2X } from '@app/../../../common/constants/tile-information';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
-import { GridService } from '@app/services/grid.service';
+import { GridService } from '@app/services/grid/grid.service';
 
 describe('GridService', () => {
     let service: GridService;

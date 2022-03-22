@@ -1,5 +1,5 @@
 import { Component, HostListener } from '@angular/core';
-import { ChatService } from '@app/services/chat.service';
+import { ChatService } from '@app/services/chat/chat.service';
 import { TileHolderService } from '@app/services/tile-holder/tile-holder.service';
 import { CommandType } from './../../../../../common/command-type';
 import { INDEX_OF_NOT_FOUND, NUMBER_TILE_HOLDER } from './../../../../../common/constants/general-constants';

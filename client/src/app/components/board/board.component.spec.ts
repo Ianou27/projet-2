@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { BoardService } from '@app/services/board.service';
-import { ChatService } from '@app/services/chat.service';
+import { BoardService } from '@app/services/board/board.service';
+import { ChatService } from '@app/services/chat/chat.service';
 import { CaseProperty } from './../../../../../common/assets/case-property';
 import { letterValue } from './../../../../../common/assets/reserve-letters';
 import { Tile } from './../../../../../common/tile/Tile';

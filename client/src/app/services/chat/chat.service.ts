@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import { LetterScore } from './../../../../common/assets/reserve-letters';
-import { CommandType } from './../../../../common/command-type';
-import { NUMBER_MAXIMUM_CLUE_COMMAND } from './../../../../common/constants/general-constants';
-import { Tile } from './../../../../common/tile/Tile';
-import { InfoToJoin, Message, Room } from './../../../../common/types';
-import { INITIAL_NUMBER_LETTERS_RESERVE, NUMBER_LETTER_TILEHOLDER } from './../constants/general-constants';
-import { BoardService } from './board.service';
-import { SocketClientService } from './socket-client.service';
-import { TileHolderService } from './tile-holder/tile-holder.service';
+import { LetterScore } from './../../../../../common/assets/reserve-letters';
+import { CommandType } from './../../../../../common/command-type';
+import { NUMBER_MAXIMUM_CLUE_COMMAND } from './../../../../../common/constants/general-constants';
+import { Tile } from './../../../../../common/tile/Tile';
+import { InfoToJoin, Message, Room } from './../../../../../common/types';
+import { INITIAL_NUMBER_LETTERS_RESERVE, NUMBER_LETTER_TILEHOLDER } from './../../constants/general-constants';
+import { BoardService } from './../board/board.service';
+import { SocketClientService } from './../socket-client/socket-client.service';
+import { TileHolderService } from './../tile-holder/tile-holder.service';
 @Injectable({
     providedIn: 'root',
 })
@@ -41,7 +41,7 @@ export class ChatService {
     gameOver: boolean = false;
     winner: string = '';
     timer: number = 0;
-    numberOfRooms: number =0;
+    numberOfRooms: number = 0;
 
     constructor(public socketService: SocketClientService, public boardService: BoardService, public tileHolderService: TileHolderService) {}
 
@@ -258,15 +258,13 @@ export class ChatService {
         this.socketService.socket.emit('convertToSoloGame');
     }
 
-    updateRoomView(){
-        let counter =0
-        this.allRooms.forEach((room)=>{
-            if(room.player2 === ''){
+    updateRoomView() {
+        let counter = 0;
+        this.allRooms.forEach((room) => {
+            if (room.player2 === '') {
                 counter++;
             }
-        })
+        });
         this.numberOfRooms = counter;
     }
-
-   
 }

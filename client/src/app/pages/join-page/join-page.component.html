@@ -115,20 +115,10 @@
                 </marquee>
             </mat-toolbar>
             <div>
-                <div *ngIf="this.chatService.numberOfRooms !==0 " class="spaceButton">
+                <div *ngIf="this.chatService.numberOfRooms !== 0" class="spaceButton">
                     <button mat-raised-button color="primary" [disabled]="this.chatService.numberOfRooms === 1" (click)="randomJoin()">
                         Placement aléatoire
                     </button>
-                    <!-- <a
-                        mat-fab
-                        color="primary"
-                        matTooltip="Placement aléatoire"
-                        matTooltipPosition="right"
-                        [disabled]="this.chatService.allRooms.length === 1"
-                        (click)="randomJoin()"
-                    >
-                        <mat-icon>sync</mat-icon>
-                    </a> -->
                 </div>
 
                 <mat-accordion *ngFor="let room of this.chatService.allRooms" multi>

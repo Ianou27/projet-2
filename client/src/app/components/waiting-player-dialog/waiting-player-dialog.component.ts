@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { JoinPageComponent } from '@app/pages/join-page/join-page.component';
-import { ChatService } from '@app/services/chat.service';
+import { ChatService } from '@app/services/chat/chat.service';
 
 @Component({
     selector: 'app-waiting-player-dialog',

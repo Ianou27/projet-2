@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { QuitGameDialogComponent } from '@app/components/quit-game-dialog/quit-game-dialog.component';
 import { LETTERS_GRID, NUMBERS_GRID } from '@app/constants/general-constants';
 import { JoinPageComponent } from '@app/pages/join-page/join-page.component';
-import { ChatService } from '@app/services/chat.service';
+import { ChatService } from '@app/services/chat/chat.service';
 
 @Component({
     selector: 'app-game-page',

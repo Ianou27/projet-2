@@ -1,8 +1,8 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from '@app/../../../common/constants/board';
 import { Vec2 } from '@app/../../../common/vec2';
-import { GridService } from '@app/services/grid.service';
-import { ResizerService } from '@app/services/resizer.service';
+import { GridService } from '@app/services/grid/grid.service';
+import { ResizerService } from '@app/services/resizer/resizer.service';
 
 @Component({
     selector: 'app-play-area',
