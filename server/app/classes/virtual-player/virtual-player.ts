@@ -225,8 +225,7 @@ export class VirtualPlayer {
         return tilesShuffled;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    static shuffleArray(array: any[]): any[] {
+    static shuffleArray<T>(array: T[]): T[] {
         return array
             .map((value) => ({ value, sort: Math.random() }))
             .sort((a, b) => a.sort - b.sort)
