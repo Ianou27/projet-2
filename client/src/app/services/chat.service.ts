@@ -204,7 +204,7 @@ export class ChatService {
         const command = this.roomMessage.split(' ');
         if (command[0].charAt(0) === '!' && !this.gameOver) {
             switch (command[0]) {
-                case '!echanger': {
+                case '!échanger': {
                     this.socketService.send('echanger', command);
                     break;
                 }

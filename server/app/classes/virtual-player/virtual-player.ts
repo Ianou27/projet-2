@@ -260,7 +260,7 @@ export class VirtualPlayer {
             return '!passer'.split(' ');
         }
         const virtualPlayerLetters = game.playerTurn().lettersToStringArray();
-        let command = '!echanger ';
+        let command = '!échanger ';
 
         const letters = virtualPlayerLetters
             .sort(() => Math.random() - Math.random())

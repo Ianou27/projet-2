@@ -37,38 +37,38 @@ describe('Exchange Command', () => {
     });
 
     it('method validatedExchangeCommandFormat should return false if its not compose of 2 terms', () => {
-        const commandNotValid = '!echanger aaabbbbcccc aa';
+        const commandNotValid = '!échanger aaabbbbcccc aa';
         const validation = ExchangeCommand.validatedExchangeCommandFormat(commandNotValid.split(' '));
         expect(validation).to.equals(false);
     });
 
     it('method validatedExchangeCommandFormat should return true if it correspond to the format of an exchange', () => {
-        const commandNotValid = '!echanger aabb';
+        const commandNotValid = '!échanger aabb';
         const validation = ExchangeCommand.validatedExchangeCommandFormat(commandNotValid.split(' '));
         expect(validation).to.equals(true);
     });
 
     it('method validatedExchangeCommandBoard should return false if the reserve has less than 7 letters', () => {
-        const commandNotValid = '!echanger aabb';
+        const commandNotValid = '!échanger aabb';
         game.reserveLetters.letters = ['a', 'b', 'c'];
         const validation = ExchangeCommand.validatedExchangeCommandBoard(commandNotValid.split(' '), game);
         expect(validation).to.equals(false);
     });
 
     it('method validatedExchangeCommandBoard should return false if the player try to exchange letters he doesnt have', () => {
-        const commandNotValid = '!echanger zaa';
+        const commandNotValid = '!échanger zaa';
         const validation = ExchangeCommand.validatedExchangeCommandBoard(commandNotValid.split(' '), game);
         expect(validation).to.equals(false);
     });
 
     it('method validatedExchangeCommandBoard should return true if it contains letters of the player and the reserve has more than 7 letters', () => {
-        const commandValid = '!echanger aaabb*';
+        const commandValid = '!échanger aaabb*';
         const validation = ExchangeCommand.validatedExchangeCommandFormat(commandValid.split(' '));
         expect(validation).to.equals(true);
     });
 
     it('method exchangeLetters should be able to change *', () => {
-        const commandValid = '!echanger *';
+        const commandValid = '!échanger *';
         const lettersRemainingExpect = ['A', 'A', 'A', 'B', 'B', 'B', 'C'];
         game.reserveLetters.letters = ['C', 'C', 'C', 'C', 'C', 'C', 'C'];
         game.exchangeLetters(commandValid.split(' '));
@@ -77,7 +77,7 @@ describe('Exchange Command', () => {
     });
 
     it('method exchangeLetters should be able to change an occurrence of a letter', () => {
-        const commandValid = '!echanger a';
+        const commandValid = '!échanger a';
         const lettersRemainingExpect = ['D', 'A', 'A', 'B', 'B', 'B', '*'];
         game.reserveLetters.letters = ['D', 'D', 'D', 'D', 'D', 'D', 'D'];
         game.exchangeLetters(commandValid.split(' '));
@@ -86,7 +86,7 @@ describe('Exchange Command', () => {
     });
 
     it('method exchangeLetters should not change the number of letters in the reserve', () => {
-        const commandValid = '!echanger aab';
+        const commandValid = '!échanger aab';
         const initialNumberLetters = game.reserveLetters.letters.length;
         game.exchangeLetters(commandValid.split(' '));
         const finalNumberLetters = game.reserveLetters.letters.length;

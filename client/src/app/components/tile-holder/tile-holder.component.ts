@@ -94,7 +94,7 @@ export class TileHolderComponent {
     }
 
     exchange() {
-        let command = '!echanger ';
+        let command = '!échanger ';
         const letters = this.lettersToExchange.join('');
         command += letters;
         this.chatService.roomMessage = command;

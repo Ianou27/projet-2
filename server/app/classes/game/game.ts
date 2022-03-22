@@ -120,12 +120,12 @@ export class Game {
 
     placementBot(command: string[]) {
         switch (command[0]) {
-            case '!echanger': {
+            case '!échanger': {
                 this.exchangeLetters(command);
                 this.sio.to(this.player1.user.room).emit('modification', this.gameBoard.cases, this.playerTurn().name);
                 this.sio.to(this.player1.user.id).emit('roomMessage', {
                     username: 'Server',
-                    message: 'votre adversaire a echangé ' + command[1].length + ' lettres',
+                    message: 'Votre adversaire a échangé ' + command[1].length + ' lettres',
                     player: 'server',
                 });
                 break;

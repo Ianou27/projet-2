@@ -244,7 +244,7 @@ describe('SocketManager service tests', () => {
             return true;
         });
         const reserveSpy = sinon.spy(service.gameManager, 'reserveCommandValid');
-        clientSocket.emit('reserve', ['!reserve']);
+        clientSocket.emit('reserve', ['!réserve']);
         setTimeout(() => {
             assert(reserveSpy.called);
             done();
@@ -256,7 +256,7 @@ describe('SocketManager service tests', () => {
             return false;
         });
         const reserveSpy = sinon.spy(service.gameManager, 'reserveCommandValid');
-        clientSocket.emit('reserve', ['!reserve']);
+        clientSocket.emit('reserve', ['!réserve']);
         setTimeout(() => {
             assert(reserveSpy.called);
             done();
@@ -503,7 +503,7 @@ describe('SocketManager service tests', () => {
             return gameObj;
         });
         const passerSpy = sinon.spy(service.identification, 'getGame');
-        clientSocket.emit('echanger', [['!echanger '], ['aaa']]);
+        clientSocket.emit('echanger', [['!échanger '], ['aaa']]);
         setTimeout(() => {
             assert(passerSpy.called);
             done();
@@ -542,7 +542,7 @@ describe('SocketManager service tests', () => {
             return gameObj;
         });
         const passerSpy = sinon.spy(service.identification, 'getGame');
-        clientSocket.emit('echanger', [['!echanger '], ['aaa']]);
+        clientSocket.emit('echanger', [['!échanger '], ['aaa']]);
         setTimeout(() => {
             assert(passerSpy.called);
             done();
@@ -581,7 +581,7 @@ describe('SocketManager service tests', () => {
             return gameObj;
         });
         const passerSpy = sinon.spy(service.identification, 'getGame');
-        clientSocket.emit('echanger', [['!echanger '], ['aaa']]);
+        clientSocket.emit('echanger', [['!échanger '], ['aaa']]);
         setTimeout(() => {
             assert(passerSpy.called);
             done();
