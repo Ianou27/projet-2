@@ -1,10 +1,10 @@
 import { CaseProperty } from './../../../../common/assets/case-property';
 import { letterNumber, letterValue } from './../../../../common/assets/reserve-letters';
-import { NUMBER_TILEHOLDER } from './../../../../common/constants/general-constants';
+import { NUMBER_TILE_HOLDER } from './../../../../common/constants/general-constants';
 import { Tile } from './../../../../common/tile/Tile';
 
 export class ReserveLetters {
-    letters: string[] = [];
+    letters: string[];
 
     constructor() {
         this.letters = this.initializeReserveLetters();
@@ -23,7 +23,7 @@ export class ReserveLetters {
 
     randomLettersInitialization(): Tile[] {
         const letters: Tile[] = [];
-        for (let i = 0; i < NUMBER_TILEHOLDER; i++) {
+        for (let i = 0; i < NUMBER_TILE_HOLDER; i++) {
             const tile: Tile = new Tile(CaseProperty.Normal, 0, i);
             tile.letter = this.getRandomLetterReserve();
             tile.value = letterValue[tile.letter];

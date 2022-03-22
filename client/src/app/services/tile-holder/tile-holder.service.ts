@@ -9,12 +9,13 @@ import { Tile } from './../../../../../common/tile/Tile';
 })
 export class TileHolderService {
     tileHolder: Tile[];
-    removedLetters: string[] = [];
+    removedLetters: string[];
     constructor() {
         this.tileHolder = new Array(NUMBER_LETTER_TILEHOLDER);
         for (let i = 0; i < NUMBER_LETTER_TILEHOLDER; i++) {
             this.tileHolder[i] = new Tile(CaseProperty.Normal, 0, i);
         }
+        this.removedLetters = [];
     }
 
     removeLetter(letter: string) {

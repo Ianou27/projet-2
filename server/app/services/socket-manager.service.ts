@@ -10,13 +10,16 @@ import { IdManager } from './id-manager.service';
 import { RoomManager } from './room-manager.service';
 
 export class SocketManager {
-    gameManager: GameManager = new GameManager();
-    identification: IdManager = new IdManager();
-    roomManager: RoomManager = new RoomManager();
+    gameManager: GameManager;
+    identification: IdManager;
+    roomManager: RoomManager;
     sio: io.Server;
     timeLeft: number;
     constructor(server: http.Server, readonly databaseService: DatabaseService) {
         this.sio = new io.Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
+        this.gameManager = new GameManager();
+        this.identification = new IdManager();
+        this.roomManager = new RoomManager();
     }
 
     async handleSockets(): Promise<void> {

@@ -58,7 +58,7 @@ export class GameBoardService {
         return nextTile;
     }
 
-    isTopOrRight(currentTile: Tile, orientation: string) {
+    isTopOrRight(currentTile: Tile, orientation: string): boolean {
         if (orientation === 'h') {
             if (currentTile.positionX === COLUMN_ROWS_MINIMUM) return true;
         } else if (currentTile.positionY === COLUMN_ROWS_MINIMUM) {
@@ -67,7 +67,7 @@ export class GameBoardService {
         return false;
     }
 
-    isBottomOrLeft(currentTile: Tile, orientation: string) {
+    isBottomOrLeft(currentTile: Tile, orientation: string): boolean {
         if (orientation === 'h') {
             if (currentTile.positionX === MAXIMUM_ROW_COLUMN) return true;
         } else if (currentTile.positionY === MAXIMUM_ROW_COLUMN) {

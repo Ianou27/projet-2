@@ -1,6 +1,6 @@
 import { CaseProperty } from './../../../../common/assets/case-property';
 import {
-    NUMBER_TILEHOLDER,
+    NUMBER_TILE_HOLDER,
     POINTS_SEVEN_LETTERS_PLACEMENT,
     WORD_LETTER_2X_MULTIPLIER,
     WORD_LETTER_3X_MULTIPLIER,
@@ -23,7 +23,7 @@ export class PointsCalculator {
             }
             total += totalOneWord * wordMultiplier;
         }
-        if (newTile.length === NUMBER_TILEHOLDER) {
+        if (newTile.length === NUMBER_TILE_HOLDER) {
             total += POINTS_SEVEN_LETTERS_PLACEMENT;
         }
         return total;
