@@ -151,8 +151,8 @@ describe('ChatService', () => {
         expect(service.roomMessage).toBe('');
     });
 
-    it('sendToRoom() when !echanger', () => {
-        const command = '!echanger aa';
+    it('sendToRoom() when !échanger', () => {
+        const command = '!échanger aa';
         service.roomMessage = command;
         const sendSpy = spyOn(service.socketService, 'send');
         service.sendToRoom();
@@ -160,12 +160,12 @@ describe('ChatService', () => {
         expect(service.roomMessage).toBe('');
     });
 
-    it('sendToRoom() when !reserve', () => {
-        const command = '!reserve ';
+    it('sendToRoom() when !réserve', () => {
+        const command = '!réserve ';
         service.roomMessage = command;
         const sendSpy = spyOn(service.socketService, 'send');
         service.sendToRoom();
-        expect(sendSpy).toHaveBeenCalledWith('reserve', command.split(' '));
+        expect(sendSpy).toHaveBeenCalledWith('réserve', command.split(' '));
         expect(service.roomMessage).toBe('');
     });
 
@@ -250,8 +250,10 @@ describe('ChatService', () => {
         });
 
         it('should handle commandValidated event', () => {
+            const board: Tile[][] = [];
+            const tileHolder: Tile[] = [];
             const pushSpy = spyOn(service.roomMessages, 'push');
-            socketTestHelper.peerSideEmit('commandValidated');
+            socketTestHelper.peerEmitThreeParams('commandValidated', 'hello', board, tileHolder);
             expect(pushSpy).toHaveBeenCalled();
         });
 
