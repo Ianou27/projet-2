@@ -62,10 +62,10 @@ describe('Virtual Player', () => {
         expect(probability).greaterThanOrEqual(1);
     });
 
-    it('method exchangeLettersCommand should return an empty array of string if the reserveLetters is empty', () => {
+    it('method exchangeLettersCommand should return command passer if the reserveLetters is empty', () => {
         game.reserveLetters.letters = [];
         const result = VirtualPlayer.exchangeLettersCommand(game);
-        expect(result[0]).equal(undefined);
+        expect(result[0]).equal('!passer');
     });
 
     it('method exchangeLettersCommand should return a command exchange with the letters of the player', () => {
@@ -73,7 +73,7 @@ describe('Virtual Player', () => {
         result[1].split('').forEach((element) => {
             expect(game.playerTurn().lettersToStringArray().includes(element.toUpperCase())).to.equal(true);
         });
-        expect(result[0]).equal('!echanger');
+        expect(result[0]).equal('!échanger');
     });
 
     it('method getCombinations should call getRandomLetterForBlank if the parameter contains a *', () => {

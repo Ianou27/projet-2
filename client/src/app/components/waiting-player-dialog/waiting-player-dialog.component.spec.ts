@@ -65,4 +65,13 @@ describe('WaitingPlayerDialogComponent', () => {
         expect(component.chatService.playerJoined).toBeFalsy();
         expect(refusedSpy).toHaveBeenCalled();
     });
+
+    it('convertToSolo() should call convertToSoloGame() in the chatService and close all dialogs', () => {
+        // eslint-disable-next-line dot-notation
+        const closeSpy = spyOn(component['multiplayerDialog'], 'closeAll');
+        const refusedSpy = spyOn(component.chatService, 'convertToSoloGame');
+        component.convertToSolo();
+        expect(refusedSpy).toHaveBeenCalled();
+        expect(closeSpy).toHaveBeenCalled();
+    });
 });

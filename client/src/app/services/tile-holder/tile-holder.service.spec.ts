@@ -42,6 +42,15 @@ describe('TileHolderService', () => {
         expect(service.tileHolder.length).toBe(7);
     });
 
+    it('removeLetter should handle the * case', () => {
+        const star: Tile = new Tile(CaseProperty.Normal, 0, 0);
+        star.letter = '*';
+        star.value = letterValue[star.letter];
+        service.tileHolder[6] = star;
+        service.removeLetter('B');
+        expect(service.tileHolder.length).toBe(6);
+    });
+
     it('addLetter should add a new Tile', () => {
         service.removedLetters = ['A', 'B'];
         expect(service.tileHolder.length).toBe(7);
@@ -68,5 +77,21 @@ describe('TileHolderService', () => {
         const answer = service.letterInTileHolder('a');
         expect(answer[0]).toBeTrue();
         expect(answer[1]).toEqual(0);
+    });
+
+    it('letterInTileHolder should handle case where given letter is not in tile', () => {
+        const answer = service.letterInTileHolder('z');
+        expect(answer[0]).toBeFalse();
+        expect(answer[1]).toEqual(0);
+    });
+
+    it('letterInTileHolder should handle the * case', () => {
+        const star: Tile = new Tile(CaseProperty.Normal, 0, 0);
+        star.letter = '*';
+        star.value = letterValue[star.letter];
+        service.tileHolder[6] = star;
+        const answer = service.letterInTileHolder('B');
+        expect(answer[0]).toBeTrue();
+        expect(answer[1]).toEqual(6);
     });
 });

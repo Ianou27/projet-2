@@ -175,12 +175,12 @@ export class SocketManager {
                 }
             });
 
-            socket.on('reserve', (command: string[]) => {
+            socket.on('réserve', (command: string[]) => {
                 const game = this.identification.getGame(socket.id);
                 if (this.gameManager.reserveCommandValid(command)) {
                     this.sio.to(socket.id).emit('reserveLetters', this.gameManager.reserve(game));
                 } else {
-                    this.sio.to(socket.id).emit('reserveValidated', 'Format invalide');
+                    this.sio.to(socket.id).emit('commandValidated', 'Format invalide');
                 }
             });
             socket.on('forceDisconnect', async () => {
@@ -247,12 +247,12 @@ export class SocketManager {
                     if (verification === 'valide') {
                         this.sio.to(socket.id).emit('roomMessage', {
                             username: 'Server',
-                            message: 'vous avez echangé les lettres ' + command[1],
+                            message: 'Vous avez échangé les lettres ' + command[1],
                             player: 'server',
                         });
                         this.sio.to(player2).emit('roomMessage', {
                             username: 'Server',
-                            message: 'votre adversaire a echangé ' + command[1].length + ' lettres',
+                            message: 'Votre adversaire a échangé ' + command[1].length + ' lettres',
                             player: 'server',
                         });
                         this.gameManager.exchange(command, game);
