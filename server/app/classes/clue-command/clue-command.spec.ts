@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
-import { Timer } from '@app/services/timer-manager.service';
+import { Timer } from '@app/services/timer-manager/timer-manager.service';
 import { CaseProperty } from '@common/assets/case-property';
 import { letterValue } from '@common/assets/reserve-letters';
 import { Tile } from '@common/tile/Tile';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
 import { Game } from './../game/game';
-import { PlacementCommand } from './../placementCommand/placement-command';
+import { PlacementCommand } from './../placement-command/placement-command';
 import { Player } from './../player/player';
 import { VirtualPlayer } from './../virtual-player/virtual-player';
 import { ClueCommand } from './clue-command';

@@ -1,4 +1,4 @@
-import { DatabaseService } from '@app/services/best-score.services';
+import { DatabaseService } from '@app/services/best-score/best-score.services';
 import * as io from 'socket.io';
 import { CommandType } from './../../../../common/command-type';
 import {
@@ -10,11 +10,11 @@ import {
 } from './../../../../common/constants/general-constants';
 import { GameState } from './../../../../common/gameState';
 import { User } from './../../../../common/types';
-import { GameBoardService } from './../../services/game-board.service';
-import { Timer } from './../../services/timer-manager.service';
-import { PlacementCommand } from './../placementCommand/placement-command';
+import { GameBoardService } from './../../services/game-board/game-board.service';
+import { Timer } from './../../services/timer-manager/timer-manager.service';
+import { PlacementCommand } from './../placement-command/placement-command';
 import { Player } from './../player/player';
-import { ReserveLetters } from './../reserveLetters/reserve-letters';
+import { ReserveLetters } from './../reserve-letters/reserve-letters';
 import { VirtualPlayer } from './../virtual-player/virtual-player';
 export class Game {
     gameBoard: GameBoardService;

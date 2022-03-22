@@ -15,7 +15,7 @@ import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
 import { io as ioClient, Socket } from 'socket.io-client';
 import { Container } from 'typedi';
-import { DatabaseService } from './best-score.services';
+import { DatabaseService } from './../best-score/best-score.services';
 import { SocketManager } from './socket-manager.service';
 
 const RESPONSE_DELAY = 200;

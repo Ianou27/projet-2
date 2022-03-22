@@ -1,10 +1,10 @@
 import { Tile } from '@common/tile/Tile';
 import { Room } from '@common/types';
 import * as io from 'socket.io';
-import { beginnerBotName } from './../../assets/bot-name';
-import { Game } from './../classes/game/game';
-import { DatabaseService } from './best-score.services';
-import { IdManager } from './id-manager.service';
+import { beginnerBotName } from './../../../assets/bot-name';
+import { Game } from './../../classes/game/game';
+import { DatabaseService } from './../best-score/best-score.services';
+import { IdManager } from './../id-manager/id-manager.service';
 export class RoomManager {
     createRoom(username: string, room: string, socketId: string, identification: IdManager, timer: string, databaseService: DatabaseService) {
         const user = {

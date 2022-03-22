@@ -24,7 +24,7 @@ import * as fs from 'fs';
 import { rowLetter } from './../../../../common/assets/row';
 import { CommandType } from './../../../../common/command-type';
 import { Game } from './../game/game';
-import { PlacementCommand } from './../placementCommand/placement-command';
+import { PlacementCommand } from './../placement-command/placement-command';
 
 export class VirtualPlayer {
     static findAllWords(letters: string[], letterOnBoard: string): string[] {

@@ -1,4 +1,4 @@
-import { Timer } from '@app/services/timer-manager.service';
+import { Timer } from '@app/services/timer-manager/timer-manager.service';
 import { CaseProperty } from '@common/assets/case-property';
 import { letterValue } from '@common/assets/reserve-letters';
 import { Tile } from '@common/tile/Tile';

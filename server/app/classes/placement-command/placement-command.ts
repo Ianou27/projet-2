@@ -13,7 +13,7 @@ import {
 import { Tile } from './../../../../common/tile/Tile';
 import { PlacementInformations } from './../../placement-informations';
 import { Game } from './../game/game';
-import { PointsCalculator } from './../pointsCalculator/points-calculator';
+import { PointsCalculator } from './../points-calculator/points-calculator';
 
 export class PlacementCommand {
     static dictionaryArray: string[] = JSON.parse(fs.readFileSync('./assets/dictionnary.json').toString()).words;

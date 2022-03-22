@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { Game } from '@app/classes/game/game';
-import { RoomManager } from '@app/services/room-manager.service';
+import { RoomManager } from '@app/services/room-manager/room-manager.service';
 import { Room, User } from '@common/types';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
 import * as io from 'socket.io';
-import { DatabaseService } from './best-score.services';
-import { IdManager } from './id-manager.service';
+import { DatabaseService } from './../best-score/best-score.services';
+import { IdManager } from './../id-manager/id-manager.service';
 
 describe('Room Manager tests', () => {
     const roomManager = new RoomManager();

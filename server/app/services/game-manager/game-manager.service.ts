@@ -1,11 +1,11 @@
-import { ClueCommand } from '@app/classes/clueCommand/clue-command';
-import { LetterScore } from './../../../common/assets/reserve-letters';
-import { MAXIMUM_CHARACTERS_MESSAGE } from './../../../common/constants/general-constants';
-import { ExchangeCommand } from './../classes/exchangeCommand/exchange-command';
-import { Game } from './../classes/game/game';
-import { PassCommand } from './../classes/passCommand/pass-command';
-import { PlacementCommand } from './../classes/placementCommand/placement-command';
-import { ReserveCommand } from './../classes/reserveCommand/reserve-command';
+import { ClueCommand } from '@app/classes/clue-command/clue-command';
+import { LetterScore } from './../../../../common/assets/reserve-letters';
+import { MAXIMUM_CHARACTERS_MESSAGE } from './../../../../common/constants/general-constants';
+import { ExchangeCommand } from './../../classes/exchange-command/exchange-command';
+import { Game } from './../../classes/game/game';
+import { PassCommand } from './../../classes/pass-command/pass-command';
+import { PlacementCommand } from './../../classes/placement-command/placement-command';
+import { ReserveCommand } from './../../classes/reserve-command/reserve-command';
 
 export class GameManager {
     placeWord(command: string[], game: Game): string {

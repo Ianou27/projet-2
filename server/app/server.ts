@@ -3,8 +3,8 @@ import { BASE_DIX } from '@common/constants/general-constants';
 import * as http from 'http';
 import { AddressInfo } from 'net';
 import { Service } from 'typedi';
-import { DatabaseService } from './services/best-score.services';
-import { SocketManager } from './services/socket-manager.service';
+import { DatabaseService } from './services/best-score/best-score.services';
+import { SocketManager } from './services/socket-manager/socket-manager.service';
 
 @Service()
 export class Server {

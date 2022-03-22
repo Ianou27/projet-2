@@ -1,6 +1,6 @@
 import * as io from 'socket.io';
-import { NO_TIME_LEFT, ONE_SECOND_MS } from './../../../common/constants/general-constants';
-import { Game } from './../classes/game/game';
+import { NO_TIME_LEFT, ONE_SECOND_MS } from './../../../../common/constants/general-constants';
+import { Game } from './../../classes/game/game';
 
 export class Timer {
     timeLeft: number;

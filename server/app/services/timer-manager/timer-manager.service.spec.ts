@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 import { Game } from '@app/classes/game/game';
 import { Player } from '@app/classes/player/player';
-import { IdManager } from '@app/services/id-manager.service';
+import { IdManager } from '@app/services/id-manager/id-manager.service';
 import { Room } from '@common/types';
 import { expect } from 'chai';
 import * as sinon from 'sinon';

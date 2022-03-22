@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 import { PlacementInformations } from '@app/placement-informations';
-import { DatabaseService } from '@app/services/best-score.services';
-import { Timer } from '@app/services/timer-manager.service';
+import { DatabaseService } from '@app/services/best-score/best-score.services';
+import { Timer } from '@app/services/timer-manager/timer-manager.service';
 import { CaseProperty } from '@common/assets/case-property';
 import { letterValue } from '@common/assets/reserve-letters';
 import { Orientation } from '@common/orientation';
@@ -10,9 +10,9 @@ import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
 import * as io from 'socket.io';
 import { Game } from './../game/game';
-import { PlacementCommand } from './../placementCommand/placement-command';
+import { PlacementCommand } from './../placement-command/placement-command';
 import { Player } from './../player/player';
-import { ReserveLetters } from './../reserveLetters/reserve-letters';
+import { ReserveLetters } from './../reserve-letters/reserve-letters';
 import { VirtualPlayer } from './virtual-player';
 
 interface PlacementScore {

@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 import { Orientation } from '@common/orientation';
 import { expect } from 'chai';
-import { CaseProperty } from './../../../common/assets/case-property';
-import { Tile } from './../../../common/tile/Tile';
+import { CaseProperty } from './../../../../common/assets/case-property';
+import { Tile } from './../../../../common/tile/Tile';
 import { GameBoardService } from './game-board.service';
 
 describe('GameBoard', () => {
