@@ -89,7 +89,6 @@ export class RoomManager {
 
                 this.deleteRoom(socketId, identification);
                 identification.deleteUser(socketId);
-                console.log(identification.users);
             }
         });
 
