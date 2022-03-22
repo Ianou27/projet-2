@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { LetterScore } from './../../../../common/assets/reserve-letters';
+import { CommandType } from './../../../../common/command';
 import { Tile } from './../../../../common/tile/Tile';
 import { InfoToJoin, Message, Room } from './../../../../common/types';
 import { INITIAL_NUMBER_LETTERS_RESERVE, NUMBER_LETTER_TILEHOLDER } from './../constants/general-constants';
@@ -204,23 +205,23 @@ export class ChatService {
         const command = this.roomMessage.split(' ');
         if (command[0].charAt(0) === '!' && !this.gameOver) {
             switch (command[0]) {
-                case '!échanger': {
+                case CommandType.exchange: {
                     this.socketService.send('echanger', command);
                     break;
                 }
-                case '!passer': {
+                case CommandType.pass: {
                     this.socketService.send('passer');
                     break;
                 }
-                case '!placer': {
+                case CommandType.place: {
                     this.socketService.send('placer', command);
                     break;
                 }
-                case '!réserve': {
+                case CommandType.reserve: {
                     this.socketService.send('réserve', command);
                     break;
                 }
-                case '!indice': {
+                case CommandType.clue: {
                     this.socketService.send('indice', command);
                     break;
                 }
