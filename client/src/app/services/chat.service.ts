@@ -206,7 +206,6 @@ export class ChatService {
             switch (command[0]) {
                 case '!echanger': {
                     this.socketService.send('echanger', command);
-
                     break;
                 }
                 case '!passer': {
@@ -217,8 +216,8 @@ export class ChatService {
                     this.socketService.send('placer', command);
                     break;
                 }
-                case '!reserve': {
-                    this.socketService.send('reserve', command);
+                case '!réserve': {
+                    this.socketService.send('réserve', command);
                     break;
                 }
                 case '!indice': {
