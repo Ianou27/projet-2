@@ -207,6 +207,13 @@ describe('BoardComponent', () => {
         expect(nextTile.className).toEqual('writing');
     });
 
+    it('method nextTile should not set the next element writing class if it is last tile', () => {
+        const tile = fixture.debugElement.nativeElement.children[0].children[0].children[14].children[0] as HTMLElement;
+        tile.click();
+        component.nextTile(tile);
+        expect(tile.className).toEqual('writing');
+    });
+
     it('method nextTile should set the next element writing class when orientation is v', () => {
         const tile = fixture.debugElement.nativeElement.children[0].children[0].children[0].children[0] as HTMLElement;
         const nextTile = fixture.debugElement.nativeElement.children[0].children[0].children[1].children[0] as HTMLElement;
@@ -243,18 +250,33 @@ describe('BoardComponent', () => {
         component.chatService.tileHolderService.tileHolder = [tileInTileHolder];
         tile.click();
         const key = 'a';
-        const spy = spyOn<any>(component.boardService, 'removeLetter').and.stub();
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        const spy = spyOn<any>(component.boardService, 'removeLetter').and.callFake(() => {});
         component.placeLetter(key);
         component.removeLetter();
         expect(spy).toHaveBeenCalled();
     });
 
-    it('method removeLetter should set class of last tile to writing', () => {
+    it('method removeLetter should set class of last tile to writing horizontal', () => {
         const tile = fixture.debugElement.nativeElement.children[0].children[0].children[0].children[0] as HTMLElement;
         const tileInTileHolder = new Tile(CaseProperty.Normal, 0, 0);
         tileInTileHolder.letter = 'A';
         tileInTileHolder.value = letterValue[tileInTileHolder.letter];
         component.chatService.tileHolderService.tileHolder = [tileInTileHolder];
+        tile.click();
+        const key = 'a';
+        component.placeLetter(key);
+        component.removeLetter();
+        expect(tile.className).toEqual('writing');
+    });
+
+    it('method removeLetter should set class of last tile to writing vertical', () => {
+        const tile = fixture.debugElement.nativeElement.children[0].children[0].children[0].children[0] as HTMLElement;
+        const tileInTileHolder = new Tile(CaseProperty.Normal, 0, 0);
+        tileInTileHolder.letter = 'A';
+        tileInTileHolder.value = letterValue[tileInTileHolder.letter];
+        component.chatService.tileHolderService.tileHolder = [tileInTileHolder];
+        tile.click();
         tile.click();
         const key = 'a';
         component.placeLetter(key);
@@ -278,7 +300,8 @@ describe('BoardComponent', () => {
         tile.click();
         const key = 'a';
         component.placeLetter(key);
-        const spy = spyOn<any>(component.chatService, 'sendToRoom').and.stub();
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        const spy = spyOn<any>(component.chatService, 'sendToRoom').and.callFake(() => {});
         component.placeWord();
         expect(component.chatService.roomMessage).toEqual('!placer a1h a');
         expect(spy).toHaveBeenCalled();
