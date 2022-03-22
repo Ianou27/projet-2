@@ -216,13 +216,19 @@ describe('Game', () => {
         assert(spy.called);
     });
 
-    it('method surrender should stop the timer', () => {
-        sinon.replace(game.timer, 'stop', () => {
-            return 1;
+    it('method surrender should update dataBase and end game', async () => {
+        
+        sinon.replace(game.databaseService, 'updateBesScoreClassic', async() => {
+            return;
         });
-        const spy = sinon.spy(game.timer, 'stop');
-        game.surrender('abc');
-        assert(spy.called);
+
+        sinon.replace(game.databaseService, 'start', async() => {
+            return null;
+        });
+        await game.surrender('player1');
+        await game.surrender('player2');
+        expect(game.gameState.gameFinished).to.equal(true);
+        
     });
 
     it('method actionVirtualBeginnerPlayer with probability 10 or less should return command pass', () => {
@@ -266,11 +272,5 @@ describe('Game', () => {
         assert(spy.called);
     });
 
-    it('in a solo game, method changeTurnTwoPlayers should let the bot play after 3 sec', () => {
-        const spyCommand = sinon.spy(game, 'actionVirtualBeginnerPlayer');
-        game.player2.hisBot = true;
-        game.passTurn();
-        game.changeTurnTwoPlayers();
-        assert(spyCommand.called);
-    });
+
 });
