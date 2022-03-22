@@ -4,7 +4,7 @@ import { NUMBER_TILEHOLDER } from './../../../../common/constants/general-consta
 import { Tile } from './../../../../common/tile/Tile';
 
 export class ReserveLetters {
-    letters: string[] = [];
+    letters: string[];
 
     constructor() {
         this.letters = this.initializeReserveLetters();

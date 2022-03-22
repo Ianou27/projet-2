@@ -12,8 +12,8 @@ import { ChatService } from '@app/services/chat.service';
     styleUrls: ['./game-page.component.scss'],
 })
 export class GamePageComponent implements OnInit {
-    letters: string[] = LETTERS_GRID;
-    numbers: number[] = NUMBERS_GRID;
+    letters: string[];
+    numbers: number[];
 
     constructor(public dialog: MatDialog, private location: LocationStrategy, public chatService: ChatService) {
         history.pushState(null, '', window.location.href);
@@ -21,6 +21,8 @@ export class GamePageComponent implements OnInit {
             history.pushState(null, '', window.location.href);
             this.openDialog();
         });
+        this.letters = LETTERS_GRID;
+        this.numbers = NUMBERS_GRID;
     }
 
     ngOnInit(): void {

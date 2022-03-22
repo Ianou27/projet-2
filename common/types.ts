@@ -1,3 +1,5 @@
+import { Tile } from './tile/Tile';
+
 export type Room = {
     player1: string;
     player2: string;
@@ -26,3 +28,13 @@ export type BestScore = {
     player: string;
     score: number;
 };
+
+export interface TilePlacementPossible {
+    tile: Tile;
+    orientation: string;
+}
+
+export interface PlacementScore {
+    score: number;
+    command: string;
+}

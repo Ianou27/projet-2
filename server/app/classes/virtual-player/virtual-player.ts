@@ -18,20 +18,11 @@ import {
     THIRD_BOT_PLACEMENT_TOP_LIMIT,
 } from '@common/constants/general-constants';
 import { Tile } from '@common/tile/Tile';
+import { PlacementScore, TilePlacementPossible } from '@common/types';
 import * as fs from 'fs';
 import { rowLetter } from './../../../../common/assets/row';
 import { Game } from './../game/game';
 import { PlacementCommand } from './../placementCommand/placement-command';
-
-interface TilePlacementPossible {
-    tile: Tile;
-    orientation: string;
-}
-
-interface PlacementScore {
-    score: number;
-    command: string;
-}
 
 export class VirtualPlayer {
     static findAllWords(letters: string[], letterOnBoard: string): string[] {

@@ -1,7 +1,7 @@
 import { Component, HostListener } from '@angular/core';
 import { ChatService } from '@app/services/chat.service';
 import { TileHolderService } from '@app/services/tile-holder/tile-holder.service';
-import { NUMBER_TILEHOLDER } from './../../../../../common/constants/general-constants';
+import { INDEX_OF_NOT_FOUND, NUMBER_TILEHOLDER } from './../../../../../common/constants/general-constants';
 
 @Component({
     selector: 'app-tile-holder',
@@ -192,9 +192,9 @@ export class TileHolderComponent {
                 if (x === letter) {
                     return index;
                 }
-                return -1;
+                return INDEX_OF_NOT_FOUND;
             })
-            .filter((x) => x !== -1);
+            .filter((x) => x !== INDEX_OF_NOT_FOUND);
         return indexes;
     }
 
