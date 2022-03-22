@@ -40,6 +40,7 @@ export class ChatService {
     gameOver: boolean = false;
     winner: string = '';
     timer: number = 0;
+    numberOfRooms: number =0;
 
     constructor(public socketService: SocketClientService, public boardService: BoardService, public tileHolderService: TileHolderService) {}
 
@@ -112,6 +113,7 @@ export class ChatService {
 
         this.socketService.on('rooms', (rooms: Room[]) => {
             this.allRooms = rooms;
+            this.updateRoomView();
         });
 
         this.socketService.on('didJoin', (didJoin: boolean) => {
@@ -253,4 +255,16 @@ export class ChatService {
     convertToSoloGame() {
         this.socketService.socket.emit('convertToSoloGame');
     }
+
+    updateRoomView(){
+        let counter =0
+        this.allRooms.forEach((room)=>{
+            if(room.player2 === ''){
+                counter++;
+            }
+        })
+        this.numberOfRooms = counter;
+    }
+
+   
 }

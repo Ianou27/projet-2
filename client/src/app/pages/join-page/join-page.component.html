@@ -115,8 +115,8 @@
                 </marquee>
             </mat-toolbar>
             <div>
-                <div *ngIf="this.chatService.allRooms.length !== 0" class="spaceButton">
-                    <button mat-raised-button color="primary" [disabled]="this.chatService.allRooms.length === 1" (click)="randomJoin()">
+                <div *ngIf="this.chatService.numberOfRooms !==0 " class="spaceButton">
+                    <button mat-raised-button color="primary" [disabled]="this.chatService.numberOfRooms === 1" (click)="randomJoin()">
                         Placement aléatoire
                     </button>
                     <!-- <a
