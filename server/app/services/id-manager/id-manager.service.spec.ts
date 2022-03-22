@@ -1,10 +1,10 @@
 import { Game } from '@app/classes/game/game';
 import { Player } from '@app/classes/player/player';
-import { IdManager } from '@app/services/id-manager.service';
+import { IdManager } from '@app/services/id-manager/id-manager.service';
 import { Room, User } from '@common/types';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
-import { DatabaseService } from './best-score.services';
+import { DatabaseService } from './../best-score/best-score.services';
 
 describe('IdManager tests', () => {
     const idManager = new IdManager();

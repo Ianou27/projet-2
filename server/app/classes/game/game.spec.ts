@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 /* eslint-disable max-len */
-import { DatabaseService } from '@app/services/best-score.services';
-import { GameBoardService } from '@app/services/game-board.service';
-import { Timer } from '@app/services/timer-manager.service';
+import { DatabaseService } from '@app/services/best-score/best-score.services';
+import { GameBoardService } from '@app/services/game-board/game-board.service';
+import { Timer } from '@app/services/timer-manager/timer-manager.service';
 import { CaseProperty } from '@common/assets/case-property';
 import { letterValue } from '@common/assets/reserve-letters';
 import { Tile } from '@common/tile/Tile';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
 import * as io from 'socket.io';
-import { PlacementCommand } from './../placementCommand/placement-command';
+import { PlacementCommand } from './../placement-command/placement-command';
 import { Player } from './../player/player';
 import { VirtualPlayer } from './../virtual-player/virtual-player';
 import { Game } from './game';
@@ -217,18 +217,16 @@ describe('Game', () => {
     });
 
     it('method surrender should update dataBase and end game', async () => {
-        
-        sinon.replace(game.databaseService, 'updateBesScoreClassic', async() => {
+        sinon.replace(game.databaseService, 'updateBesScoreClassic', async () => {
             return;
         });
 
-        sinon.replace(game.databaseService, 'start', async() => {
+        sinon.replace(game.databaseService, 'start', async () => {
             return null;
         });
         await game.surrender('player1');
         await game.surrender('player2');
         expect(game.gameState.gameFinished).to.equal(true);
-        
     });
 
     it('method actionVirtualBeginnerPlayer with probability 10 or less should return command pass', () => {
@@ -271,6 +269,4 @@ describe('Game', () => {
         game.placementBot(command.split(' '));
         assert(spy.called);
     });
-
-
 });

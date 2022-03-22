@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-magic-numbers */
 import { TestBed } from '@angular/core/testing';
 import { CaseProperty } from './../../../../../common/assets/case-property';
 import { letterValue } from './../../../../../common/assets/reserve-letters';

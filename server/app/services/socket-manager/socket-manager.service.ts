@@ -4,10 +4,10 @@
 import { InfoToJoin, Room } from '@common/types';
 import * as http from 'http';
 import * as io from 'socket.io';
-import { DatabaseService } from './best-score.services';
-import { GameManager } from './game-manager.service';
-import { IdManager } from './id-manager.service';
-import { RoomManager } from './room-manager.service';
+import { DatabaseService } from './../best-score/best-score.services';
+import { GameManager } from './../game-manager/game-manager.service';
+import { IdManager } from './../id-manager/id-manager.service';
+import { RoomManager } from './../room-manager/room-manager.service';
 
 export class SocketManager {
     gameManager: GameManager;

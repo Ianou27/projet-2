@@ -1,5 +1,5 @@
-import { Room, User } from './../../../common/types';
-import { Game } from './../classes/game/game';
+import { Room, User } from './../../../../common/types';
+import { Game } from './../../classes/game/game';
 
 export class IdManager {
     users: User[] = [];
@@ -12,7 +12,7 @@ export class IdManager {
         this.games.forEach((game) => {
             if (game.player1.user.username === username) {
                 id = game.player1.user.id;
-            } else if (game.player2.user.username === username) {
+            } else if (game.player2 !== undefined && game.player2.user.username === username) {
                 id = game.player2.user.id;
             }
         });

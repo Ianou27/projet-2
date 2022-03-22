@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 /* eslint-disable max-lines */
-import { DatabaseService } from '@app/services/best-score.services';
+import { DatabaseService } from '@app/services/best-score/best-score.services';
 import { CaseProperty } from '@common/assets/case-property';
 import { letterValue } from '@common/assets/reserve-letters';
 import { Tile } from '@common/tile/Tile';
@@ -8,9 +8,9 @@ import { assert, expect } from 'chai';
 import * as fs from 'fs';
 import * as sinon from 'sinon';
 import { Game } from './../game/game';
-import { PlacementCommand } from './../placementCommand/placement-command';
 import { Player } from './../player/player';
-import { PointsCalculator } from './../pointsCalculator/points-calculator';
+import { PointsCalculator } from './../points-calculator/points-calculator';
+import { PlacementCommand } from './placement-command';
 
 describe('Placement Command', () => {
     let game: Game;

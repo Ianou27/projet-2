@@ -1,3 +1,4 @@
+/* eslint-disable dot-notation */
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable max-lines */
 // import { Game } from '@app/classes/game/game';
@@ -14,7 +15,7 @@ import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
 import { io as ioClient, Socket } from 'socket.io-client';
 import { Container } from 'typedi';
-import { DatabaseService } from './best-score.services';
+import { DatabaseService } from './../best-score/best-score.services';
 import { SocketManager } from './socket-manager.service';
 
 const RESPONSE_DELAY = 200;
@@ -95,7 +96,7 @@ describe('SocketManager service tests', () => {
             player2: 's',
             time: '60',
         };
-        service.identification.rooms=[roomObject];
+        service.identification.rooms = [roomObject];
         const infoObj = {
             username: 'username',
             roomObj: roomObject,
@@ -117,7 +118,7 @@ describe('SocketManager service tests', () => {
             player2: 's',
             time: '60',
         };
-        service.identification.rooms=[roomObject];
+        service.identification.rooms = [roomObject];
         const infoObj = {
             username: 'username',
             roomObj: roomObject,
@@ -132,7 +133,6 @@ describe('SocketManager service tests', () => {
             done();
         }, RESPONSE_DELAY);
     });
-
 
     it('should handle a roomMessage event', (done) => {
         const message = 'HELLO';
@@ -155,7 +155,7 @@ describe('SocketManager service tests', () => {
             player2: 'user2',
             time: '60',
         };
-        service.identification.rooms= [roomObject];
+        service.identification.rooms = [roomObject];
         service.identification.roomMessages['room'] = [];
         sinon.replace(service.gameManager, 'messageVerification', () => {
             return 'valide';
@@ -182,7 +182,7 @@ describe('SocketManager service tests', () => {
             player2: 'user2',
             time: '60',
         };
-        service.identification.rooms= [roomObject];
+        service.identification.rooms = [roomObject];
         service.identification.roomMessages['room'] = [];
         sinon.replace(service.gameManager, 'messageVerification', () => {
             return 'valide';
@@ -201,8 +201,6 @@ describe('SocketManager service tests', () => {
             done();
         }, RESPONSE_DELAY);
     });
-
-  
 
     it('should handle  updateRoom event', (done) => {
         const roomObj = {
@@ -259,7 +257,6 @@ describe('SocketManager service tests', () => {
             done();
         }, RESPONSE_DELAY);
     });
-
 
     it('should handle passer Event valid turn', (done) => {
         const gameObj = new Game();
@@ -741,7 +738,9 @@ describe('SocketManager service tests', () => {
     });
 
     it('should handle forceDisconnect event', (done) => {
-        sinon.replace(service.databaseService, 'closeConnection', async() => {return });
+        sinon.replace(service.databaseService, 'closeConnection', async () => {
+            return;
+        });
         const spy = sinon.spy(service.databaseService, 'closeConnection');
 
         clientSocket.emit('forceDisconnect');
@@ -756,16 +755,12 @@ describe('SocketManager service tests', () => {
         try {
             service.databaseService.start('fgfdg');
             fail();
-        } catch{
-            
+        } catch {
             clientSocket.emit('getBestScore');
             setTimeout(() => {
                 assert(spy.called);
                 done();
-            }, RESPONSE_DELAY);        }
-        
-        
-
-       
+            }, RESPONSE_DELAY);
+        }
     });
 });

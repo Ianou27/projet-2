@@ -1,15 +1,15 @@
-import { ExchangeCommand } from '@app/classes/exchangeCommand/exchange-command';
-import { PassCommand } from '@app/classes/passCommand/pass-command';
-import { ReserveCommand } from '@app/classes/reserveCommand/reserve-command';
+import { ExchangeCommand } from '@app/classes/exchange-command/exchange-command';
+import { PassCommand } from '@app/classes/pass-command/pass-command';
+import { ReserveCommand } from '@app/classes/reserve-command/reserve-command';
 import { CaseProperty } from '@common/assets/case-property';
 import { letterValue } from '@common/assets/reserve-letters';
 import { Tile } from '@common/tile/Tile';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
-import { Game } from './../classes/game/game';
-import { PlacementCommand } from './../classes/placementCommand/placement-command';
-import { Player } from './../classes/player/player';
-import { DatabaseService } from './best-score.services';
+import { Game } from './../../classes/game/game';
+import { PlacementCommand } from './../../classes/placement-command/placement-command';
+import { Player } from './../../classes/player/player';
+import { DatabaseService } from './../best-score/best-score.services';
 import { GameManager } from './game-manager.service';
 
 describe('Game Manager', () => {

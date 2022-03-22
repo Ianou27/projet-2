@@ -1,8 +1,8 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { BoardService } from '@app/services/board.service';
 import { ChatService } from '@app/services/chat.service';
-import { CommandType } from '../../../../../common/command';
 import { rowLetter } from './../../../../../common/assets/row';
+import { CommandType } from './../../../../../common/command-type';
 import { MAXIMUM_ROW_COLUMN } from './../../../../../common/constants/general-constants';
 import { Orientation } from './../../../../../common/orientation';
 

@@ -1,10 +1,10 @@
 import { Orientation } from '@common/orientation';
-import { CaseProperty } from './../../../common/assets/case-property';
-import { letterValue } from './../../../common/assets/reserve-letters';
-import { COLUMN_ROWS_MINIMUM, COLUMN_ROWS_NUMBER, MAXIMUM_ROW_COLUMN } from './../../../common/constants/general-constants';
-import { LETTER_2X, LETTER_3X, WORD_2X, WORD_3X } from './../../../common/constants/tile-information';
-import { Tile } from './../../../common/tile/Tile';
-import { Vec2 } from './../../../common/vec2';
+import { CaseProperty } from './../../../../common/assets/case-property';
+import { letterValue } from './../../../../common/assets/reserve-letters';
+import { COLUMN_ROWS_MINIMUM, COLUMN_ROWS_NUMBER, MAXIMUM_ROW_COLUMN } from './../../../../common/constants/general-constants';
+import { LETTER_2X, LETTER_3X, WORD_2X, WORD_3X } from './../../../../common/constants/tile-information';
+import { Tile } from './../../../../common/tile/Tile';
+import { Vec2 } from './../../../../common/vec2';
 
 export class GameBoardService {
     cases: Tile[][] = new Array(COLUMN_ROWS_NUMBER);
