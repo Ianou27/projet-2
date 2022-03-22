@@ -227,6 +227,17 @@ describe('ChatService', () => {
         expect(emitSpy).toHaveBeenCalled();
         expect(emitSpy).toHaveBeenCalledWith('convertToSoloGame');
     });
+    it('should update numberOfRooms when ann empty room is added', () => {
+        service.allRooms = [{
+            player1: 'player1',
+            player2: '',
+            time: '60'
+        }]
+
+        service.updateRoomView();
+        
+        expect(service.numberOfRooms).toBe(1);
+    });
 
     describe('Receiving events', () => {
         beforeEach(() => {
