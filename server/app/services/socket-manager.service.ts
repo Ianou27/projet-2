@@ -117,7 +117,6 @@ export class SocketManager {
                     }
                 } else {
                     const verification: string = this.gameManager.placeVerification(command, game);
-                    console.log(verification);
                     if (verification === 'valide') {
                         const message = this.gameManager.placeWord(command, game);
                         if (message !== 'placer') {
@@ -226,7 +225,6 @@ export class SocketManager {
                 } else {
                     if (this.gameManager.clueCommandValid(command)) {
                         const yes = this.gameManager.formatClueCommand(game);
-                        console.log(yes);
                         this.sio.to(socket.id).emit('cluesMessage', yes);
                     } else {
                         this.sio.to(socket.id).emit('commandValidated', 'Format invalide');
@@ -297,7 +295,6 @@ export class SocketManager {
                 this.identification.deleteUser(socket.id);
                 console.log(`Deconnexion par l'utilisateur avec id : ${socket.id}`);
                 console.log(`Raison de deconnexion : ${reason}`);
-                console.log(this.identification.users);
             });
         });
     }

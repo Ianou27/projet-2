@@ -124,7 +124,6 @@ export class BoardComponent implements OnInit {
         if (/[^a-zA-Z]/.test(letter)) return;
         const lastWrittenTile = document.getElementsByClassName('writing')[0];
         const keyInTileHolder = this.inTileHolder(letter);
-        console.log(letter);
         const tileHolder = document.getElementById('tile-holder');
         if (!keyInTileHolder[0]) return;
         this.nextTile(lastWrittenTile);
