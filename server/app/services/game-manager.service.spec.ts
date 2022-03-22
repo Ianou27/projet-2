@@ -41,7 +41,7 @@ describe('Game Manager', () => {
     });
 
     it('method placeWord should call PlacementCommand.placeWord', () => {
-        const spy = sinon.spy(PlacementCommand, 'placeWord');
+        const spy = sinon.stub(PlacementCommand, 'placeWord');
         gameManager.placeWord(placeCommand, game);
         assert(spy.called);
         assert(spy.calledWith(placeCommand, game));

@@ -15,7 +15,7 @@ export class SocketManager {
     roomManager: RoomManager = new RoomManager();
     sio: io.Server;
     timeLeft: number;
-    constructor(server: http.Server, private readonly databaseService: DatabaseService) {
+    constructor(server: http.Server, readonly databaseService: DatabaseService) {
         this.sio = new io.Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
     }
 
@@ -183,6 +183,7 @@ export class SocketManager {
                     this.sio.to(socket.id).emit('commandValidated', 'Format invalide');
                 }
             });
+
             socket.on('forceDisconnect', async () => {
                 await this.databaseService.closeConnection();
                 socket.disconnect();

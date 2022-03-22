@@ -1,12 +1,13 @@
-/* import { fail } from 'assert';
-import * as chai from 'chai';
+import { fail } from 'assert';
+// import * as chai from 'chai';
 import { expect } from 'chai';
-import * as chaiAsPromised from 'chai-as-promised';
+// import * as chaiAsPromised from 'chai-as-promised';
 import { describe } from 'mocha';
 import { MongoClient } from 'mongodb';
+// import { MongoClient } from 'mongodb';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { DatabaseService } from './best-score.services';
-chai.use(chaiAsPromised); // this allows us to test for rejection
+// chai.use(chaiAsPromised); // this allows us to test for rejection
 
 describe('Database service', () => {
     let databaseService: DatabaseService;
@@ -15,27 +16,20 @@ describe('Database service', () => {
     beforeEach(async () => {
         databaseService = new DatabaseService();
 
-        // Start a local test server
         mongoServer = new MongoMemoryServer();
     });
 
     afterEach(async () => {
-        if (databaseService.client && databaseService.client.isConnected()) {
-            await databaseService.client.close();
-        }
+        await databaseService.closeConnection();
     });
 
-    // NB : We dont test the case when DATABASE_URL is used in order to not connect to the real database
     it('should connect to the database when start is called', async () => {
-        // Reconnect to local server
         const mongoUri = await mongoServer.getUri();
         await databaseService.start(mongoUri);
         expect(databaseService.client).to.not.be.undefined;
-        expect(databaseService.db.databaseName).to.equal('database');
     });
 
     it('should not connect to the database when start is called with wrong URL', async () => {
-        // Try to reconnect to local server
         try {
             await databaseService.start('WRONG URL');
             fail();
@@ -44,34 +38,52 @@ describe('Database service', () => {
         }
     });
 
-    it('should no longer be connected if close is called', async () => {
+    it('bestScoreClassic should return classic Score', async () => {
         const mongoUri = await mongoServer.getUri();
-        await databaseService.start(mongoUri);
-        await databaseService.closeConnection();
-        expect(databaseService.client.isConnected()).to.be.false;
+        const client = await MongoClient.connect(mongoUri);
+        databaseService.db = client.db('Database');
+        await databaseService.populateDB('bestScoreClassic');
+        const scores = await databaseService.bestScoreClassic();
+        expect(scores.length).to.equal(5);
     });
 
-    it('should populate the database with a helper function', async () => {
+    it('bestScoreLog should return Log Score', async () => {
         const mongoUri = await mongoServer.getUri();
-        const client = await MongoClient.connect(mongoUri, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
+        const client = await MongoClient.connect(mongoUri);
+        databaseService.db = client.db('Database');
+        await databaseService.populateDB('bestScoreLog2990');
+        const scores = await databaseService.bestScoreLog();
+        expect(scores.length).to.equal(5);
+    });
+
+    it(' should updateScore if its equal', async () => {
+        const mongoUri = await mongoServer.getUri();
+        const client = await MongoClient.connect(mongoUri);
+        databaseService.db = client.db('Database');
+        await databaseService.populateDB('bestScoreClassic');
+        await databaseService.updateBesScoreClassic({
+            player: 'test',
+            score: 10,
         });
-        databaseService.db = client.db('database');
-        await databaseService.populateDB();
-        const courses = await databaseService.database.collection('courses').find({}).toArray();
-        expect(courses.length).to.equal(5);
+        const scores = await databaseService.bestScoreClassic();
+        expect(scores[4]).to.contain({
+            player: 'Zoro-test',
+            score: 10,
+        });
     });
-
-    it('should not populate the database with start function if it is already populated', async () => {
+    it(' should updateScore if lesser', async () => {
         const mongoUri = await mongoServer.getUri();
-        await databaseService.start(mongoUri);
-        let courses = await databaseService.database.collection('courses').find({}).toArray();
-        expect(courses.length).to.equal(5);
-        await databaseService.closeConnection();
-        await databaseService.start(mongoUri);
-        courses = await databaseService.database.collection('courses').find({}).toArray();
-        expect(courses.length).to.equal(5);
+        const client = await MongoClient.connect(mongoUri);
+        databaseService.db = client.db('Database');
+        await databaseService.populateDB('bestScoreClassic');
+        await databaseService.updateBesScoreClassic({
+            player: 'test1',
+            score: 11,
+        });
+        const scores = await databaseService.bestScoreClassic();
+        expect(scores[4]).to.contain({
+            player: 'test1',
+            score: 11,
+        });
     });
 });
- */
