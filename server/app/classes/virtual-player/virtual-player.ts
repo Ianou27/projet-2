@@ -187,17 +187,21 @@ export class VirtualPlayer {
             for (let j = 0; j < MAXIMUM_ROW_COLUMN; j++) {
                 let orientation = '';
                 if (gameBoard.tileContainsLetter(i, j)) {
-                    if (
-                        gameBoard.nextTile(gameBoard.cases[i][j], 'h', false).letter === '' &&
-                        gameBoard.nextTile(gameBoard.cases[i][j], 'h', true).letter === ''
-                    ) {
-                        orientation = 'h';
-                    }
-                    if (
-                        gameBoard.nextTile(gameBoard.cases[i][j], 'v', false).letter === '' &&
-                        gameBoard.nextTile(gameBoard.cases[i][j], 'v', true).letter === ''
-                    ) {
-                        orientation = 'v';
+                    try {
+                        if (
+                            gameBoard.nextTile(gameBoard.cases[i][j], 'h', false).letter === '' &&
+                            gameBoard.nextTile(gameBoard.cases[i][j], 'h', true).letter === ''
+                        ) {
+                            orientation = 'h';
+                        }
+                        if (
+                            gameBoard.nextTile(gameBoard.cases[i][j], 'v', false).letter === '' &&
+                            gameBoard.nextTile(gameBoard.cases[i][j], 'v', true).letter === ''
+                        ) {
+                            orientation = 'v';
+                        }
+                    } catch {
+                        continue;
                     }
 
                     if (orientation !== '') {
@@ -260,7 +264,7 @@ export class VirtualPlayer {
             return '!passer'.split(' ');
         }
         const virtualPlayerLetters = game.playerTurn().lettersToStringArray();
-        let command = '!echanger ';
+        let command = '!échanger ';
 
         const letters = virtualPlayerLetters
             .sort(() => Math.random() - Math.random())

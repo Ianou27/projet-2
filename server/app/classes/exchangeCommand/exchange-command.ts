@@ -14,7 +14,7 @@ export class ExchangeCommand {
             return false;
         }
         const command: string = commandInformations.join(' ');
-        const exchangeValidation = /^!echanger ([a-z]|[*])+$/;
+        const exchangeValidation = /^!échanger ([a-z]|[*])+$/;
         const lengthExchangeCommand = /^.{11,17}$/;
 
         return exchangeValidation.test(command) && lengthExchangeCommand.test(command);

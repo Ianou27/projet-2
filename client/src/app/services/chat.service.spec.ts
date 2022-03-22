@@ -151,8 +151,8 @@ describe('ChatService', () => {
         expect(service.roomMessage).toBe('');
     });
 
-    it('sendToRoom() when !echanger', () => {
-        const command = '!echanger aa';
+    it('sendToRoom() when !échanger', () => {
+        const command = '!échanger aa';
         service.roomMessage = command;
         const sendSpy = spyOn(service.socketService, 'send');
         service.sendToRoom();
@@ -160,12 +160,12 @@ describe('ChatService', () => {
         expect(service.roomMessage).toBe('');
     });
 
-    it('sendToRoom() when !reserve', () => {
-        const command = '!reserve ';
+    it('sendToRoom() when !réserve', () => {
+        const command = '!réserve ';
         service.roomMessage = command;
         const sendSpy = spyOn(service.socketService, 'send');
         service.sendToRoom();
-        expect(sendSpy).toHaveBeenCalledWith('reserve', command.split(' '));
+        expect(sendSpy).toHaveBeenCalledWith('réserve', command.split(' '));
         expect(service.roomMessage).toBe('');
     });
 
@@ -221,6 +221,13 @@ describe('ChatService', () => {
         expect(sendSpy).toHaveBeenCalledWith('passer');
     });
 
+    it('convertToSoloGame() should emit the convertToSoloGame event', () => {
+        const emitSpy = spyOn(service.socketService.socket, 'emit');
+        service.convertToSoloGame();
+        expect(emitSpy).toHaveBeenCalled();
+        expect(emitSpy).toHaveBeenCalledWith('convertToSoloGame');
+    });
+
     describe('Receiving events', () => {
         beforeEach(() => {
             service.configureBaseSocketFeatures();
@@ -243,8 +250,10 @@ describe('ChatService', () => {
         });
 
         it('should handle commandValidated event', () => {
+            const board: Tile[][] = [];
+            const tileHolder: Tile[] = [];
             const pushSpy = spyOn(service.roomMessages, 'push');
-            socketTestHelper.peerSideEmit('commandValidated');
+            socketTestHelper.peerEmitThreeParams('commandValidated', 'hello', board, tileHolder);
             expect(pushSpy).toHaveBeenCalled();
         });
 
@@ -388,6 +397,32 @@ describe('ChatService', () => {
             service.player2Point = 0;
             socketTestHelper.peerEmitTwoParams('updatePoint', 'player2', 15);
             expect(service.player2Point).toBe(15);
+        });
+
+        it('should handle getBestScore event and set both array to their own specific values', () => {
+            const bestScoresClassic: unknown[] = [
+                {
+                    player: 'Bob',
+                    score: 20,
+                },
+                {
+                    player: 'Jack',
+                    score: 18,
+                },
+            ];
+            const bestScoresLog: unknown[] = [
+                {
+                    player: 'Ricky',
+                    score: 15,
+                },
+                {
+                    player: 'Zoro',
+                    score: 10,
+                },
+            ];
+            socketTestHelper.peerEmitTwoParams('getBestScore', bestScoresClassic, bestScoresLog);
+            expect(service.bestClassicScores).toEqual(bestScoresClassic);
+            expect(service.bestLog2990Scores).toEqual(bestScoresLog);
         });
     });
 });

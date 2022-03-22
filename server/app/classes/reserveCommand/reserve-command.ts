@@ -2,7 +2,7 @@ import { LetterScore } from './../../../../common/assets/reserve-letters';
 export class ReserveCommand {
     static verifyFormat(commandInformations: string[]): boolean {
         if (commandInformations.length !== 1) return false;
-        const commandFormat = /^!reserve$/;
+        const commandFormat = /^!réserve$/;
         return commandFormat.test(commandInformations[0]);
     }
 

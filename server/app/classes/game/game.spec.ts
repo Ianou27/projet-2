@@ -232,8 +232,9 @@ describe('Game', () => {
 
     it('method actionVirtualBeginnerPlayer with probability between 10 and 20 should return command exchange', () => {
         const spy = sinon.spy(VirtualPlayer, 'exchangeLettersCommand');
+        game.reserveLetters.letters = ['A'];
         const command = game.actionVirtualBeginnerPlayer(15);
-        expect(command[0]).equal('!echanger');
+        expect(command[0]).equal('!échanger');
         assert(spy.called);
     });
 
@@ -246,7 +247,7 @@ describe('Game', () => {
 
     it('method placementBot with command !echanger should exchange the letters of the player', () => {
         const spy = sinon.spy(game, 'exchangeLetters');
-        const command = '!echanger abc';
+        const command = '!échanger abc';
         game.placementBot(command.split(' '));
         assert(spy.called);
     });

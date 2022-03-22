@@ -4,7 +4,7 @@ import { ReserveCommand } from './reserve-command';
 
 describe('Reserve Command', () => {
     let reserve: string[];
-    const command = ['!reserve'];
+    const command = ['!réserve'];
 
     beforeEach(() => {
         reserve = ['*', 'A', 'B', 'B', 'C', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D'];
@@ -19,7 +19,7 @@ describe('Reserve Command', () => {
     });
 
     it('reserve should return false if the command his longer than 1', () => {
-        expect(ReserveCommand.verifyFormat(['!reserve 1234'])).to.equal(false);
+        expect(ReserveCommand.verifyFormat(['!réserve 1234'])).to.equal(false);
     });
 
     it('reserve should return a dictionnary with the right keys and values', () => {
