@@ -1,4 +1,5 @@
 import { Application } from '@app/app';
+import { BASE_DIX } from '@common/constants/general-constants';
 import * as http from 'http';
 import { AddressInfo } from 'net';
 import { Service } from 'typedi';
@@ -8,7 +9,7 @@ import { SocketManager } from './services/socket-manager.service';
 @Service()
 export class Server {
     private static readonly appPort: string | number | boolean = Server.normalizePort(process.env.PORT || '3000');
-    private static readonly baseDix: number = 10;
+    private static readonly baseDix: number = BASE_DIX;
     private server: http.Server;
     private socketManger: SocketManager;
     constructor(private readonly application: Application, private readonly databaseService: DatabaseService) {}
@@ -34,7 +35,6 @@ export class Server {
         this.server.listen(Server.appPort);
         this.server.on('error', (error: NodeJS.ErrnoException) => this.onError(error));
         this.server.on('listening', () => this.onListening());
-        
     }
 
     private onError(error: NodeJS.ErrnoException): void {

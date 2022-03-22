@@ -1,9 +1,25 @@
 import { PlacementInformations } from '@app/placement-informations';
 import { letterValue } from '@common/assets/reserve-letters';
-import { INDEX_OF_NOT_FOUND, MAXIMUM_ROW_COLUMN } from '@common/constants/general-constants';
+import {
+    CENTER_ROW_COLUMN,
+    FIRST_BOT_PLACEMENT_BOTTOM_LIMIT,
+    FIRST_BOT_PLACEMENT_TOP_LIMIT,
+    INDEX_OF_NOT_FOUND,
+    LENGTH_WORDS_LIMIT_BOT,
+    MAXIMUM_ROW_COLUMN,
+    NUMBER_WORDS_LIMIT_BOT,
+    NUMBER_WORDS_LIMIT_BOT_ONE_PLACEMENT,
+    PROBABILITY_PLACEMENT_1TO6_BOT,
+    PROBABILITY_PLACEMENT_7TO12_BOT,
+    PROBABILITY_TOTAL,
+    SECOND_BOT_PLACEMENT_BOTTOM_LIMIT,
+    SECOND_BOT_PLACEMENT_TOP_LIMIT,
+    THIRD_BOT_PLACEMENT_BOTTOM_LIMIT,
+    THIRD_BOT_PLACEMENT_TOP_LIMIT,
+} from '@common/constants/general-constants';
 import { Tile } from '@common/tile/Tile';
 import * as fs from 'fs';
-import { rowLetter } from '../../../../common/assets/row';
+import { rowLetter } from './../../../../common/assets/row';
 import { Game } from './../game/game';
 import { PlacementCommand } from './../placementCommand/placement-command';
 
@@ -23,7 +39,7 @@ export class VirtualPlayer {
         let validWords: string[] = [];
         let words: string[] = [];
         let combinations = this.getCombinations(letters.map((letter) => letter.toLowerCase())).filter((item) => {
-            return item.length < 6;
+            return item.length < LENGTH_WORDS_LIMIT_BOT;
         });
 
         const middleIndex = Math.ceil(combinations.length);
@@ -42,7 +58,7 @@ export class VirtualPlayer {
             if (PlacementCommand.validatedWordDictionary(word, dictionaryArray)) {
                 validWords = validWords.concat(word);
             }
-            if (validWords.length >= 5) {
+            if (validWords.length >= NUMBER_WORDS_LIMIT_BOT_ONE_PLACEMENT) {
                 break;
             }
         }
@@ -128,14 +144,14 @@ export class VirtualPlayer {
 
     static findAllPlacementCommands(game: Game): PlacementScore[] {
         const playerLetters = game.playerTurn().lettersToStringArray();
-        const placementPossible = this.findAllPositionGameBoard(game).slice(0, 15);
+        const placementPossible = this.findAllPositionGameBoard(game).slice(0, NUMBER_WORDS_LIMIT_BOT);
         let commandPlacements: PlacementScore[] = [];
         if (placementPossible.length === 0) return [];
         for (const placement of placementPossible) {
             const letters = playerLetters.concat(placement.tile.letter);
             const words = this.findAllWords(letters, placement.tile.letter);
             commandPlacements = commandPlacements.concat(this.findPlacementCommand(words, placement, game));
-            if (commandPlacements.length >= 10) {
+            if (commandPlacements.length >= NUMBER_WORDS_LIMIT_BOT) {
                 break;
             }
         }
@@ -145,12 +161,12 @@ export class VirtualPlayer {
     static placementLettersCommand(probability: number, game: Game): string[] {
         const allPlacementCommands = this.findAllPlacementCommands(game);
         let placementCommand = '';
-        if (probability <= 40) {
-            placementCommand = this.findPlacementScoreRange(1, 6, allPlacementCommands);
-        } else if (probability <= 70) {
-            placementCommand = this.findPlacementScoreRange(7, 12, allPlacementCommands);
+        if (probability <= PROBABILITY_PLACEMENT_1TO6_BOT) {
+            placementCommand = this.findPlacementScoreRange(FIRST_BOT_PLACEMENT_BOTTOM_LIMIT, FIRST_BOT_PLACEMENT_TOP_LIMIT, allPlacementCommands);
+        } else if (probability <= PROBABILITY_PLACEMENT_7TO12_BOT) {
+            placementCommand = this.findPlacementScoreRange(SECOND_BOT_PLACEMENT_BOTTOM_LIMIT, SECOND_BOT_PLACEMENT_TOP_LIMIT, allPlacementCommands);
         } else {
-            placementCommand = this.findPlacementScoreRange(13, 18, allPlacementCommands);
+            placementCommand = this.findPlacementScoreRange(THIRD_BOT_PLACEMENT_BOTTOM_LIMIT, THIRD_BOT_PLACEMENT_TOP_LIMIT, allPlacementCommands);
         }
 
         return placementCommand.split(' ');
@@ -196,7 +212,7 @@ export class VirtualPlayer {
         }
         if (tiles.length === 0) {
             const tilePlacement: TilePlacementPossible = {
-                tile: gameBoard.cases[7][7],
+                tile: gameBoard.cases[CENTER_ROW_COLUMN][CENTER_ROW_COLUMN],
                 orientation: 'h',
             };
             tiles.push(tilePlacement);
@@ -220,18 +236,18 @@ export class VirtualPlayer {
     }
 
     static getCombinations(chars: string[]) {
-        const result: string[] = [];
+        const combinations: string[] = [];
         if (chars.indexOf('*') !== INDEX_OF_NOT_FOUND) {
             chars[chars.indexOf('*')] = this.getRandomLetterForBlank();
         }
-        const func = (prefix: string, array: string[]) => {
+        const separationFunction = (prefix: string, array: string[]) => {
             for (let i = 0; i < array.length; i++) {
-                result.push(prefix + array[i]);
-                func(prefix + array[i], array.slice(i + 1));
+                combinations.push(prefix + array[i]);
+                separationFunction(prefix + array[i], array.slice(i + 1));
             }
         };
-        func('', chars);
-        return result;
+        separationFunction('', chars);
+        return combinations;
     }
 
     static getRandomLetterForBlank(): string {
@@ -241,8 +257,7 @@ export class VirtualPlayer {
 
     static exchangeLettersCommand(game: Game): string[] {
         if (game.reserveLetters.letters.length === 0) {
-            game.changeTurnTwoPlayers();
-            return [];
+            return '!passer'.split(' ');
         }
         const virtualPlayerLetters = game.playerTurn().lettersToStringArray();
         let command = '!echanger ';
@@ -256,6 +271,6 @@ export class VirtualPlayer {
     }
 
     static getProbability(): number {
-        return Math.floor(Math.random() * 100);
+        return Math.floor(Math.random() * PROBABILITY_TOTAL);
     }
 }

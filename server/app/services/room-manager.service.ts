@@ -24,16 +24,11 @@ export class RoomManager {
         };
         identification.rooms.push(roomObj);
     }
-    convertMultiToSolo( 
-        socketId: string,
-        identification: IdManager,
-        sio: io.Server,
-        databaseService: DatabaseService,){
-        let game =identification.getGame(socketId);
+    convertMultiToSolo(socketId: string, identification: IdManager, sio: io.Server, databaseService: DatabaseService) {
+        const game = identification.getGame(socketId);
         const botName = this.getRandomBotName(game.player1.user.username);
         this.cancelCreation(socketId, identification);
-        this.createSoloGame(game.player1.user.username,socketId,identification,sio,game.timer.timerMax.toString(),databaseService,botName);
-
+        this.createSoloGame(game.player1.user.username, socketId, identification, sio, game.timer.timerMax.toString(), databaseService, botName);
     }
     createSoloGame(
         username: string,

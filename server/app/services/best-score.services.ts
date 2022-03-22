@@ -1,4 +1,5 @@
 // import { injectable } from 'inversify';
+import { INDEX_OF_NOT_FOUND, NUMBER_ELEMENTS_DATABASE } from '@common/constants/general-constants';
 import { BestScore } from '@common/types';
 import { Db, MongoClient } from 'mongodb';
 import 'reflect-metadata';
@@ -34,12 +35,11 @@ export class DatabaseService {
 
     async closeConnection(): Promise<void> {
         try {
-            console.log("Connexion closed");
+            console.log('Connexion closed');
             return this.client.close();
         } catch (error) {
-            console.log("connexion is already closed")
+            console.log('Connexion is already closed');
         }
-       
     }
 
     async populateDB(collection: string): Promise<void> {
@@ -76,9 +76,11 @@ export class DatabaseService {
     get database(): Db {
         return this.db;
     }
+
     async bestScoreClassic(): Promise<object[]> {
         return await this.db.collection(DATABASE_COLLECTION_CLASSIC).find().sort({ score: -1 }).toArray();
     }
+
     async bestScoreLog(): Promise<object[]> {
         return await this.db.collection(DATABASE_COLLECTION_LOG).find().sort({ score: -1 }).toArray();
     }
@@ -86,21 +88,23 @@ export class DatabaseService {
     async updateBesScoreClassic(score: BestScore) {
         const db = await this.db.collection(DATABASE_COLLECTION_CLASSIC).find().sort({ score: -1 }).toArray();
         let index = -1;
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < NUMBER_ELEMENTS_DATABASE; i++) {
             if (db[i].score <= score.score) {
                 index = i;
                 break;
             }
         }
 
-        if (index !== -1) {
+        if (index !== INDEX_OF_NOT_FOUND) {
             const player = db[index].player.split('-');
             if (db[index].score === score.score && !player.includes(score.player)) {
                 await this.db
                     .collection(DATABASE_COLLECTION_CLASSIC)
                     .updateOne({ score: db[index].score }, { $set: { player: db[index].player + '-' + score.player } });
             } else if (db[index].score < score.score) {
-                await this.db.collection(DATABASE_COLLECTION_CLASSIC).replaceOne({ score: db[4].score }, { player: score.player, score: score.score });
+                await this.db
+                    .collection(DATABASE_COLLECTION_CLASSIC)
+                    .replaceOne({ score: db[4].score }, { player: score.player, score: score.score });
             }
         }
     }

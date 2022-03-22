@@ -67,7 +67,6 @@ describe('IdManager tests', () => {
         done();
     });
 
-
     it('reset should set time left to 60', () => {
         timer.reset();
         expect(timer.timeLeft).to.equal(60);
