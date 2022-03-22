@@ -1,6 +1,7 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { BoardService } from '@app/services/board.service';
 import { ChatService } from '@app/services/chat.service';
+import { CommandType } from '../../../../../common/command';
 import { rowLetter } from './../../../../../common/assets/row';
 import { MAXIMUM_ROW_COLUMN } from './../../../../../common/constants/general-constants';
 import { Orientation } from './../../../../../common/orientation';
@@ -55,7 +56,7 @@ export class BoardComponent implements OnInit {
     }
 
     placeWord() {
-        let command = '!placer';
+        let command: string = CommandType.place;
         const posX = Number(document.getElementsByClassName('written')[0].getAttribute('data-position-x')) + 1;
         const posY = rowLetter[Number(document.getElementsByClassName('written')[0].getAttribute('data-position-y'))];
         command += ' ' + posY + posX + this.orientation + ' ';
@@ -124,7 +125,6 @@ export class BoardComponent implements OnInit {
         if (/[^a-zA-Z]/.test(letter)) return;
         const lastWrittenTile = document.getElementsByClassName('writing')[0];
         const keyInTileHolder = this.inTileHolder(letter);
-        console.log(letter);
         const tileHolder = document.getElementById('tile-holder');
         if (!keyInTileHolder[0]) return;
         this.nextTile(lastWrittenTile);
