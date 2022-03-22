@@ -59,7 +59,7 @@ describe('Virtual Player', () => {
     it('method getProbability should return a number between 1 and 100', () => {
         const probability = VirtualPlayer.getProbability();
         expect(probability).lessThanOrEqual(100);
-        expect(probability).greaterThanOrEqual(1);
+        expect(probability).greaterThanOrEqual(0);
     });
 
     it('method exchangeLettersCommand should return command passer if the reserveLetters is empty', () => {
