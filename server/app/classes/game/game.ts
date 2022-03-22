@@ -65,8 +65,6 @@ export class Game {
         this.sio.to(this.player2.user.id).emit('turn', this.player2.hisTurn);
         this.sio.to(this.player1.user.id).emit('modification', this.gameBoard.cases, this.playerTurn().name);
         this.sio.to(this.player2.user.id).emit('modification', this.gameBoard.cases, this.playerTurn().name);
-
-    
     }
 
     startSoloGame(user: User, sio: io.Server, timer: string, databaseService: DatabaseService, botName: string) {
@@ -86,7 +84,6 @@ export class Game {
         this.sio.to(user.id).emit('tileHolder', this.player1.letters);
         this.sio.to(this.player1.user.room).emit('modification', this.gameBoard.cases, this.playerTurn().name);
         this.sio.to(user.id).emit('startGame', user.username, botName);
-    
     }
 
     randomTurnGame() {
@@ -102,10 +99,12 @@ export class Game {
         this.sio.to(this.player1.user.id).emit('turn', this.player1.hisTurn);
         this.sio.to(this.player2.user.id).emit('turn', this.player2.hisTurn);
         if (this.playerTurn().hisBot) {
+            const probability = VirtualPlayer.getProbability();
+            const timeoutActionBot = probability <= 10 ? 20000 : 3000;
             setTimeout(() => {
-                const command = this.actionVirtualBeginnerPlayer(VirtualPlayer.getProbability());
+                const command = this.actionVirtualBeginnerPlayer(probability);
                 this.placementBot(command);
-            }, 3000);
+            }, timeoutActionBot);
         }
     }
 
@@ -156,14 +155,12 @@ export class Game {
 
     async surrender(winner: string) {
         await this.databaseService.start();
-        if(winner === this.player1.user.username){
+        if (winner === this.player1.user.username) {
             await this.databaseService.updateBesScoreClassic({
                 player: this.player1.user.username,
                 score: this.player1.points,
             });
-        }
-
-        else if(winner === this.player2.user.username){
+        } else if (winner === this.player2.user.username) {
             await this.databaseService.updateBesScoreClassic({
                 player: this.player2.user.username,
                 score: this.player2.points,
@@ -198,8 +195,7 @@ export class Game {
         this.sio.to(this.player1.user.room).emit('modification', this.gameBoard.cases, this.playerTurn().name);
         this.sio.to(this.player1.user.id).emit('tileHolder', this.player1.letters);
         this.sio.to(this.player2.user.id).emit('tileHolder', this.player2.letters);
-    }   
-    
+    }
 
     actionVirtualBeginnerPlayer(probability: number): string[] {
         if (probability <= 10) {
@@ -259,7 +255,6 @@ export class Game {
             player: this.player1.user.username,
             score: this.player1.points,
         });
-        
 
         if (!this.player2.hisBot) {
             await this.databaseService.updateBesScoreClassic({
