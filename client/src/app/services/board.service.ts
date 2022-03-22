@@ -16,13 +16,13 @@ export class BoardService {
         for (let i = 0; i < COLUMN_ROWS_NUMBER; i++) {
             this.board[i] = new Array(COLUMN_ROWS_NUMBER);
             for (let j = 0; j < COLUMN_ROWS_NUMBER; j++) {
-                if (this.verifyProperty(WORD_3X, i, j)) {
+                if (this.hasTheProperty(WORD_3X, i, j)) {
                     this.board[i][j] = new Tile(CaseProperty.WordTriple, i, j);
-                } else if (this.verifyProperty(WORD_2X, i, j)) {
+                } else if (this.hasTheProperty(WORD_2X, i, j)) {
                     this.board[i][j] = new Tile(CaseProperty.WordDouble, i, j);
-                } else if (this.verifyProperty(LETTER_3X, i, j)) {
+                } else if (this.hasTheProperty(LETTER_3X, i, j)) {
                     this.board[i][j] = new Tile(CaseProperty.LetterTriple, i, j);
-                } else if (this.verifyProperty(LETTER_2X, i, j)) {
+                } else if (this.hasTheProperty(LETTER_2X, i, j)) {
                     this.board[i][j] = new Tile(CaseProperty.LetterDouble, i, j);
                 } else {
                     this.board[i][j] = new Tile(CaseProperty.Normal, i, j);
@@ -41,7 +41,7 @@ export class BoardService {
         this.board[posX][posY].value = 0;
     }
 
-    private verifyProperty(property: Vec2[], positionX: number, positionY: number): boolean {
+    private hasTheProperty(property: Vec2[], positionX: number, positionY: number): boolean {
         for (const position of property) {
             if (position.x === positionX && position.y === positionY) {
                 return true;

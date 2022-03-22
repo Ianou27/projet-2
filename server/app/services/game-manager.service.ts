@@ -42,23 +42,23 @@ export class GameManager {
         return PlacementCommand.validatedPlaceCommandBoard(command, game);
     }
 
-    passCommandValid(command: string[]) {
+    passCommandValid(command: string[]): boolean {
         return PassCommand.validatedPassCommandFormat(command);
     }
 
-    placeFormatValid(command: string[]) {
+    placeFormatValid(command: string[]): boolean {
         return PlacementCommand.validatedPlaceCommandFormat(command);
     }
 
-    exchangeFormatValid(command: string[]) {
+    exchangeFormatValid(command: string[]): boolean {
         return ExchangeCommand.validatedExchangeCommandFormat(command);
     }
 
-    exchangeTileHolderValid(command: string[], game: Game) {
+    exchangeTileHolderValid(command: string[], game: Game): boolean {
         return ExchangeCommand.validatedExchangeCommandBoard(command, game);
     }
 
-    lengthVerification(message: string) {
+    lengthVerification(message: string): boolean {
         return message.length > MAXIMUM_CHARACTERS_MESSAGE ? false : true;
     }
 

@@ -6,7 +6,7 @@ export class ReserveCommand {
         return commandFormat.test(commandInformations[0]);
     }
 
-    static reserve(reserveLetters: string[]) {
+    static reserve(reserveLetters: string[]): LetterScore {
         const currentReserve: LetterScore = {};
         reserveLetters.forEach((letter) => {
             if (currentReserve[letter] === undefined) {
