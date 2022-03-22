@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-magic-numbers */
 /* eslint-disable max-lines */
 import { DatabaseService } from '@app/services/best-score.services';
 import { CaseProperty } from '@common/assets/case-property';
@@ -103,6 +104,15 @@ describe('Placement Command', () => {
         const placementInformations = PlacementCommand.separatePlaceCommandInformations(firstWordCommandNotValid.split(' '));
         const result = PlacementCommand.firstWordTouchCenter(placementInformations, game);
         expect(result).to.equal(false);
+    });
+
+    it('method separatePlaceCommandInformations should separate the command correctly for a 1 letter placement with a two digits column', () => {
+        const firstWordCommandValid = '!placer h11h v';
+        const placementInformations = PlacementCommand.separatePlaceCommandInformations(firstWordCommandValid.split(' '));
+        expect(placementInformations.column).to.equal(10);
+        expect(placementInformations.row).to.equal(7);
+        expect(placementInformations.numberLetters).to.equal(1);
+        expect(placementInformations.orientation).to.equal('h');
     });
 
     it('method insideBoardGame should return false if a horizontal placement is outside the board', () => {

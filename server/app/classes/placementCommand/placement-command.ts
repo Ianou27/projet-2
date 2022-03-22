@@ -5,6 +5,7 @@ import {
     CENTER_ROW_COLUMN,
     MAXIMUM_LETTERS_PLACE_COMMAND,
     MAXIMUM_ROW_COLUMN_COMPARISON_LIMIT,
+    MIDDLE_LETTERS_PLACE_COMMAND,
     MINIMUM_LETTERS_PLACE_COMMAND,
     MINIMUM_ROW_COLUMN_COMPARISON_LIMIT,
 } from './../../../../common/constants/general-constants';
@@ -38,6 +39,7 @@ export class PlacementCommand {
                 wordCondition = this.wordHasAdjacent(placementInformations, game);
             }
             tileHolderContains = game.playerTurn().tileHolderContains(placementInformations.letters.join(''));
+            if (game.gameState.firstTurn && placementInformations.numberLetters === 1) return false;
         } catch (error) {
             return false;
         }
@@ -88,15 +90,23 @@ export class PlacementCommand {
         const numberLetters = commandInformations[2].length;
         const numberLettersCommand = commandInformations[1].length;
         const letters = commandInformations[2].split('');
+        const hasOrientation =
+            positionOrientation[positionOrientation.length - 1] === 'h' || positionOrientation[positionOrientation.length - 1] === 'v';
         let orientation = '';
         let column = 0;
         if (numberLetters === 1 && numberLettersCommand === MINIMUM_LETTERS_PLACE_COMMAND) {
             orientation = 'v';
             column = Number(positionOrientation[1]) - 1;
-        } else if (numberLetters === 1 && numberLettersCommand === MAXIMUM_LETTERS_PLACE_COMMAND) {
-            orientation = positionOrientation[3];
+        } else if (numberLetters === 1 && numberLettersCommand === MIDDLE_LETTERS_PLACE_COMMAND && hasOrientation) {
+            orientation = positionOrientation[2];
+            column = Number(positionOrientation[1]) - 1;
+        } else if (numberLetters === 1 && numberLettersCommand === MIDDLE_LETTERS_PLACE_COMMAND && !hasOrientation) {
+            orientation = 'v';
             column = Number(positionOrientation[1] + positionOrientation[2]) - 1;
-        } else if (numberLettersCommand === MAXIMUM_LETTERS_PLACE_COMMAND) {
+        } else if (numberLetters === 1 && numberLettersCommand === MAXIMUM_LETTERS_PLACE_COMMAND) {
+            orientation = positionOrientation[positionOrientation.length - 1];
+            column = Number(positionOrientation[1] + positionOrientation[2]) - 1;
+        } else if (numberLettersCommand === 3) {
             orientation = positionOrientation[2];
             column = Number(positionOrientation[1]) - 1;
         } else {
@@ -284,8 +294,10 @@ export class PlacementCommand {
 
     static placeWord(commandInformations: string[], game: Game): boolean {
         const placementInformations = PlacementCommand.separatePlaceCommandInformations(commandInformations);
+        console.log(placementInformations);
         let letterPositions: Tile[] = [];
         letterPositions = PlacementCommand.place(placementInformations, game);
+        console.log(letterPositions);
         const placementScore = PlacementCommand.newWordsValid(commandInformations, game, letterPositions);
         if (placementScore === 0) {
             PlacementCommand.restoreBoard(game, letterPositions);
