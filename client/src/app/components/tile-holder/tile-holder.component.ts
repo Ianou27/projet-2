@@ -1,7 +1,7 @@
 import { Component, HostListener } from '@angular/core';
 import { ChatService } from '@app/services/chat.service';
 import { TileHolderService } from '@app/services/tile-holder/tile-holder.service';
-import { INDEX_OF_NOT_FOUND, NUMBER_TILEHOLDER } from './../../../../../common/constants/general-constants';
+import { INDEX_OF_NOT_FOUND, NUMBER_TILE_HOLDER } from './../../../../../common/constants/general-constants';
 
 @Component({
     selector: 'app-tile-holder',
@@ -233,7 +233,7 @@ export class TileHolderComponent {
     }
 
     private emptyArray() {
-        for (let i = 0; i < NUMBER_TILEHOLDER; i++) {
+        for (let i = 0; i < NUMBER_TILE_HOLDER; i++) {
             this.lettersToExchange.pop();
         }
     }
