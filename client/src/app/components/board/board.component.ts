@@ -50,23 +50,11 @@ export class BoardComponent implements OnInit {
     }
 
     getPosition(tile: Element): [number, number] {
-        try {
-            tile.getAttribute('data-position-x');
-            tile.getAttribute('data-position-y');
-        } catch (e) {
-            return [0, 0];
-        }
         return [Number(tile.getAttribute('data-position-x')), Number(tile.getAttribute('data-position-y'))];
     }
 
     placeWord() {
         let command = '!placer';
-        try {
-            document.getElementsByClassName('written')[0].getAttribute('data-position-x');
-            document.getElementsByClassName('written')[0].getAttribute('data-position-y');
-        } catch (e) {
-            return;
-        }
         const posX = Number(document.getElementsByClassName('written')[0].getAttribute('data-position-x')) + 1;
         const posY = rowLetter[Number(document.getElementsByClassName('written')[0].getAttribute('data-position-y'))];
         command += ' ' + posY + posX + this.orientation + ' ';
@@ -110,12 +98,6 @@ export class BoardComponent implements OnInit {
 
     nextTile(currentTile: Element) {
         const board = document.getElementsByClassName('tile-container')[0];
-        try {
-            currentTile.getAttribute('data-position-x');
-            currentTile.getAttribute('data-position-y');
-        } catch (e) {
-            return;
-        }
         const posX = Number(currentTile.getAttribute('data-position-x'));
         const posY = Number(currentTile.getAttribute('data-position-y'));
         if (this.orientation === 'h') {
