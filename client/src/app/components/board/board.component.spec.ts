@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { BoardService } from '@app/services/board.service';
-import { ChatService } from '@app/services/chat.service';
+import { BoardService } from '@app/services/board/board.service';
+import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
 import { CaseProperty } from './../../../../../common/assets/case-property';
 import { letterValue } from './../../../../../common/assets/reserve-letters';
 import { Tile } from './../../../../../common/tile/Tile';
@@ -12,19 +12,12 @@ import { BoardComponent } from './board.component';
 describe('BoardComponent', () => {
     let component: BoardComponent;
     let fixture: ComponentFixture<BoardComponent>;
-    // let boardServiceSpy: jasmine.SpyObj<BoardService>;
-    /// let chatServiceSpy: jasmine.SpyObj<ChatService>;
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [BoardComponent, TileComponent],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
-            providers: [ChatService, BoardService],
+            providers: [ClientSocketHandler, BoardService],
         }).compileComponents();
-    });
-
-    beforeEach(() => {
-        // boardServiceSpy = jasmine.createSpyObj('BoardService', ['build'], ['board']);
-        // chatServiceSpy = jasmine.createSpyObj('ChatService', ['tileHolderService'], ['tileHolderService.letterInTileHolder']);
     });
 
     beforeEach(() => {
@@ -153,7 +146,7 @@ describe('BoardComponent', () => {
         const tileInTileHolder = new Tile(CaseProperty.Normal, 0, 0);
         tileInTileHolder.letter = 'A';
         tileInTileHolder.value = letterValue[tileInTileHolder.letter];
-        component.chatService.tileHolderService.tileHolder = [tileInTileHolder];
+        component.clientSocketHandler.tileHolderService.tileHolder = [tileInTileHolder];
         const key = 'a';
         const spy = spyOn<any>(component, 'nextTile').and.stub();
         component.placeLetter(key);
@@ -166,7 +159,7 @@ describe('BoardComponent', () => {
         const tileInTileHolder = new Tile(CaseProperty.Normal, 0, 0);
         tileInTileHolder.letter = 'A';
         tileInTileHolder.value = letterValue[tileInTileHolder.letter];
-        component.chatService.tileHolderService.tileHolder = [tileInTileHolder];
+        component.clientSocketHandler.tileHolderService.tileHolder = [tileInTileHolder];
         const key = 'a';
         component.placeLetter(key);
         expect(tile.className).toEqual('written');
@@ -178,7 +171,7 @@ describe('BoardComponent', () => {
         const tileInTileHolder = new Tile(CaseProperty.Normal, 0, 0);
         tileInTileHolder.letter = 'A';
         tileInTileHolder.value = letterValue[tileInTileHolder.letter];
-        component.chatService.tileHolderService.tileHolder = [tileInTileHolder];
+        component.clientSocketHandler.tileHolderService.tileHolder = [tileInTileHolder];
         const key = 'a';
         expect(component.letterPlaced.length).toEqual(0);
         component.placeLetter(key);
@@ -191,7 +184,7 @@ describe('BoardComponent', () => {
         const tileInTileHolder = new Tile(CaseProperty.Normal, 0, 0);
         tileInTileHolder.letter = '*';
         tileInTileHolder.value = letterValue[tileInTileHolder.letter];
-        component.chatService.tileHolderService.tileHolder = [tileInTileHolder];
+        component.clientSocketHandler.tileHolderService.tileHolder = [tileInTileHolder];
         const key = 'A';
         expect(component.letterPlaced.length).toEqual(0);
         component.placeLetter(key);
@@ -234,7 +227,7 @@ describe('BoardComponent', () => {
         const tileInTileHolder = new Tile(CaseProperty.Normal, 0, 0);
         tileInTileHolder.letter = 'A';
         tileInTileHolder.value = letterValue[tileInTileHolder.letter];
-        component.chatService.tileHolderService.tileHolder = [tileInTileHolder];
+        component.clientSocketHandler.tileHolderService.tileHolder = [tileInTileHolder];
         tile.click();
         const key = 'a';
         const spy = spyOn<any>(component.boardService, 'setLetter').and.stub();
@@ -247,7 +240,7 @@ describe('BoardComponent', () => {
         const tileInTileHolder = new Tile(CaseProperty.Normal, 0, 0);
         tileInTileHolder.letter = 'A';
         tileInTileHolder.value = letterValue[tileInTileHolder.letter];
-        component.chatService.tileHolderService.tileHolder = [tileInTileHolder];
+        component.clientSocketHandler.tileHolderService.tileHolder = [tileInTileHolder];
         tile.click();
         const key = 'a';
         // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -262,7 +255,7 @@ describe('BoardComponent', () => {
         const tileInTileHolder = new Tile(CaseProperty.Normal, 0, 0);
         tileInTileHolder.letter = 'A';
         tileInTileHolder.value = letterValue[tileInTileHolder.letter];
-        component.chatService.tileHolderService.tileHolder = [tileInTileHolder];
+        component.clientSocketHandler.tileHolderService.tileHolder = [tileInTileHolder];
         tile.click();
         const key = 'a';
         component.placeLetter(key);
@@ -275,7 +268,7 @@ describe('BoardComponent', () => {
         const tileInTileHolder = new Tile(CaseProperty.Normal, 0, 0);
         tileInTileHolder.letter = 'A';
         tileInTileHolder.value = letterValue[tileInTileHolder.letter];
-        component.chatService.tileHolderService.tileHolder = [tileInTileHolder];
+        component.clientSocketHandler.tileHolderService.tileHolder = [tileInTileHolder];
         tile.click();
         tile.click();
         const key = 'a';
@@ -291,19 +284,19 @@ describe('BoardComponent', () => {
         expect(position[1]).toEqual(0);
     });
 
-    it('method placeWord should create the right command and call chatService sendToRoom', () => {
+    it('method placeWord should create the right command and call clientSocketHandler sendToRoom', () => {
         const tile = fixture.debugElement.nativeElement.children[0].children[0].children[0].children[0] as HTMLElement;
         const tileInTileHolder = new Tile(CaseProperty.Normal, 0, 0);
         tileInTileHolder.letter = 'A';
         tileInTileHolder.value = letterValue[tileInTileHolder.letter];
-        component.chatService.tileHolderService.tileHolder = [tileInTileHolder];
+        component.clientSocketHandler.tileHolderService.tileHolder = [tileInTileHolder];
         tile.click();
         const key = 'a';
         component.placeLetter(key);
         // eslint-disable-next-line @typescript-eslint/no-empty-function
-        const spy = spyOn<any>(component.chatService, 'sendToRoom').and.callFake(() => {});
+        const spy = spyOn<any>(component.clientSocketHandler, 'sendToRoom').and.callFake(() => {});
         component.placeWord();
-        expect(component.chatService.roomMessage).toEqual('!placer a1h a');
+        expect(component.clientSocketHandler.roomMessage).toEqual('!placer a1h a');
         expect(spy).toHaveBeenCalled();
     });
 
@@ -312,7 +305,7 @@ describe('BoardComponent', () => {
         const tileInTileHolder = new Tile(CaseProperty.Normal, 0, 0);
         tileInTileHolder.letter = 'A';
         tileInTileHolder.value = letterValue[tileInTileHolder.letter];
-        component.chatService.tileHolderService.tileHolder = [tileInTileHolder];
+        component.clientSocketHandler.tileHolderService.tileHolder = [tileInTileHolder];
         tile.click();
         const spy = spyOn<any>(component, 'removeLetter').and.callThrough();
         const key = 'a';

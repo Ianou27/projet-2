@@ -1,5 +1,5 @@
 <div class="container justified">
-    <a mat-fab color="primary" matTooltip="Retourner à la page d'accueil" matTooltipPosition="right" id="tooltip" href="/home" (click)="goHome()">
+    <a mat-fab color="primary" matTooltip="Retourner à la page d'accueil" matTooltipPosition="right" id="tooltip" href="" (click)="goHome()">
         <mat-icon style="transform: rotate(180deg)">exit_to_app</mat-icon>
     </a>
     <mat-tab-group mat-stretch-tabs>
@@ -115,23 +115,13 @@
                 </marquee>
             </mat-toolbar>
             <div>
-                <div *ngIf="this.chatService.allRooms.length !== 0" class="spaceButton">
-                    <button mat-raised-button color="primary" [disabled]="this.chatService.allRooms.length === 1" (click)="randomJoin()">
+                <div *ngIf="this.clientSocketHandler.numberOfRooms !== 0" class="spaceButton">
+                    <button mat-raised-button color="primary" [disabled]="this.clientSocketHandler.numberOfRooms === 1" (click)="randomJoin()">
                         Placement aléatoire
                     </button>
-                    <!-- <a
-                        mat-fab
-                        color="primary"
-                        matTooltip="Placement aléatoire"
-                        matTooltipPosition="right"
-                        [disabled]="this.chatService.allRooms.length === 1"
-                        (click)="randomJoin()"
-                    >
-                        <mat-icon>sync</mat-icon>
-                    </a> -->
                 </div>
 
-                <mat-accordion *ngFor="let room of this.chatService.allRooms" multi>
+                <mat-accordion *ngFor="let room of this.clientSocketHandler.allRooms" multi>
                     <div *ngIf="room.player2 === ''">
                         <mat-expansion-panel [expanded]="selectedRoomName === room.player1">
                             <mat-expansion-panel-header>
@@ -159,7 +149,7 @@
                                 </form>
                                 <p><b>Choisir un nom différent que celui du joueur 1</b></p>
                                 <button
-                                    (click)="this.chatService.askJoin(this.name, room)"
+                                    (click)="this.clientSocketHandler.askJoin(this.name, room)"
                                     (click)="openWaitToJoin()"
                                     mat-raised-button
                                     color="primary"

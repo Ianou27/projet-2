@@ -42,7 +42,7 @@ describe('WaitingPlayerDialogComponent', () => {
     it('goBack() should open the dialog and cancel room creation', () => {
         // eslint-disable-next-line dot-notation
         const openSpy = spyOn(component['multiplayerDialog'], 'open');
-        const cancelSpy = spyOn(component.chatService, 'cancelCreation');
+        const cancelSpy = spyOn(component.clientSocketHandler, 'cancelCreation');
         component.goBack();
         expect(openSpy).toHaveBeenCalledWith(JoinPageComponent, {
             disableClose: true,
@@ -50,26 +50,26 @@ describe('WaitingPlayerDialogComponent', () => {
         expect(cancelSpy).toHaveBeenCalled();
     });
 
-    it('accept() should close the dialogs and call accepted() in the chatService ', () => {
+    it('accept() should close the dialogs and call accepted() in the clientSocketHandler ', () => {
         // eslint-disable-next-line dot-notation
         const closeSpy = spyOn(component['multiplayerDialog'], 'closeAll');
-        const acceptSpy = spyOn(component.chatService, 'accepted').and.stub();
+        const acceptSpy = spyOn(component.clientSocketHandler, 'accepted').and.stub();
         component.accept();
         expect(acceptSpy).toHaveBeenCalled();
         expect(closeSpy).toHaveBeenCalled();
     });
 
-    it('deny() should call refused() in the chatService and PlayerJoined value should be false ', () => {
-        const refusedSpy = spyOn(component.chatService, 'refused');
+    it('deny() should call refused() in the clientSocketHandler and PlayerJoined value should be false ', () => {
+        const refusedSpy = spyOn(component.clientSocketHandler, 'refused');
         component.deny();
-        expect(component.chatService.playerJoined).toBeFalsy();
+        expect(component.clientSocketHandler.playerJoined).toBeFalsy();
         expect(refusedSpy).toHaveBeenCalled();
     });
 
-    it('convertToSolo() should call convertToSoloGame() in the chatService and close all dialogs', () => {
+    it('convertToSolo() should call convertToSoloGame() in the clientSocketHandler and close all dialogs', () => {
         // eslint-disable-next-line dot-notation
         const closeSpy = spyOn(component['multiplayerDialog'], 'closeAll');
-        const refusedSpy = spyOn(component.chatService, 'convertToSoloGame');
+        const refusedSpy = spyOn(component.clientSocketHandler, 'convertToSoloGame');
         component.convertToSolo();
         expect(refusedSpy).toHaveBeenCalled();
         expect(closeSpy).toHaveBeenCalled();

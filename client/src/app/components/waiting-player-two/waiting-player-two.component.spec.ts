@@ -43,11 +43,11 @@ describe('WaitingPlayerTwoComponent', () => {
     it('join() should close the dialogs on both side and make the second player join the room ', () => {
         // eslint-disable-next-line dot-notation
         const closeSpy = spyOn(component['multiplayerDialog'], 'closeAll');
-        const joinSpy = spyOn(component.chatService, 'joinRoom');
+        const joinSpy = spyOn(component.clientSocketHandler, 'joinRoom');
         component.join();
         expect(closeSpy).toHaveBeenCalled();
         expect(joinSpy).toHaveBeenCalled();
-        expect(component.chatService.gotAccepted).toBeFalsy();
+        expect(component.clientSocketHandler.gotAccepted).toBeFalsy();
     });
 
     it('refused() should open the dialog', (done) => {
@@ -62,7 +62,7 @@ describe('WaitingPlayerTwoComponent', () => {
             expect(openSpy).toHaveBeenCalledWith(JoinPageComponent, { disableClose: true });
             done();
         }, CLOSING_DELAY);
-        expect(component.chatService.gotRefused).toBeFalsy();
+        expect(component.clientSocketHandler.gotRefused).toBeFalsy();
         expect(component.isBeingRedirected).toBeTruthy();
     });
 });

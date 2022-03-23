@@ -2,7 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from '@app/../../../common/constants/board';
 import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
-import { GridService } from '@app/services/grid.service';
+import { GridService } from '@app/services/grid/grid.service';
 
 describe('PlayAreaComponent', () => {
     let component: PlayAreaComponent;

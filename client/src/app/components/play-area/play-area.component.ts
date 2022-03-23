@@ -1,8 +1,8 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from '@app/../../../common/constants/board';
 import { Vec2 } from '@app/../../../common/vec2';
-import { GridService } from '@app/services/grid.service';
-import { ResizerService } from '@app/services/resizer.service';
+import { GridService } from '@app/services/grid/grid.service';
+import { ResizerService } from '@app/services/resizer/resizer.service';
 
 @Component({
     selector: 'app-play-area',
@@ -13,15 +13,9 @@ export class PlayAreaComponent implements AfterViewInit, OnInit, OnDestroy {
     @ViewChild('gridCanvas', { static: false }) private gridCanvas!: ElementRef<HTMLCanvasElement>;
     letterFontSize: number;
     mousePosition: Vec2 = { x: 0, y: 0 };
-    // buttonPressed = '';
     private canvasSize = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
 
     constructor(private readonly gridService: GridService, private resizer: ResizerService) {}
-
-    /* @HostListener('keydown', ['$event'])
-    buttonDetect(event: KeyboardEvent) {
-        this.buttonPressed = event.key;
-    } */
 
     ngOnInit(): void {
         this.resizer.letterFontSize.subscribe((letterFontSize) => {

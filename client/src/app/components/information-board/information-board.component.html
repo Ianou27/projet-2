@@ -1,38 +1,40 @@
 <mat-card class="player-card">
-    <div class="dot {{ this.chatService.player1Turn }}">
+    <div class="dot {{ this.clientSocketHandler.player1Turn }}">
         <mat-icon>person</mat-icon>
     </div>
     <div class="content">
-        <mat-card-title class="{{ this.chatService.player1Turn }}">{{ this.chatService.player1Username }}</mat-card-title>
+        <mat-card-title class="{{ this.clientSocketHandler.player1Turn }}">{{ this.clientSocketHandler.player1Username }}</mat-card-title>
         <mat-card-content>
-            <p *ngIf="this.chatService.player1ChevaletLetters < 7" class="letters-left">
-                {{ this.chatService.player1ChevaletLetters }} lettre(s) restante(s)
+            <p *ngIf="this.clientSocketHandler.player1ChevaletLetters < 7" class="letters-left">
+                {{ this.clientSocketHandler.player1ChevaletLetters }} lettre(s) restante(s)
             </p>
-            <div class="score">Score : {{ this.chatService.player1Point }}</div>
+            <div class="score">Score : {{ this.clientSocketHandler.player1Point }}</div>
         </mat-card-content>
     </div>
 </mat-card>
 <mat-card class="player-card">
-    <div class="dot {{ this.chatService.player2Turn }}">
+    <div class="dot {{ this.clientSocketHandler.player2Turn }}">
         <mat-icon>person</mat-icon>
     </div>
     <div class="content">
-        <mat-card-title class="{{ this.chatService.player2Turn }}">{{ this.chatService.player2Username }}</mat-card-title>
+        <mat-card-title class="{{ this.clientSocketHandler.player2Turn }}">{{ this.clientSocketHandler.player2Username }}</mat-card-title>
         <mat-card-content>
-            <p *ngIf="this.chatService.player2ChevaletLetters < 7" class="letters-left">
-                {{ this.chatService.player2ChevaletLetters }} lettre(s) restante(s)
+            <p *ngIf="this.clientSocketHandler.player2ChevaletLetters < 7" class="letters-left">
+                {{ this.clientSocketHandler.player2ChevaletLetters }} lettre(s) restante(s)
             </p>
-            <div class="score">Score : {{ this.chatService.player2Point }}</div>
+            <div class="score">Score : {{ this.clientSocketHandler.player2Point }}</div>
         </mat-card-content>
     </div>
 </mat-card>
 <mat-card>
-    <mat-card-title id="timer">{{ this.chatService.timer | formatTime }}</mat-card-title>
+    <mat-card-title id="timer">{{ this.clientSocketHandler.timer | formatTime }}</mat-card-title>
     <mat-card-content>
-        {{ this.chatService.reserve }} lettre(s) restante(s) dans la réserve
-        <div *ngIf="this.chatService.gameOver && this.chatService.winner === 'tie'" class="winner">La partie s'est terminé en égalité</div>
-        <div *ngIf="this.chatService.gameOver && this.chatService.winner !== 'tie'" class="winner">
-            {{ this.chatService.winner }} a gagné la partie FÉLICITATION
+        {{ this.clientSocketHandler.reserve }} lettre(s) restante(s) dans la réserve
+        <div *ngIf="this.clientSocketHandler.gameOver && this.clientSocketHandler.winner === 'tie'" class="winner">
+            La partie s'est terminé en égalité
+        </div>
+        <div *ngIf="this.clientSocketHandler.gameOver && this.clientSocketHandler.winner !== 'tie'" class="winner">
+            {{ this.clientSocketHandler.winner }} a gagné la partie FÉLICITATION
         </div>
     </mat-card-content>
 </mat-card>

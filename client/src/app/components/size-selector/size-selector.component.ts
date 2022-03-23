@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ResizerService } from '@app/services/resizer.service';
+import { ResizerService } from '@app/services/resizer/resizer.service';
 
 @Component({
     selector: 'app-size-selector',
@@ -8,7 +8,6 @@ import { ResizerService } from '@app/services/resizer.service';
 })
 export class SizeSelectorComponent implements OnInit, OnDestroy {
     letterFontSize: number;
-    valueFontSize: number;
     constructor(private resizer: ResizerService) {}
     ngOnInit(): void {
         this.resizer.letterFontSize.subscribe((letterFontSize) => (this.letterFontSize = letterFontSize));

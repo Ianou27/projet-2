@@ -1,4 +1,3 @@
-import { PlacementInformations } from '@app/placement-informations';
 import { letterValue } from '@common/assets/reserve-letters';
 import {
     CENTER_ROW_COLUMN,
@@ -20,11 +19,12 @@ import {
 import { Orientation } from '@common/orientation';
 import { Tile } from '@common/tile/Tile';
 import { PlacementScore, TilePlacementPossible } from '@common/types';
+import { PlacementInformations } from 'assets/placement-informations';
 import * as fs from 'fs';
 import { rowLetter } from './../../../../common/assets/row';
 import { CommandType } from './../../../../common/command-type';
 import { Game } from './../game/game';
-import { PlacementCommand } from './../placementCommand/placement-command';
+import { PlacementCommand } from './../placement-command/placement-command';
 
 export class VirtualPlayer {
     static findAllWords(letters: string[], letterOnBoard: string): string[] {

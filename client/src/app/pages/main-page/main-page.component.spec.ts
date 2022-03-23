@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
 import { BestScoreComponent } from '@app/pages/best-score/best-score.component';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
-import { CommunicationService } from '@app/services/communication.service';
+import { CommunicationService } from '@app/services/communication/communication.service';
 import { of } from 'rxjs';
 import SpyObj = jasmine.SpyObj;
 

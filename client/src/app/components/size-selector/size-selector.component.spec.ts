@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LETTER_FONT_SIZE, VALUE_FONT_SIZE } from '@app/constants/general-constants';
-import { ResizerService } from '@app/services/resizer.service';
+import { ResizerService } from '@app/services/resizer/resizer.service';
 import { BehaviorSubject } from 'rxjs';
 import { SizeSelectorComponent } from './size-selector.component';
 import SpyObj = jasmine.SpyObj;

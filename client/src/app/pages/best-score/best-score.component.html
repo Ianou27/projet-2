@@ -5,7 +5,7 @@
     </div>
     <mat-tab-group mat-stretch-tabs>
         <mat-tab label="Scrabble Classique">
-            <mat-table #table [dataSource]="this.chatService.bestClassicScores">
+            <mat-table #table [dataSource]="this.clientSocketHandler.bestClassicScores">
                 <ng-container matColumnDef="score">
                     <mat-header-cell *matHeaderCellDef> Score </mat-header-cell>
                     <mat-cell *matCellDef="let element"> {{ element.score }} </mat-cell>
@@ -21,7 +21,7 @@
             </mat-table>
         </mat-tab>
         <mat-tab label="Scrabble LOG2990">
-            <mat-table #table [dataSource]="this.chatService.bestLog2990Scores">
+            <mat-table #table [dataSource]="this.clientSocketHandler.bestLog2990Scores">
                 <ng-container matColumnDef="score">
                     <mat-header-cell *matHeaderCellDef> Score </mat-header-cell>
                     <mat-cell *matCellDef="let element"> {{ element.score }} </mat-cell>

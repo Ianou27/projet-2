@@ -1,5 +1,5 @@
 import { Component, HostListener } from '@angular/core';
-import { ChatService } from '@app/services/chat.service';
+import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
 import { TileHolderService } from '@app/services/tile-holder/tile-holder.service';
 import { CommandType } from './../../../../../common/command-type';
 import { INDEX_OF_NOT_FOUND, NUMBER_TILE_HOLDER } from './../../../../../common/constants/general-constants';
@@ -16,7 +16,7 @@ export class TileHolderComponent {
     lastKeys: string[] = [];
     lettersToExchange: string[] = [];
     showButtonsBool: boolean = false;
-    constructor(public tileHolderService: TileHolderService, public chatService: ChatService) {}
+    constructor(public tileHolderService: TileHolderService, public clientSocketHandler: ClientSocketHandler) {}
 
     @HostListener('keydown', ['$event'])
     buttonDetect(event: KeyboardEvent) {
@@ -98,8 +98,8 @@ export class TileHolderComponent {
         let command = CommandType.exchange + ' ';
         const letters = this.lettersToExchange.join('');
         command += letters;
-        this.chatService.roomMessage = command;
-        this.chatService.sendToRoom();
+        this.clientSocketHandler.roomMessage = command;
+        this.clientSocketHandler.sendToRoom();
         this.showButtonsBool = false;
         this.emptyArray();
     }

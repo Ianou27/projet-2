@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { QuitGameDialogComponent } from '@app/components/quit-game-dialog/quit-game-dialog.component';
 import { LETTERS_GRID, NUMBERS_GRID } from '@app/constants/general-constants';
 import { JoinPageComponent } from '@app/pages/join-page/join-page.component';
-import { ChatService } from '@app/services/chat.service';
+import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
 
 @Component({
     selector: 'app-game-page',
@@ -15,7 +15,7 @@ export class GamePageComponent implements OnInit {
     letters: string[];
     numbers: number[];
 
-    constructor(public dialog: MatDialog, private location: LocationStrategy, public chatService: ChatService) {
+    constructor(public dialog: MatDialog, private location: LocationStrategy, public clientSocketHandler: ClientSocketHandler) {
         history.pushState(null, '', window.location.href);
         this.location.onPopState(() => {
             history.pushState(null, '', window.location.href);

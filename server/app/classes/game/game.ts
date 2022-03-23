@@ -1,4 +1,4 @@
-import { DatabaseService } from '@app/services/best-score.services';
+import { DatabaseService } from '@app/services/best-score/best-score.services';
 import * as io from 'socket.io';
 import { CommandType } from './../../../../common/command-type';
 import {
@@ -10,11 +10,11 @@ import {
 } from './../../../../common/constants/general-constants';
 import { GameState } from './../../../../common/gameState';
 import { User } from './../../../../common/types';
-import { GameBoardService } from './../../services/game-board.service';
-import { Timer } from './../../services/timer-manager.service';
-import { PlacementCommand } from './../placementCommand/placement-command';
+import { GameBoardService } from './../../services/game-board/game-board.service';
+import { Timer } from './../../services/timer-manager/timer-manager.service';
+import { PlacementCommand } from './../placement-command/placement-command';
 import { Player } from './../player/player';
-import { ReserveLetters } from './../reserveLetters/reserve-letters';
+import { ReserveLetters } from './../reserve-letters/reserve-letters';
 import { VirtualPlayer } from './../virtual-player/virtual-player';
 export class Game {
     gameBoard: GameBoardService;
@@ -58,7 +58,7 @@ export class Game {
         this.startGame();
     }
 
-    verifyGameState() {
+    gameStateUpdate() {
         const endGameValidation =
             this.gameState.passesCount === MAXIMUM_PASSES_COUNT ||
             (this.reserveLetters.letters.length === 0 && (this.player1.getNumberLetters() === 0 || this.player2.getNumberLetters() === 0));
@@ -202,7 +202,7 @@ export class Game {
     passTurn(): void {
         this.changeTurnTwoPlayers();
         this.gameState.passesCount++;
-        this.verifyGameState();
+        this.gameStateUpdate();
         this.timer.reset();
         this.sio.to(this.player1.user.room).emit('modification', this.gameBoard.cases, this.playerTurn().name);
         this.sio.to(this.player1.user.id).emit('tileHolder', this.player1.letters);
