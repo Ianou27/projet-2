@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { JoinPageComponent } from '@app/pages/join-page/join-page.component';
-import { ChatService } from '@app/services/chat/chat.service';
+import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
 
 @Component({
     selector: 'app-waiting-player-dialog',
@@ -9,28 +9,28 @@ import { ChatService } from '@app/services/chat/chat.service';
     styleUrls: ['./waiting-player-dialog.component.scss'],
 })
 export class WaitingPlayerDialogComponent {
-    constructor(private multiplayerDialog: MatDialog, public chatService: ChatService) {}
+    constructor(private multiplayerDialog: MatDialog, public clientSocketHandler: ClientSocketHandler) {}
 
     goBack() {
         this.multiplayerDialog.open(JoinPageComponent, {
             disableClose: true,
         });
 
-        this.chatService.cancelCreation();
+        this.clientSocketHandler.cancelCreation();
     }
 
     accept() {
         this.multiplayerDialog.closeAll();
-        this.chatService.accepted();
+        this.clientSocketHandler.accepted();
     }
 
     deny() {
-        this.chatService.playerJoined = false;
-        this.chatService.refused();
+        this.clientSocketHandler.playerJoined = false;
+        this.clientSocketHandler.refused();
     }
 
     convertToSolo() {
-        this.chatService.convertToSoloGame();
+        this.clientSocketHandler.convertToSoloGame();
         this.multiplayerDialog.closeAll();
     }
 }

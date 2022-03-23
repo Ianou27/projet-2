@@ -2,7 +2,7 @@
 /* eslint-disable max-lines */
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ChatService } from '@app/services/chat/chat.service';
+import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
 import { TileHolderService } from '@app/services/tile-holder/tile-holder.service';
 import { CaseProperty } from './../../../../../common/assets/case-property';
 import { letterValue } from './../../../../../common/assets/reserve-letters';
@@ -15,13 +15,13 @@ describe('TileHolderComponent', () => {
     let component: TileHolderComponent;
     let fixture: ComponentFixture<TileHolderComponent>;
     let tileHolderServiceSpy: SpyObj<TileHolderService>;
-    let chatServiceSpy: SpyObj<ChatService>;
+    let clientSocketHandlerSpy: SpyObj<ClientSocketHandler>;
     let tiles: Tile[];
     let swapper: HTMLElement;
 
     beforeEach(() => {
         tiles = [];
-        chatServiceSpy = jasmine.createSpyObj('ChatService', ['sendToRoom'], ['roomMessage', 'reserve', 'myTurn']);
+        clientSocketHandlerSpy = jasmine.createSpyObj('ChatService', ['sendToRoom'], ['roomMessage', 'reserve', 'myTurn']);
         const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
         for (const letter of letters) {
             const tile: Tile = new Tile(CaseProperty.Normal, 0, 0);
@@ -38,7 +38,7 @@ describe('TileHolderComponent', () => {
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             providers: [
                 { provide: TileHolderService, useValue: tileHolderServiceSpy },
-                { provide: ChatService, useValue: chatServiceSpy },
+                { provide: ClientSocketHandler, useValue: clientSocketHandlerSpy },
             ],
         }).compileComponents();
     });

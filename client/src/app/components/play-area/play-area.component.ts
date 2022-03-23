@@ -13,15 +13,9 @@ export class PlayAreaComponent implements AfterViewInit, OnInit, OnDestroy {
     @ViewChild('gridCanvas', { static: false }) private gridCanvas!: ElementRef<HTMLCanvasElement>;
     letterFontSize: number;
     mousePosition: Vec2 = { x: 0, y: 0 };
-    // buttonPressed = '';
     private canvasSize = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
 
     constructor(private readonly gridService: GridService, private resizer: ResizerService) {}
-
-    /* @HostListener('keydown', ['$event'])
-    buttonDetect(event: KeyboardEvent) {
-        this.buttonPressed = event.key;
-    } */
 
     ngOnInit(): void {
         this.resizer.letterFontSize.subscribe((letterFontSize) => {

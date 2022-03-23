@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ChatService } from '@app/services/chat/chat.service';
+import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
 
 @Component({
     selector: 'app-communication-area',
@@ -7,9 +7,9 @@ import { ChatService } from '@app/services/chat/chat.service';
     styleUrls: ['./communication-area.component.scss'],
 })
 export class CommunicationAreaComponent implements OnInit {
-    constructor(public chatService: ChatService) {}
+    constructor(public clientSocketHandler: ClientSocketHandler) {}
 
     ngOnInit(): void {
-        this.chatService.init();
+        this.clientSocketHandler.init();
     }
 }

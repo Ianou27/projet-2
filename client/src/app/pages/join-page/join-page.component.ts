@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { WaitingPlayerDialogComponent } from '@app/components/waiting-player-dialog/waiting-player-dialog.component';
 import { WaitingPlayerTwoComponent } from '@app/components/waiting-player-two/waiting-player-two.component';
-import { ChatService } from '@app/services/chat/chat.service';
+import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
 
 @Component({
     selector: 'app-join-page',
@@ -33,7 +33,7 @@ export class JoinPageComponent implements OnInit {
         { value: '300', text: '5:00' },
     ];
 
-    constructor(public waitDialog: MatDialog, public chatService: ChatService) {}
+    constructor(public waitDialog: MatDialog, public clientSocketHandler: ClientSocketHandler) {}
     ngOnInit(): void {
         this.form = new FormGroup({
             name: new FormControl('', [Validators.required, Validators.minLength(3), Validators.pattern(this.alphaNumericRegex)]),
@@ -55,18 +55,18 @@ export class JoinPageComponent implements OnInit {
         });
     }
     randomJoin() {
-        this.selectedRoomName = this.chatService.allRooms[Math.floor(Math.random() * this.chatService.allRooms.length)].player1;
+        this.selectedRoomName = this.clientSocketHandler.allRooms[Math.floor(Math.random() * this.clientSocketHandler.allRooms.length)].player1;
     }
 
     createRoom() {
-        this.chatService.createRoom(this.name, this.name, this.selectedTime);
+        this.clientSocketHandler.createRoom(this.name, this.name, this.selectedTime);
 
-        this.chatService.username = this.name;
+        this.clientSocketHandler.username = this.name;
         this.openWait();
     }
 
     createSoloGame() {
-        this.chatService.createSoloGame(this.name, this.selectedTime);
+        this.clientSocketHandler.createSoloGame(this.name, this.selectedTime);
     }
 
     goHome() {

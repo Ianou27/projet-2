@@ -8,4 +8,15 @@
     ></app-tile>
 </div>
 <button *ngIf="showButtonsBool" mat-button color="warn" tabindex="0" focus (mousedown)="clearAllIds()">Annuler</button>
-<button *ngIf="showButtonsBool" [disabled]="!this.chatService.myTurn || this.chatService.reserve<7" mat-button color="primary" tabindex="0" focus (mousedown)="exchange()" cdkFocusInitial>Échanger</button>
+<button
+    *ngIf="showButtonsBool"
+    [disabled]="!this.clientSocketHandler.myTurn || this.clientSocketHandler.reserve < 7"
+    mat-button
+    color="primary"
+    tabindex="0"
+    focus
+    (mousedown)="exchange()"
+    cdkFocusInitial
+>
+    Échanger
+</button>

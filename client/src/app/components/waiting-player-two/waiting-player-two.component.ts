@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CLOSING_DELAY } from '@app/constants/general-constants';
 import { JoinPageComponent } from '@app/pages/join-page/join-page.component';
-import { ChatService } from '@app/services/chat/chat.service';
+import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
 
 @Component({
     selector: 'app-waiting-player-two',
@@ -11,15 +11,15 @@ import { ChatService } from '@app/services/chat/chat.service';
 })
 export class WaitingPlayerTwoComponent {
     isBeingRedirected: boolean = false;
-    constructor(private multiplayerDialog: MatDialog, public chatService: ChatService) {}
+    constructor(private multiplayerDialog: MatDialog, public clientSocketHandler: ClientSocketHandler) {}
 
     join() {
         this.multiplayerDialog.closeAll();
-        this.chatService.joinRoom();
-        this.chatService.gotAccepted = false;
+        this.clientSocketHandler.joinRoom();
+        this.clientSocketHandler.gotAccepted = false;
     }
     refused() {
-        this.chatService.gotRefused = false;
+        this.clientSocketHandler.gotRefused = false;
         this.isBeingRedirected = true;
         setTimeout(() => {
             this.isBeingRedirected = false;

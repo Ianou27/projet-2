@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ChatService } from '@app/services/chat/chat.service';
+import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
 
 @Component({
     selector: 'app-best-score',
@@ -10,13 +10,13 @@ import { ChatService } from '@app/services/chat/chat.service';
 export class BestScoreComponent {
     displayedColumns = ['score', 'name'];
 
-    constructor(public waitDialog: MatDialog, public chatService: ChatService) {
-        this.chatService.connect();
-        this.chatService.getScores();
+    constructor(public waitDialog: MatDialog, public clientSocketHandler: ClientSocketHandler) {
+        this.clientSocketHandler.connect();
+        this.clientSocketHandler.getScores();
     }
 
     goHome() {
         this.waitDialog.closeAll();
-        this.chatService.disconnect();
+        this.clientSocketHandler.disconnect();
     }
 }

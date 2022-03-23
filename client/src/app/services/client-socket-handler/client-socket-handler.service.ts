@@ -11,7 +11,7 @@ import { TileHolderService } from './../tile-holder/tile-holder.service';
 @Injectable({
     providedIn: 'root',
 })
-export class ChatService {
+export class ClientSocketHandler {
     username: string = '';
     room: string = '';
 

@@ -10,10 +10,10 @@
         <button
             mat-fab
             color="primary"
-            [disabled]="!this.chatService.myTurn"
+            [disabled]="!this.clientSocketHandler.myTurn"
             matTooltip="Passer son tour"
             matTooltipPosition="right"
-            (click)="this.chatService.passerTour()"
+            (click)="this.clientSocketHandler.passerTour()"
         >
             <mat-icon>skip_next</mat-icon>
         </button>

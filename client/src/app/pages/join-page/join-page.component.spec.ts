@@ -57,27 +57,27 @@ describe('JoinPageComponent', () => {
         });
     });
 
-    it('randomJoin() should change the attribute selectedRoomName to a random room of chatService', () => {
+    it('randomJoin() should change the attribute selectedRoomName to a random room of clientSocketHandler', () => {
         const room: Room = {
             player1: 'player1',
             player2: 'player2',
             time: '60',
         };
-        component.chatService.allRooms = [room];
+        component.clientSocketHandler.allRooms = [room];
         component.randomJoin();
         expect(component.selectedRoomName).toBe(room.player1);
     });
 
     it('createRoom() should create a room and open the dialog for the player that created the room', () => {
         const dialogMethodSpy = spyOn(component, 'openWait');
-        const createSpy = spyOn(component.chatService, 'createRoom');
+        const createSpy = spyOn(component.clientSocketHandler, 'createRoom');
         component.createRoom();
         expect(dialogMethodSpy).toHaveBeenCalled();
         expect(createSpy).toHaveBeenCalled();
     });
 
-    it('createSoloGame() should call the method createSoloGame from chatService', () => {
-        const createSoloGameSpy = spyOn(component.chatService, 'createSoloGame');
+    it('createSoloGame() should call the method createSoloGame from clientSocketHandler', () => {
+        const createSoloGameSpy = spyOn(component.clientSocketHandler, 'createSoloGame');
         component.createSoloGame();
         expect(createSoloGameSpy).toHaveBeenCalled();
     });

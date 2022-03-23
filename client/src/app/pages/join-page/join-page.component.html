@@ -115,13 +115,13 @@
                 </marquee>
             </mat-toolbar>
             <div>
-                <div *ngIf="this.chatService.numberOfRooms !== 0" class="spaceButton">
-                    <button mat-raised-button color="primary" [disabled]="this.chatService.numberOfRooms === 1" (click)="randomJoin()">
+                <div *ngIf="this.clientSocketHandler.numberOfRooms !== 0" class="spaceButton">
+                    <button mat-raised-button color="primary" [disabled]="this.clientSocketHandler.numberOfRooms === 1" (click)="randomJoin()">
                         Placement aléatoire
                     </button>
                 </div>
 
-                <mat-accordion *ngFor="let room of this.chatService.allRooms" multi>
+                <mat-accordion *ngFor="let room of this.clientSocketHandler.allRooms" multi>
                     <div *ngIf="room.player2 === ''">
                         <mat-expansion-panel [expanded]="selectedRoomName === room.player1">
                             <mat-expansion-panel-header>
@@ -149,7 +149,7 @@
                                 </form>
                                 <p><b>Choisir un nom différent que celui du joueur 1</b></p>
                                 <button
-                                    (click)="this.chatService.askJoin(this.name, room)"
+                                    (click)="this.clientSocketHandler.askJoin(this.name, room)"
                                     (click)="openWaitToJoin()"
                                     mat-raised-button
                                     color="primary"

@@ -1,6 +1,6 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { BoardService } from '@app/services/board/board.service';
-import { ChatService } from '@app/services/chat/chat.service';
+import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
 import { rowLetter } from './../../../../../common/assets/row';
 import { CommandType } from './../../../../../common/command-type';
 import { MAXIMUM_ROW_COLUMN } from './../../../../../common/constants/general-constants';
@@ -14,7 +14,7 @@ import { Orientation } from './../../../../../common/orientation';
 export class BoardComponent implements OnInit {
     letterPlaced: string[] = [];
     orientation = Orientation.default;
-    constructor(public boardService: BoardService, public chatService: ChatService) {}
+    constructor(public boardService: BoardService, public clientSocketHandler: ClientSocketHandler) {}
     @HostListener('keydown', ['$event'])
     keyHandler(event: KeyboardEvent) {
         // utilisation de code ne provenant pas de nous, source :
@@ -67,15 +67,15 @@ export class BoardComponent implements OnInit {
             }
             command += this.letterPlaced[i];
         }
-        this.chatService.roomMessage = command;
-        this.chatService.sendToRoom();
+        this.clientSocketHandler.roomMessage = command;
+        this.clientSocketHandler.sendToRoom();
     }
 
     removeLetter() {
         if (document.getElementsByClassName('writing')[0]) document.getElementsByClassName('writing')[0].className = '';
         if (this.letterPlaced.length === 0) return;
         const letter = this.letterPlaced[this.letterPlaced.length - 1];
-        this.chatService.tileHolderService.addLetter(letter);
+        this.clientSocketHandler.tileHolderService.addLetter(letter);
         this.letterPlaced.pop();
         const writtenLetters = document.getElementsByClassName('written');
         const lastWrittenLetter = writtenLetters[writtenLetters.length - 1];
@@ -138,7 +138,7 @@ export class BoardComponent implements OnInit {
         } else {
             this.letterPlaced.push(letter);
         }
-        this.chatService.tileHolderService.removeLetter(letter);
+        this.clientSocketHandler.tileHolderService.removeLetter(letter);
     }
 
     handleLeftClick(event: MouseEvent) {
@@ -168,7 +168,7 @@ export class BoardComponent implements OnInit {
     }
 
     private inTileHolder(key: string): [boolean, number] {
-        return this.chatService.tileHolderService.letterInTileHolder(key);
+        return this.clientSocketHandler.tileHolderService.letterInTileHolder(key);
     }
 
     private verificationSelection(currentSelection: HTMLElement): boolean {

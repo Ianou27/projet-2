@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ChatService } from '@app/services/chat/chat.service';
+import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
 
 @Component({
     selector: 'app-information-board',
@@ -7,5 +7,5 @@ import { ChatService } from '@app/services/chat/chat.service';
     styleUrls: ['./information-board.component.scss'],
 })
 export class InformationBoardComponent {
-    constructor(public chatService: ChatService) {}
+    constructor(public clientSocketHandler: ClientSocketHandler) {}
 }

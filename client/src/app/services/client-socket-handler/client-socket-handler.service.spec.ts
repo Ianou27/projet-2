@@ -8,15 +8,15 @@ import { Socket } from 'socket.io-client';
 import { Tile } from '../../../../../common/tile/Tile';
 import { LetterScore } from './../../../../../common/assets/reserve-letters';
 import { InfoToJoin, Message, Room } from './../../../../../common/types';
-import { ChatService } from './chat.service';
+import { ClientSocketHandler } from './client-socket-handler.service';
 
 describe('ChatService', () => {
-    let service: ChatService;
+    let service: ClientSocketHandler;
     let socketTestHelper: SocketTestHelper;
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
-        service = TestBed.inject(ChatService);
+        service = TestBed.inject(ClientSocketHandler);
         socketTestHelper = new SocketTestHelper();
         service.socketService.socket = socketTestHelper as unknown as Socket;
     });
