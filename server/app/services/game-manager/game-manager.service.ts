@@ -58,7 +58,7 @@ export class GameManager {
         return ExchangeCommand.validatedExchangeCommandBoard(command, game);
     }
 
-    lengthVerification(message: string): boolean {
+    messageLengthVerification(message: string): boolean {
         return message.length > MAXIMUM_CHARACTERS_MESSAGE ? false : true;
     }
 
@@ -68,7 +68,7 @@ export class GameManager {
 
     messageVerification(message: string): string {
         let erreur = 'valide';
-        if (!this.lengthVerification(message)) {
+        if (!this.messageLengthVerification(message)) {
             erreur = 'Message trop long';
         }
         return erreur;

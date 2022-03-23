@@ -268,8 +268,8 @@ describe('Placement Command', () => {
         assert(spy.call);
     });
 
-    it('method placeWord should call verifyGameState to verify if the game has ended', () => {
-        const spy = sinon.stub(game, 'verifyGameState');
+    it('method placeWord should call gameStateUpdate to verify if the game has ended', () => {
+        const spy = sinon.stub(game, 'gameStateUpdate');
         const firstWordCommand = '!placer h8h alle';
         const commandInformations = firstWordCommand.split(' ');
         PlacementCommand.placeWord(commandInformations, game);

@@ -312,7 +312,7 @@ export class PlacementCommand {
         game.changeTurnTwoPlayers();
         game.timer.reset();
         game.gameState.passesCount = 0;
-        game.verifyGameState();
+        game.gameStateUpdate();
 
         return true;
     }

@@ -58,7 +58,7 @@ export class Game {
         this.startGame();
     }
 
-    verifyGameState() {
+    gameStateUpdate() {
         const endGameValidation =
             this.gameState.passesCount === MAXIMUM_PASSES_COUNT ||
             (this.reserveLetters.letters.length === 0 && (this.player1.getNumberLetters() === 0 || this.player2.getNumberLetters() === 0));
@@ -202,7 +202,7 @@ export class Game {
     passTurn(): void {
         this.changeTurnTwoPlayers();
         this.gameState.passesCount++;
-        this.verifyGameState();
+        this.gameStateUpdate();
         this.timer.reset();
         this.sio.to(this.player1.user.room).emit('modification', this.gameBoard.cases, this.playerTurn().name);
         this.sio.to(this.player1.user.id).emit('tileHolder', this.player1.letters);

@@ -151,63 +151,63 @@ describe('Game', () => {
         expect(result).equal(false);
     });
 
-    it('method verifyGameState should set gameFinished to true if the passes count is 6', () => {
+    it('method gameStateUpdate should set gameFinished to true if the passes count is 6', () => {
         game.gameState.passesCount = 5;
         expect(game.gameState.gameFinished).to.equal(false);
         game.passTurn();
-        game.verifyGameState();
+        game.gameStateUpdate();
         expect(game.gameState.gameFinished).to.equal(true);
     });
 
-    it('method verifyGameState should set gameFinished to true if reserve length and letters of one player equal zero and calculate points without going into negative', () => {
+    it('method gameStateUpdate should set gameFinished to true if reserve length and letters of one player equal zero and calculate points without going into negative', () => {
         game.reserveLetters.letters = [];
         game.player1.letters = [];
         game.player2.letters = lettersTilePlayer1.slice(0, lettersTilePlayer1.length - 1);
         expect(game.gameState.gameFinished).to.equal(false);
 
-        game.verifyGameState();
+        game.gameStateUpdate();
         expect(game.gameState.gameFinished).to.equal(true);
         expect(game.player1.points).to.equal(expectedPoints);
         expect(game.player2.points).to.equal(0);
     });
 
-    it('method verifyGameState should set gameFinished to true if reserve length and letters of player 2 equal zero and calculate points', () => {
+    it('method gameStateUpdate should set gameFinished to true if reserve length and letters of player 2 equal zero and calculate points', () => {
         game.reserveLetters.letters = [];
         game.player2.letters = [];
         game.player1.letters = lettersTilePlayer1.slice(0, lettersTilePlayer1.length - 1);
         game.player1.points = points;
         game.player2.points = points;
         expect(game.gameState.gameFinished).to.equal(false);
-        game.verifyGameState();
+        game.gameStateUpdate();
         expect(game.gameState.gameFinished).to.equal(true);
         expect(game.player2.points).to.equal(points + expectedPoints);
         expect(game.player1.points).to.equal(points - expectedPoints);
     });
 
-    it('method verifyGameState should set gameFinished to true if reserve length and letters of player 1 equal zero and calculate points', () => {
+    it('method gameStateUpdate should set gameFinished to true if reserve length and letters of player 1 equal zero and calculate points', () => {
         game.reserveLetters.letters = [];
         game.player2.letters = lettersTilePlayer1;
         game.player1.letters = [];
         game.player1.points = points;
         game.player2.points = points;
         expect(game.gameState.gameFinished).to.equal(false);
-        game.verifyGameState();
+        game.gameStateUpdate();
         expect(game.gameState.gameFinished).to.equal(true);
         expect(game.player2.points).to.equal(points - expectedPoints);
         expect(game.player1.points).to.equal(points + expectedPoints);
     });
 
-    it('method verifyGameState should set the winner player1 if player1 has more points', () => {
+    it('method gameStateUpdate should set the winner player1 if player1 has more points', () => {
         game.player1.points = 100;
         game.player2.points = 0;
         game.reserveLetters.letters = [];
         game.player1.letters = [];
-        game.verifyGameState();
+        game.gameStateUpdate();
         expect(game.gameState.winner).to.equal('player1');
     });
 
-    it('method passTurn should change turn and call verifyGameState', () => {
-        const spy = sinon.spy(game, 'verifyGameState');
+    it('method passTurn should change turn and call gameStateUpdate', () => {
+        const spy = sinon.spy(game, 'gameStateUpdate');
         expect(game.player1.getHisTurn()).to.equal(true);
         expect(game.player2.getHisTurn()).to.equal(false);
         game.passTurn();

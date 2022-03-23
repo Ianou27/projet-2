@@ -13,27 +13,27 @@ describe('ResizerService', () => {
         expect(service).toBeTruthy();
     });
 
-    it('changeFont should call changeValue if param is valid', () => {
-        const changeValueSpy = spyOn(service, 'changeValue').and.callThrough();
+    it('changeFont should call changeLetterSizeValue if param is valid', () => {
+        const changeLetterSizeValueSpy = spyOn(service, 'changeLetterSizeValue').and.callThrough();
         service.changeFont('+');
-        expect(changeValueSpy).toHaveBeenCalled();
+        expect(changeLetterSizeValueSpy).toHaveBeenCalled();
     });
 
-    it('changeFont should call changeValue if param is valid', () => {
-        const changeValueSpy = spyOn(service, 'changeValue').and.callThrough();
+    it('changeFont should call changeLetterSizeValue if param is valid', () => {
+        const changeLetterSizeValueSpy = spyOn(service, 'changeLetterSizeValue').and.callThrough();
         service.changeFont('-');
-        expect(changeValueSpy).toHaveBeenCalled();
+        expect(changeLetterSizeValueSpy).toHaveBeenCalled();
     });
 
-    it('changeFont should not call changeValue if param not valid', () => {
-        const changeValueSpy = spyOn(service, 'changeValue').and.callThrough();
+    it('changeFont should not call changeLetterSizeValue if param not valid', () => {
+        const changeLetterSizeValueSpy = spyOn(service, 'changeLetterSizeValue').and.callThrough();
         service.changeFont('a');
-        expect(changeValueSpy).toHaveBeenCalledTimes(0);
+        expect(changeLetterSizeValueSpy).toHaveBeenCalledTimes(0);
     });
 
-    it('changeFont should not call changeValue if param is empty', () => {
-        const changeValueSpy = spyOn(service, 'changeValue').and.callThrough();
+    it('changeFont should not call changeLetterSizeValue if param is empty', () => {
+        const changeLetterSizeValueSpy = spyOn(service, 'changeLetterSizeValue').and.callThrough();
         service.changeFont('');
-        expect(changeValueSpy).toHaveBeenCalledTimes(0);
+        expect(changeLetterSizeValueSpy).toHaveBeenCalledTimes(0);
     });
 });

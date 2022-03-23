@@ -107,12 +107,12 @@ describe('Game Manager', () => {
         for (let i = 0; i < 47; i++) {
             testMessageLong += 'ABCDEFGHIJKLMNOP';
         }
-        expect(gameManager.lengthVerification(testMessageLong)).to.equal(false);
+        expect(gameManager.messageLengthVerification(testMessageLong)).to.equal(false);
     });
 
     it('method lengthVerification should return true if message has less than 512 characters', () => {
         const message = 'abcdefghijkl';
-        expect(gameManager.lengthVerification(message)).to.equal(true);
+        expect(gameManager.messageLengthVerification(message)).to.equal(true);
     });
 
     it('method characterVerification should return false if message has only spaces', () => {

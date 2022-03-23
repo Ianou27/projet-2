@@ -11,12 +11,12 @@ export class ResizerService {
     letterFontSize = new BehaviorSubject<number>(this.startLetterSize);
     changeFont(operator: string) {
         if (operator === '+' && this.letterFontSize.value < MAX_LETTER_SIZE) {
-            this.changeValue(this.letterFontSize.value + 1);
+            this.changeLetterSizeValue(this.letterFontSize.value + 1);
         } else if (operator === '-' && this.letterFontSize.value > MIN_LETTER_SIZE) {
-            this.changeValue(this.letterFontSize.value - 1);
+            this.changeLetterSizeValue(this.letterFontSize.value - 1);
         }
     }
-    changeValue(letterSize: number) {
+    changeLetterSizeValue(letterSize: number) {
         this.letterFontSize.next(letterSize);
     }
 }
