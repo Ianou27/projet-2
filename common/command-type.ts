@@ -4,4 +4,5 @@ export enum CommandType {
     reserve = '!réserve',
     pass = '!passer',
     clue = '!indice',
+    help = '!aide',
 }
