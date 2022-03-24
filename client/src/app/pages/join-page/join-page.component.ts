@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { WaitingPlayerDialogComponent } from '@app/components/waiting-player-dialog/waiting-player-dialog.component';
 import { WaitingPlayerTwoComponent } from '@app/components/waiting-player-two/waiting-player-two.component';
 import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
+import { MyErrorStateMatcher } from './errorStateMatcher/error-state-matcher';
 
 @Component({
     selector: 'app-join-page',
@@ -19,6 +20,7 @@ export class JoinPageComponent implements OnInit {
     selectedPlayer = 'Joueur débutant';
     selectedTime = '60';
     selectedRoomName: string;
+    matcher = new MyErrorStateMatcher();
 
     time = [
         { value: '30', text: '0:30' },
@@ -34,6 +36,7 @@ export class JoinPageComponent implements OnInit {
     ];
 
     constructor(public waitDialog: MatDialog, public clientSocketHandler: ClientSocketHandler) {}
+
     ngOnInit(): void {
         this.form = new FormGroup({
             name: new FormControl('', [Validators.required, Validators.minLength(3), Validators.pattern(this.alphaNumericRegex)]),
