@@ -9,6 +9,9 @@ export class AdminPageComponent {
     isChecked: boolean = false;
     virtualPlayer: string = 'Débutants';
     selectedDico = 'Dictionnaire par défaut';
+    displayedColumns: string[] = ['date', 'duration', 'player1', 'firstPlayerScore', 'player2', 'secondPlayerScore', 'mode'];
+
+    dataSource = [];
 
     changeType() {
         if (this.virtualPlayer === 'Débutants') {

@@ -17,22 +17,32 @@
                 <p>Ajouter ou supprimer des dictionnaires dans le jeu</p>
                 <mat-divider></mat-divider>
                 <h2>Gérer les dictionnaires existants</h2>
-                <mat-form-field appearance="fill">
-                    <mat-select [(value)]="selectedDico">
-                        <mat-option value="Dictionnaire par défaut">Dictionnaire par defaut</mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <mat-form-field appearance="fill">
-                    <mat-label>Nom du dictionnaire</mat-label>
-                    <input matInput placeholder="Dictionnaire par défaut" />
-                </mat-form-field>
-                <mat-form-field appearance="fill">
-                    <mat-label>Description du dictionnaire</mat-label>
-                    <textarea matInput placeholder="Ex. Dictionnaire par défaut"></textarea>
-                </mat-form-field>
+                <div>
+                    <mat-form-field appearance="fill">
+                        <mat-select [(value)]="selectedDico">
+                            <mat-option value="Dictionnaire par défaut">Dictionnaire par defaut</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Nom du dictionnaire</mat-label>
+                        <input matInput placeholder="Dictionnaire par défaut" />
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Description du dictionnaire</mat-label>
+                        <textarea matInput placeholder="Ex. Dictionnaire par défaut"></textarea>
+                    </mat-form-field>
+                    <button mat-stroked-button>
+                        Télécharger le dictionnaire
+                        <mat-icon>save_alt</mat-icon>
+                    </button>
+                </div>
                 <button mat-stroked-button>
                     Accepter les changements
                     <mat-icon>save</mat-icon>
+                </button>
+                <button mat-stroked-button>
+                    Supprimer le dictionnaire sélectionné
+                    <mat-icon>delete</mat-icon>
                 </button>
                 <mat-divider></mat-divider>
                 <h2>Téléverser un nouveau dictionnaire</h2>
@@ -50,10 +60,75 @@
                 <h1>Noms de joueurs virtuels</h1>
                 <p>Ajouter ou supprimer des noms de joueurs virtuels</p>
                 <mat-slide-toggle (click)="changeType()">{{ virtualPlayer }}</mat-slide-toggle>
+                <div class="player-list">
+                    <mat-selection-list [multiple]="false">
+                        <mat-list-option [disabled]="true"> Richard </mat-list-option>
+                        <mat-list-option [disabled]="true"> Riad </mat-list-option>
+                        <mat-list-option [disabled]="true"> Félix </mat-list-option>
+                    </mat-selection-list>
+                    <mat-selection-list>
+                        <mat-list-option> Ian </mat-list-option>
+                        <mat-list-option> David </mat-list-option>
+                    </mat-selection-list>
+                </div>
                 <button mat-stroked-button>
                     Ajouter un joueur virtuel
                     <mat-icon>add</mat-icon>
                 </button>
+                <button mat-stroked-button>
+                    Supprimer le nom des joueurs sélectionnés
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+        </mat-tab>
+
+        <mat-tab label="Historique">
+            <ng-template mat-tab-label>
+                <mat-icon class="example-tab-icon">access_time</mat-icon>
+                Historique
+            </ng-template>
+            <div class="tab-content">
+                <h1>Historique des parties jouées</h1>
+                <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                    <!-- Date Column -->
+                    <ng-container matColumnDef="date">
+                        <th mat-header-cell *matHeaderCellDef>Date et heure du début de la partie</th>
+                        <td mat-cell *matCellDef="let element">{{ element.date }}</td>
+                    </ng-container>
+                    <!-- Duration Column -->
+                    <ng-container matColumnDef="duration">
+                        <th mat-header-cell *matHeaderCellDef>Durée</th>
+                        <td mat-cell *matCellDef="let element">{{ element.duration }}</td>
+                    </ng-container>
+                    <!-- Player1 Column -->
+                    <ng-container matColumnDef="player1">
+                        <th mat-header-cell *matHeaderCellDef>Joueur 1</th>
+                        <td mat-cell *matCellDef="let element">{{ element.player1 }}</td>
+                    </ng-container>
+                    <!-- Score 1 Column -->
+                    <ng-container matColumnDef="firstPlayerScore">
+                        <th mat-header-cell *matHeaderCellDef>Score joueur 1</th>
+                        <td mat-cell *matCellDef="let element">{{ element.firstPlayerScore }}</td>
+                    </ng-container>
+                    <!-- Player 2 Column -->
+                    <ng-container matColumnDef="player2">
+                        <th mat-header-cell *matHeaderCellDef>Joueur 2</th>
+                        <td mat-cell *matCellDef="let element">{{ element.player2 }}</td>
+                    </ng-container>
+                    <!-- Score 2 Column -->
+                    <ng-container matColumnDef="secondPlayerScore">
+                        <th mat-header-cell *matHeaderCellDef>Score joueur 2</th>
+                        <td mat-cell *matCellDef="let element">{{ element.secondPlayerScore }}</td>
+                    </ng-container>
+                    <!-- Mode Column -->
+                    <ng-container matColumnDef="mode">
+                        <th mat-header-cell *matHeaderCellDef>Mode</th>
+                        <td mat-cell *matCellDef="let element">{{ element.mode }}</td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+                </table>
             </div>
         </mat-tab>
 
@@ -69,7 +144,7 @@
                     meilleurs scores et l'historique des parties jouées.
                 </p>
                 <button mat-stroked-button>
-                    Réinitialer les réglages
+                    Réinitialiser les réglages
                     <mat-icon color="warn">warning</mat-icon>
                 </button>
             </div>
