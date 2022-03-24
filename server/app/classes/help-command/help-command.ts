@@ -5,7 +5,7 @@ export class HelpCommand {
         const commandFormat = /^!aide$/;
         return commandFormat.test(commandInformations[0]);
     }
-    // messageAide = "Capsule d'aide - Commandes disponibles
+    // messageAide = "Commandes disponibles :
     // !aide: Permet d'afficher ce dialogue
     // !placer : Permet de placer un mot aux coordonnées spécifiées
     // !réserve: Affiche la quantité restante de chaque lettre dans la réserve
