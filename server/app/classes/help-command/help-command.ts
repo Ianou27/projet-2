@@ -5,7 +5,11 @@ export class HelpCommand {
         const commandFormat = /^!aide$/;
         return commandFormat.test(commandInformations[0]);
     }
-
+    // messageAide = "Capsule d'aide - Commandes disponibles
+    // !aide: Permet d'afficher ce dialogue
+    // !placer : Permet de placer un mot aux coordonnées spécifiées
+    // !réserve: Affiche la quantité restante de chaque lettre dans la réserve
+    // !échanger : Permet d'échanger des lettres de votre chevalet pour des lettres pigées aléatoirement";
     static help(reserveLetters: string[]): LetterScore {
         const currentReserve: LetterScore = {};
         reserveLetters.forEach((letter) => {
