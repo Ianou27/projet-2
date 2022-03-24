@@ -192,7 +192,7 @@ export class Game {
         const oldLetters = commandInformations[1];
         for (const letter of oldLetters) {
             player.changeLetter(letter, this.reserveLetters.getRandomLetterReserve());
-            this.reserveLetters.letters.push(letter);
+            this.reserveLetters.letters.push(letter.toUpperCase());
         }
         this.changeTurnTwoPlayers();
         this.gameState.passesCount = 0;
