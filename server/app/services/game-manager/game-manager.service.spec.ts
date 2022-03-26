@@ -7,6 +7,7 @@ import { Tile } from '@common/tile/Tile';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
 import { Game } from './../../classes/game/game';
+import { HelpCommand } from './../../classes/help-command/help-command';
 import { PlacementCommand } from './../../classes/placement-command/placement-command';
 import { Player } from './../../classes/player/player';
 import { DatabaseService } from './../best-score/best-score.services';
@@ -18,6 +19,7 @@ describe('Game Manager', () => {
     const placeCommand = ['!placer', 'H8v', 'all'];
     const exchangeCommand = ['!echanger', 'all'];
     const passCommand = ['!passer'];
+    const helpCommand = ['!aide'];
     let lettersTilePlayer1: Tile[] = [];
     const databaseService: DatabaseService = new DatabaseService();
     beforeEach(() => {
@@ -219,5 +221,12 @@ describe('Game Manager', () => {
         const wrongCommand = ['!passer', 'lol'];
         const validation = gameManager.passVerification(wrongCommand);
         expect(validation).to.equal('Format non valide');
+    });
+
+    it('method helpCommandValid should call HelpCommandValid.validatedFormat', () => {
+        const spy = sinon.stub(HelpCommand, 'validatedFormat');
+        gameManager.helpCommandValid(helpCommand);
+        assert(spy.called);
+        assert(spy.calledWith(helpCommand));
     });
 });
