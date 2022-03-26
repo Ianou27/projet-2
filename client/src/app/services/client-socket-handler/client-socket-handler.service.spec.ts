@@ -178,6 +178,15 @@ describe('ChatService', () => {
         expect(service.roomMessage).toBe('');
     });
 
+    it('sendToRoom() when !aide', () => {
+        const command = '!aide ';
+        service.roomMessage = command;
+        const sendSpy = spyOn(service.socketService, 'send');
+        service.sendToRoom();
+        expect(sendSpy).toHaveBeenCalledWith('aide', command.split(' '));
+        expect(service.roomMessage).toBe('');
+    });
+
     it('sendToRoom() if invalid command', () => {
         const command = '!resorve ';
         service.roomMessage = command;
@@ -259,6 +268,13 @@ describe('ChatService', () => {
             const pushSpy = spyOn(service.roomMessages, 'push');
             const clues: string[] = ['', ''];
             socketTestHelper.peerSideEmit('cluesMessage', clues);
+            expect(pushSpy).toHaveBeenCalled();
+        });
+
+        it('should handle helpInformation event', () => {
+            const pushSpy = spyOn(service.roomMessages, 'push');
+            const commands: string[] = ['', ''];
+            socketTestHelper.peerSideEmit('helpInformation', commands);
             expect(pushSpy).toHaveBeenCalled();
         });
 
