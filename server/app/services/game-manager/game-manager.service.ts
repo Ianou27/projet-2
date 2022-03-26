@@ -1,4 +1,5 @@
 import { ClueCommand } from '@app/classes/clue-command/clue-command';
+import { HelpCommand } from '@app/classes/help-command/help-command';
 import { LetterScore } from './../../../../common/assets/reserve-letters';
 import { MAXIMUM_CHARACTERS_MESSAGE } from './../../../../common/constants/general-constants';
 import { ExchangeCommand } from './../../classes/exchange-command/exchange-command';
@@ -109,5 +110,9 @@ export class GameManager {
             text.push(clue.command + ' pour ' + clue.score.toString() + ' points');
         }
         return text;
+    }
+
+    helpCommandValid(command: string[]) {
+        return HelpCommand.validatedFormat(command);
     }
 }

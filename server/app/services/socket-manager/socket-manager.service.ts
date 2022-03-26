@@ -4,6 +4,7 @@
 import { InfoToJoin, Room } from '@common/types';
 import * as http from 'http';
 import * as io from 'socket.io';
+import { helpInformation } from './../../../assets/help-informations';
 import { DatabaseService } from './../best-score/best-score.services';
 import { GameManager } from './../game-manager/game-manager.service';
 import { IdManager } from './../id-manager/id-manager.service';
@@ -181,6 +182,15 @@ export class SocketManager {
                 const game = this.identification.getGame(socket.id);
                 if (this.gameManager.reserveCommandValid(command)) {
                     this.sio.to(socket.id).emit('reserveLetters', this.gameManager.reserve(game));
+                } else {
+                    this.sio.to(socket.id).emit('commandValidated', 'Format invalide');
+                }
+            });
+
+            socket.on('aide', (command: string[]) => {
+                if (this.gameManager.helpCommandValid(command)) {
+                    this.sio.to(socket.id).emit('commandValidated', command);
+                    this.sio.to(socket.id).emit('helpInformation', helpInformation);
                 } else {
                     this.sio.to(socket.id).emit('commandValidated', 'Format invalide');
                 }
