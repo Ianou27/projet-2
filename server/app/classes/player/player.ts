@@ -9,6 +9,7 @@ export class Player {
     name: string;
     user: User;
     hisBot: boolean;
+    typeBot: string;
 
     constructor(letters: Tile[], hisTurn: boolean, name: string, user: User) {
         this.letters = letters;
@@ -17,6 +18,7 @@ export class Player {
         this.name = name;
         this.user = user;
         this.hisBot = false;
+        this.typeBot = '';
     }
 
     changeTurn() {

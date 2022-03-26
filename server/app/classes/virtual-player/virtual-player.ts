@@ -165,6 +165,17 @@ export class VirtualPlayer {
         return placementCommand.split(' ');
     }
 
+    static commandExpertPlayer(game: Game): string[] {
+        const allPlacementCommands = this.findAllPlacementCommands(game);
+        console.log(allPlacementCommands);
+        if (allPlacementCommands.length === 0) return this.exchangeAllLetters(game);
+        let maxScoreCommand: PlacementScore = allPlacementCommands[0];
+        for (const command of allPlacementCommands) {
+            if (command.score > maxScoreCommand.score) maxScoreCommand = command;
+        }
+        return maxScoreCommand.command.split(' ');
+    }
+
     static findPlacementScoreRange(minScore: number, maxScore: number, commandPlacements: PlacementScore[]): string {
         if (commandPlacements.length === 0) return CommandType.pass;
         for (const commandPlacement of commandPlacements) {
@@ -258,10 +269,23 @@ export class VirtualPlayer {
         const virtualPlayerLetters = game.playerTurn().lettersToStringArray();
         let command = CommandType.exchange + ' ';
 
-        const letters = virtualPlayerLetters
+        let letters = virtualPlayerLetters
             .sort(() => Math.random() - Math.random())
             .splice(0, Math.floor(Math.random() * virtualPlayerLetters.length));
-        if (letters.length === 0) command = command.concat(virtualPlayerLetters[0]);
+        if (letters.length === 0) letters = [virtualPlayerLetters[0]];
+        command = command.concat(letters.join('')).toLowerCase();
+        return command.split(' ');
+    }
+
+    static exchangeAllLetters(game: Game): string[] {
+        if (game.reserveLetters.letters.length === 0) {
+            return CommandType.pass.split(' ');
+        }
+        const virtualPlayerLetters = game.playerTurn().lettersToStringArray();
+        let command = CommandType.exchange + ' ';
+        const numberLettersReserve = game.reserveLetters.letters.length;
+        const numberLettersToExchange = numberLettersReserve >= 7 ? 7 : numberLettersReserve;
+        const letters = virtualPlayerLetters.splice(0, numberLettersToExchange);
         command = command.concat(letters.join('')).toLowerCase();
         return command.split(' ');
     }
