@@ -28,7 +28,16 @@ export class RoomManager {
         const game = identification.getGame(socketId);
         const botName = this.getRandomBotName(game.player1.user.username);
         this.cancelCreation(socketId, identification);
-        this.createSoloGame(game.player1.user.username, socketId, identification, sio, game.timer.timerMax.toString(), databaseService, botName);
+        this.createSoloGame(
+            game.player1.user.username,
+            socketId,
+            identification,
+            sio,
+            game.timer.timerMax.toString(),
+            databaseService,
+            botName,
+            'Joueur Débutant',
+        );
     }
     createSoloGame(
         username: string,
@@ -38,6 +47,7 @@ export class RoomManager {
         timer: string,
         databaseService: DatabaseService,
         botName: string,
+        selectedPlayer: string,
     ) {
         const user = {
             username,
@@ -54,7 +64,7 @@ export class RoomManager {
         identification.roomMessages[username] = [];
         const game = new Game();
 
-        game.startSoloGame(user, sio, timer, databaseService, botName);
+        game.startSoloGame(user, sio, timer, databaseService, botName, selectedPlayer);
         identification.games.push(game);
     }
 

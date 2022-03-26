@@ -194,8 +194,8 @@ export class ClientSocketHandler {
         this.updateRooms();
     }
 
-    createSoloGame(username: string, time: string) {
-        this.socketService.socket.emit('createSoloGame', username, time);
+    createSoloGame(username: string, time: string, selectedPlayer: string) {
+        this.socketService.socket.emit('createSoloGame', username, time, selectedPlayer);
     }
 
     joinRoom() {

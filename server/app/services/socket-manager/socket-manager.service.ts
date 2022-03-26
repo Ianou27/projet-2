@@ -30,9 +30,19 @@ export class SocketManager {
                 socket.join(room);
             });
 
-            socket.on('createSoloGame', (username: string, timer: string) => {
+            socket.on('createSoloGame', (username: string, timer: string, selectedPlayer: string) => {
                 const botName = this.roomManager.getRandomBotName(username);
-                this.roomManager.createSoloGame(username, socket.id, this.identification, this.sio, timer, this.databaseService, botName);
+                this.roomManager.createSoloGame(
+                    username,
+                    socket.id,
+                    this.identification,
+                    this.sio,
+                    timer,
+                    this.databaseService,
+                    botName,
+                    selectedPlayer,
+                );
+                console.log(selectedPlayer);
                 socket.join(username);
             });
 
