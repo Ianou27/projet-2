@@ -69,7 +69,7 @@ export class JoinPageComponent implements OnInit {
     }
 
     createSoloGame() {
-        this.clientSocketHandler.createSoloGame(this.name, this.selectedTime);
+        this.clientSocketHandler.createSoloGame(this.name, this.selectedTime, this.selectedPlayer);
     }
 
     goHome() {
