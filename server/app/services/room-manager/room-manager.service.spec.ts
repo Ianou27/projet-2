@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { Game } from '@app/classes/game/game';
 import { RoomManager } from '@app/services/room-manager/room-manager.service';
+import { BotType } from '@common/botType';
 import { Room, User } from '@common/types';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
@@ -66,7 +67,7 @@ describe('Room Manager tests', () => {
     });
 
     it('should   create SoloGame and call startSoloGame', () => {
-        roomManager.createSoloGame('username', '1234', idManager, sio, '30', databaseService, 'botName');
+        roomManager.createSoloGame('username', '1234', idManager, sio, '30', databaseService, 'botName', BotType.Beginner);
 
         expect(idManager.games.length).to.equal(1);
     });

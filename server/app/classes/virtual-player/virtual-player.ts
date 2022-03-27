@@ -6,6 +6,7 @@ import {
     INDEX_OF_NOT_FOUND,
     LENGTH_WORDS_LIMIT_BOT,
     MAXIMUM_ROW_COLUMN,
+    NUMBER_TILE_HOLDER,
     NUMBER_WORDS_LIMIT_BOT,
     NUMBER_WORDS_LIMIT_BOT_ONE_PLACEMENT,
     PROBABILITY_PLACEMENT_1TO6_BOT,
@@ -284,7 +285,7 @@ export class VirtualPlayer {
         const virtualPlayerLetters = game.playerTurn().lettersToStringArray();
         let command = CommandType.exchange + ' ';
         const numberLettersReserve = game.reserveLetters.letters.length;
-        const numberLettersToExchange = numberLettersReserve >= 7 ? 7 : numberLettersReserve;
+        const numberLettersToExchange = numberLettersReserve >= NUMBER_TILE_HOLDER ? NUMBER_TILE_HOLDER : numberLettersReserve;
         const letters = virtualPlayerLetters.splice(0, numberLettersToExchange);
         command = command.concat(letters.join('')).toLowerCase();
         return command.split(' ');

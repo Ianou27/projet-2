@@ -1,3 +1,4 @@
+import { BotType } from '@common/botType';
 import { letterValue } from './../../../../common/assets/reserve-letters';
 import { Tile } from './../../../../common/tile/Tile';
 import { User } from './../../../../common/types';
@@ -9,7 +10,7 @@ export class Player {
     name: string;
     user: User;
     hisBot: boolean;
-    typeBot: string;
+    typeBot: BotType;
 
     constructor(letters: Tile[], hisTurn: boolean, name: string, user: User) {
         this.letters = letters;
@@ -18,7 +19,7 @@ export class Player {
         this.name = name;
         this.user = user;
         this.hisBot = false;
-        this.typeBot = '';
+        this.typeBot = BotType.NoType;
     }
 
     changeTurn() {

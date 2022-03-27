@@ -1,9 +1,8 @@
-/* eslint-disable complexity */
-/* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable no-console */
 import { InfoToJoin, Room } from '@common/types';
 import * as http from 'http';
 import * as io from 'socket.io';
+import { BotType } from './../../../../common/botType';
 import { DatabaseService } from './../best-score/best-score.services';
 import { GameManager } from './../game-manager/game-manager.service';
 import { IdManager } from './../id-manager/id-manager.service';
@@ -30,19 +29,9 @@ export class SocketManager {
                 socket.join(room);
             });
 
-            socket.on('createSoloGame', (username: string, timer: string, selectedPlayer: string) => {
+            socket.on('createSoloGame', (username: string, timer: string, botType: BotType) => {
                 const botName = this.roomManager.getRandomBotName(username);
-                this.roomManager.createSoloGame(
-                    username,
-                    socket.id,
-                    this.identification,
-                    this.sio,
-                    timer,
-                    this.databaseService,
-                    botName,
-                    selectedPlayer,
-                );
-                console.log(selectedPlayer);
+                this.roomManager.createSoloGame(username, socket.id, this.identification, this.sio, timer, this.databaseService, botName, botType);
                 socket.join(username);
             });
 

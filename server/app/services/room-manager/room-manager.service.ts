@@ -1,3 +1,4 @@
+import { BotType } from '@common/botType';
 import { Tile } from '@common/tile/Tile';
 import { Room } from '@common/types';
 import * as io from 'socket.io';
@@ -36,7 +37,7 @@ export class RoomManager {
             game.timer.timerMax.toString(),
             databaseService,
             botName,
-            'Joueur Débutant',
+            BotType.Beginner,
         );
     }
     createSoloGame(
@@ -47,7 +48,7 @@ export class RoomManager {
         timer: string,
         databaseService: DatabaseService,
         botName: string,
-        selectedPlayer: string,
+        botType: BotType,
     ) {
         const user = {
             username,
@@ -64,7 +65,7 @@ export class RoomManager {
         identification.roomMessages[username] = [];
         const game = new Game();
 
-        game.startSoloGame(user, sio, timer, databaseService, botName, selectedPlayer);
+        game.startSoloGame(user, sio, timer, databaseService, botName, botType);
         identification.games.push(game);
     }
 

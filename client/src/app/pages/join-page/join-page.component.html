@@ -53,8 +53,9 @@
                         <td>
                             <mat-form-field>
                                 <mat-select [(value)]="selectedPlayer" placeholder="Difficulté du joueur virtuel :">
-                                    <mat-option value="Joueur débutant">Joueur débutant</mat-option>
-                                    <mat-option value="Joueur expert">Joueur expert</mat-option>
+                                    <mat-option *ngFor="let player of botType" [value]="player.value">
+                                        {{ player.value }}
+                                    </mat-option>
                                 </mat-select>
                             </mat-form-field>
                         </td>
