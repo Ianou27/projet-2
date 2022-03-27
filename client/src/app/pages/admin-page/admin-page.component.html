@@ -19,35 +19,52 @@
                 <h2>Gérer les dictionnaires existants</h2>
                 <div>
                     <mat-form-field appearance="fill">
-                        <mat-select [(value)]="selectedDico">
-                            <mat-option value="Dictionnaire par défaut">Dictionnaire par defaut</mat-option>
+                        <mat-select [(value)]="defaultDict" #selectedDictionary>
+                            <mat-option *ngFor="let dictionary of selectedDict; index as i" [value]="selectedDict[i]"> {{ dictionary }} </mat-option>
                         </mat-select>
                     </mat-form-field>
                     <mat-form-field appearance="fill">
                         <mat-label>Nom du dictionnaire</mat-label>
-                        <input matInput placeholder="Dictionnaire par défaut" />
+                        <input
+                            matInput
+                            placeholder="Dictionnaire par défaut"
+                            [disabled]="selectedDictionary.value === selectedDict[0]"
+                            [value]="selectedDictionary.value"
+                        />
                     </mat-form-field>
                     <mat-form-field appearance="fill">
                         <mat-label>Description du dictionnaire</mat-label>
-                        <textarea matInput placeholder="Ex. Dictionnaire par défaut"></textarea>
+                        <textarea
+                            matInput
+                            placeholder="Ex. Dictionnaire par défaut"
+                            [disabled]="selectedDictionary.value === selectedDict[0]"
+                        ></textarea>
                     </mat-form-field>
-                    <button mat-stroked-button>
+                    <a mat-stroked-button>
                         Télécharger le dictionnaire
                         <mat-icon>save_alt</mat-icon>
-                    </button>
+                    </a>
                 </div>
-                <button mat-stroked-button>
+                <button mat-stroked-button *ngIf="selectedDictionary.value !== selectedDict[0]">
                     Accepter les changements
                     <mat-icon>save</mat-icon>
                 </button>
-                <button mat-stroked-button>
+                <button mat-stroked-button *ngIf="selectedDictionary.value !== selectedDict[0]">
                     Supprimer le dictionnaire sélectionné
                     <mat-icon>delete</mat-icon>
                 </button>
                 <mat-divider></mat-divider>
                 <h2>Téléverser un nouveau dictionnaire</h2>
                 <p></p>
-                <input type="file" />
+                <div>
+                    <!-- // utilisation de code ne provenant pas de nous, source :
+                        // https://fireflysemantics.medium.com/proxying-file-upload-buttons-with-angular-a5a3fc224c38 -->
+                    <input style="display: none" type="file" (change)="onFileSelect($event)" #hiddenfileinput />
+                    <button mat-stroked-button (click)="hiddenfileinput.click()">
+                        Téléverser un dictionnaire
+                        <mat-icon style="transform: rotate(90deg)">attachment</mat-icon>
+                    </button>
+                </div>
             </div>
         </mat-tab>
 
@@ -62,21 +79,35 @@
                 <mat-slide-toggle (click)="changeType()">{{ virtualPlayer }}</mat-slide-toggle>
                 <div class="player-list">
                     <mat-selection-list [multiple]="false">
-                        <mat-list-option [disabled]="true"> Richard </mat-list-option>
-                        <mat-list-option [disabled]="true"> Riad </mat-list-option>
-                        <mat-list-option [disabled]="true"> Félix </mat-list-option>
+                        <mat-list-option *ngFor="let name of displayedFixedNames" [disabled]="true"> {{ name }} </mat-list-option>
                     </mat-selection-list>
-                    <mat-selection-list>
-                        <mat-list-option> Ian </mat-list-option>
-                        <mat-list-option> David </mat-list-option>
+                    <mat-selection-list #newNames [multiple]="false">
+                        <mat-list-option *ngFor="let name of displayedNames" [value]="name"> {{ name }} </mat-list-option>
                     </mat-selection-list>
                 </div>
-                <button mat-stroked-button>
+                <div *ngIf="newNames.selectedOptions.selected[0]?.value">
+                    <mat-form-field appearance="fill">
+                        <mat-label>Nom du joueur virtuel</mat-label>
+                        <input matInput placeholder="Bob" value="{{ newNames.selectedOptions.selected[0]?.value }}" />
+                    </mat-form-field>
+                    <button mat-stroked-button>
+                        Modifier
+                        <mat-icon>save</mat-icon>
+                    </button>
+                </div>
+                <mat-card *ngIf="showCard" class="add-player">
+                    <mat-form-field appearance="fill">
+                        <mat-label>Nom du joueur virtuel</mat-label>
+                        <input matInput placeholder="Bob" />
+                    </mat-form-field>
+                    <button mat-stroked-button>Ajouter</button>
+                </mat-card>
+                <button mat-stroked-button (click)="showCard = !showCard">
                     Ajouter un joueur virtuel
                     <mat-icon>add</mat-icon>
                 </button>
-                <button mat-stroked-button>
-                    Supprimer le nom des joueurs sélectionnés
+                <button mat-stroked-button *ngIf="newNames.selectedOptions.selected[0]">
+                    Supprimer le nom du joueur sélectionné
                     <mat-icon>delete</mat-icon>
                 </button>
             </div>
