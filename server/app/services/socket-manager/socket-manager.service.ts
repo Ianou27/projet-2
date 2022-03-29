@@ -243,6 +243,10 @@ export class SocketManager {
                 }
             });
 
+            socket.on('getHistory', async () => {
+                this.sio.to(socket.id).emit('getHistory', await this.databaseService.getGameHistory());
+            });
+
             socket.on('indice', (command: string[]) => {
                 const game = this.identification.getGame(socket.id);
                 if (!game.playerTurnValid(this.identification.getPlayer(socket.id))) {

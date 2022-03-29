@@ -44,6 +44,7 @@ export class ClientSocketHandler {
     timer: number = 0;
     numberOfRooms: number = 0;
     dictList: any[] = [];
+    gameHistory: any[] = [];
 
     constructor(public socketService: SocketClientService, public boardService: BoardService, public tileHolderService: TileHolderService) {}
 
@@ -130,8 +131,11 @@ export class ClientSocketHandler {
         });
 
         this.socketService.socket.on('getDictionaries', (dictionaryList: any[]) => {
-            console.log(dictionaryList);
             this.dictList = dictionaryList;
+        });
+
+        this.socketService.socket.on('getHistory', (history: any[]) => {
+            this.gameHistory = history;
         });
 
         this.socketService.on('joining', (obj: InfoToJoin) => {
@@ -197,6 +201,9 @@ export class ClientSocketHandler {
     }
     async getDictionaries() {
         this.socketService.socket.emit('getDictionaries');
+    }
+    async getHistory() {
+        this.socketService.socket.emit('getHistory');
     }
     createRoom(username: string, room: string, time: string) {
         this.socketService.socket.emit('createRoom', username, room, time);

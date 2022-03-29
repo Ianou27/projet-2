@@ -11,7 +11,7 @@ export class AdminPageComponent {
     virtualPlayer: string = 'Débutants';
     displayedColumns: string[] = ['date', 'duration', 'player1', 'firstPlayerScore', 'player2', 'secondPlayerScore', 'mode'];
     displayedNames: string[] = ['Ian', 'David'];
-    dataSource = [
+    /* dataSource = [
         {
             date: '26/03/22 16:06',
             duration: '20:00',
@@ -21,7 +21,7 @@ export class AdminPageComponent {
             secondPlayerScore: 75,
             mode: 'Classique',
         },
-    ];
+    ]; */
     fixedStarterNames: string[] = ['Richard', 'Riad', 'Félix'];
     fixedExpertNames: string[] = ['Ian', 'David'];
     displayedFixedNames: string[] = this.fixedStarterNames;
@@ -32,7 +32,7 @@ export class AdminPageComponent {
         socketHandler.getDictionaries();
     }
 
-    displayDictionaries() {
+    displayDictNames() {
         const dictionaries: string[] = [];
         const dictionaryList = this.socketHandler.dictList;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
