@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+import { BotType } from '@common/botType';
 import { InfoToJoin, Room } from '@common/types';
 import * as http from 'http';
 import * as io from 'socket.io';
