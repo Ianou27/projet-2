@@ -5,7 +5,7 @@ import * as fs from 'fs';
 import { Db, MongoClient } from 'mongodb';
 import 'reflect-metadata';
 import { Service } from 'typedi';
-
+import { BEGINNER_BOT, EXPERT_BOT } from '../../../assets/bot-name';
 // CHANGE the URL for your database information
 const DATABASE_URL = 'mongodb+srv://riad:tpUUYHQYgUZuXvgY@cluster0.pwwqd.mongodb.net/DataBase?retryWrites=true&w=majority';
 const DATABASE_NAME = 'DataBase';
@@ -13,14 +13,12 @@ const DATABASE_COLLECTION_CLASSIC = 'bestScoreClassic';
 const DATABASE_COLLECTION_LOG = 'bestScoreLog2990';
 const DATABASE_COLLECTION_DIC = 'dictionnaire';
 const DATABASE_COLLECTION_GAME = 'game';
+const DATABASE_COLLECTION_VIRTUAL = 'joueurVirtuels';
 
 @Service()
 export class DatabaseService {
     db: Db;
     client: MongoClient;
-
-
-  
 
     dictionaryArray: JSON = JSON.parse(fs.readFileSync('./assets/dictionnary.json').toString());
     async start(url: string = DATABASE_URL): Promise<MongoClient | null> {
@@ -79,42 +77,16 @@ export class DatabaseService {
             await this.db.collection(collection).insertOne(bestScore);
         }
     }
-
+    //score Handler
     async bestScoreClassic(): Promise<any[]> {
-       
         return await this.db.collection(DATABASE_COLLECTION_CLASSIC).find().sort({ score: -1 }).toArray();
     }
 
     async bestScoreLog(): Promise<any[]> {
+       
+        await this.modifyName('george','Richard');
         return await this.db.collection(DATABASE_COLLECTION_LOG).find().sort({ score: -1 }).toArray();
     }
-
-    async getDictionary(): Promise<any[]> {
-        return await this.db.collection(DATABASE_COLLECTION_DIC).find().toArray();
-    }
-
-    async insertDictionary(json: JSON) {
-        await this.db.collection(DATABASE_COLLECTION_DIC).insertOne(json);
-    }
-
-
-    async deleteDictionary(title: string) {
-
-        await this.db.collection(DATABASE_COLLECTION_DIC).deleteOne({ title: title });
-    }
-
-    async insertGame(game: GameHistory){
-        //insert in DATABASE_COLLECTION_GAME the game history 
-
-        await this.db.collection(DATABASE_COLLECTION_GAME).insertOne(game);
-    }
-
-    //function that get GameHistory with the right return type
-   
-    async getGameHistory(): Promise<any[]> {
-        return await this.db.collection(DATABASE_COLLECTION_GAME).find().toArray();
-    }
-
     async updateBesScoreClassic(score: BestScore) {
         const db = await this.db.collection(DATABASE_COLLECTION_CLASSIC).find().sort({ score: -1 }).toArray();
         let index = -1;
@@ -137,5 +109,64 @@ export class DatabaseService {
                     .replaceOne({ score: db[4].score }, { player: score.player, score: score.score });
             }
         }
+    }
+    //Dic handler
+    async getDictionary(): Promise<any[]> {
+        return await this.db.collection(DATABASE_COLLECTION_DIC).find().toArray();
+    }
+
+    async insertDictionary(json: JSON) {
+        await this.db.collection(DATABASE_COLLECTION_DIC).insertOne(json);
+    }
+
+    async deleteDictionary(title: string) {
+        await this.db.collection(DATABASE_COLLECTION_DIC).deleteOne({ title: title });
+    }
+    //game Handler
+
+    async insertGame(game: GameHistory) {
+        await this.db.collection(DATABASE_COLLECTION_GAME).insertOne(game);
+    }
+
+    async getGameHistory(): Promise<any[]> {
+        return await this.db.collection(DATABASE_COLLECTION_GAME).find().toArray();
+    }
+    //VirtualPlayer Handler
+
+    async getVirtualPlayers() {
+        return await this.db.collection(DATABASE_COLLECTION_VIRTUAL).find().toArray();
+    }
+
+    async deleteVirtualPlayer(name: string) {
+        
+        if (EXPERT_BOT.includes(name) || BEGINNER_BOT.includes(name)) {
+            return;
+        }
+
+        await this.db.collection(DATABASE_COLLECTION_VIRTUAL).deleteOne({ name: name });
+
+    }
+
+    
+    async addVirtualPlayer(name: string, type: string) {
+        const db = await this.db.collection(DATABASE_COLLECTION_VIRTUAL).find().toArray();
+        if (!db.some((player) => player.name === name)) {
+            await this.db.collection(DATABASE_COLLECTION_VIRTUAL).insertOne({ name: name, type: type });
+        }
+    }
+
+  
+
+    async modifyName(oldName: string, newName: string) {
+
+        if (EXPERT_BOT.includes(oldName) || BEGINNER_BOT.includes(oldName) || EXPERT_BOT.includes(newName) || BEGINNER_BOT.includes(newName)) {
+
+            return;
+        }
+        const db = await this.db.collection(DATABASE_COLLECTION_VIRTUAL).find().toArray();
+        if (db.some((player) => player.name === oldName)) {
+            await this.db.collection(DATABASE_COLLECTION_VIRTUAL).updateOne({ name: oldName }, { $set: { name: newName } });
+        }
+
     }
 }
