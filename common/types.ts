@@ -12,6 +12,15 @@ export type InfoToJoin = {
     roomObj: Room;
 };
 
+export type GameHistory = {
+    date:string;
+    duration:string;
+    player1: string;
+    player1Points: number;
+    player2: string;
+    player2Points: number;
+    gameMode: string;
+}
 export type User = {
     username: string;
     id: string;
