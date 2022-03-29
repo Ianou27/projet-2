@@ -5,6 +5,7 @@ import { GameBoardService } from '@app/services/game-board/game-board.service';
 import { Timer } from '@app/services/timer-manager/timer-manager.service';
 import { CaseProperty } from '@common/assets/case-property';
 import { letterValue } from '@common/assets/reserve-letters';
+import { BotType } from '@common/botType';
 import { Tile } from '@common/tile/Tile';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
@@ -80,12 +81,12 @@ describe('Game', () => {
 
     it('method startSoloGame should set the value true to hisBot of the player2', () => {
         expect(game.player2.hisBot).equal(false);
-        game.startSoloGame(game.player1.user, game.sio, '60', databaseService, 'botname');
+        game.startSoloGame(game.player1.user, game.sio, '60', databaseService, 'botname', BotType.Beginner);
         expect(game.player2.hisBot).equal(true);
     });
 
     it('method startSoloGame should initialize the attributes of game', () => {
-        game.startSoloGame(game.player1.user, game.sio, '60', databaseService, 'botname');
+        game.startSoloGame(game.player1.user, game.sio, '60', databaseService, 'botname', BotType.Beginner);
         expect(game.roomName).equal(game.player1.user.room);
         expect(game.timer.timerMax).equal(60);
     });
@@ -204,6 +205,24 @@ describe('Game', () => {
         game.player1.letters = [];
         game.gameStateUpdate();
         expect(game.gameState.winner).to.equal('player1');
+    });
+
+    it('method getCommandBot should call actionVirtualBeginnerPlayer if typeBot is equal to beginner', () => {
+        const spy = sinon.spy(game, 'actionVirtualBeginnerPlayer');
+        game.getCommandBot(BotType.Beginner, 100);
+        assert(spy.called);
+    });
+
+    it('method getCommandBot should call actionVirtualExpertPlayer if typeBot is equal to expert', () => {
+        const spy = sinon.spy(game, 'actionVirtualExpertPlayer');
+        game.getCommandBot(BotType.Expert, 100);
+        assert(spy.called);
+    });
+
+    it('method actionVirtualExpertPlayer should call commandExpertPlayer from VirtualPlayer', () => {
+        const spy = sinon.spy(VirtualPlayer, 'commandExpertPlayer');
+        game.actionVirtualExpertPlayer();
+        assert(spy.called);
     });
 
     it('method passTurn should change turn and call gameStateUpdate', () => {

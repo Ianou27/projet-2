@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { WaitingPlayerDialogComponent } from '@app/components/waiting-player-dialog/waiting-player-dialog.component';
 import { WaitingPlayerTwoComponent } from '@app/components/waiting-player-two/waiting-player-two.component';
 import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
+import { BotType } from './../../../../../common/botType';
 import { MyErrorStateMatcher } from './errorStateMatcher/error-state-matcher';
 
 @Component({
@@ -17,7 +18,7 @@ export class JoinPageComponent implements OnInit {
     form: FormGroup;
     alphaNumericRegex = /^[a-zA-Z]*$/;
     selectedDico = 'Dictionnaire par defaut';
-    selectedPlayer = 'Joueur débutant';
+    selectedPlayer = BotType.NoType;
     selectedTime = '60';
     selectedRoomName: string;
     matcher = new MyErrorStateMatcher();
@@ -34,6 +35,8 @@ export class JoinPageComponent implements OnInit {
         { value: '270', text: '4:30' },
         { value: '300', text: '5:00' },
     ];
+
+    botType = [{ value: BotType.Beginner }, { value: BotType.Expert }];
 
     constructor(public waitDialog: MatDialog, public clientSocketHandler: ClientSocketHandler) {}
 
@@ -69,7 +72,7 @@ export class JoinPageComponent implements OnInit {
     }
 
     createSoloGame() {
-        this.clientSocketHandler.createSoloGame(this.name, this.selectedTime);
+        this.clientSocketHandler.createSoloGame(this.name, this.selectedTime, this.selectedPlayer);
     }
 
     goHome() {

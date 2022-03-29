@@ -1,4 +1,5 @@
 import { DatabaseService } from '@app/services/best-score/best-score.services';
+import { BotType } from '@common/botType';
 import * as io from 'socket.io';
 import { CommandType } from './../../../../common/command-type';
 import {
@@ -78,7 +79,7 @@ export class Game {
         this.sio.to(this.player2.user.id).emit('modification', this.gameBoard.cases, this.playerTurn().name);
     }
 
-    startSoloGame(user: User, sio: io.Server, timer: string, databaseService: DatabaseService, botName: string) {
+    startSoloGame(user: User, sio: io.Server, timer: string, databaseService: DatabaseService, botName: string, botType: BotType) {
         this.databaseService = databaseService;
         this.timer = new Timer(timer);
         this.player1 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player1', user);
@@ -90,6 +91,7 @@ export class Game {
         };
         this.player2 = new Player(this.reserveLetters.randomLettersInitialization(), false, 'player2', userBot);
         this.player2.changeHisBot(true);
+        this.player2.typeBot = botType;
         this.sio = sio;
         this.startGame();
         this.sio.to(user.id).emit('tileHolder', this.player1.letters);
@@ -111,12 +113,18 @@ export class Game {
         this.sio.to(this.player2.user.id).emit('turn', this.player2.hisTurn);
         if (this.playerTurn().hisBot) {
             const probability = VirtualPlayer.getProbability();
-            const timeoutActionBot = probability <= PROBABILITY_PASS_COMMAND_BOT ? TWENTY_SECONDS_MS : THREE_SECONDS_MS;
+            const timeoutActionBot =
+                probability <= PROBABILITY_PASS_COMMAND_BOT && this.playerTurn().typeBot === BotType.Beginner ? TWENTY_SECONDS_MS : THREE_SECONDS_MS;
             setTimeout(() => {
-                const command = this.actionVirtualBeginnerPlayer(probability);
+                const command = this.getCommandBot(this.playerTurn().typeBot, probability);
                 this.placementBot(command);
             }, timeoutActionBot);
         }
+    }
+
+    getCommandBot(typeBot: BotType, probability: number): string[] {
+        if (typeBot === BotType.Beginner) return this.actionVirtualBeginnerPlayer(probability);
+        return this.actionVirtualExpertPlayer();
     }
 
     placementBot(command: string[]) {
@@ -217,6 +225,10 @@ export class Game {
         } else {
             return VirtualPlayer.placementLettersCommand(VirtualPlayer.getProbability(), this);
         }
+    }
+
+    actionVirtualExpertPlayer(): string[] {
+        return VirtualPlayer.commandExpertPlayer(this);
     }
 
     private setWinner() {
