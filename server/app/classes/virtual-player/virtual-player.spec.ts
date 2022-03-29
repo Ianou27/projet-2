@@ -296,7 +296,7 @@ describe('Virtual Player', () => {
         const lettersPlayer = game.playerTurn().lettersToStringArray();
         expect(command[0]).equal('!échanger');
         command[1].split('').forEach((element) => {
-            expect(lettersPlayer).includes(element);
+            expect(lettersPlayer).includes(element.toUpperCase());
         });
     });
 });
