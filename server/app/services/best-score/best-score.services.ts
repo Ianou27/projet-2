@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // import { injectable } from 'inversify';
 import { INDEX_OF_NOT_FOUND, NUMBER_ELEMENTS_DATABASE } from '@common/constants/general-constants';
 import { BestScore, GameHistory } from '@common/types';
@@ -77,13 +78,12 @@ export class DatabaseService {
             await this.db.collection(collection).insertOne(bestScore);
         }
     }
-    //score Handler
+    // score Handler
     async bestScoreClassic(): Promise<any[]> {
         return await this.db.collection(DATABASE_COLLECTION_CLASSIC).find().sort({ score: -1 }).toArray();
     }
 
     async bestScoreLog(): Promise<any[]> {
-       
         return await this.db.collection(DATABASE_COLLECTION_LOG).find().sort({ score: -1 }).toArray();
     }
     async updateBesScoreClassic(score: BestScore) {
@@ -109,22 +109,22 @@ export class DatabaseService {
             }
         }
     }
-    //Dic handler
+    // Dic handler
     async getDictionary(): Promise<any[]> {
         return await this.db.collection(DATABASE_COLLECTION_DIC).find().toArray();
     }
 
     async getDictionaryInfo(): Promise<any[]> {
-        return await this.db.collection(DATABASE_COLLECTION_DIC).find().project({title:1, description:1, _id:0}).toArray();
+        return await this.db.collection(DATABASE_COLLECTION_DIC).find().project({ title: 1, description: 1, _id: 0 }).toArray();
     }
     async insertDictionary(json: JSON) {
         await this.db.collection(DATABASE_COLLECTION_DIC).insertOne(json);
     }
 
     async deleteDictionary(title: string) {
-        await this.db.collection(DATABASE_COLLECTION_DIC).deleteOne({ title: title });
+        await this.db.collection(DATABASE_COLLECTION_DIC).deleteOne({ title });
     }
-    //game Handler
+    // game Handler
 
     async insertGame(game: GameHistory) {
         await this.db.collection(DATABASE_COLLECTION_GAME).insertOne(game);
@@ -133,42 +133,33 @@ export class DatabaseService {
     async getGameHistory(): Promise<any[]> {
         return await this.db.collection(DATABASE_COLLECTION_GAME).find().toArray();
     }
-    //VirtualPlayer Handler
+    // VirtualPlayer Handler
 
     async getVirtualPlayers() {
         return await this.db.collection(DATABASE_COLLECTION_VIRTUAL).find().toArray();
     }
 
     async deleteVirtualPlayer(name: string) {
-        
         if (EXPERT_BOT.includes(name) || BEGINNER_BOT.includes(name)) {
             return;
         }
 
-        await this.db.collection(DATABASE_COLLECTION_VIRTUAL).deleteOne({ name: name });
-
+        await this.db.collection(DATABASE_COLLECTION_VIRTUAL).deleteOne({ name });
     }
 
-    
     async addVirtualPlayer(name: string, type: string) {
         const db = await this.db.collection(DATABASE_COLLECTION_VIRTUAL).find().toArray();
         if (!db.some((player) => player.name === name)) {
-            await this.db.collection(DATABASE_COLLECTION_VIRTUAL).insertOne({ name: name, type: type });
+            await this.db.collection(DATABASE_COLLECTION_VIRTUAL).insertOne({ name, type });
         }
     }
-
-  
-
     async modifyVirtualPlayer(oldName: string, newName: string) {
-
         if (EXPERT_BOT.includes(oldName) || BEGINNER_BOT.includes(oldName) || EXPERT_BOT.includes(newName) || BEGINNER_BOT.includes(newName)) {
-
             return;
         }
         const db = await this.db.collection(DATABASE_COLLECTION_VIRTUAL).find().toArray();
         if (db.some((player) => player.name === oldName)) {
             await this.db.collection(DATABASE_COLLECTION_VIRTUAL).updateOne({ name: oldName }, { $set: { name: newName } });
         }
-
     }
 }

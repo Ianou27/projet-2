@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component } from '@angular/core';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
 
 @Component({
@@ -9,32 +11,37 @@ import { ClientSocketHandler } from '@app/services/client-socket-handler/client-
 export class AdminPageComponent {
     showCard: boolean = false;
     virtualPlayer: string = 'Débutants';
-    displayedColumns: string[] = ['date', 'duration', 'player1', 'firstPlayerScore', 'player2', 'secondPlayerScore', 'mode'];
+    displayedColumns: string[] = ['date', 'duration', 'player1', 'player1Points', 'player2', 'player2Points', 'gameMode'];
     displayedNames: string[] = ['Ian', 'David'];
-    /* dataSource = [
-        {
-            date: '26/03/22 16:06',
-            duration: '20:00',
-            player1: 'Player 1',
-            firstPlayerScore: 120,
-            player2: 'Player 2',
-            secondPlayerScore: 75,
-            mode: 'Classique',
-        },
-    ]; */
     fixedStarterNames: string[] = ['Richard', 'Riad', 'Félix'];
-    fixedExpertNames: string[] = ['Ian', 'David'];
-    displayedFixedNames: string[] = this.fixedStarterNames;
+    displayedFixedNames: string[] = [];
     selectedFile: File;
 
     constructor(public socketHandler: ClientSocketHandler) {
         socketHandler.connect();
-        socketHandler.getDictionaries();
+        socketHandler.getDictionaryInfo();
+        socketHandler.getVirtualPlayerNames();
+        socketHandler.getHistory();
+    }
+
+    onTabChange(event: MatTabChangeEvent) {
+        const tab = event.tab.textLabel;
+        if (tab === 'Joueurs virtuels') {
+            this.initialNameDisplay();
+        }
+    }
+
+    initialNameDisplay() {
+        const beginnerNames = this.socketHandler.virtualPlayerNameList.filter((virtualPlayer) => virtualPlayer.type === 'beginner');
+        const defaultBeginnerNames = beginnerNames.filter(
+            (virtualPlayer) => virtualPlayer.name === 'Felix' || virtualPlayer.name === 'Richard' || virtualPlayer.name === 'Riad',
+        );
+        defaultBeginnerNames.forEach((name) => this.displayedFixedNames.push(name.name));
     }
 
     displayDictNames() {
         const dictionaries: string[] = [];
-        const dictionaryList = this.socketHandler.dictList;
+        const dictionaryList = this.socketHandler.dictInfoList;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         dictionaryList.forEach((dict: any) => dictionaries.push(dict.title));
         return dictionaries;
@@ -49,12 +56,27 @@ export class AdminPageComponent {
     }
 
     changeType() {
+        const beginnerNames = this.socketHandler.virtualPlayerNameList.filter((virtualPlayer) => virtualPlayer.type === 'beginner');
+        const defaultBeginnerNames = beginnerNames.filter(
+            (virtualPlayer) => virtualPlayer.name === 'Felix' || virtualPlayer.name === 'Richard' || virtualPlayer.name === 'Riad',
+        );
+        const expertNames = this.socketHandler.virtualPlayerNameList.filter((virtualPlayer) => virtualPlayer.type === 'expert');
+        const defaultExpertNames = expertNames.filter(
+            (virtualPlayer) => virtualPlayer.name === 'Ian' || virtualPlayer.name === 'David' || virtualPlayer.name === 'Nicolas',
+        );
+        this.emptyArray();
         if (this.virtualPlayer === 'Débutants') {
             this.virtualPlayer = 'Experts';
-            this.displayedFixedNames = this.fixedExpertNames;
+            defaultExpertNames.forEach((name) => this.displayedFixedNames.push(name.name));
         } else {
             this.virtualPlayer = 'Débutants';
-            this.displayedFixedNames = this.fixedStarterNames;
+            defaultBeginnerNames.forEach((name) => this.displayedFixedNames.push(name.name));
+        }
+    }
+
+    emptyArray() {
+        while (this.displayedFixedNames.length > 0) {
+            this.displayedFixedNames.pop();
         }
     }
 }

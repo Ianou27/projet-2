@@ -43,7 +43,8 @@ export class ClientSocketHandler {
     winner: string = '';
     timer: number = 0;
     numberOfRooms: number = 0;
-    dictList: any[] = [];
+    dictInfoList: any[] = [];
+    virtualPlayerNameList: any[] = [];
     gameHistory: any[] = [];
 
     constructor(public socketService: SocketClientService, public boardService: BoardService, public tileHolderService: TileHolderService) {}
@@ -130,8 +131,12 @@ export class ClientSocketHandler {
             this.bestLog2990Scores = scoresLog;
         });
 
-        this.socketService.socket.on('getDictionaries', (dictionaryList: any[]) => {
-            this.dictList = dictionaryList;
+        this.socketService.socket.on('getDictionaryInfo', (dictionaryNameList: any[]) => {
+            this.dictInfoList = dictionaryNameList;
+        });
+
+        this.socketService.socket.on('getVirtualPlayerNames', (virtualPlayerNames: any[]) => {
+            this.virtualPlayerNameList = virtualPlayerNames;
         });
 
         this.socketService.socket.on('getHistory', (history: any[]) => {
@@ -199,8 +204,11 @@ export class ClientSocketHandler {
     async getScores() {
         this.socketService.socket.emit('getBestScore');
     }
-    async getDictionaries() {
-        this.socketService.socket.emit('getDictionaries');
+    async getDictionaryInfo() {
+        this.socketService.socket.emit('getDictionaryInfo');
+    }
+    async getVirtualPlayerNames() {
+        this.socketService.socket.emit('getVirtualPlayerNames');
     }
     async getHistory() {
         this.socketService.socket.emit('getHistory');

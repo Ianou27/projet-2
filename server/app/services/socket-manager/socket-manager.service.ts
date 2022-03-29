@@ -218,11 +218,12 @@ export class SocketManager {
                 }
             });
 
-            socket.on('getDictionaries', async () => {
+            socket.on('getDictionaryInfo', async () => {
                 try {
                     await this.databaseService.start();
                     console.log('Database connection successful !');
-                    this.sio.to(socket.id).emit('getDictionaries', await this.databaseService.getDictionary());
+                    this.sio.to(socket.id).emit('getDictionaryInfo', await this.databaseService.getDictionaryInfo());
+                    // await this.databaseService.closeConnection();
                 } catch {
                     console.error('Database connection failed !');
                     this.sio.to(socket.id).emit(
@@ -244,7 +245,17 @@ export class SocketManager {
             });
 
             socket.on('getHistory', async () => {
+                await this.databaseService.start();
+                console.log('Database connection successful !');
                 this.sio.to(socket.id).emit('getHistory', await this.databaseService.getGameHistory());
+                // await this.databaseService.closeConnection();
+            });
+
+            socket.on('getVirtualPlayerNames', async () => {
+                await this.databaseService.start();
+                console.log('Database connection successful !');
+                this.sio.to(socket.id).emit('getVirtualPlayerNames', await this.databaseService.getVirtualPlayers());
+                // await this.databaseService.closeConnection();
             });
 
             socket.on('indice', (command: string[]) => {
