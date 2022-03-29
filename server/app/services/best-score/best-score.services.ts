@@ -1,6 +1,6 @@
 // import { injectable } from 'inversify';
 import { INDEX_OF_NOT_FOUND, NUMBER_ELEMENTS_DATABASE } from '@common/constants/general-constants';
-import { BestScore } from '@common/types';
+import { BestScore, GameHistory } from '@common/types';
 import * as fs from 'fs';
 import { Db, MongoClient } from 'mongodb';
 import 'reflect-metadata';
@@ -12,11 +12,16 @@ const DATABASE_NAME = 'DataBase';
 const DATABASE_COLLECTION_CLASSIC = 'bestScoreClassic';
 const DATABASE_COLLECTION_LOG = 'bestScoreLog2990';
 const DATABASE_COLLECTION_DIC = 'dictionnaire';
+const DATABASE_COLLECTION_GAME = 'game';
 
 @Service()
 export class DatabaseService {
     db: Db;
     client: MongoClient;
+
+
+  
+
     dictionaryArray: JSON = JSON.parse(fs.readFileSync('./assets/dictionnary.json').toString());
     async start(url: string = DATABASE_URL): Promise<MongoClient | null> {
         try {
@@ -76,6 +81,7 @@ export class DatabaseService {
     }
 
     async bestScoreClassic(): Promise<any[]> {
+       
         return await this.db.collection(DATABASE_COLLECTION_CLASSIC).find().sort({ score: -1 }).toArray();
     }
 
@@ -95,6 +101,18 @@ export class DatabaseService {
     async deleteDictionary(title: string) {
 
         await this.db.collection(DATABASE_COLLECTION_DIC).deleteOne({ title: title });
+    }
+
+    async insertGame(game: GameHistory){
+        //insert in DATABASE_COLLECTION_GAME the game history 
+
+        await this.db.collection(DATABASE_COLLECTION_GAME).insertOne(game);
+    }
+
+    //function that get GameHistory with the right return type
+   
+    async getGameHistory(): Promise<any[]> {
+        return await this.db.collection(DATABASE_COLLECTION_GAME).find().toArray();
     }
 
     async updateBesScoreClassic(score: BestScore) {
