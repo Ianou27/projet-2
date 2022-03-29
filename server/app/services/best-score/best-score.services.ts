@@ -84,7 +84,6 @@ export class DatabaseService {
 
     async bestScoreLog(): Promise<any[]> {
        
-        await this.modifyName('george','Richard');
         return await this.db.collection(DATABASE_COLLECTION_LOG).find().sort({ score: -1 }).toArray();
     }
     async updateBesScoreClassic(score: BestScore) {
@@ -115,6 +114,9 @@ export class DatabaseService {
         return await this.db.collection(DATABASE_COLLECTION_DIC).find().toArray();
     }
 
+    async getDictionaryInfo(): Promise<any[]> {
+        return await this.db.collection(DATABASE_COLLECTION_DIC).find().project({title:1, description:1, _id:0}).toArray();
+    }
     async insertDictionary(json: JSON) {
         await this.db.collection(DATABASE_COLLECTION_DIC).insertOne(json);
     }
@@ -157,7 +159,7 @@ export class DatabaseService {
 
   
 
-    async modifyName(oldName: string, newName: string) {
+    async modifyVirtualPlayer(oldName: string, newName: string) {
 
         if (EXPERT_BOT.includes(oldName) || BEGINNER_BOT.includes(oldName) || EXPERT_BOT.includes(newName) || BEGINNER_BOT.includes(newName)) {
 
