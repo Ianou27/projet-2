@@ -1,5 +1,3 @@
-/* eslint-disable complexity */
-/* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable no-console */
 import { InfoToJoin, Room } from '@common/types';
 import * as http from 'http';
@@ -31,9 +29,9 @@ export class SocketManager {
                 socket.join(room);
             });
 
-            socket.on('createSoloGame', (username: string, timer: string) => {
+            socket.on('createSoloGame', (username: string, timer: string, botType: BotType) => {
                 const botName = this.roomManager.getRandomBotName(username);
-                this.roomManager.createSoloGame(username, socket.id, this.identification, this.sio, timer, this.databaseService, botName);
+                this.roomManager.createSoloGame(username, socket.id, this.identification, this.sio, timer, this.databaseService, botName, botType);
                 socket.join(username);
             });
 

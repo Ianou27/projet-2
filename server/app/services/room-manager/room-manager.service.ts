@@ -1,3 +1,4 @@
+import { BotType } from '@common/botType';
 import { Tile } from '@common/tile/Tile';
 import { Room } from '@common/types';
 import * as io from 'socket.io';
@@ -28,7 +29,16 @@ export class RoomManager {
         const game = identification.getGame(socketId);
         const botName = this.getRandomBotName(game.player1.user.username);
         this.cancelCreation(socketId, identification);
-        this.createSoloGame(game.player1.user.username, socketId, identification, sio, game.timer.timerMax.toString(), databaseService, botName);
+        this.createSoloGame(
+            game.player1.user.username,
+            socketId,
+            identification,
+            sio,
+            game.timer.timerMax.toString(),
+            databaseService,
+            botName,
+            BotType.Beginner,
+        );
     }
     createSoloGame(
         username: string,
@@ -38,6 +48,7 @@ export class RoomManager {
         timer: string,
         databaseService: DatabaseService,
         botName: string,
+        botType: BotType,
     ) {
         const user = {
             username,
@@ -54,7 +65,7 @@ export class RoomManager {
         identification.roomMessages[username] = [];
         const game = new Game();
 
-        game.startSoloGame(user, sio, timer, databaseService, botName);
+        game.startSoloGame(user, sio, timer, databaseService, botName, botType);
         identification.games.push(game);
     }
 

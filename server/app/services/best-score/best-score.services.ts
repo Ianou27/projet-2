@@ -1,6 +1,7 @@
 // import { injectable } from 'inversify';
 import { INDEX_OF_NOT_FOUND, NUMBER_ELEMENTS_DATABASE } from '@common/constants/general-constants';
 import { BestScore } from '@common/types';
+import * as fs from 'fs';
 import { Db, MongoClient } from 'mongodb';
 import 'reflect-metadata';
 import { Service } from 'typedi';
@@ -10,11 +11,13 @@ const DATABASE_URL = 'mongodb+srv://riad:tpUUYHQYgUZuXvgY@cluster0.pwwqd.mongodb
 const DATABASE_NAME = 'DataBase';
 const DATABASE_COLLECTION_CLASSIC = 'bestScoreClassic';
 const DATABASE_COLLECTION_LOG = 'bestScoreLog2990';
+const DATABASE_COLLECTION_DIC = 'dictionnaire';
+
 @Service()
 export class DatabaseService {
     db: Db;
     client: MongoClient;
-
+    dictionaryArray: JSON = JSON.parse(fs.readFileSync('./assets/dictionnary.json').toString());
     async start(url: string = DATABASE_URL): Promise<MongoClient | null> {
         try {
             const client = await MongoClient.connect(url);
@@ -72,12 +75,26 @@ export class DatabaseService {
         }
     }
 
-    async bestScoreClassic(): Promise<Record<string, unknown>[]> {
+    async bestScoreClassic(): Promise<any[]> {
         return await this.db.collection(DATABASE_COLLECTION_CLASSIC).find().sort({ score: -1 }).toArray();
     }
 
-    async bestScoreLog(): Promise<Record<string, unknown>[]> {
+    async bestScoreLog(): Promise<any[]> {
         return await this.db.collection(DATABASE_COLLECTION_LOG).find().sort({ score: -1 }).toArray();
+    }
+
+    async getDictionary(): Promise<any[]> {
+        return await this.db.collection(DATABASE_COLLECTION_DIC).find().toArray();
+    }
+
+    async insertDictionary(json: JSON) {
+        await this.db.collection(DATABASE_COLLECTION_DIC).insertOne(json);
+    }
+
+
+    async deleteDictionary(title: string) {
+
+        await this.db.collection(DATABASE_COLLECTION_DIC).deleteOne({ title: title });
     }
 
     async updateBesScoreClassic(score: BestScore) {

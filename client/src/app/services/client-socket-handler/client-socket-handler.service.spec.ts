@@ -7,6 +7,7 @@ import { Socket } from 'socket.io-client';
 // eslint-disable-next-line no-restricted-imports
 import { Tile } from '../../../../../common/tile/Tile';
 import { LetterScore } from './../../../../../common/assets/reserve-letters';
+import { BotType } from './../../../../../common/botType';
 import { InfoToJoin, Message, Room } from './../../../../../common/types';
 import { ClientSocketHandler } from './client-socket-handler.service';
 
@@ -105,9 +106,9 @@ describe('ChatService', () => {
     });
     it('createSoloGame() should emit an event createSoloGame', () => {
         const emitSpy = spyOn(service.socketService.socket, 'emit');
-        service.createSoloGame('test', '60');
+        service.createSoloGame('test', '60', BotType.Beginner);
         expect(emitSpy).toHaveBeenCalled();
-        expect(emitSpy).toHaveBeenCalledWith('createSoloGame', 'test', '60');
+        expect(emitSpy).toHaveBeenCalledWith('createSoloGame', 'test', '60', BotType.Beginner);
     });
     it('updateRoom() should send an event and updateRooms ', () => {
         const sendSpy = spyOn(service.socketService, 'send');

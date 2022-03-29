@@ -270,4 +270,33 @@ describe('Virtual Player', () => {
             expect(expectedElement).includes(element);
         });
     });
+
+    it('method exchangeAllLetters should return a command pass if the reserve is empty', () => {
+        game.reserveLetters.letters = [];
+        const command = VirtualPlayer.exchangeAllLetters(game);
+        expect(command[0]).equal('!passer');
+    });
+
+    it('method exchangeAllLetters should return a command exchange with 7 letters if they are more than 7 in the reserve', () => {
+        const command = VirtualPlayer.exchangeAllLetters(game);
+        expect(command[0]).equal('!échanger');
+        expect(command[1].length).equal(7);
+    });
+
+    it('method exchangeAllLetters should return a command exchange with the number of letters in the reserve if they are less than 7 of them', () => {
+        const lettersReserve = ['A', 'B', 'B', 'C'];
+        game.reserveLetters.letters = lettersReserve;
+        const command = VirtualPlayer.exchangeAllLetters(game);
+        expect(command[0]).equal('!échanger');
+        expect(command[1].length).equal(lettersReserve.length);
+    });
+
+    it('method exchangeAllLetters should return a command exchange with only the letters of the player', () => {
+        const command = VirtualPlayer.exchangeAllLetters(game);
+        const lettersPlayer = game.playerTurn().lettersToStringArray();
+        expect(command[0]).equal('!échanger');
+        command[1].split('').forEach((element) => {
+            expect(lettersPlayer).includes(element.toUpperCase());
+        });
+    });
 });

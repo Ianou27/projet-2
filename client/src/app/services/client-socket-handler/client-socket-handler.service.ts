@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { LetterScore } from './../../../../../common/assets/reserve-letters';
+import { BotType } from './../../../../../common/botType';
 import { CommandType } from './../../../../../common/command-type';
 import { NUMBER_MAXIMUM_CLUE_COMMAND } from './../../../../../common/constants/general-constants';
 import { Tile } from './../../../../../common/tile/Tile';
@@ -8,6 +9,7 @@ import { INITIAL_NUMBER_LETTERS_RESERVE, NUMBER_LETTER_TILEHOLDER } from './../.
 import { BoardService } from './../board/board.service';
 import { SocketClientService } from './../socket-client/socket-client.service';
 import { TileHolderService } from './../tile-holder/tile-holder.service';
+
 @Injectable({
     providedIn: 'root',
 })
@@ -200,8 +202,8 @@ export class ClientSocketHandler {
         this.updateRooms();
     }
 
-    createSoloGame(username: string, time: string) {
-        this.socketService.socket.emit('createSoloGame', username, time);
+    createSoloGame(username: string, time: string, botType: BotType) {
+        this.socketService.socket.emit('createSoloGame', username, time, botType);
     }
 
     joinRoom() {

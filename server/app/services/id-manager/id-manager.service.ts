@@ -47,7 +47,7 @@ export class IdManager {
         this.games.forEach((game) => {
             if (username === game.player1.user.username) {
                 player = 'player1';
-            } else if (username === game.player2.user.username) {
+            } else if (game.player2 !== undefined && username === game.player2.user.username) {
                 player = 'player2';
             }
         });
