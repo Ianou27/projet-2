@@ -102,6 +102,12 @@ export class ClientSocketHandler {
             });
         });
 
+        this.socketService.on('helpInformation', (commands: string[]) => {
+            commands.forEach((command) => {
+                this.roomMessages.push({ player: '', username: '', message: command });
+            });
+        });
+
         this.socketService.socket.on('updateReserve', (reserve: number, player1: number, player2: number) => {
             this.player1ChevaletLetters = player1;
             this.player2ChevaletLetters = player2;
@@ -229,6 +235,10 @@ export class ClientSocketHandler {
                 }
                 case CommandType.clue: {
                     this.socketService.send('indice', command);
+                    break;
+                }
+                case CommandType.help: {
+                    this.socketService.send('aide', command);
                     break;
                 }
                 default: {

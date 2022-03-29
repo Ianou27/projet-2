@@ -1,7 +1,11 @@
 <div class="container">
     <div class="messageContainer">
         <ul id="serverBroadcastList">
-            <li class="{{ m.player }}" *ngFor="let m of this.clientSocketHandler.roomMessages">{{ m.username }}: {{ m.message }}</li>
+            <ng-container *ngFor="let m of this.clientSocketHandler.roomMessages">
+                <li *ngIf="m.username !== ''" class="{{ m.player }}">{{ m.username }}: {{ m.message }}</li>
+                <li *ngIf="m.username === '' && m.message !== '\n'">{{ m.message }}</li>
+                <li *ngIf="m.username === '' && m.message === '\n'" class="empty"></li>
+            </ng-container>
         </ul>
     </div>
 

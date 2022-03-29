@@ -258,6 +258,48 @@ describe('SocketManager service tests', () => {
         }, RESPONSE_DELAY);
     });
 
+    it('should handle aide event if valid', (done) => {
+        sinon.replace(service.gameManager, 'helpCommandValid', () => {
+            return true;
+        });
+        const reserveSpy = sinon.spy(service.gameManager, 'helpCommandValid');
+        clientSocket.emit('aide', ['!aide']);
+        setTimeout(() => {
+            expect(reserveSpy.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
+    it('should handle aide event if Invalid', (done) => {
+        sinon.replace(service.gameManager, 'helpCommandValid', () => {
+            return false;
+        });
+        const gameObj = new Game();
+
+        const a: boolean = clientSocket.disconnected;
+        const user1 = {
+            username: 'player1',
+            id: a.toString(),
+            room: 'room1',
+        };
+        const user2 = {
+            username: 'player2',
+            id: 'b',
+            room: 'room1',
+        };
+        gameObj.player1 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user1);
+        gameObj.player2 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user2);
+        sinon.replace(service.identification, 'getGame', () => {
+            return gameObj;
+        });
+        const reserveSpy = sinon.spy(service.gameManager, 'helpCommandValid');
+        clientSocket.emit('aide', ['!aide']);
+        setTimeout(() => {
+            expect(reserveSpy.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
     it('should handle passer Event valid turn', (done) => {
         const gameObj = new Game();
         const user = {
