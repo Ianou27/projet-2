@@ -83,7 +83,7 @@ export class DatabaseService {
     }
 
     async bestScoreLog(): Promise<any[]> {
-       
+        
         return await this.db.collection(DATABASE_COLLECTION_LOG).find().sort({ score: -1 }).toArray();
     }
     async updateBesScoreClassic(score: BestScore) {
