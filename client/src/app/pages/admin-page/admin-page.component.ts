@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
 
 @Component({
     selector: 'app-admin-page',
@@ -7,13 +8,10 @@ import { Component } from '@angular/core';
 })
 export class AdminPageComponent {
     showCard: boolean = false;
-    isChecked: boolean = false;
     virtualPlayer: string = 'Débutants';
-    defaultDict: string = 'Dictionnaire par défaut';
-    selectedDict: string[] = [this.defaultDict, 'Dic2', 'Dic3'];
     displayedColumns: string[] = ['date', 'duration', 'player1', 'firstPlayerScore', 'player2', 'secondPlayerScore', 'mode'];
     displayedNames: string[] = ['Ian', 'David'];
-    dataSource = [
+    /* dataSource = [
         {
             date: '26/03/22 16:06',
             duration: '20:00',
@@ -23,11 +21,24 @@ export class AdminPageComponent {
             secondPlayerScore: 75,
             mode: 'Classique',
         },
-    ];
+    ]; */
     fixedStarterNames: string[] = ['Richard', 'Riad', 'Félix'];
     fixedExpertNames: string[] = ['Ian', 'David'];
     displayedFixedNames: string[] = this.fixedStarterNames;
     selectedFile: File;
+
+    constructor(public socketHandler: ClientSocketHandler) {
+        socketHandler.connect();
+        socketHandler.getDictionaries();
+    }
+
+    displayDictNames() {
+        const dictionaries: string[] = [];
+        const dictionaryList = this.socketHandler.dictList;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        dictionaryList.forEach((dict: any) => dictionaries.push(dict.title));
+        return dictionaries;
+    }
 
     // utilisation de code ne provenant pas de nous, source :
     // https://fireflysemantics.medium.com/proxying-file-upload-buttons-with-angular-a5a3fc224c38

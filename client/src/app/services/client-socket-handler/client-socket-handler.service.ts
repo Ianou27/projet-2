@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@angular/core';
 import { LetterScore } from './../../../../../common/assets/reserve-letters';
 import { CommandType } from './../../../../../common/command-type';
@@ -26,8 +27,8 @@ export class ClientSocketHandler {
     informationToJoin: InfoToJoin;
     gotAccepted: boolean = false;
     gotRefused: boolean = false;
-    bestClassicScores: unknown[] = [];
-    bestLog2990Scores: unknown[] = [];
+    bestClassicScores: any[] = [];
+    bestLog2990Scores: any[] = [];
     myTurn: boolean = true;
     player1Point: number = 0;
     player2Point: number = 0;
@@ -42,6 +43,8 @@ export class ClientSocketHandler {
     winner: string = '';
     timer: number = 0;
     numberOfRooms: number = 0;
+    dictList: any[] = [];
+    gameHistory: any[] = [];
 
     constructor(public socketService: SocketClientService, public boardService: BoardService, public tileHolderService: TileHolderService) {}
 
@@ -122,9 +125,17 @@ export class ClientSocketHandler {
             this.playerJoined = didJoin;
         });
 
-        this.socketService.socket.on('getBestScore', (scoresClassic: unknown[], scoresLog: unknown[]) => {
+        this.socketService.socket.on('getBestScore', (scoresClassic: any[], scoresLog: any[]) => {
             this.bestClassicScores = scoresClassic;
             this.bestLog2990Scores = scoresLog;
+        });
+
+        this.socketService.socket.on('getDictionaries', (dictionaryList: any[]) => {
+            this.dictList = dictionaryList;
+        });
+
+        this.socketService.socket.on('getHistory', (history: any[]) => {
+            this.gameHistory = history;
         });
 
         this.socketService.on('joining', (obj: InfoToJoin) => {
@@ -188,7 +199,12 @@ export class ClientSocketHandler {
     async getScores() {
         this.socketService.socket.emit('getBestScore');
     }
-
+    async getDictionaries() {
+        this.socketService.socket.emit('getDictionaries');
+    }
+    async getHistory() {
+        this.socketService.socket.emit('getHistory');
+    }
     createRoom(username: string, room: string, time: string) {
         this.socketService.socket.emit('createRoom', username, room, time);
         this.updateRooms();

@@ -218,6 +218,35 @@ export class SocketManager {
                 }
             });
 
+            socket.on('getDictionaries', async () => {
+                try {
+                    await this.databaseService.start();
+                    console.log('Database connection successful !');
+                    this.sio.to(socket.id).emit('getDictionaries', await this.databaseService.getDictionary());
+                } catch {
+                    console.error('Database connection failed !');
+                    this.sio.to(socket.id).emit(
+                        'getDictionaries',
+                        [
+                            {
+                                player: 'Accès à la BD impossible',
+                                score: 'ERREUR',
+                            },
+                        ],
+                        [
+                            {
+                                player: 'Accès à la BD impossible',
+                                score: 'ERREUR',
+                            },
+                        ],
+                    );
+                }
+            });
+
+            socket.on('getHistory', async () => {
+                this.sio.to(socket.id).emit('getHistory', await this.databaseService.getGameHistory());
+            });
+
             socket.on('indice', (command: string[]) => {
                 const game = this.identification.getGame(socket.id);
                 if (!game.playerTurnValid(this.identification.getPlayer(socket.id))) {

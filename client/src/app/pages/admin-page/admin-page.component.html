@@ -19,8 +19,10 @@
                 <h2>Gérer les dictionnaires existants</h2>
                 <div>
                     <mat-form-field appearance="fill">
-                        <mat-select [(value)]="defaultDict" #selectedDictionary>
-                            <mat-option *ngFor="let dictionary of selectedDict; index as i" [value]="selectedDict[i]"> {{ dictionary }} </mat-option>
+                        <mat-select [(value)]="displayDictNames()[0]" #selectedDictionary>
+                            <mat-option *ngFor="let dictionary of displayDictNames(); index as i" [value]="displayDictNames()[i]">
+                                {{ dictionary }}
+                            </mat-option>
                         </mat-select>
                     </mat-form-field>
                     <mat-form-field appearance="fill">
@@ -28,7 +30,7 @@
                         <input
                             matInput
                             placeholder="Dictionnaire par défaut"
-                            [disabled]="selectedDictionary.value === selectedDict[0]"
+                            [disabled]="selectedDictionary.value === displayDictNames()[0]"
                             [value]="selectedDictionary.value"
                         />
                     </mat-form-field>
@@ -37,7 +39,7 @@
                         <textarea
                             matInput
                             placeholder="Ex. Dictionnaire par défaut"
-                            [disabled]="selectedDictionary.value === selectedDict[0]"
+                            [disabled]="selectedDictionary.value === displayDictNames()[0]"
                         ></textarea>
                     </mat-form-field>
                     <a mat-stroked-button>
@@ -45,11 +47,11 @@
                         <mat-icon>save_alt</mat-icon>
                     </a>
                 </div>
-                <button mat-stroked-button *ngIf="selectedDictionary.value !== selectedDict[0]">
+                <button mat-stroked-button *ngIf="selectedDictionary.value !== displayDictNames()[0]">
                     Accepter les changements
                     <mat-icon>save</mat-icon>
                 </button>
-                <button mat-stroked-button *ngIf="selectedDictionary.value !== selectedDict[0]">
+                <button mat-stroked-button *ngIf="selectedDictionary.value !== displayDictNames()[0]">
                     Supprimer le dictionnaire sélectionné
                     <mat-icon>delete</mat-icon>
                 </button>
@@ -120,7 +122,7 @@
             </ng-template>
             <div class="tab-content">
                 <h1>Historique des parties jouées</h1>
-                <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                <table mat-table [dataSource]="this.socketHandler.gameHistory" class="mat-elevation-z8">
                     <!-- Date Column -->
                     <ng-container matColumnDef="date">
                         <th mat-header-cell *matHeaderCellDef>Date et heure du début de la partie</th>
