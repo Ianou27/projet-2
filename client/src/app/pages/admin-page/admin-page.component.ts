@@ -32,6 +32,7 @@ export class AdminPageComponent {
     }
 
     initialNameDisplay() {
+        this.emptyArray();
         const beginnerNames = this.socketHandler.virtualPlayerNameList.filter((virtualPlayer) => virtualPlayer.type === 'beginner');
         const defaultBeginnerNames = beginnerNames.filter(
             (virtualPlayer) => virtualPlayer.name === 'Felix' || virtualPlayer.name === 'Richard' || virtualPlayer.name === 'Riad',
