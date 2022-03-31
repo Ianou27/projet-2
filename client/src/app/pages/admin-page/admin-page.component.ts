@@ -11,9 +11,10 @@ import { ClientSocketHandler } from '@app/services/client-socket-handler/client-
 export class AdminPageComponent {
     showCard: boolean = false;
     virtualPlayer: string = 'Débutants';
+    virtualPlayerName = '';
+    virtualPlayerType = '';
     displayedColumns: string[] = ['date', 'duration', 'player1', 'player1Points', 'player2', 'player2Points', 'gameMode'];
     displayedNames: string[] = ['Ian', 'David'];
-    fixedStarterNames: string[] = ['Richard', 'Riad', 'Félix'];
     displayedFixedNames: string[] = [];
     selectedFile: File;
 
@@ -29,6 +30,16 @@ export class AdminPageComponent {
         if (tab === 'Joueurs virtuels') {
             this.initialNameDisplay();
         }
+    }
+
+    addNewPlayer() {
+        if (this.virtualPlayerType === 'Débutant') {
+            this.socketHandler.addVirtualPlayerNames(this.virtualPlayerName, 'beginner');
+        } else {
+            this.socketHandler.addVirtualPlayerNames(this.virtualPlayerName, 'expert');
+        }
+        this.virtualPlayerName = '';
+        this.virtualPlayerType = '';
     }
 
     initialNameDisplay() {

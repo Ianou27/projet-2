@@ -210,6 +210,9 @@ export class ClientSocketHandler {
     async getVirtualPlayerNames() {
         this.socketService.socket.emit('getVirtualPlayerNames');
     }
+    async addVirtualPlayerNames(name: string, type: string) {
+        this.socketService.socket.emit('addVirtualPlayerNames', name, type);
+    }
     async getHistory() {
         this.socketService.socket.emit('getHistory');
     }

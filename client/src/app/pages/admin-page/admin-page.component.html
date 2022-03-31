@@ -100,9 +100,17 @@
                 <mat-card *ngIf="showCard" class="add-player">
                     <mat-form-field appearance="fill">
                         <mat-label>Nom du joueur virtuel</mat-label>
-                        <input matInput placeholder="Bob" />
+                        <input matInput placeholder="Bob" [(ngModel)]="virtualPlayerName" />
                     </mat-form-field>
-                    <button mat-stroked-button>Ajouter</button>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Type du joueur virtuel</mat-label>
+                        <mat-select [(ngModel)]="virtualPlayerType">
+                            <mat-option value="Débutant"> Débutant </mat-option>
+                            <mat-option value="Expert"> Expert </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <button mat-stroked-button (click)="addNewPlayer(); showCard = !showCard">Ajouter</button>
+                    <button mat-stroked-button (click)="showCard = !showCard">Fermer</button>
                 </mat-card>
                 <button mat-stroked-button (click)="showCard = !showCard">
                     Ajouter un joueur virtuel

@@ -258,6 +258,13 @@ export class SocketManager {
                 // await this.databaseService.closeConnection();
             });
 
+            socket.on('addVirtualPlayerNames', async (name: string, type: string) => {
+                // await this.databaseService.start();
+                // console.log('Database connection successful !');
+                await this.databaseService.addVirtualPlayer(name, type);
+                // await this.databaseService.closeConnection();
+            });
+
             socket.on('indice', (command: string[]) => {
                 const game = this.identification.getGame(socket.id);
                 if (!game.playerTurnValid(this.identification.getPlayer(socket.id))) {
