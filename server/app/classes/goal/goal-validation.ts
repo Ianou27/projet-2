@@ -1,7 +1,15 @@
+import {
+    EIGHT_LETTERS_VALIDATION,
+    LETTER_VALUE_TEN,
+    THREE_LETTERS_OR_WORDS_VALIDATION,
+    TWO_LETTERS_OR_WORDS_VALIDATION,
+} from '@common/constants/general-constants';
 import { Tile } from '@common/tile/Tile';
 
 export class Goal {
-    // static validationGoal(): number {}
+    /* static validationGoal(goals: Goals): number {
+        const bonusPoints = 0;
+    }*/
     static tripleE(words: Tile[][]): boolean {
         let eCount = 0;
         for (const word of words) {
@@ -9,7 +17,7 @@ export class Goal {
                 if (tile.letter.toUpperCase() === 'E') {
                     eCount++;
                 }
-                if (eCount === 3) return true;
+                if (eCount === THREE_LETTERS_OR_WORDS_VALIDATION) return true;
             }
             eCount = 0;
         }
@@ -17,7 +25,7 @@ export class Goal {
     }
 
     static threeWords(words: Tile[][]): boolean {
-        return words.length >= 3;
+        return words.length >= THREE_LETTERS_OR_WORDS_VALIDATION;
     }
 
     static isPalindrome(words: Tile[][]): boolean {
@@ -37,7 +45,7 @@ export class Goal {
 
     static hasEightLetters(words: Tile[][]): boolean {
         for (const word of words) {
-            if (word.length >= 8) return true;
+            if (word.length >= EIGHT_LETTERS_VALIDATION) return true;
         }
         return false;
     }
@@ -47,7 +55,7 @@ export class Goal {
         for (const word of words) {
             for (const tile of word) {
                 if (tile.value === 0) starCount++;
-                if (starCount === 2) return true;
+                if (starCount === TWO_LETTERS_OR_WORDS_VALIDATION) return true;
             }
             starCount = 0;
         }
@@ -58,10 +66,10 @@ export class Goal {
         let counter = 0;
         for (const word of words) {
             for (const tile of word) {
-                if (tile.value === 10) {
+                if (tile.value === LETTER_VALUE_TEN) {
                     counter++;
                 }
-                if (counter === 2) return true;
+                if (counter === TWO_LETTERS_OR_WORDS_VALIDATION) return true;
             }
             counter = 0;
         }
