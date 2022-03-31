@@ -259,10 +259,15 @@ export class SocketManager {
             });
 
             socket.on('addVirtualPlayerNames', async (name: string, type: string) => {
-                // await this.databaseService.start();
-                // console.log('Database connection successful !');
                 await this.databaseService.addVirtualPlayer(name, type);
-                // await this.databaseService.closeConnection();
+            });
+
+            socket.on('deleteVirtualPlayerName', async (name: string) => {
+                await this.databaseService.deleteVirtualPlayer(name);
+            });
+
+            socket.on('modifyVirtualPlayerNames', async (oldName: string, newName: string) => {
+                await this.databaseService.modifyVirtualPlayer(oldName, newName);
             });
 
             socket.on('indice', (command: string[]) => {

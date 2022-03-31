@@ -90,9 +90,9 @@
                 <div *ngIf="newNames.selectedOptions.selected[0]?.value">
                     <mat-form-field appearance="fill">
                         <mat-label>Nom du joueur virtuel</mat-label>
-                        <input matInput placeholder="Bob" value="{{ newNames.selectedOptions.selected[0]?.value }}" />
+                        <input matInput [placeholder]="newNames.selectedOptions.selected[0]?.value" [(ngModel)]="newName" />
                     </mat-form-field>
-                    <button mat-stroked-button>
+                    <button mat-stroked-button (click)="modifyPlayerName(newNames.selectedOptions.selected[0]?.value)">
                         Modifier
                         <mat-icon>save</mat-icon>
                     </button>
@@ -116,7 +116,11 @@
                     Ajouter un joueur virtuel
                     <mat-icon>add</mat-icon>
                 </button>
-                <button mat-stroked-button *ngIf="newNames.selectedOptions.selected[0]">
+                <button
+                    mat-stroked-button
+                    *ngIf="newNames.selectedOptions.selected[0]"
+                    (click)="deletePlayerName(newNames.selectedOptions.selected[0]?.value)"
+                >
                     Supprimer le nom du joueur sélectionné
                     <mat-icon>delete</mat-icon>
                 </button>

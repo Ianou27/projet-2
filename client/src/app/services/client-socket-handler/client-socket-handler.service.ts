@@ -213,6 +213,12 @@ export class ClientSocketHandler {
     async addVirtualPlayerNames(name: string, type: string) {
         this.socketService.socket.emit('addVirtualPlayerNames', name, type);
     }
+    async deleteVirtualPlayerName(name: string) {
+        this.socketService.socket.emit('deleteVirtualPlayerName', name);
+    }
+    async modifyVirtualPlayerNames(oldName: string, newName: string) {
+        this.socketService.socket.emit('modifyVirtualPlayerNames', oldName, newName);
+    }
     async getHistory() {
         this.socketService.socket.emit('getHistory');
     }
