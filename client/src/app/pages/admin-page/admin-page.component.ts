@@ -1,15 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
-import { ONE_SECOND_MS } from '../../../../../common/constants/general-constants';
+import { ONE_SECOND_MS } from './../../../../../common/constants/general-constants';
+import { MyErrorStateMatcher } from './../join-page/errorStateMatcher/error-state-matcher';
 
 @Component({
     selector: 'app-admin-page',
     templateUrl: './admin-page.component.html',
     styleUrls: ['./admin-page.component.scss'],
 })
-export class AdminPageComponent {
+export class AdminPageComponent implements OnInit {
     showCard: boolean = false;
     virtualPlayer: string = 'Débutants';
     virtualPlayerName: string = '';
@@ -23,18 +25,41 @@ export class AdminPageComponent {
     addedBeginnerNames: any[] = [];
     defaultExpertNames: any[] = [];
     addedExpertNames: any[] = [];
+    form: FormGroup;
+    alphaNumericRegex = /^[a-zA-Z]*$/;
+    matcher = new MyErrorStateMatcher();
 
-    constructor(public socketHandler: ClientSocketHandler) {
+    constructor(public socketHandler: ClientSocketHandler, private fb: FormBuilder) {
         socketHandler.connect();
         socketHandler.getDictionaryInfo();
         socketHandler.getVirtualPlayerNames();
         socketHandler.getHistory();
     }
 
+    ngOnInit(): void {
+        this.form = this.fb.group({
+            newName: ['', [Validators.required, Validators.minLength(3), Validators.pattern(this.alphaNumericRegex) /* , this.validateName */]],
+            modifiedName: ['', [Validators.required, Validators.minLength(3), Validators.pattern(this.alphaNumericRegex)]],
+        });
+    }
+
+    myError = (controlName: string, errorName: string) => {
+        // eslint-disable-next-line no-invalid-this
+        return this.form.controls[controlName].hasError(errorName);
+    };
+
+    validateName(control: AbstractControl) {
+        const virtualPlayerArray = this.socketHandler.virtualPlayerNameList;
+        if (virtualPlayerArray.filter((virtualPlayer) => virtualPlayer.name === control.value)) return true;
+        return null;
+    }
+
     onTabChange(event: MatTabChangeEvent) {
         const tab = event.tab.textLabel;
         if (tab === 'Joueurs virtuels') {
             this.initialNameDisplay();
+        } else {
+            this.showCard = false;
         }
     }
 

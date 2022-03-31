@@ -88,19 +88,33 @@
                     </mat-selection-list>
                 </div>
                 <div *ngIf="newNames.selectedOptions.selected[0]?.value">
-                    <mat-form-field appearance="fill">
+                    <mat-form-field appearance="fill" [formGroup]="form">
                         <mat-label>Nom du joueur virtuel</mat-label>
-                        <input matInput [placeholder]="newNames.selectedOptions.selected[0]?.value" [(ngModel)]="newName" />
+                        <input
+                            matInput
+                            [placeholder]="newNames.selectedOptions.selected[0]?.value"
+                            [(ngModel)]="newName"
+                            [errorStateMatcher]="matcher"
+                            formControlName="modifiedName"
+                        />
+                        <mat-hint align="end">Minimum 3 lettres</mat-hint>
+                        <mat-error *ngIf="myError('modifiedName', 'required')">Veuillez entrer un nom</mat-error>
+                        <mat-error *ngIf="myError('modifiedName', 'minLength')">Veuillez entrer un nom d'au moins 3 lettre</mat-error>
+                        <mat-error *ngIf="myError('modifiedName', 'pattern')">Pas de chiffres et/ou caractères spéciaux</mat-error>
                     </mat-form-field>
-                    <button mat-stroked-button (click)="modifyPlayerName(newNames.selectedOptions.selected[0]?.value)">
+                    <button mat-stroked-button [disabled]="form.invalid" (click)="modifyPlayerName(newNames.selectedOptions.selected[0]?.value)">
                         Modifier
                         <mat-icon>save</mat-icon>
                     </button>
                 </div>
                 <mat-card *ngIf="showCard" class="add-player">
-                    <mat-form-field appearance="fill">
+                    <mat-form-field appearance="fill" [formGroup]="form">
                         <mat-label>Nom du joueur virtuel</mat-label>
-                        <input matInput placeholder="Bob" [(ngModel)]="virtualPlayerName" />
+                        <input matInput placeholder="Bob" [(ngModel)]="virtualPlayerName" [errorStateMatcher]="matcher" formControlName="newName" />
+                        <mat-hint align="end">Minimum 3 lettres</mat-hint>
+                        <mat-error *ngIf="myError('newName', 'required')">Veuillez entrer un nom</mat-error>
+                        <mat-error *ngIf="myError('newName', 'minLength')">Veuillez entrer un nom d'au moins 3 lettre</mat-error>
+                        <mat-error *ngIf="myError('newName', 'pattern')">Pas de chiffres et/ou caractères spéciaux</mat-error>
                     </mat-form-field>
                     <mat-form-field appearance="fill">
                         <mat-label>Type du joueur virtuel</mat-label>
@@ -109,7 +123,7 @@
                             <mat-option value="Expert"> Expert </mat-option>
                         </mat-select>
                     </mat-form-field>
-                    <button mat-stroked-button (click)="addNewPlayer(); showCard = !showCard">Ajouter</button>
+                    <button mat-stroked-button [disabled]="form.invalid" (click)="addNewPlayer(); showCard = !showCard">Ajouter</button>
                     <button mat-stroked-button (click)="showCard = !showCard">Fermer</button>
                 </mat-card>
                 <button mat-stroked-button (click)="showCard = !showCard">
