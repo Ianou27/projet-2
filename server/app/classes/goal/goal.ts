@@ -14,4 +14,7 @@ export class Goal {
         }
         return false;
     }
+    static threeWords(words: Tile[][]): boolean {
+        return words.length >= 3;
+    }
 }
