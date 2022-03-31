@@ -5,6 +5,8 @@ import { Game } from './../../classes/game/game';
 export class Timer {
     timeLeft: number;
     timerMax: number;
+    gameTime: number = 0;
+
     constructor(maxTime: string) {
         this.timerMax = +maxTime;
         this.timeLeft = +maxTime;
@@ -31,12 +33,16 @@ export class Timer {
     }
 
     reset() {
+        this.gameTime += this.timerMax - this.timeLeft;
         if (this.timeLeft !== NO_TIME_LEFT) {
             this.timeLeft = this.timerMax;
         }
+
+        
     }
 
     stop() {
+        this.gameTime += this.timerMax - this.timeLeft;
         this.timeLeft = NO_TIME_LEFT;
     }
 }
