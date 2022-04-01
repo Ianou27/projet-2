@@ -1,5 +1,6 @@
 import { DatabaseService } from '@app/services/best-score/best-score.services';
 import { BotType } from '@common/botType';
+import { Goals } from '@common/constants/goals';
 import * as io from 'socket.io';
 import { CommandType } from './../../../../common/command-type';
 import {
@@ -17,6 +18,7 @@ import { PlacementCommand } from './../placement-command/placement-command';
 import { Player } from './../player/player';
 import { ReserveLetters } from './../reserve-letters/reserve-letters';
 import { VirtualPlayer } from './../virtual-player/virtual-player';
+
 export class Game {
     gameBoard: GameBoardService;
     player1: Player;
@@ -27,8 +29,9 @@ export class Game {
     roomName: string;
     sio: io.Server;
     databaseService: DatabaseService;
+    goals: Goals;
 
-    constructor() {
+    constructor(modeLog: boolean) {
         this.reserveLetters = new ReserveLetters();
 
         this.gameBoard = new GameBoardService();
@@ -43,7 +46,13 @@ export class Game {
             winner,
         };
         this.gameState = gameState;
+        /* if (modeLog) {
+        }*/
     }
+
+    /* randomizeGoals() {
+        const newGoals: Goals = {};
+    }*/
 
     player1Join(user: User, timer: string, databaseService: DatabaseService) {
         this.player1 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player1', user);

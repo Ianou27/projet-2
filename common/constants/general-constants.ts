@@ -46,3 +46,5 @@ export const LETTER_VALUE_TEN = 10;
 export const EIGHT_LETTERS_VALIDATION = 8;
 export const TWO_LETTERS_OR_WORDS_VALIDATION = 2;
 export const THREE_LETTERS_OR_WORDS_VALIDATION = 3;
+export const SPECIAL_TILE_X = 5;
+export const SPECIAL_TILE_Y = 2;

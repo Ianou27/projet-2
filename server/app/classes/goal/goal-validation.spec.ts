@@ -1,5 +1,6 @@
 import { CaseProperty } from '@common/assets/case-property';
 import { letterValue } from '@common/assets/reserve-letters';
+import { SPECIAL_TILE_X, SPECIAL_TILE_Y } from '@common/constants/general-constants';
 import { Tile } from '@common/tile/Tile';
 import { expect } from 'chai';
 import { Goal } from './goal-validation';
@@ -32,6 +33,26 @@ describe('Goal', () => {
         }
         words.push(word);
         expect(Goal.tripleE(words)).equal(false);
+    });
+
+    it('method specialTile should return true if word is placed on B4', () => {
+        const tile = new Tile(CaseProperty.Normal, SPECIAL_TILE_X, SPECIAL_TILE_Y);
+        tile.letter = 'A';
+        tile.value = letterValue[tile.letter];
+        word.push(tile);
+
+        words.push(word);
+        expect(Goal.specialTile(words)).equal(true);
+    });
+
+    it('method specialTile should return true if word is placed on B4', () => {
+        const tile = new Tile(CaseProperty.Normal, SPECIAL_TILE_Y, SPECIAL_TILE_X);
+        tile.letter = 'A';
+        tile.value = letterValue[tile.letter];
+        word.push(tile);
+
+        words.push(word);
+        expect(Goal.specialTile(words)).equal(false);
     });
 
     it('method threeWords should return true if there is at least three words', () => {

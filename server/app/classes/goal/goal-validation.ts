@@ -1,6 +1,8 @@
 import {
     EIGHT_LETTERS_VALIDATION,
     LETTER_VALUE_TEN,
+    SPECIAL_TILE_X,
+    SPECIAL_TILE_Y,
     THREE_LETTERS_OR_WORDS_VALIDATION,
     TWO_LETTERS_OR_WORDS_VALIDATION,
 } from '@common/constants/general-constants';
@@ -27,8 +29,7 @@ export class Goal {
     static specialTile(words: Tile[][]): boolean {
         for (const word of words) {
             for (const tile of word) {
-                // transformer la tuile speciale en constante
-                if (tile.positionX === 5 && tile.positionY === 2) return true;
+                if (tile.positionX === SPECIAL_TILE_X && tile.positionY === SPECIAL_TILE_Y) return true;
             }
         }
         return false;
