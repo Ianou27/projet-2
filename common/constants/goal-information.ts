@@ -6,9 +6,3 @@ export interface GoalInformations {
     isInGame: boolean;
     type: GoalType;
 }
-
-export const palindrome: GoalInformations {
-    'palindrome',
-    25,
-    
-}

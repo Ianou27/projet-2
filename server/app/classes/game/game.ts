@@ -31,7 +31,7 @@ export class Game {
     databaseService: DatabaseService;
     goals: Goals;
 
-    constructor(modeLog: boolean) {
+    constructor(/* modeLog: boolean*/) {
         this.reserveLetters = new ReserveLetters();
 
         this.gameBoard = new GameBoardService();
