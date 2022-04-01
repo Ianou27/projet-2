@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
 import { ONE_SECOND_MS } from './../../../../../common/constants/general-constants';
@@ -25,11 +25,12 @@ export class AdminPageComponent implements OnInit {
     addedBeginnerNames: any[] = [];
     defaultExpertNames: any[] = [];
     addedExpertNames: any[] = [];
-    form: FormGroup;
+    formModify: FormGroup;
+    formAdd: FormGroup;
     alphaNumericRegex = /^[a-zA-Z]*$/;
     matcher = new MyErrorStateMatcher();
 
-    constructor(public socketHandler: ClientSocketHandler, private fb: FormBuilder) {
+    constructor(public socketHandler: ClientSocketHandler) {
         socketHandler.connect();
         socketHandler.getDictionaryInfo();
         socketHandler.getVirtualPlayerNames();
@@ -37,22 +38,23 @@ export class AdminPageComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.form = this.fb.group({
-            newName: ['', [Validators.required, Validators.minLength(3), Validators.pattern(this.alphaNumericRegex) /* , this.validateName */]],
-            modifiedName: ['', [Validators.required, Validators.minLength(3), Validators.pattern(this.alphaNumericRegex)]],
+        this.formModify = new FormGroup({
+            modifiedName: new FormControl('', [Validators.required, Validators.minLength(3), Validators.pattern(this.alphaNumericRegex)]),
+        });
+        this.formAdd = new FormGroup({
+            newName: new FormControl('', [Validators.required, Validators.minLength(3), Validators.pattern(this.alphaNumericRegex)]),
         });
     }
 
-    myError = (controlName: string, errorName: string) => {
+    myErrorModify = (controlName: string, errorName: string) => {
         // eslint-disable-next-line no-invalid-this
-        return this.form.controls[controlName].hasError(errorName);
+        return this.formModify.controls[controlName].hasError(errorName);
     };
 
-    validateName(control: AbstractControl) {
-        const virtualPlayerArray = this.socketHandler.virtualPlayerNameList;
-        if (virtualPlayerArray.filter((virtualPlayer) => virtualPlayer.name === control.value)) return true;
-        return null;
-    }
+    myErrorAdd = (controlName: string, errorName: string) => {
+        // eslint-disable-next-line no-invalid-this
+        return this.formAdd.controls[controlName].hasError(errorName);
+    };
 
     onTabChange(event: MatTabChangeEvent) {
         const tab = event.tab.textLabel;
@@ -62,6 +64,16 @@ export class AdminPageComponent implements OnInit {
             this.showCard = false;
         }
     }
+
+    /* validateName(name: string) {
+        const virtualPlayerArray = this.socketHandler.virtualPlayerNameList;
+        if (virtualPlayerArray.filter((virtualPlayer) => virtualPlayer.name === name)) {
+            console.log('true');
+        } else {
+            console.log('false');
+        }
+        return false;
+    } */
 
     addNewPlayer() {
         if (this.virtualPlayerType === 'Débutant') {
