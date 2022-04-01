@@ -24,6 +24,16 @@ export class Goal {
         return false;
     }
 
+    static specialTile(words: Tile[][]): boolean {
+        for (const word of words) {
+            for (const tile of word) {
+                // transformer la tuile speciale en constante
+                if (tile.positionX === 5 && tile.positionY === 2) return true;
+            }
+        }
+        return false;
+    }
+
     static threeWords(words: Tile[][]): boolean {
         return words.length >= THREE_LETTERS_OR_WORDS_VALIDATION;
     }
