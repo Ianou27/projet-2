@@ -179,7 +179,7 @@ export class AdminPageComponent implements OnInit {
                 break;
             }
             case 'bestScore': {
-                // this.socketHandler.resetGameHistory();
+                this.socketHandler.resetBestScores();
                 this.refreshDisplayedData();
 
                 break;
