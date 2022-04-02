@@ -1,3 +1,5 @@
+/* eslint-disable guard-for-in */
+/* eslint-disable max-lines */
 import { CaseProperty } from '@common/assets/case-property';
 import { letterValue } from '@common/assets/reserve-letters';
 import { SPECIAL_TILE_X, SPECIAL_TILE_Y } from '@common/constants/general-constants';
@@ -286,7 +288,7 @@ describe('Goal', () => {
         expect(result).equal(allGoals.eightLetters.value);
     });
 
-    it('method validationGoal should return 0 if at least no goals are in game', () => {
+    it('method validationGoal should call functions when goal is in game and not done', () => {
         const goals = JSON.parse(JSON.stringify(allGoals));
         for (let i = 0; i < 3; i++) {
             const tile = new Tile(CaseProperty.Normal, 0, 0);
@@ -295,14 +297,139 @@ describe('Goal', () => {
             word.push(tile);
         }
         words.push(word);
-        game = new Game();
         game.goals = goals;
-        // eslint-disable-next-line guard-for-in
         for (const goal in game.goals) {
             game.goals[goal].isInGame = true;
         }
-        const spy = sinon.stub(Goal, 'turnVerification');
+        sinon.replace(Goal, 'turnVerification', () => {
+            return true;
+        });
+        const spyTripleE = sinon.stub(Goal, 'tripleE');
+        const spyEightLetters = sinon.stub(Goal, 'hasEightLetters');
+        const spyTwoStars = sinon.stub(Goal, 'hasTwoStars');
+        const spyScrabble = sinon.stub(Goal, 'hasWordScrabble');
+        const spyPalindrome = sinon.stub(Goal, 'isPalindrome');
+        const spySpecialTile = sinon.stub(Goal, 'specialTile');
+        const spyThreeWords = sinon.stub(Goal, 'threeWords');
+        const spyTwoTenPoints = sinon.stub(Goal, 'twoTenPointsLetters');
         Goal.validationGoal(words, game);
-        expect(spy.called);
+        expect(spySpecialTile.called);
+        expect(spyTripleE.called);
+        expect(spyTwoStars.called);
+        expect(spyScrabble.called);
+        expect(spyPalindrome.called);
+        expect(spyThreeWords.called);
+        expect(spyTwoTenPoints.called);
+        expect(spySpecialTile.called);
+        expect(spyEightLetters.called);
+    });
+
+    it('method validationGoal should not call functions when turnVerification returns false', () => {
+        const goals = JSON.parse(JSON.stringify(allGoals));
+        for (let i = 0; i < 3; i++) {
+            const tile = new Tile(CaseProperty.Normal, 0, 0);
+            tile.letter = 'E';
+            tile.value = letterValue[tile.letter];
+            word.push(tile);
+        }
+        words.push(word);
+        game.goals = goals;
+        for (const goal in game.goals) {
+            game.goals[goal].isInGame = true;
+        }
+        sinon.replace(Goal, 'turnVerification', () => {
+            return false;
+        });
+        const spyTripleE = sinon.stub(Goal, 'tripleE');
+        const spyEightLetters = sinon.stub(Goal, 'hasEightLetters');
+        const spyTwoStars = sinon.stub(Goal, 'hasTwoStars');
+        const spyScrabble = sinon.stub(Goal, 'hasWordScrabble');
+        const spyPalindrome = sinon.stub(Goal, 'isPalindrome');
+        const spySpecialTile = sinon.stub(Goal, 'specialTile');
+        const spyThreeWords = sinon.stub(Goal, 'threeWords');
+        const spyTwoTenPoints = sinon.stub(Goal, 'twoTenPointsLetters');
+        Goal.validationGoal(words, game);
+        expect(!spySpecialTile.called);
+        expect(!spyTripleE.called);
+        expect(!spyTwoStars.called);
+        expect(!spyScrabble.called);
+        expect(!spyPalindrome.called);
+        expect(!spyThreeWords.called);
+        expect(!spyTwoTenPoints.called);
+        expect(!spySpecialTile.called);
+        expect(!spyEightLetters.called);
+    });
+
+    it('method validationGoal should not call functions when goal is not in game', () => {
+        const goals = JSON.parse(JSON.stringify(allGoals));
+        for (let i = 0; i < 3; i++) {
+            const tile = new Tile(CaseProperty.Normal, 0, 0);
+            tile.letter = 'E';
+            tile.value = letterValue[tile.letter];
+            word.push(tile);
+        }
+        words.push(word);
+        game.goals = goals;
+        for (const goal in game.goals) {
+            game.goals[goal].isInGame = false;
+        }
+        sinon.replace(Goal, 'turnVerification', () => {
+            return true;
+        });
+        const spyTripleE = sinon.stub(Goal, 'tripleE');
+        const spyEightLetters = sinon.stub(Goal, 'hasEightLetters');
+        const spyTwoStars = sinon.stub(Goal, 'hasTwoStars');
+        const spyScrabble = sinon.stub(Goal, 'hasWordScrabble');
+        const spyPalindrome = sinon.stub(Goal, 'isPalindrome');
+        const spySpecialTile = sinon.stub(Goal, 'specialTile');
+        const spyThreeWords = sinon.stub(Goal, 'threeWords');
+        const spyTwoTenPoints = sinon.stub(Goal, 'twoTenPointsLetters');
+        Goal.validationGoal(words, game);
+        expect(!spySpecialTile.called);
+        expect(!spyTripleE.called);
+        expect(!spyTwoStars.called);
+        expect(!spyScrabble.called);
+        expect(!spyPalindrome.called);
+        expect(!spyThreeWords.called);
+        expect(!spyTwoTenPoints.called);
+        expect(!spySpecialTile.called);
+        expect(!spyEightLetters.called);
+    });
+
+    it('method validationGoal should not call functions when goal is Done', () => {
+        const goals = JSON.parse(JSON.stringify(allGoals));
+        for (let i = 0; i < 3; i++) {
+            const tile = new Tile(CaseProperty.Normal, 0, 0);
+            tile.letter = 'E';
+            tile.value = letterValue[tile.letter];
+            word.push(tile);
+        }
+        words.push(word);
+        game.goals = goals;
+        for (const goal in game.goals) {
+            game.goals[goal].isInGame = true;
+            game.goals[goal].isDone = true;
+        }
+        sinon.replace(Goal, 'turnVerification', () => {
+            return true;
+        });
+        const spyTripleE = sinon.stub(Goal, 'tripleE');
+        const spyEightLetters = sinon.stub(Goal, 'hasEightLetters');
+        const spyTwoStars = sinon.stub(Goal, 'hasTwoStars');
+        const spyScrabble = sinon.stub(Goal, 'hasWordScrabble');
+        const spyPalindrome = sinon.stub(Goal, 'isPalindrome');
+        const spySpecialTile = sinon.stub(Goal, 'specialTile');
+        const spyThreeWords = sinon.stub(Goal, 'threeWords');
+        const spyTwoTenPoints = sinon.stub(Goal, 'twoTenPointsLetters');
+        Goal.validationGoal(words, game);
+        expect(!spySpecialTile.called);
+        expect(!spyTripleE.called);
+        expect(!spyTwoStars.called);
+        expect(!spyScrabble.called);
+        expect(!spyPalindrome.called);
+        expect(!spyThreeWords.called);
+        expect(!spyTwoTenPoints.called);
+        expect(!spySpecialTile.called);
+        expect(!spyEightLetters.called);
     });
 });
