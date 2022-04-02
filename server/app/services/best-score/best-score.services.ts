@@ -186,10 +186,18 @@ export class DatabaseService {
         }
     }
 
+    async resetBestScores() {
+        await this.db.collection(DATABASE_COLLECTION_CLASSIC).deleteMany({});
+        await this.db.collection(DATABASE_COLLECTION_LOG).deleteMany({});
+        await this.populateDB( DATABASE_COLLECTION_CLASSIC);
+        await this.populateDB( DATABASE_COLLECTION_LOG);
+    }
+
     async resetAll() {
         await this.resetGameHistory();
         await this.resetVirtualPlayers();
         await this.resetDictionary();
+        await this.resetBestScores();
     }
         
 }

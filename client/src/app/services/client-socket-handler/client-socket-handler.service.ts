@@ -225,6 +225,10 @@ export class ClientSocketHandler {
     async resetGameHistory() {
         this.socketService.socket.emit('resetGameHistory');
     }
+
+    async resetBestScores() {
+        this.socketService.socket.emit('resetBestScore');
+    }
     createRoom(username: string, room: string, time: string) {
         this.socketService.socket.emit('createRoom', username, room, time);
         this.updateRooms();

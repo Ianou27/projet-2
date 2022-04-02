@@ -335,7 +335,7 @@ export class SocketManager {
                 await this.databaseService.closeConnection();
             });
 
-            socket.on('restGameHistory', async () => {
+            socket.on('resetGameHistory', async () => {
                 await this.databaseService.start();
                 await this.databaseService.resetGameHistory();
                 this.sio
@@ -346,6 +346,12 @@ export class SocketManager {
                         await this.databaseService.getGameHistory(),
                         await this.databaseService.getVirtualPlayers(),
                     );
+                await this.databaseService.closeConnection();
+            });
+
+            socket.on('resetBestScore', async () => {
+                await this.databaseService.start();
+                await this.databaseService.resetBestScores();
                 await this.databaseService.closeConnection();
             });
 
