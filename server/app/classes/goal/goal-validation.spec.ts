@@ -1,19 +1,28 @@
 import { CaseProperty } from '@common/assets/case-property';
 import { letterValue } from '@common/assets/reserve-letters';
 import { SPECIAL_TILE_X, SPECIAL_TILE_Y } from '@common/constants/general-constants';
+import { allGoals } from '@common/constants/goals';
 import { Tile } from '@common/tile/Tile';
 import { expect } from 'chai';
+import * as sinon from 'sinon';
+import { Game } from './../game/game';
 import { Goal } from './goal-validation';
 
 describe('Goal', () => {
     let words: Tile[][];
     let word: Tile[];
+    let game: Game;
     beforeEach(() => {
         words = [];
         word = [];
+        game = new Game();
     });
 
-    it('method tripleE should return true if one word contains 3 e', () => {
+    afterEach(() => {
+        sinon.restore();
+    });
+
+    it('method tripleE should return the right value if one word contains 3 e', () => {
         for (let i = 0; i < 3; i++) {
             const tile = new Tile(CaseProperty.Normal, 0, 0);
             tile.letter = 'E';
@@ -21,10 +30,10 @@ describe('Goal', () => {
             word.push(tile);
         }
         words.push(word);
-        expect(Goal.tripleE(words)).equal(true);
+        expect(Goal.tripleE(words)).equal(allGoals.tripleE.value);
     });
 
-    it('method tripleE should return false if no word contains three e', () => {
+    it('method tripleE should return 0 if no word contains three e', () => {
         for (let i = 0; i < 3; i++) {
             const tile = new Tile(CaseProperty.Normal, 0, 0);
             tile.letter = 'A';
@@ -32,30 +41,30 @@ describe('Goal', () => {
             word.push(tile);
         }
         words.push(word);
-        expect(Goal.tripleE(words)).equal(false);
+        expect(Goal.tripleE(words)).equal(0);
     });
 
-    it('method specialTile should return true if word is placed on B4', () => {
+    it('method specialTile should return the right value if word is placed on B4', () => {
         const tile = new Tile(CaseProperty.Normal, SPECIAL_TILE_X, SPECIAL_TILE_Y);
         tile.letter = 'A';
         tile.value = letterValue[tile.letter];
         word.push(tile);
 
         words.push(word);
-        expect(Goal.specialTile(words)).equal(true);
+        expect(Goal.specialTile(words)).equal(allGoals.specialTile.value);
     });
 
-    it('method specialTile should return true if word is placed on B4', () => {
+    it('method specialTile should return 0 if word is placed on B4', () => {
         const tile = new Tile(CaseProperty.Normal, SPECIAL_TILE_Y, SPECIAL_TILE_X);
         tile.letter = 'A';
         tile.value = letterValue[tile.letter];
         word.push(tile);
 
         words.push(word);
-        expect(Goal.specialTile(words)).equal(false);
+        expect(Goal.specialTile(words)).equal(0);
     });
 
-    it('method threeWords should return true if there is at least three words', () => {
+    it('method threeWords should return the right value if there is at least three words', () => {
         for (let i = 0; i < 4; i++) {
             const tile = new Tile(CaseProperty.Normal, 0, 0);
             tile.letter = 'A';
@@ -63,10 +72,10 @@ describe('Goal', () => {
             word.push(tile);
             words.push(word);
         }
-        expect(Goal.threeWords(words)).equal(true);
+        expect(Goal.threeWords(words)).equal(allGoals.threeWords.value);
     });
 
-    it('method threeWords should return true if there is at least three words', () => {
+    it('method threeWords should return 0 if there is at least three words', () => {
         for (let i = 0; i < 2; i++) {
             const tile = new Tile(CaseProperty.Normal, 0, 0);
             tile.letter = 'A';
@@ -75,10 +84,10 @@ describe('Goal', () => {
             words.push(word);
             word = [];
         }
-        expect(Goal.threeWords(words)).equal(false);
+        expect(Goal.threeWords(words)).equal(0);
     });
 
-    it('method isPalindrome should return true if it is palindrome', () => {
+    it('method isPalindrome should return the right value if it is palindrome', () => {
         for (let i = 0; i < 3; i++) {
             const tile = new Tile(CaseProperty.Normal, 0, 0);
             tile.letter = 'A';
@@ -86,21 +95,10 @@ describe('Goal', () => {
             word.push(tile);
         }
         words.push(word);
-        expect(Goal.isPalindrome(words)).equal(true);
+        expect(Goal.isPalindrome(words)).equal(allGoals.palindrome.value);
     });
 
-    it('method isPalindrome should return true if it is palindrome', () => {
-        for (let i = 0; i < 3; i++) {
-            const tile = new Tile(CaseProperty.Normal, 0, 0);
-            tile.letter = 'A';
-            tile.value = letterValue[tile.letter];
-            word.push(tile);
-        }
-        words.push(word);
-        expect(Goal.isPalindrome(words)).equal(true);
-    });
-
-    it('method isPalindrome should return true if it is palindrome', () => {
+    it('method isPalindrome should return 0 if it is palindrome', () => {
         for (let i = 0; i < 2; i++) {
             word.push(new Tile(CaseProperty.Normal, 0, 0));
         }
@@ -109,10 +107,10 @@ describe('Goal', () => {
         word[1].letter = 'E';
         word[1].value = letterValue[word[1].letter];
         words.push(word);
-        expect(Goal.isPalindrome(words)).equal(false);
+        expect(Goal.isPalindrome(words)).equal(0);
     });
 
-    it('method hasWordScrabble should return false if no words is the word SCRABBLE', () => {
+    it('method hasWordScrabble should return 0 if no words is the word SCRABBLE', () => {
         const word1 = ['B', 'E', 'A', 'U'];
         const word2 = ['F', 'A', 'I', 'T'];
         for (let i = 0; i < word1.length; i++) {
@@ -131,10 +129,10 @@ describe('Goal', () => {
         }
         words.push(word);
         const result = Goal.hasWordScrabble(words);
-        expect(result).equal(false);
+        expect(result).equal(0);
     });
 
-    it('method hasWordScrabble should return true if at least one word is SCRABBLE', () => {
+    it('method hasWordScrabble should return the right value if at least one word is SCRABBLE', () => {
         const word1 = ['S', 'C', 'R', 'A', 'B', 'B', 'L', 'E'];
         const word2 = ['F', 'A', 'I', 'T'];
         for (let i = 0; i < word1.length; i++) {
@@ -153,10 +151,10 @@ describe('Goal', () => {
         }
         words.push(word);
         const result = Goal.hasWordScrabble(words);
-        expect(result).equal(true);
+        expect(result).equal(allGoals.scrabble.value);
     });
 
-    it('method twoTenPointsLetters should return false if no word contains two 10 points letters', () => {
+    it('method twoTenPointsLetters should return 0 if no word contains two 10 points letters', () => {
         const word1 = ['B', 'E', 'A', 'U'];
         const word2 = ['F', 'A', 'I', 'T'];
         for (let i = 0; i < word1.length; i++) {
@@ -175,10 +173,10 @@ describe('Goal', () => {
         }
         words.push(word);
         const result = Goal.twoTenPointsLetters(words);
-        expect(result).equal(false);
+        expect(result).equal(0);
     });
 
-    it('method twoTenPointsLetters should return true if at least one word contains two 10 points letters', () => {
+    it('method twoTenPointsLetters should return the right value if at least one word contains two 10 points letters', () => {
         const word1 = ['K', 'A', 'Y', 'A', 'K'];
         const word2 = ['F', 'A', 'I', 'T'];
         for (let i = 0; i < word1.length; i++) {
@@ -197,10 +195,10 @@ describe('Goal', () => {
         }
         words.push(word);
         const result = Goal.twoTenPointsLetters(words);
-        expect(result).equal(true);
+        expect(result).equal(allGoals.twoTenPointsLetters.value);
     });
 
-    it('method hasTwoStars should return false if no word contains two 0 points letter (star)', () => {
+    it('method hasTwoStars should return 0 if no word contains two 0 points letter star', () => {
         const word1 = ['B', 'E', 'A', 'U'];
         const word2 = ['F', 'A', 'I', 'T'];
         for (let i = 0; i < word1.length; i++) {
@@ -219,7 +217,7 @@ describe('Goal', () => {
         }
         words.push(word);
         const result = Goal.hasTwoStars(words);
-        expect(result).equal(false);
+        expect(result).equal(0);
     });
 
     it('method hasTwoStars should return true if at least one word contains two 0 points letter (star)', () => {
@@ -241,10 +239,10 @@ describe('Goal', () => {
         }
         words.push(word);
         const result = Goal.hasTwoStars(words);
-        expect(result).equal(true);
+        expect(result).equal(allGoals.twoStars.value);
     });
 
-    it('method hasEightLetters should return false if no word contains 8 or more letters', () => {
+    it('method hasEightLetters should return 0 if no word contains 8 or more letters', () => {
         const word1 = ['B', 'E', 'A', 'U'];
         const word2 = ['F', 'A', 'I', 'T'];
         for (let i = 0; i < word1.length; i++) {
@@ -263,10 +261,10 @@ describe('Goal', () => {
         }
         words.push(word);
         const result = Goal.hasEightLetters(words);
-        expect(result).equal(false);
+        expect(result).equal(0);
     });
 
-    it('method hasEightLetters should return true if at least one word contains 8 or more letters', () => {
+    it('method hasEightLetters should return the right value if at least one word contains 8 or more letters', () => {
         const word1 = ['H', 'E', 'L', 'I', 'C', 'O', 'P', 'T', 'E', 'R', 'E'];
         const word2 = ['F', 'A', 'I', 'T'];
         for (let i = 0; i < word1.length; i++) {
@@ -285,6 +283,26 @@ describe('Goal', () => {
         }
         words.push(word);
         const result = Goal.hasEightLetters(words);
-        expect(result).equal(true);
+        expect(result).equal(allGoals.eightLetters.value);
+    });
+
+    it('method validationGoal should return 0 if at least no goals are in game', () => {
+        const goals = JSON.parse(JSON.stringify(allGoals));
+        for (let i = 0; i < 3; i++) {
+            const tile = new Tile(CaseProperty.Normal, 0, 0);
+            tile.letter = 'E';
+            tile.value = letterValue[tile.letter];
+            word.push(tile);
+        }
+        words.push(word);
+        game = new Game();
+        game.goals = goals;
+        // eslint-disable-next-line guard-for-in
+        for (const goal in game.goals) {
+            game.goals[goal].isInGame = true;
+        }
+        const spy = sinon.stub(Goal, 'turnVerification');
+        Goal.validationGoal(words, game);
+        expect(spy.called);
     });
 });

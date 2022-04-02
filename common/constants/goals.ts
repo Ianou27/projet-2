@@ -56,7 +56,7 @@ export const allGoals: Goals = {
         type: GoalType.Public,
     },
     twoTenPointsLetters: {
-        name: 'twoStars',
+        name: 'twoTenPointsLetters',
         value: 75,
         isDone: false,
         isInGame: false,

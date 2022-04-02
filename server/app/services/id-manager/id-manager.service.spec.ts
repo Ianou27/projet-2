@@ -15,9 +15,9 @@ describe('IdManager tests', () => {
     idManager.games.push(game);
     idManager.games.push(game2);
     beforeEach(() => {
-        game.player1Join({ username: 'rt', id: '1', room: 'room1' }, '60', databaseService);
+        game.player1Join({ username: 'rt', id: '1', room: 'room1' }, '60', databaseService, false);
         game.player2 = new Player(game.reserveLetters.randomLettersInitialization(), false, 'player2', { username: 'rta', id: '2', room: 'room1' });
-        game2.player1Join({ username: 'u', id: '3', room: 'room2' }, '60', databaseService);
+        game2.player1Join({ username: 'u', id: '3', room: 'room2' }, '60', databaseService, false);
         game2.player2 = new Player(game.reserveLetters.randomLettersInitialization(), false, 'player2', { username: 'u2', id: '4', room: 'room2' });
         const user: User = {
             username: 'username',

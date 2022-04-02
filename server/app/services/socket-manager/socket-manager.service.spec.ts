@@ -307,7 +307,7 @@ describe('SocketManager service tests', () => {
             id: 'socketId',
             room: 'room1',
         };
-        gameObj.player1Join(user, '60', databaseService);
+        gameObj.player1Join(user, '60', databaseService, false);
         sinon.replace(service.identification, 'getGame', () => {
             return gameObj;
         });

@@ -25,14 +25,24 @@ export class SocketManager {
     async handleSockets(): Promise<void> {
         this.sio.on('connection', (socket) => {
             console.log(`Connexion par l'utilisateur avec id : ${socket.id}`);
-            socket.on('createRoom', (username: string, room: string, timer: string) => {
-                this.roomManager.createRoom(username, room, socket.id, this.identification, timer, this.databaseService);
+            socket.on('createRoom', (username: string, room: string, timer: string, modeLog: boolean) => {
+                this.roomManager.createRoom(username, room, socket.id, this.identification, timer, this.databaseService, modeLog);
                 socket.join(room);
             });
 
-            socket.on('createSoloGame', (username: string, timer: string, botType: BotType) => {
+            socket.on('createSoloGame', (username: string, timer: string, botType: BotType, modeLog: boolean) => {
                 const botName = this.roomManager.getRandomBotName(username);
-                this.roomManager.createSoloGame(username, socket.id, this.identification, this.sio, timer, this.databaseService, botName, botType);
+                this.roomManager.createSoloGame(
+                    username,
+                    socket.id,
+                    this.identification,
+                    this.sio,
+                    timer,
+                    this.databaseService,
+                    botName,
+                    botType,
+                    modeLog,
+                );
                 socket.join(username);
             });
 
@@ -284,8 +294,8 @@ export class SocketManager {
                 this.roomManager.cancelCreation(socket.id, this.identification);
             });
 
-            socket.on('convertToSoloGame', () => {
-                this.roomManager.convertMultiToSolo(socket.id, this.identification, this.sio, this.databaseService);
+            socket.on('convertToSoloGame', (modeLog: boolean) => {
+                this.roomManager.convertMultiToSolo(socket.id, this.identification, this.sio, this.databaseService, modeLog);
             });
             socket.on('disconnect', (reason) => {
                 const room = this.identification.getRoom(socket.id);

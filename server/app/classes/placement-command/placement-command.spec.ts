@@ -23,7 +23,7 @@ describe('Placement Command', () => {
 
     beforeEach(() => {
         game = new Game();
-        game.player1Join({ username: 'rt1', id: '1', room: 'room1' }, '60', databaseService);
+        game.player1Join({ username: 'rt1', id: '1', room: 'room1' }, '60', databaseService, false);
         // game.player1 = new Player(game.reserveLetters.randomLettersInitialization(), true, 'player1', { username: 'rt1', id: '1', room: 'room1' });
         game.player2 = new Player(game.reserveLetters.randomLettersInitialization(), true, 'player2', { username: 'rta', id: '2', room: 'room1' });
         for (const letter of lettersPlayer1) {

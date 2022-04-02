@@ -1,13 +1,16 @@
 import { DatabaseService } from '@app/services/best-score/best-score.services';
 import { BotType } from '@common/botType';
-import { Goals } from '@common/constants/goals';
+import { GoalType } from '@common/constants/goal-type';
+import { allGoals, Goals } from '@common/constants/goals';
 import * as io from 'socket.io';
 import { CommandType } from './../../../../common/command-type';
 import {
     MAXIMUM_PASSES_COUNT,
+    NUMBER_GOALS_GAME,
     PROBABILITY_EXCHANGE_COMMAND_BOT,
     PROBABILITY_PASS_COMMAND_BOT,
     THREE_SECONDS_MS,
+    TOTAL_GOALS,
     TWENTY_SECONDS_MS,
 } from './../../../../common/constants/general-constants';
 import { GameState } from './../../../../common/gameState';
@@ -31,35 +34,28 @@ export class Game {
     databaseService: DatabaseService;
     goals: Goals;
 
-    constructor(/* modeLog: boolean*/) {
+    constructor() {
         this.reserveLetters = new ReserveLetters();
-
         this.gameBoard = new GameBoardService();
-        const firstTurn = true;
-        const passesCount = 0;
-        const gameFinished = false;
-        const winner = '';
         const gameState: GameState = {
-            firstTurn,
-            passesCount,
-            gameFinished,
-            winner,
+            firstTurn: true,
+            passesCount: 0,
+            gameFinished: false,
+            winner: '',
+            modeLog: false,
         };
         this.gameState = gameState;
-        /* if (modeLog) {
-        }*/
     }
 
-    /* randomizeGoals() {
-        const newGoals: Goals = {};
-    }*/
-
-    player1Join(user: User, timer: string, databaseService: DatabaseService) {
+    player1Join(user: User, timer: string, databaseService: DatabaseService, modeLog: boolean) {
         this.player1 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player1', user);
         this.timer = new Timer(timer);
         this.roomName = user.room;
         this.timer = new Timer(timer);
         this.databaseService = databaseService;
+        if (modeLog) {
+            this.setGoals();
+        }
     }
 
     player2Join(user: User, sio: io.Server) {
@@ -88,7 +84,7 @@ export class Game {
         this.sio.to(this.player2.user.id).emit('modification', this.gameBoard.cases, this.playerTurn().name);
     }
 
-    startSoloGame(user: User, sio: io.Server, timer: string, databaseService: DatabaseService, botName: string, botType: BotType) {
+    startSoloGame(user: User, sio: io.Server, timer: string, databaseService: DatabaseService, botName: string, botType: BotType, modeLog: boolean) {
         this.databaseService = databaseService;
         this.timer = new Timer(timer);
         this.player1 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player1', user);
@@ -106,6 +102,9 @@ export class Game {
         this.sio.to(user.id).emit('tileHolder', this.player1.letters);
         this.sio.to(this.player1.user.room).emit('modification', this.gameBoard.cases, this.playerTurn().name);
         this.sio.to(user.id).emit('startGame', user.username, botName);
+        if (modeLog) {
+            this.setGoals();
+        }
     }
 
     randomTurnGame() {
@@ -113,6 +112,37 @@ export class Game {
         if (!player1Turn) {
             this.changeTurnTwoPlayers();
         }
+    }
+
+    setGoals() {
+        const goalsSelected: number[] = [];
+        this.gameState.modeLog = true;
+        this.goals = JSON.parse(JSON.stringify(allGoals));
+        for (let i = 0; i < NUMBER_GOALS_GAME; i++) {
+            let position = Math.floor(Math.random() * TOTAL_GOALS);
+            while (this.verifyGoalsTaken(goalsSelected, position)) {
+                position = Math.floor(Math.random() * TOTAL_GOALS);
+            }
+            if (i <= 1) {
+                this.changeGoal(goalsSelected, position, GoalType.Public);
+            } else if (i <= 2) {
+                this.changeGoal(goalsSelected, position, GoalType.PrivatePlayer1);
+            } else {
+                this.changeGoal(goalsSelected, position, GoalType.PrivatePlayer2);
+            }
+        }
+    }
+
+    verifyGoalsTaken(goals: number[], newGoals: number): boolean {
+        if (goals.includes(newGoals)) return true;
+        return false;
+    }
+
+    changeGoal(goalsSelected: number[], position: number, goalType: GoalType): void {
+        const goals = Object.keys(this.goals);
+        goalsSelected.push(position);
+        this.goals[goals[position]].isInGame = true;
+        this.goals[goals[position]].type = goalType;
     }
 
     async changeTurnTwoPlayers() {

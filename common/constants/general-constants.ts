@@ -48,3 +48,5 @@ export const TWO_LETTERS_OR_WORDS_VALIDATION = 2;
 export const THREE_LETTERS_OR_WORDS_VALIDATION = 3;
 export const SPECIAL_TILE_X = 5;
 export const SPECIAL_TILE_Y = 2;
+export const NUMBER_GOALS_GAME = 4;
+export const TOTAL_GOALS = 8;
