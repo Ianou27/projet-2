@@ -14,6 +14,7 @@ describe('Database service', () => {
     let databaseService: DatabaseService;
     let mongoServer: MongoMemoryServer;
     let dictionaryArray: JSON = JSON.parse(fs.readFileSync('./assets/dictionnary.json').toString());
+    let dictionaryTest: JSON = JSON.parse(fs.readFileSync('./assets/test.json').toString());
     beforeEach(async () => {
         databaseService = new DatabaseService();
 
@@ -186,5 +187,108 @@ describe('Database service', () => {
         expect(players[0].name).not.to.equal('test');
     });
 
+    it(' should Reset Virtual Player', async () => {
+        const mongoUri = await mongoServer.getUri();
+        const client = await MongoClient.connect(mongoUri);
+        databaseService.db = client.db('Database');
+        await databaseService.addVirtualPlayer('Felix','expert');
+        await databaseService.addVirtualPlayer('test','expert');
+        await databaseService.resetVirtualPlayers();
+        let players =await databaseService.getVirtualPlayers();
+        expect(players.length).to.equal(1);
+    });
+
+    it(' should Reset historyGame', async () => {
+        const mongoUri = await mongoServer.getUri();
+        const client = await MongoClient.connect(mongoUri);
+        databaseService.db = client.db('Database');
+        await databaseService.insertGame(
+            {
+                date: new Date().toString(),
+                duration: '10',
+                player1: 'test',
+                player1Points: 60,
+                player2: 'test2',
+                player2Points: 20,
+                gameMode: 'classic',
+            }
+        );
+
+        await databaseService.resetGameHistory();
+        let history =await databaseService.getGameHistory();
+        
+        expect(history.length).to.equal(0);
+    });
+
+    it(' should reset Dictionary', async () => {
+        const mongoUri = await mongoServer.getUri();
+        const client = await MongoClient.connect(mongoUri);
+        databaseService.db = client.db('Database');
+        await databaseService.insertDictionary(dictionaryArray);
+        await databaseService.insertDictionary(dictionaryTest);
+        await databaseService.resetDictionary();
+        const dic = await databaseService.getDictionary();
+        expect(dic.length).to.equal(1);
+    });
+    it(' should reset updateScore ', async () => {
+        const mongoUri = await mongoServer.getUri();
+        const client = await MongoClient.connect(mongoUri);
+        databaseService.db = client.db('Database');
+        await databaseService.populateDB('bestScoreClassic');
+        await databaseService.updateBesScoreClassic({
+            player: 'test1',
+            score: 11,
+        });
+        await databaseService.resetBestScores();
+        const scores = await databaseService.bestScoreClassic();
+        expect(scores[4]).to.not.contain({
+            player: 'test1',
+            score: 11,
+        });
+    });
+
+    it(' should resetAll ', async () => {
+        const mongoUri = await mongoServer.getUri();
+        const client = await MongoClient.connect(mongoUri);
+        databaseService.db = client.db('Database');
+        await databaseService.populateDB('bestScoreClassic');
+        await databaseService.updateBesScoreClassic({
+            player: 'test1',
+            score: 11,
+        });
+
+        await databaseService.addVirtualPlayer('george','expert');
+        await databaseService.insertDictionary(dictionaryArray);
+        //insert a gameHistory 
+        await databaseService.insertGame(
+            {
+                date: new Date().toString(),
+                duration: '10',
+                player1: 'test',
+                player1Points: 60,
+                player2: 'test2',
+                player2Points: 20,
+                gameMode: 'classic',
+            }
+        );
+
+
+        await databaseService.resetAll();
+        const dic = await databaseService.getDictionary();
+        const scores = await databaseService.bestScoreClassic();
+        const history = await databaseService.getGameHistory();
+        const players = await databaseService.getVirtualPlayers();
+
+        expect(dic.length).to.equal(0);
+
+        expect(history.length).to.equal(0);
+
+        expect(players.length).to.equal(0);
+        expect(scores.length).to.equal(5);
+        
+    }
+    );
+
+  
 
 });
