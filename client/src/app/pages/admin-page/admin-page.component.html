@@ -206,9 +206,11 @@
                     Attention: Cette option supprime tout ce qui a été ajouté. Cela inclue les dictionnaires, les noms de joueurs virtuels, les
                     meilleurs scores et l'historique des parties jouées.
                 </p>
-                <button mat-stroked-button>
+                <button mat-stroked-button (click)="resetAll()">
                     Réinitialiser les réglages
                     <mat-icon color="warn">warning</mat-icon>
+                    
+                    
                 </button>
             </div>
         </mat-tab>

@@ -162,4 +162,34 @@ export class DatabaseService {
             await this.db.collection(DATABASE_COLLECTION_VIRTUAL).updateOne({ name: oldName }, { $set: { name: newName } });
         }
     }
+
+
+    async resetVirtualPlayers() {
+        
+        const db = await this.db.collection(DATABASE_COLLECTION_VIRTUAL).find().toArray();
+        for (const player of db) {
+            if (!BEGINNER_BOT.includes(player.name) && !EXPERT_BOT.includes(player.name)) {
+                await this.db.collection(DATABASE_COLLECTION_VIRTUAL).deleteOne({ name: player.name });
+            }
+        }
+    }
+
+    async resetGameHistory() {
+        await this.db.collection(DATABASE_COLLECTION_GAME).deleteMany({});
+    }
+    async resetDictionary() {
+        const db = await this.db.collection(DATABASE_COLLECTION_DIC).find().project({ title: 1, description: 1, _id: 0 }).toArray();
+        for (const dictionary of db) {
+            if (dictionary.description !== "default dictionary") {
+                await this.db.collection(DATABASE_COLLECTION_DIC).deleteOne({ title: dictionary.title });
+            }
+        }
+    }
+
+    async resetAll() {
+        await this.resetGameHistory();
+        await this.resetVirtualPlayers();
+        await this.resetDictionary();
+    }
+        
 }

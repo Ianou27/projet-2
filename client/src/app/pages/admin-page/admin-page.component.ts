@@ -158,6 +158,10 @@ export class AdminPageComponent implements OnInit {
         );
         this.addedExpertNames = expertNames.filter((virtualPlayer) => !this.defaultExpertNames.includes(virtualPlayer));
     }
+    resetAll(){
+        this.socketHandler.resetAll();
+        this.refreshDisplayedData();
+    }
 
     emptyArray() {
         while (this.displayedFixedNames.length > 0) {

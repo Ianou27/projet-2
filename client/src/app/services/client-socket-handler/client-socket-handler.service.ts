@@ -213,6 +213,10 @@ export class ClientSocketHandler {
     async getAdminPageInfo() {
         this.socketService.socket.emit('getAdminInfo');
     }
+
+    async resetAll() {
+        this.socketService.socket.emit('resetAll');
+    }
     createRoom(username: string, room: string, time: string) {
         this.socketService.socket.emit('createRoom', username, room, time);
         this.updateRooms();

@@ -277,6 +277,15 @@ export class SocketManager {
                 await this.databaseService.closeConnection();
             });
 
+            socket.on('resetAll', async () => {
+                await this.databaseService.start();
+                await this.databaseService.resetAll();
+                this.sio.to(socket.id).emit('getAdminInfo', await this.databaseService.getDictionaryInfo(),await this.databaseService.getGameHistory()
+                ,await this.databaseService.getVirtualPlayers()
+                );
+                await this.databaseService.closeConnection();
+            });
+
             socket.on('indice', (command: string[]) => {
                 const game = this.identification.getGame(socket.id);
                 if (!game.playerTurnValid(this.identification.getPlayer(socket.id))) {
