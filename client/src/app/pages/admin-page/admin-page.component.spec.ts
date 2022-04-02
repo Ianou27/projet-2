@@ -18,7 +18,18 @@ describe('AdminPageComponent', () => {
     beforeEach(() => {
         clientSocketHandlerSpy = jasmine.createSpyObj(
             'ClientSocketHandler',
-            ['connect', 'getAdminPageInfo', 'addVirtualPlayerNames', 'deleteVirtualPlayerName', 'modifyVirtualPlayerNames'],
+            [
+                'connect',
+                'getAdminPageInfo',
+                'addVirtualPlayerNames',
+                'deleteVirtualPlayerName',
+                'modifyVirtualPlayerNames',
+                'resetVirtualPlayers',
+                'resetDictionary',
+                'resetGameHistory',
+                'resetBestScores',
+                'resetAll',
+            ],
             {
                 virtualPlayerNameList: [
                     { name: 'Felix', type: 'beginner' },
@@ -64,6 +75,13 @@ describe('AdminPageComponent', () => {
         fixture.debugElement.queryAll(By.css('.mat-tab-label'))[2].nativeElement.click();
         fixture.detectChanges();
         expect(component.showCard).toBeFalse();
+    });
+
+    it('openSnackBar should call open on the injected snack bar', () => {
+        const snackSpy = spyOn(component.snackBar, 'open');
+        component.openSnackBar('Allo', 'Bye');
+        expect(snackSpy).toHaveBeenCalled();
+        expect(snackSpy).toHaveBeenCalledWith('Allo', 'Bye', { duration: 2000 });
     });
 
     it('should add a new player', () => {
@@ -174,6 +192,21 @@ describe('AdminPageComponent', () => {
             { name: 'Nicolas', type: 'expert' },
         ]);
         expect(component.addedExpertNames).toEqual([{ name: 'Melanie', type: 'expert' }]);
+    });
+
+    it('reset should call reset in service', () => {
+        const refreshSpy = spyOn<any>(component, 'refreshDisplayedData');
+        component.resetSelected = 'virtualPlayer';
+        component.reset();
+        component.resetSelected = 'dictionaries';
+        component.reset();
+        component.resetSelected = 'history';
+        component.reset();
+        component.resetSelected = 'bestScore';
+        component.reset();
+        component.resetSelected = 'all';
+        component.reset();
+        expect(refreshSpy).toHaveBeenCalledTimes(5);
     });
 
     it('emptyArray should empty the arrays displayed', () => {
