@@ -18,15 +18,7 @@ describe('AdminPageComponent', () => {
     beforeEach(() => {
         clientSocketHandlerSpy = jasmine.createSpyObj(
             'ClientSocketHandler',
-            [
-                'connect',
-                'getDictionaryInfo',
-                'getVirtualPlayerNames',
-                'getHistory',
-                'addVirtualPlayerNames',
-                'deleteVirtualPlayerName',
-                'modifyVirtualPlayerNames',
-            ],
+            ['connect', 'getAdminPageInfo', 'addVirtualPlayerNames', 'deleteVirtualPlayerName', 'modifyVirtualPlayerNames'],
             {
                 virtualPlayerNameList: [
                     { name: 'Felix', type: 'beginner' },

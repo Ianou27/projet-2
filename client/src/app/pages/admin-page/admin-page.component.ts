@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
 import { ONE_SECOND_MS } from './../../../../../common/constants/general-constants';
@@ -31,7 +32,7 @@ export class AdminPageComponent implements OnInit {
     alphaNumericRegex = /^[a-zA-Z]*$/;
     matcher = new MyErrorStateMatcher();
 
-    constructor(public socketHandler: ClientSocketHandler) {
+    constructor(public socketHandler: ClientSocketHandler, public snackBar: MatSnackBar) {
         socketHandler.connect();
         socketHandler.getAdminPageInfo();
     }
@@ -62,6 +63,12 @@ export class AdminPageComponent implements OnInit {
         } else {
             this.showCard = false;
         }
+    }
+
+    openSnackBar(message: string, action: string) {
+        this.snackBar.open(message, action, {
+            duration: 2000,
+        });
     }
 
     /* validateName(name: string) {
