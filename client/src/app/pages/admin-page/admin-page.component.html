@@ -206,11 +206,18 @@
                     Attention: Cette option supprime tout ce qui a été ajouté. Cela inclue les dictionnaires, les noms de joueurs virtuels, les
                     meilleurs scores et l'historique des parties jouées.
                 </p>
-                <button mat-stroked-button (click)="resetAll()">
+                <mat-form-field appearance="fill">
+                    <mat-select [(value)]="resetSelected">
+                        <mat-option value="all"> -- Toutes les données -- </mat-option>
+                        <mat-option value="dictionaries"> Dictionnaires </mat-option>
+                        <mat-option value="virtualPlayer"> Joueurs Virtuels </mat-option>
+                        <mat-option value="history"> Historique des parties </mat-option>
+                        <mat-option value="bestScore"> Meilleurs scores </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <button mat-stroked-button (click)="reset()">
                     Réinitialiser les réglages
                     <mat-icon color="warn">warning</mat-icon>
-                    
-                    
                 </button>
             </div>
         </mat-tab>

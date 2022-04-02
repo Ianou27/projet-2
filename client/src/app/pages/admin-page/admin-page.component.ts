@@ -25,6 +25,7 @@ export class AdminPageComponent implements OnInit {
     addedBeginnerNames: any[] = [];
     defaultExpertNames: any[] = [];
     addedExpertNames: any[] = [];
+    resetSelected: string = 'all';
     formModify: FormGroup;
     formAdd: FormGroup;
     alphaNumericRegex = /^[a-zA-Z]*$/;
@@ -33,7 +34,6 @@ export class AdminPageComponent implements OnInit {
     constructor(public socketHandler: ClientSocketHandler) {
         socketHandler.connect();
         socketHandler.getAdminPageInfo();
-      
     }
 
     ngOnInit(): void {
@@ -158,9 +158,37 @@ export class AdminPageComponent implements OnInit {
         );
         this.addedExpertNames = expertNames.filter((virtualPlayer) => !this.defaultExpertNames.includes(virtualPlayer));
     }
-    resetAll(){
-        this.socketHandler.resetAll();
-        this.refreshDisplayedData();
+    reset() {
+        switch (this.resetSelected) {
+            case 'virtualPlayer': {
+                this.socketHandler.resetVirtualPlayers();
+                this.refreshDisplayedData();
+
+                break;
+            }
+            case 'dictionaries': {
+                this.socketHandler.resetDictionary();
+                this.refreshDisplayedData();
+
+                break;
+            }
+            case 'history': {
+                this.socketHandler.resetGameHistory();
+                this.refreshDisplayedData();
+
+                break;
+            }
+            case 'bestScore': {
+                // this.socketHandler.resetGameHistory();
+                this.refreshDisplayedData();
+
+                break;
+            }
+            default: {
+                this.socketHandler.resetAll();
+                this.refreshDisplayedData();
+            }
+        }
     }
 
     emptyArray() {
@@ -171,6 +199,4 @@ export class AdminPageComponent implements OnInit {
             this.displayedNames.pop();
         }
     }
-
-    
 }
