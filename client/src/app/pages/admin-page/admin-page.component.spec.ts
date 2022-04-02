@@ -1,6 +1,9 @@
+/* eslint-disable @typescript-eslint/no-magic-numbers */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
@@ -44,7 +47,7 @@ describe('AdminPageComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [AdminPageComponent],
-            imports: [AppMaterialModule, NoopAnimationsModule],
+            imports: [AppMaterialModule, NoopAnimationsModule, FormsModule],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             providers: [{ provide: ClientSocketHandler, useValue: clientSocketHandlerSpy }],
         }).compileComponents();
@@ -54,39 +57,55 @@ describe('AdminPageComponent', () => {
         fixture = TestBed.createComponent(AdminPageComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
-        /* component.defaultBeginnerNames = ['Felix', 'Richard', 'Riad'];
-        component.defaultExpertNames = ['Ian', 'David', 'Nicolas'];
-        component.addedBeginnerNames = ['Joe'];
-        component.addedExpertNames = ['Jimmy']; */
     });
 
     it('should create', () => {
-        console.log(fixture.debugElement.nativeElement);
         expect(component).toBeTruthy();
+    });
+
+    it('tab change should call method', () => {
+        fixture.debugElement.queryAll(By.css('.mat-tab-label'))[1].nativeElement.click();
+        fixture.detectChanges();
+    });
+
+    it('tab change should call method', () => {
+        fixture.debugElement.queryAll(By.css('.mat-tab-label'))[2].nativeElement.click();
+        fixture.detectChanges();
+        expect(component.showCard).toBeFalse();
     });
 
     it('should add a new player', () => {
         component.virtualPlayerType = 'Débutant';
         component.virtualPlayerName = 'Player';
-        // const addPlayerSpy = spyOn<any>(component.socketHandler, 'addVirtualPlayerNames').and.callThrough();
         const refreshSpy = spyOn<any>(component, 'refreshDisplayedData');
         component.addNewPlayer();
         expect(refreshSpy).toHaveBeenCalled();
-        // expect(addPlayerSpy).toHaveBeenCalled();
-        // expect(addPlayerSpy).toHaveBeenCalledWith('Player', 'beginner');
     });
 
-    /* it('should add a new player', () => {
+    it('should add a new player', () => {
         component.virtualPlayerType = 'Expert';
         component.virtualPlayerName = 'Player';
         fixture.detectChanges();
-        // const addPlayerSpy = spyOn<any>(component.socketHandler, 'addVirtualPlayerNames').and.callThrough();
         const refreshSpy = spyOn<any>(component, 'refreshDisplayedData');
         component.addNewPlayer();
         expect(refreshSpy).toHaveBeenCalled();
-        // expect(addPlayerSpy).toHaveBeenCalled();
-        // expect(addPlayerSpy).toHaveBeenCalledWith('Player', 'beginner');
-    }); */
+    });
+
+    it('should delete player', () => {
+        const refreshSpy = spyOn<any>(component, 'refreshDisplayedData').and.callThrough();
+        component.setArrays();
+        component.setDisplayedNames();
+        component.deletePlayerName('Joe');
+        expect(refreshSpy).toHaveBeenCalled();
+    });
+
+    it('should modify player name', () => {
+        const refreshSpy = spyOn<any>(component, 'refreshDisplayedData').and.callThrough();
+        component.setArrays();
+        component.setDisplayedNames();
+        component.modifyPlayerName('Joe');
+        expect(refreshSpy).toHaveBeenCalled();
+    });
 
     it('initialNameDisplay should call other methods', () => {
         const emptySpy = spyOn<any>(component, 'emptyArray');
@@ -98,22 +117,37 @@ describe('AdminPageComponent', () => {
         expect(setDisplayedSpy).toHaveBeenCalled();
     });
 
-    /* it('should delete player', (done) => {
-        const refreshSpy = spyOn<any>(component, 'refreshDisplayedData').and.callThrough();
-        component.setArrays();
-        component.setDisplayedNames();
+    it('changeType should set which type of player is displayed and change virtualPlayer value', () => {
+        component.virtualPlayer = 'Débutants';
+        const setSpy = spyOn<any>(component, 'setDisplayedNames');
+        component.changeType();
+        expect(setSpy).toHaveBeenCalled();
+        expect(component.virtualPlayer).toEqual('Experts');
+    });
+
+    it('changeType should set which type of player is displayed and change virtualPlayer value', () => {
+        component.virtualPlayer = 'Experts';
+        const setSpy = spyOn<any>(component, 'setDisplayedNames');
+        component.changeType();
+        expect(setSpy).toHaveBeenCalled();
+        expect(component.virtualPlayer).toEqual('Débutants');
+    });
+
+    it('refreshDisplayedDate should refresh the values in all the names array', (done) => {
+        const setArraysSpy = spyOn<any>(component, 'setArrays').and.callThrough();
+        const setDisplayedSpy = spyOn<any>(component, 'setDisplayedNames');
+        component.refreshDisplayedData();
         setTimeout(() => {
-            component.deletePlayerName('Joe');
             fixture.detectChanges();
-            expect(refreshSpy).toHaveBeenCalled();
-            expect(component.displayedNames).toEqual(['Jimmy']);
+            expect(setArraysSpy).toHaveBeenCalled();
+            expect(setDisplayedSpy).toHaveBeenCalled();
             done();
         }, 2000);
-    }); */
+    });
 
     it('setDisplayedNames should set displayed names according to chosen player type', () => {
-        component.displayDictNames();
-        // expect(component.displayDictNames()).toEqual([{ title: 'titre', description: 'description' }]);
+        const dictionaries = component.displayDictNames();
+        expect(dictionaries).toEqual(['titre']);
     });
 
     it('setDisplayedNames should set displayed names according to chosen player type', () => {
@@ -152,6 +186,7 @@ describe('AdminPageComponent', () => {
 
     it('emptyArray should empty the arrays displayed', () => {
         component.setArrays();
+        component.setDisplayedNames();
         component.emptyArray();
         expect(component.displayedFixedNames).toEqual([]);
         expect(component.displayedNames).toEqual([]);
