@@ -32,9 +32,8 @@ export class AdminPageComponent implements OnInit {
 
     constructor(public socketHandler: ClientSocketHandler) {
         socketHandler.connect();
-        socketHandler.getDictionaryInfo();
-        socketHandler.getVirtualPlayerNames();
-        socketHandler.getHistory();
+        socketHandler.getAdminPageInfo();
+      
     }
 
     ngOnInit(): void {
@@ -119,7 +118,6 @@ export class AdminPageComponent implements OnInit {
     }
 
     changeType() {
-        this.socketHandler.getVirtualPlayerNames();
         this.setArrays();
         if (this.virtualPlayer === 'Débutants') {
             this.virtualPlayer = 'Experts';
@@ -131,7 +129,6 @@ export class AdminPageComponent implements OnInit {
     }
 
     refreshDisplayedData() {
-        this.socketHandler.getVirtualPlayerNames();
         setTimeout(() => {
             this.setArrays();
             this.setDisplayedNames();
@@ -170,4 +167,6 @@ export class AdminPageComponent implements OnInit {
             this.displayedNames.pop();
         }
     }
+
+    
 }
