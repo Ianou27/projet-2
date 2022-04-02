@@ -131,12 +131,11 @@ export class ClientSocketHandler {
             this.bestLog2990Scores = scoresLog;
         });
 
-        this.socketService.socket.on('getAdminInfo', (dictionaryNameList: any[],history: any[], virtualPlayerNames: any[]) => {
+        this.socketService.socket.on('getAdminInfo', (dictionaryNameList: any[], history: any[], virtualPlayerNames: any[]) => {
             this.dictInfoList = dictionaryNameList;
             this.virtualPlayerNameList = virtualPlayerNames;
             this.gameHistory = history;
         });
-
 
         this.socketService.on('joining', (obj: InfoToJoin) => {
             this.gotAccepted = true;
@@ -199,7 +198,7 @@ export class ClientSocketHandler {
     async getScores() {
         this.socketService.socket.emit('getBestScore');
     }
-    
+
     async addVirtualPlayerNames(name: string, type: string) {
         this.socketService.socket.emit('addVirtualPlayerNames', name, type);
     }
@@ -209,13 +208,22 @@ export class ClientSocketHandler {
     async modifyVirtualPlayerNames(oldName: string, newName: string) {
         this.socketService.socket.emit('modifyVirtualPlayerNames', oldName, newName);
     }
- 
+
     async getAdminPageInfo() {
         this.socketService.socket.emit('getAdminInfo');
     }
 
     async resetAll() {
         this.socketService.socket.emit('resetAll');
+    }
+    async resetVirtualPlayers() {
+        this.socketService.socket.emit('resetVirtualPlayers');
+    }
+    async resetDictionary() {
+        this.socketService.socket.emit('resetDictionary');
+    }
+    async resetGameHistory() {
+        this.socketService.socket.emit('resetGameHistory');
     }
     createRoom(username: string, room: string, time: string) {
         this.socketService.socket.emit('createRoom', username, room, time);
