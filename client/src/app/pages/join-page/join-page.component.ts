@@ -64,12 +64,18 @@ export class JoinPageComponent implements OnInit {
         });
     }
     randomJoin() {
-        this.selectedRoomName = this.clientSocketHandler.allRooms[Math.floor(Math.random() * this.clientSocketHandler.allRooms.length)].player1;
+        const mode2990Rooms = this.clientSocketHandler.allRooms.filter((room) => room.mode2990 === true);
+        const classicModeRooms = this.clientSocketHandler.allRooms.filter((room) => room.mode2990 === false);
+
+        if (this.mode2990) {
+            this.selectedRoomName = mode2990Rooms[Math.floor(Math.random() * mode2990Rooms.length)].player1;
+        } else {
+            this.selectedRoomName = classicModeRooms[Math.floor(Math.random() * classicModeRooms.length)].player1;
+        }
     }
 
     createRoom() {
         this.clientSocketHandler.createRoom(this.name, this.name, this.selectedTime, this.mode2990);
-
         this.clientSocketHandler.username = this.name;
         this.openWait();
     }

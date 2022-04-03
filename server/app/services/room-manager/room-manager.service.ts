@@ -30,6 +30,7 @@ export class RoomManager {
             player1: username,
             player2: '',
             time: timer,
+            mode2990: modeLog,
         };
         identification.rooms.push(roomObj);
     }
@@ -69,6 +70,7 @@ export class RoomManager {
             player1: username,
             player2: botName,
             time: timer,
+            mode2990: modeLog,
         };
         identification.rooms.push(roomObj);
         identification.users.push(user);

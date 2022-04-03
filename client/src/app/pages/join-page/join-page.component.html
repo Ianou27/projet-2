@@ -130,14 +130,20 @@
                 </marquee>
             </mat-toolbar>
             <div>
-                <div *ngIf="this.clientSocketHandler.numberOfRooms !== 0" class="spaceButton">
-                    <button mat-raised-button color="primary" [disabled]="this.clientSocketHandler.numberOfRooms === 1" (click)="randomJoin()">
+                <div *ngIf="this.clientSocketHandler.numberOfRoomsLog !== 0 && this.mode2990" class="spaceButton">
+                    <button mat-raised-button color="primary" [disabled]="this.clientSocketHandler.numberOfRoomsLog === 1" (click)="randomJoin()">
+                        Placement aléatoire
+                    </button>
+                </div>
+
+                <div *ngIf="this.clientSocketHandler.numberOfRoomsClassic !== 0 && !this.mode2990" class="spaceButton">
+                    <button mat-raised-button color="primary" [disabled]="this.clientSocketHandler.numberOfRoomsClassic === 1" (click)="randomJoin()">
                         Placement aléatoire
                     </button>
                 </div>
 
                 <mat-accordion *ngFor="let room of this.clientSocketHandler.allRooms" multi>
-                    <div *ngIf="room.player2 === ''">
+                    <div *ngIf="room.player2 === '' && room.mode2990 === this.mode2990">
                         <mat-expansion-panel [expanded]="selectedRoomName === room.player1">
                             <mat-expansion-panel-header>
                                 <mat-panel-title>

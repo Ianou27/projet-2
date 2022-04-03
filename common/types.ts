@@ -5,6 +5,7 @@ export type Room = {
     player1: string;
     player2: string;
     time: string;
+    mode2990: boolean;
 };
 
 export type InfoToJoin = {
