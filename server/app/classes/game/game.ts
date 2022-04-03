@@ -213,21 +213,22 @@ export class Game {
     }
 
     async surrender(winner: string) {
-        await this.databaseService.start();
-        if (winner === this.player1.user.username) {
-            await this.databaseService.updateBesScoreClassic({
-                player: this.player1.user.username,
-                score: this.player1.points,
-            });
-        } else if (winner === this.player2.user.username) {
-            await this.databaseService.updateBesScoreClassic({
-                player: this.player2.user.username,
-                score: this.player2.points,
-            });
+        if (this.player1.hisBot || this.player2.hisBot) {
+            this.gameState.gameFinished = true;
+            this.timer.stop();
+            this.sio.to(this.roomName).emit('endGame', winner);
+        } else {
+            if (winner === this.player1.user.username) {
+                this.player2.hisBot = true;
+                this.player2.typeBot = BotType.Beginner;
+                if (this.player2.hisTurn) this.changeTurnTwoPlayers();
+            } else {
+                this.player1.hisBot = true;
+                this.player1.typeBot = BotType.Beginner;
+                if (this.player1.hisTurn) this.changeTurnTwoPlayers();
+            }
+            this.sio.to(this.player1.user.room).emit('modification', this.gameBoard.cases, this.playerTurn().name);
         }
-        this.gameState.gameFinished = true;
-        this.timer.stop();
-        this.sio.to(this.roomName).emit('endGame', winner);
     }
 
     playerTurnValid(playerName: string): boolean {

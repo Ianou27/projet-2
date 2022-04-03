@@ -297,7 +297,7 @@ export class SocketManager {
             });
             socket.on('disconnect', (reason) => {
                 const room = this.identification.getRoom(socket.id);
-
+                console.log(room);
                 if (room !== '') {
                     const game = this.identification.getGame(socket.id);
                     if (game.player2 !== undefined && !game.gameState.gameFinished) game.surrender(this.identification.surrender(socket.id));
@@ -306,6 +306,7 @@ export class SocketManager {
                     this.roomManager.deleteRoom(socket.id, this.identification);
                     this.sio.sockets.emit('rooms', this.identification.rooms);
 
+                    // mettre popup jv ici à changer
                     this.sio.to(room).emit('playerDc');
                 }
 

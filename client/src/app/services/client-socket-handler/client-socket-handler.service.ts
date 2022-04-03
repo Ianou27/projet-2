@@ -171,8 +171,11 @@ export class ClientSocketHandler {
         });
 
         this.socketService.on('playerDc', () => {
-            this.roomMessages.push({ username: 'Server', message: '  Partie interrompue : joueur deconnecté', player: 'server' });
-            this.socketService.send('finPartie');
+            this.roomMessages.push({
+                username: 'Server',
+                message: '  CONVERSION DE PARTIE : Joueur a abandonné la partie et a été remplacé par un joueur virtuel',
+                player: 'server',
+            });
             this.updateRooms();
         });
         // possible de reduire quelque ligne en emettant tous les points possible de faire un interface
