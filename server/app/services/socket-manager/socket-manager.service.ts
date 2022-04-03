@@ -49,10 +49,11 @@ export class SocketManager {
             socket.on('joinRoom', (username: string, roomObj: Room) => {
                 const player1Id = this.identification.getId(roomObj.player1);
                 const letters = this.roomManager.joinRoom(username, roomObj, socket.id, this.identification, this.sio);
+                const game = this.identification.getGame(player1Id);
                 socket.join(roomObj.player1);
                 this.sio.to(player1Id).emit('tileHolder', letters[0]);
                 this.sio.to(socket.id).emit('tileHolder', letters[1]);
-                this.sio.to(roomObj.player1).emit('startGame', roomObj.player1, username);
+                this.sio.to(roomObj.player1).emit('startGame', roomObj.player1, username, game.goals);
             });
 
             socket.on('askJoin', (username: string, roomObj: Room) => {
@@ -147,14 +148,14 @@ export class SocketManager {
                                 message: username + ' a placé le mot ' + command[2] + ' en ' + command[1],
                                 player: 'server',
                             });
-                            this.sio.to(currentRoom).emit('modification', game.gameBoard.cases, game.playerTurn().name);
+                            this.sio.to(currentRoom).emit('modification', game.gameBoard.cases, game.playerTurn().name, game.goals);
 
                             if (game.player1.user.id === socket.id) {
                                 this.sio.to(socket.id).emit('tileHolder', game.player1.getLetters());
-                                this.sio.to(currentRoom).emit('updatePoint', 'player1', game.player1.points, game.goals);
+                                this.sio.to(currentRoom).emit('updatePoint', 'player1', game.player1.points);
                             } else if (game.player2.user.id === socket.id) {
                                 this.sio.to(socket.id).emit('tileHolder', game.player2.getLetters());
-                                this.sio.to(currentRoom).emit('updatePoint', 'player2', game.player2.points, game.goals);
+                                this.sio.to(currentRoom).emit('updatePoint', 'player2', game.player2.points);
                             }
                         }
                     } else if (verification !== 'valide') {

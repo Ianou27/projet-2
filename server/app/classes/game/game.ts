@@ -101,10 +101,10 @@ export class Game {
         this.startGame();
         this.sio.to(user.id).emit('tileHolder', this.player1.letters);
         this.sio.to(this.player1.user.room).emit('modification', this.gameBoard.cases, this.playerTurn().name);
-        this.sio.to(user.id).emit('startGame', user.username, botName);
         if (modeLog) {
             this.setGoals();
         }
+        this.sio.to(user.id).emit('startGame', user.username, botName, this.goals);
     }
 
     randomTurnGame() {
@@ -198,7 +198,7 @@ export class Game {
                     message: this.player2.user.username + ' a placé le mot ' + command[2] + ' en ' + command[1],
                     player: 'server',
                 });
-                this.sio.to(this.player1.user.room).emit('modification', this.gameBoard.cases, this.playerTurn().name);
+                this.sio.to(this.player1.user.room).emit('modification', this.gameBoard.cases, this.playerTurn().name, this.goals);
                 this.sio.to(this.player1.user.room).emit('updatePoint', 'player2', this.player2.points);
                 break;
             }

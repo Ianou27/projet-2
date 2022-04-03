@@ -1,5 +1,7 @@
 <div id="goals-container">
-    <mat-card *ngFor="let goal of this.goalsList" class="goal">
-        <p>{{ goal }}</p>
-    </mat-card>
+    <div *ngFor="let goal of this.goalsList">
+        <mat-card *ngIf="this.goals[goal].isInGame" class="goal">
+            <p>{{ goal }}</p>
+        </mat-card>
+    </div>
 </div>

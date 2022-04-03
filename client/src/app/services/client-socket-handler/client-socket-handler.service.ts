@@ -77,7 +77,8 @@ export class ClientSocketHandler {
             this.tileHolderService.tileHolder = letters;
         });
 
-        this.socketService.socket.on('modification', (updatedBoard: Tile[][], playerTurn: string) => {
+        this.socketService.socket.on('modification', (updatedBoard: Tile[][], playerTurn: string, goals: Goals) => {
+            this.goals = goals;
             this.boardService.board = updatedBoard;
             if (playerTurn === 'player1') {
                 this.player1Turn = 'tour';
@@ -142,9 +143,10 @@ export class ClientSocketHandler {
             this.gotAccepted = true;
             this.informationToJoin = obj;
         });
-        this.socketService.socket.on('startGame', (player1: string, player2: string) => {
+        this.socketService.socket.on('startGame', (player1: string, player2: string, goals: Goals) => {
             this.player1Username = player1;
             this.player2Username = player2;
+            this.goals = goals;
         });
         this.socketService.socket.on('endGame', (winner: string) => {
             this.gameOver = true;
@@ -176,8 +178,7 @@ export class ClientSocketHandler {
             this.updateRooms();
         });
         // possible de reduire quelque ligne en emettant tous les points possible de faire un interface
-        this.socketService.socket.on('updatePoint', (player: string, point: number, goals: Goals) => {
-            this.goals = goals;
+        this.socketService.socket.on('updatePoint', (player: string, point: number) => {
             if (player === 'player1') {
                 this.player1Point = point;
             } else if (player === 'player2') {
