@@ -18,35 +18,35 @@ export class Goal {
             if (!this.turnVerification(goal, game) || !game.goals[goal].isInGame || game.goals[goal].isDone) continue;
             switch (game.goals[goal].name) {
                 case 'tripleE': {
-                    bonusPoints += this.tripleE(words);
+                    bonusPoints += this.tripleE(words, game);
                     break;
                 }
                 case 'palindrome': {
-                    bonusPoints += this.isPalindrome(words);
+                    bonusPoints += this.isPalindrome(words, game);
                     break;
                 }
                 case 'scrabble': {
-                    bonusPoints += this.hasWordScrabble(words);
+                    bonusPoints += this.hasWordScrabble(words, game);
                     break;
                 }
                 case 'eightLetters': {
-                    bonusPoints += this.hasEightLetters(words);
+                    bonusPoints += this.hasEightLetters(words, game);
                     break;
                 }
                 case 'specialTile': {
-                    bonusPoints += this.specialTile(words);
+                    bonusPoints += this.specialTile(words, game);
                     break;
                 }
                 case 'threeWords': {
-                    bonusPoints += this.threeWords(words);
+                    bonusPoints += this.threeWords(words, game);
                     break;
                 }
                 case 'twoStars': {
-                    bonusPoints += this.hasTwoStars(words);
+                    bonusPoints += this.hasTwoStars(words, game);
                     break;
                 }
                 case 'twoTenPointsLetters': {
-                    bonusPoints += this.twoTenPointsLetters(words);
+                    bonusPoints += this.twoTenPointsLetters(words, game);
                     break;
                 }
             }
@@ -54,34 +54,44 @@ export class Goal {
         return bonusPoints;
     }
 
-    static tripleE(words: Tile[][]): number {
+    static tripleE(words: Tile[][], game: Game): number {
         let eCount = 0;
         for (const word of words) {
             for (const tile of word) {
                 if (tile.letter.toUpperCase() === 'E') {
                     eCount++;
                 }
-                if (eCount === THREE_LETTERS_OR_WORDS_VALIDATION) return allGoals.tripleE.value;
+                if (eCount === THREE_LETTERS_OR_WORDS_VALIDATION) {
+                    game.goals.tripleE.isDone = true;
+                    return allGoals.tripleE.value;
+                }
             }
             eCount = 0;
         }
         return 0;
     }
 
-    static specialTile(words: Tile[][]): number {
+    static specialTile(words: Tile[][], game: Game): number {
         for (const word of words) {
             for (const tile of word) {
-                if (tile.positionX === SPECIAL_TILE_X && tile.positionY === SPECIAL_TILE_Y) return allGoals.specialTile.value;
+                if (tile.positionX === SPECIAL_TILE_X && tile.positionY === SPECIAL_TILE_Y) {
+                    game.goals.specialTile.isDone = true;
+                    return allGoals.specialTile.value;
+                }
             }
         }
         return 0;
     }
 
-    static threeWords(words: Tile[][]): number {
-        return words.length >= THREE_LETTERS_OR_WORDS_VALIDATION ? allGoals.threeWords.value : 0;
+    static threeWords(words: Tile[][], game: Game): number {
+        if (words.length >= THREE_LETTERS_OR_WORDS_VALIDATION) {
+            game.goals.threeWords.isDone = true;
+            return allGoals.threeWords.value;
+        }
+        return 0;
     }
 
-    static isPalindrome(words: Tile[][]): number {
+    static isPalindrome(words: Tile[][], game: Game): number {
         let i = 0;
         let j = words[0].length - 1;
         for (const word of words) {
@@ -93,56 +103,71 @@ export class Goal {
                 j--;
             }
         }
+        game.goals.palindrome.isDone = true;
         return allGoals.palindrome.value;
     }
 
-    static hasEightLetters(words: Tile[][]): number {
+    static hasEightLetters(words: Tile[][], game: Game): number {
         for (const word of words) {
-            if (word.length >= EIGHT_LETTERS_VALIDATION) return allGoals.eightLetters.value;
+            if (word.length >= EIGHT_LETTERS_VALIDATION) {
+                game.goals.eightLetters.isDone = true;
+                return allGoals.eightLetters.value;
+            }
         }
         return 0;
     }
 
-    static hasTwoStars(words: Tile[][]): number {
+    static hasTwoStars(words: Tile[][], game: Game): number {
         let starCount = 0;
         for (const word of words) {
             for (const tile of word) {
                 if (tile.value === 0) starCount++;
-                if (starCount === TWO_LETTERS_OR_WORDS_VALIDATION) return allGoals.twoStars.value;
+                if (starCount === TWO_LETTERS_OR_WORDS_VALIDATION) {
+                    game.goals.twoStars.isDone = true;
+                    return allGoals.twoStars.value;
+                }
             }
             starCount = 0;
         }
         return 0;
     }
 
-    static twoTenPointsLetters(words: Tile[][]): number {
+    static twoTenPointsLetters(words: Tile[][], game: Game): number {
         let counter = 0;
         for (const word of words) {
             for (const tile of word) {
                 if (tile.value === LETTER_VALUE_TEN) {
                     counter++;
                 }
-                if (counter === TWO_LETTERS_OR_WORDS_VALIDATION) return allGoals.twoTenPointsLetters.value;
+                if (counter === TWO_LETTERS_OR_WORDS_VALIDATION) {
+                    game.goals.twoTenPointsLetters.isDone = true;
+                    return allGoals.twoTenPointsLetters.value;
+                }
             }
             counter = 0;
         }
+
         return 0;
     }
 
-    static hasWordScrabble(words: Tile[][]): number {
+    static hasWordScrabble(words: Tile[][], game: Game): number {
         const wordScrabble = ['S', 'C', 'R', 'A', 'B', 'B', 'L', 'E'];
         let counter = 0;
         for (const word of words) {
             for (let i = 0; i < wordScrabble.length; i++) {
                 if (word[i].letter === wordScrabble[i]) {
                     counter++;
-                    if (counter === wordScrabble.length - 1) return allGoals.scrabble.value;
+                    if (counter === wordScrabble.length - 1) {
+                        game.goals.scrabble.isDone = true;
+                        return allGoals.scrabble.value;
+                    }
                     continue;
                 }
                 break;
             }
             counter = 0;
         }
+
         return 0;
     }
 
