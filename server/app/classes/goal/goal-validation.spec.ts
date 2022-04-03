@@ -3,10 +3,12 @@
 import { CaseProperty } from '@common/assets/case-property';
 import { letterValue } from '@common/assets/reserve-letters';
 import { SPECIAL_TILE_X, SPECIAL_TILE_Y } from '@common/constants/general-constants';
+import { GoalType } from '@common/constants/goal-type';
 import { allGoals } from '@common/constants/goals';
 import { Tile } from '@common/tile/Tile';
 import { expect } from 'chai';
 import * as sinon from 'sinon';
+import { Player } from '../player/player';
 import { Game } from './../game/game';
 import { Goal } from './goal-validation';
 
@@ -431,5 +433,43 @@ describe('Goal', () => {
         expect(!spyTwoTenPoints.called);
         expect(!spySpecialTile.called);
         expect(!spyEightLetters.called);
+    });
+
+    it('method turnVerification should return true if goal is public', () => {
+        const goals = JSON.parse(JSON.stringify(allGoals));
+        game.goals = goals;
+        for (const goal in game.goals) {
+            game.goals[goal].isInGame = true;
+        }
+        game.player1 = new Player(game.reserveLetters.randomLettersInitialization(), true, 'player1', { username: 'aaa', id: '1', room: 'room1' });
+        game.player2 = new Player(game.reserveLetters.randomLettersInitialization(), false, 'player2', { username: 'bbb', id: '2', room: 'room1' });
+        expect(Goal.turnVerification('palindrome', game)).to.equal(true);
+    });
+
+    it('method turnVerification should return true if goal is privatePlayer1 and player turn is player 1', () => {
+        const goals = JSON.parse(JSON.stringify(allGoals));
+        game.goals = goals;
+        game.goals.palindrome.type = GoalType.PrivatePlayer1;
+        game.player1 = new Player(game.reserveLetters.randomLettersInitialization(), true, 'player1', { username: 'aaa', id: '1', room: 'room1' });
+        game.player2 = new Player(game.reserveLetters.randomLettersInitialization(), false, 'player2', { username: 'bbb', id: '2', room: 'room1' });
+        expect(Goal.turnVerification('palindrome', game)).to.equal(true);
+    });
+
+    it('method turnVerification should return true if goal is privatePlayer2 and player turn is player 2', () => {
+        const goals = JSON.parse(JSON.stringify(allGoals));
+        game.goals = goals;
+        game.goals.palindrome.type = GoalType.PrivatePlayer2;
+        game.player1 = new Player(game.reserveLetters.randomLettersInitialization(), false, 'player1', { username: 'aaa', id: '1', room: 'room1' });
+        game.player2 = new Player(game.reserveLetters.randomLettersInitialization(), true, 'player2', { username: 'bbb', id: '2', room: 'room1' });
+        expect(Goal.turnVerification('palindrome', game)).to.equal(true);
+    });
+
+    it('method turnVerification should return false if goal is private and it is not the players turn', () => {
+        const goals = JSON.parse(JSON.stringify(allGoals));
+        game.goals = goals;
+        game.goals.palindrome.type = GoalType.PrivatePlayer2;
+        game.player1 = new Player(game.reserveLetters.randomLettersInitialization(), true, 'player1', { username: 'aaa', id: '1', room: 'room1' });
+        game.player2 = new Player(game.reserveLetters.randomLettersInitialization(), false, 'player2', { username: 'bbb', id: '2', room: 'room1' });
+        expect(Goal.turnVerification('palindrome', game)).to.equal(false);
     });
 });
