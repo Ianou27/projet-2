@@ -197,13 +197,13 @@ export class ClientSocketHandler {
         this.socketService.socket.emit('getBestScore');
     }
 
-    createRoom(username: string, room: string, time: string) {
-        this.socketService.socket.emit('createRoom', username, room, time);
+    createRoom(username: string, room: string, time: string, mode2990: boolean) {
+        this.socketService.socket.emit('createRoom', username, room, time, mode2990);
         this.updateRooms();
     }
 
-    createSoloGame(username: string, time: string, botType: BotType) {
-        this.socketService.socket.emit('createSoloGame', username, time, botType);
+    createSoloGame(username: string, time: string, botType: BotType, mode2990: boolean) {
+        this.socketService.socket.emit('createSoloGame', username, time, botType, mode2990);
     }
 
     joinRoom() {
