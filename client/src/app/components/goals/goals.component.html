@@ -1,7 +1,46 @@
 <div id="goals-container">
     <div *ngFor="let goal of this.goalsList">
         <mat-card *ngIf="this.goals[goal].isInGame" class="goal">
-            <p>{{ goal }}</p>
+            <div *ngIf="goal === 'scrabble'">
+                <p>Scrabble !</p>
+                <p>Pour compléter cet objectif, il suffit de former le mot scrabble.</p>
+                <p>Valeur : 50 points</p>
+            </div>
+            <div *ngIf="goal === 'palindrome'">
+                <p>Palindrome</p>
+                <p>Pour compléter cet objectif, il suffit de former un palindrome (Ex: kayak).</p>
+                <p>Valeur : 25 points</p>
+            </div>
+            <div *ngIf="goal === 'tripleE'">
+                <p>Triple E</p>
+                <p>Pour compléter cet objectif, il suffit de former mot contenant 3 E.</p>
+                <p>Valeur : 30 points</p>
+            </div>
+            <div *ngIf="goal === 'eightLetters'">
+                <p>Mot de 8 lettres</p>
+                <p>Pour compléter cet objectif, il suffit de former un mot de 8 lettres.</p>
+                <p>Valeur : 25 points</p>
+            </div>
+            <div *ngIf="goal === 'specialTile'">
+                <p>Case spéciale</p>
+                <p>Pour compléter cet objectif, il suffit de placer une lettre sur la case B4.</p>
+                <p>Valeur : 10 points</p>
+            </div>
+            <div *ngIf="goal === 'threeWords'">
+                <p>3 mots</p>
+                <p>Pour compléter cet objectif, il suffit de former 3 mots ou plus.</p>
+                <p>Valeur : 40 points</p>
+            </div>
+            <div *ngIf="goal === 'twoStars'">
+                <p>Lettres étoile</p>
+                <p>Pour compléter cet objectif, il suffit de former un mot avec deux lettres étoiles (Vous n'êtes pas obligé de possédé les deux).</p>
+                <p>Valeur : 15 points</p>
+            </div>
+            <div *ngIf="goal === 'twoTenPointsLetters'">
+                <p>Lettres de 10</p>
+                <p>Pour compléter cet objectif, il suffit de former un mot avec deux lettres valant 10 points.</p>
+                <p>Valeur : 75 points</p>
+            </div>
         </mat-card>
     </div>
 </div>
