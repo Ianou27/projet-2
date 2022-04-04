@@ -18,7 +18,7 @@ export class JoinPageComponent implements OnInit {
     form: FormGroup;
     alphaNumericRegex = /^[a-zA-Z]*$/;
     selectedDico = 'Dictionnaire par defaut';
-    selectedPlayer = BotType.NoType;
+    selectedPlayer = BotType.Beginner;
     selectedTime = '60';
     selectedRoomName: string;
     matcher = new MyErrorStateMatcher();
