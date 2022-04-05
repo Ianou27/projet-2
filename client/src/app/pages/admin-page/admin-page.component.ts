@@ -31,7 +31,7 @@ export class AdminPageComponent implements OnInit {
     formAdd: FormGroup;
     alphaNumericRegex = /^[a-zA-Z]*$/;
     matcher = new MyErrorStateMatcher();
-    error:string= '';
+    error: string = '';
 
     constructor(public socketHandler: ClientSocketHandler, public snackBar: MatSnackBar) {
         socketHandler.connect();
@@ -121,43 +121,47 @@ export class AdminPageComponent implements OnInit {
     // https://fireflysemantics.medium.com/proxying-file-upload-buttons-with-angular-a5a3fc224c38
     onFileSelect(event: Event) {
         this.error = '';
-        
-        
-        const target = (event.target as HTMLInputElement);
+
+        const target = event.target as HTMLInputElement;
         const file = (target.files as FileList)[0];
         const reader = new FileReader();
-        
 
         reader.onload = () => {
             this.selectedFile = reader.result as string;
-            
-           
-
         };
         reader.readAsText(file);
-     
-        
     }
+    verifyDict(dict: string): boolean {
+        const dictObject = JSON.parse(dict);
 
+        if (
+            typeof dictObject.title === 'string' &&
+            dictObject.title !== '' &&
+            typeof dictObject.description === 'string' &&
+            dictObject.description !== '' &&
+            Array.isArray(dictObject.words) &&
+            dictObject.words.length !== 0 &&
+            dictObject.words.every((word: string) => typeof word === 'string' && word !== '' && word.match(/^[a-zA-Z]+$/))
+        ) {
+            return true;
+        } else {
+            this.error =
+                ' Le format du dictionnaire n est pas valide\n Il faut un titre, une description, un tableau de mots et que tous les mots dans le tableaux soient dans l alphabet anglais sans espace';
+            return false;
+        }
+    }
     submit() {
         try {
-        const object:JSON = JSON.parse(this.selectedFile.toString());;
+            const object: JSON = JSON.parse(this.selectedFile.toString());
 
-         this.socketHandler.uploadDictionary(object);
-         this.openSnackBar('Dictionnaire ajouté', 'Ok');
-            
+            if (this.verifyDict(this.selectedFile)) {
+                this.socketHandler.uploadDictionary(object);
+                this.openSnackBar('Dictionnaire ajouté', 'Ok');
+            }
         } catch (error) {
-            this.error = 'Le fichier n\'est pas au bon format';
-           
-            
+            this.error = "Le fichier n'est pas au bon format";
         }
-       
-
-        
-
-
     }
-    
 
     changeType() {
         this.setArrays();
