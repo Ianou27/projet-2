@@ -61,11 +61,12 @@
                 <div>
                     <!-- // utilisation de code ne provenant pas de nous, source :
                         // https://fireflysemantics.medium.com/proxying-file-upload-buttons-with-angular-a5a3fc224c38 -->
-                    <input style="display: none" type="file" (change)="onFileSelect($event)" #hiddenfileinput />
-                    <button mat-stroked-button (click)="hiddenfileinput.click()">
+                    <input class="ng-hide"type="file" accept='.json' (change)="onFileSelect($event)" #hiddenfileinput />
+                    <button mat-stroked-button (click)="submit()">
                         Téléverser un dictionnaire
                         <mat-icon style="transform: rotate(90deg)">attachment</mat-icon>
                     </button>
+                    <div style='color:red' *ngIf="error !== ''">{{error}}</div>
                 </div>
             </div>
         </mat-tab>

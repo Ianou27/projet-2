@@ -30,8 +30,8 @@ export class AdminPageComponent implements OnInit {
     formModify: FormGroup;
     formAdd: FormGroup;
     alphaNumericRegex = /^[a-zA-Z]*$/;
-    invalide:boolean = false;
     matcher = new MyErrorStateMatcher();
+    error:string= '';
 
     constructor(public socketHandler: ClientSocketHandler, public snackBar: MatSnackBar) {
         socketHandler.connect();
@@ -120,7 +120,8 @@ export class AdminPageComponent implements OnInit {
     // utilisation de code ne provenant pas de nous, source :
     // https://fireflysemantics.medium.com/proxying-file-upload-buttons-with-angular-a5a3fc224c38
     onFileSelect(event: Event) {
-       
+        this.error = '';
+        
         
         const target = (event.target as HTMLInputElement);
         const file = (target.files as FileList)[0];
@@ -129,7 +130,7 @@ export class AdminPageComponent implements OnInit {
 
         reader.onload = () => {
             this.selectedFile = reader.result as string;
-            this.verifyDictionary(this.selectedFile);
+            
            
 
         };
@@ -138,31 +139,19 @@ export class AdminPageComponent implements OnInit {
         
     }
 
-    verifyDictionary(dictionary: string) {
-       const object:JSON = JSON.parse(dictionary.toString());;
-    
-        //  if (Object.keys(object).length === 3 && object.hasOwnProperty('title') && object.hasOwnProperty('description') && object.hasOwnProperty('words')) {
-        //     if (typeof object.title === 'string' && object.title !== '' && typeof object.description === 'string' && object.description !== '' && Array.isArray(object.words) && object.words.length !== 0) {
-        //         this.snackBar.open("Ce n'est pas un dictionaire ", "close", {duration: undefined});
-        //         console.log(Array.isArray(object.words));
-        //         // for (let i = 0; i < object.words.length; i++) {
-        //         //     if (typeof object.words[i] !== 'string' || object.words[i] === '' || !object.words[i].match(/^[a-zA-Z]+$/)) {
-        //         //         //refresh the page and openning a snackbar to inform the user that the dictionary is not valid and he has to upload a valid dictionary file again  
-                        
-                        
-                        
-        //         //         return;
-        //         //     }
-        //         // }
+    submit() {
+        try {
+        const object:JSON = JSON.parse(this.selectedFile.toString());;
 
-
-                
-
-        //     }
-        // }
-
-       //upload dictionary to the server
          this.socketHandler.uploadDictionary(object);
+         this.openSnackBar('Dictionnaire ajouté', 'Ok');
+            
+        } catch (error) {
+            this.error = 'Le fichier n\'est pas au bon format';
+           
+            
+        }
+       
 
         
 
