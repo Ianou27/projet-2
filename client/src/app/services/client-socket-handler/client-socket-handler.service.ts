@@ -3,7 +3,7 @@ import { LetterScore } from './../../../../../common/assets/reserve-letters';
 import { BotType } from './../../../../../common/botType';
 import { CommandType } from './../../../../../common/command-type';
 import { NUMBER_MAXIMUM_CLUE_COMMAND } from './../../../../../common/constants/general-constants';
-import { Goals } from './../../../../../common/constants/goals';
+import { GoalInformations } from './../../../../../common/constants/goal-information';
 import { Tile } from './../../../../../common/tile/Tile';
 import { InfoToJoin, Message, Room } from './../../../../../common/types';
 import { INITIAL_NUMBER_LETTERS_RESERVE, NUMBER_LETTER_TILEHOLDER } from './../../constants/general-constants';
@@ -46,7 +46,7 @@ export class ClientSocketHandler {
     timer: number = 0;
     numberOfRoomsClassic: number = 0;
     numberOfRoomsLog: number = 0;
-    goals: Goals;
+    goals: GoalInformations[];
 
     constructor(public socketService: SocketClientService, public boardService: BoardService, public tileHolderService: TileHolderService) {}
 
@@ -73,12 +73,12 @@ export class ClientSocketHandler {
             if (tileHolder) this.tileHolderService.tileHolder = tileHolder;
         });
 
-        this.socketService.on('tileHolder', (letters: Tile[]) => {
+        this.socketService.socket.on('tileHolder', (letters: Tile[], goalPlayer: GoalInformations[]) => {
             this.tileHolderService.tileHolder = letters;
+            this.goals = goalPlayer;
         });
 
-        this.socketService.socket.on('modification', (updatedBoard: Tile[][], playerTurn: string, goals: Goals) => {
-            this.goals = goals;
+        this.socketService.socket.on('modification', (updatedBoard: Tile[][], playerTurn: string) => {
             this.boardService.board = updatedBoard;
             if (playerTurn === 'player1') {
                 this.player1Turn = 'tour';
@@ -143,10 +143,9 @@ export class ClientSocketHandler {
             this.gotAccepted = true;
             this.informationToJoin = obj;
         });
-        this.socketService.socket.on('startGame', (player1: string, player2: string, goals: Goals) => {
+        this.socketService.socket.on('startGame', (player1: string, player2: string) => {
             this.player1Username = player1;
             this.player2Username = player2;
-            this.goals = goals;
         });
         this.socketService.socket.on('endGame', (winner: string) => {
             this.gameOver = true;

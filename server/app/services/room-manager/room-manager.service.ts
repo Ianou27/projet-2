@@ -1,9 +1,12 @@
 import { BotType } from '@common/botType';
+import { GoalInformations } from '@common/constants/goal-information';
+import { GoalType } from '@common/constants/goal-type';
 import { Tile } from '@common/tile/Tile';
 import { Room } from '@common/types';
 import * as io from 'socket.io';
 import { beginnerBotName } from './../../../assets/bot-name';
 import { Game } from './../../classes/game/game';
+import { Player } from './../../classes/player/player';
 import { DatabaseService } from './../best-score/best-score.services';
 import { IdManager } from './../id-manager/id-manager.service';
 export class RoomManager {
@@ -148,5 +151,20 @@ export class RoomManager {
             randomName = beginnerBotName[Math.floor(Math.random() * beginnerBotName.length)];
         }
         return randomName.concat(' (Joueur virtuel)');
+    }
+
+    getGoalsPlayer(game: Game, player: Player): GoalInformations[] {
+        const goals = game.goals;
+        const goalsPlayer: GoalInformations[] = [];
+        for (const goal in goals) {
+            if (goals[goal].isInGame && goals[goal].type === GoalType.Public) {
+                goalsPlayer.push(goals[goal]);
+            } else if (goals[goal].isInGame && game.player1 === player && goals[goal].type === GoalType.PrivatePlayer1) {
+                goalsPlayer.push(goals[goal]);
+            } else if (goals[goal].isInGame && game.player2 === player && goals[goal].type === GoalType.PrivatePlayer2) {
+                goalsPlayer.push(goals[goal]);
+            }
+        }
+        return goalsPlayer;
     }
 }

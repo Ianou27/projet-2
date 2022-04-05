@@ -134,8 +134,7 @@ export class Game {
     }
 
     verifyGoalsTaken(goals: number[], newGoals: number): boolean {
-        if (goals.includes(newGoals)) return true;
-        return false;
+        return goals.includes(newGoals);
     }
 
     changeGoal(goalsSelected: number[], position: number, goalType: GoalType): void {

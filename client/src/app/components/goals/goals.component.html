@@ -1,43 +1,43 @@
 <div id="goals-container">
-    <div *ngFor="let goal of this.goalsList">
-        <mat-card *ngIf="this.goals[goal].isInGame" class="goal">
-            <div *ngIf="goal === 'scrabble'">
-                <p>Scrabble !</p>
+    <div *ngFor="let goal of this.goals">
+        <mat-card *ngIf="goal.isInGame" class="goal">
+            <div *ngIf="goal.name === 'scrabble'">
+                <p class="{{ goal.isDone.toString() }}">Scrabble ! {{ this.getType(goal) }}</p>
                 <p>Pour compléter cet objectif, il suffit de former le mot scrabble.</p>
                 <p>Valeur : 50 points</p>
             </div>
-            <div *ngIf="goal === 'palindrome'">
-                <p>Palindrome</p>
+            <div *ngIf="goal.name === 'palindrome'">
+                <p class="{{ goal.isDone.toString() }}">Palindrome {{ this.getType(goal) }}</p>
                 <p>Pour compléter cet objectif, il suffit de former un palindrome (Ex: kayak).</p>
                 <p>Valeur : 25 points</p>
             </div>
-            <div *ngIf="goal === 'tripleE'">
-                <p>Triple E</p>
+            <div *ngIf="goal.name === 'tripleE'">
+                <p class="{{ goal.isDone.toString() }}">Triple E {{ this.getType(goal) }}</p>
                 <p>Pour compléter cet objectif, il suffit de former mot contenant 3 E.</p>
                 <p>Valeur : 30 points</p>
             </div>
-            <div *ngIf="goal === 'eightLetters'">
-                <p>Mot de 8 lettres</p>
+            <div *ngIf="goal.name === 'eightLetters'">
+                <p class="{{ goal.isDone.toString() }}">Mot de 8 lettres {{ this.getType(goal) }}</p>
                 <p>Pour compléter cet objectif, il suffit de former un mot de 8 lettres.</p>
                 <p>Valeur : 25 points</p>
             </div>
-            <div *ngIf="goal === 'specialTile'">
-                <p>Case spéciale</p>
+            <div *ngIf="goal.name === 'specialTile'">
+                <p class="{{ goal.isDone.toString() }}">Case spéciale {{ this.getType(goal) }}</p>
                 <p>Pour compléter cet objectif, il suffit de placer une lettre sur la case B4.</p>
                 <p>Valeur : 10 points</p>
             </div>
-            <div *ngIf="goal === 'threeWords'">
-                <p>3 mots</p>
+            <div *ngIf="goal.name === 'threeWords'">
+                <p class="{{ goal.isDone.toString() }}">3 mots {{ this.getType(goal) }}</p>
                 <p>Pour compléter cet objectif, il suffit de former 3 mots ou plus.</p>
                 <p>Valeur : 40 points</p>
             </div>
-            <div *ngIf="goal === 'twoStars'">
-                <p>Lettres étoile</p>
+            <div *ngIf="goal.name === 'twoStars'">
+                <p class="{{ goal.isDone.toString() }}">Lettres étoile {{ this.getType(goal) }}</p>
                 <p>Pour compléter cet objectif, il suffit de former un mot avec deux lettres étoiles (Vous n'êtes pas obligé de possédé les deux).</p>
                 <p>Valeur : 15 points</p>
             </div>
-            <div *ngIf="goal === 'twoTenPointsLetters'">
-                <p>Lettres de 10</p>
+            <div *ngIf="goal.name === 'twoTenPointsLetters'">
+                <p class="{{ goal.isDone.toString() }}">Lettres de 10 {{ this.getType(goal) }}</p>
                 <p>Pour compléter cet objectif, il suffit de former un mot avec deux lettres valant 10 points.</p>
                 <p>Valeur : 75 points</p>
             </div>

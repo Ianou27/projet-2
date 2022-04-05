@@ -51,9 +51,9 @@ export class SocketManager {
                 const letters = this.roomManager.joinRoom(username, roomObj, socket.id, this.identification, this.sio);
                 const game = this.identification.getGame(player1Id);
                 socket.join(roomObj.player1);
-                this.sio.to(player1Id).emit('tileHolder', letters[0]);
-                this.sio.to(socket.id).emit('tileHolder', letters[1]);
-                this.sio.to(roomObj.player1).emit('startGame', roomObj.player1, username, game.goals);
+                this.sio.to(player1Id).emit('tileHolder', letters[0], this.roomManager.getGoalsPlayer(game, game.player1));
+                this.sio.to(socket.id).emit('tileHolder', letters[1], this.roomManager.getGoalsPlayer(game, game.player2));
+                this.sio.to(roomObj.player1).emit('startGame', roomObj.player1, username);
             });
 
             socket.on('askJoin', (username: string, roomObj: Room) => {
@@ -148,13 +148,17 @@ export class SocketManager {
                                 message: username + ' a placé le mot ' + command[2] + ' en ' + command[1],
                                 player: 'server',
                             });
-                            this.sio.to(currentRoom).emit('modification', game.gameBoard.cases, game.playerTurn().name, game.goals);
+                            this.sio.to(currentRoom).emit('modification', game.gameBoard.cases, game.playerTurn().name);
 
                             if (game.player1.user.id === socket.id) {
-                                this.sio.to(socket.id).emit('tileHolder', game.player1.getLetters());
+                                this.sio
+                                    .to(socket.id)
+                                    .emit('tileHolder', game.player1.getLetters(), this.roomManager.getGoalsPlayer(game, game.player1));
                                 this.sio.to(currentRoom).emit('updatePoint', 'player1', game.player1.points);
                             } else if (game.player2.user.id === socket.id) {
-                                this.sio.to(socket.id).emit('tileHolder', game.player2.getLetters());
+                                this.sio
+                                    .to(socket.id)
+                                    .emit('tileHolder', game.player2.getLetters(), this.roomManager.getGoalsPlayer(game, game.player2));
                                 this.sio.to(currentRoom).emit('updatePoint', 'player2', game.player2.points);
                             }
                         }
