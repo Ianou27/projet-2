@@ -1,5 +1,18 @@
 <div class="container">
-    <h2>En attente du téléchargement</h2>
-    <mat-spinner></mat-spinner>
+    <h2 *ngIf="this.socketHandler.dictionaryToDownload.length <= 0">En attente du téléchargement</h2>
+    
+    <mat-spinner diameter="70"  *ngIf="this.socketHandler.dictionaryToDownload.length <= 0"></mat-spinner>
+    <h2 *ngIf="this.socketHandler.dictionaryToDownload.length >= 0">Veuillez cliquer sur Telecharger</h2>
+<a
+    mat-raised-button
+    (click)="generateDownloadJsonUri()"
+    [href]="downloadJsonHref"
+    download="{{dicName}}.json"
+    color="primary"
+    id="download"
+    mat-dialog-close="true"
+    *ngIf="this.socketHandler.dictionaryToDownload.length >= 0"
+>
+    Télécharger
+</a>
 </div>
-<button mat-raised-button color="primary" id="download" mat-dialog-close="true" *ngIf="true">Télécharger</button>

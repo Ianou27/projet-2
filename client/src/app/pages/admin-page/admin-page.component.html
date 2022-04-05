@@ -21,13 +21,10 @@
                     <mat-form-field appearance="fill">
                         <mat-label>Nom du dictionnaire</mat-label>
                         <mat-select [(value)]="displayDictNames()[0]" #selectedDictionary>
-                            <mat-option
-                                (click)="
-                                    titleValue = selectedDictionary.value; descriptionValue = displayDictDescription(selectedDictionary.value)[0]
-                                "
-                                *ngFor="let dictionary of displayDictNames(); index as i"
-                                [value]="displayDictNames()[i]"
-                            >
+                            <mat-option 
+                            (click)=" titleValue = selectedDictionary.value; descriptionValue = displayDictDescription(selectedDictionary.value)[0]  "
+
+                            *ngFor="let dictionary of displayDictNames(); index as i" [value]="displayDictNames()[i]">
                                 {{ dictionary }}
                             </mat-option>
                         </mat-select>
@@ -52,24 +49,22 @@
                             [(ngModel)]="descriptionValue"
                         ></textarea>
                     </mat-form-field>
-                    <a
-                        mat-stroked-button
-                        class="download-button"
-                        (click)="downloadDict(titleValue); download()"
-                        [href]="downloadJsonHref"
-                        download="download.json"
-                    >
+                    <a mat-stroked-button class="download-button" (click)="downloadDict(titleValue);download()">
                         Télécharger le dictionnaire
                         <mat-icon>save_alt</mat-icon>
+                        
+                        
                     </a>
-                    <!-- <a class="btn btn-clear" title="Download JSON" (click)="downloadDict(titleValue)" [href]="downloadJsonHref" download="download.json">
-                        download
-                    </a> -->
+                    
+                   
+                    
+
+
                 </div>
                 <button
                     mat-stroked-button
                     *ngIf="selectedDictionary.value !== displayDictNames()[0]"
-                    (click)="modifyDict(selectedDictionary.value, titleValue, descriptionValue)"
+                    (click)="modifyDict(selectedDictionary.value,titleValue, descriptionValue)"
                 >
                     Modifier le dictionnaire
                     <mat-icon>save</mat-icon>

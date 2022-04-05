@@ -4,7 +4,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTabChangeEvent } from '@angular/material/tabs';
-import { DomSanitizer } from '@angular/platform-browser';
+
 import { DownloadDialogComponent } from '@app/components/download-dialog/download-dialog.component';
 import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
 import { ONE_SECOND_MS } from './../../../../../common/constants/general-constants';
@@ -40,7 +40,7 @@ export class AdminPageComponent implements OnInit {
     error: string = '';
     downloadJsonHref: any;
 
-    constructor(public socketHandler: ClientSocketHandler, public snackBar: MatSnackBar, private sanitizer: DomSanitizer, public dialog: MatDialog) {
+    constructor(public socketHandler: ClientSocketHandler, public snackBar: MatSnackBar, public dialog: MatDialog) {
         socketHandler.connect();
         socketHandler.getAdminPageInfo();
         this.titleValue = 'default dictionary';
@@ -78,7 +78,10 @@ export class AdminPageComponent implements OnInit {
     download() {
         this.dialog.open(DownloadDialogComponent, {
             disableClose: true,
+            height: '250px',
+             width: '400px',
         });
+
     }
 
     openSnackBar(message: string, action: string) {
@@ -117,16 +120,16 @@ export class AdminPageComponent implements OnInit {
     }
 
     downloadDict(title: string) {
-        this.socketHandler.downloadDictionary(title);
-        this.generateDownloadJsonUri();
+        
+                
+                 this.socketHandler.downloadDictionary(title);
+
+            
+       
+       
     }
     // https://stackoverflow.com/questions/42360665/angular2-to-export-download-json-file
-    generateDownloadJsonUri() {
-        const theJSON = this.socketHandler.dictionaryToDownload.toString();
-        console.log(this.socketHandler.dictionaryToDownload);
-        const uri = this.sanitizer.bypassSecurityTrustUrl('data:text/json;charset=UTF-8,' + encodeURIComponent(theJSON));
-        this.downloadJsonHref = uri;
-    }
+    
     addNewPlayer() {
         if (this.virtualPlayerType === 'Débutant') {
             this.socketHandler.addVirtualPlayerNames(this.virtualPlayerName, 'beginner');

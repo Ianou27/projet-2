@@ -37,30 +37,31 @@ export class DictionaryManager {
     }
 
     async modifyDictionary(oldTitle:string, newTitle:string , description:string) {
-
+        console.log(oldTitle,newTitle,description);
         //modifie title of json file 
-
-        fs.rename('./assets/dictionaries/' + oldTitle + '.json', './assets/dictionaries/' + newTitle + '.json', async (err) => {
+        await fs.rename('./assets/dictionaries/' + oldTitle + '.json', './assets/dictionaries/' + newTitle + '.json', async (err) => {
             if (err) {
                 throw err;
             }
 
         });
+       
         //modifie title and description in the file 
 
-        fs.readFile('./assets/dictionaries/' + newTitle + '.json', async (err, data) => {
+        await fs.readFile('./assets/dictionaries/' + newTitle + '.json', async (err, data) => {
             if (err) {
                 throw err;
             }
             let dictionary = JSON.parse(data.toString());
             dictionary['title'] = newTitle;
             dictionary['description'] = description;
-            fs.writeFile('./assets/dictionaries/' + newTitle + '.json', JSON.stringify(dictionary), async (err) => {
+            await fs.writeFile('./assets/dictionaries/' + newTitle + '.json', JSON.stringify(dictionary), async (err) => {
                 if (err) {
                     throw err;
                 }
             });
         });
+        
         await this.databaseService.start();
         await this.databaseService.modifyDictionary(oldTitle, newTitle, description);
         await this.databaseService.closeConnection();
