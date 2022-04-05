@@ -1,0 +1,18 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 500px;
+    width: 1000px;
+    align-items: center;
+    justify-content: space-around;
+}
+
+mat-spinner {
+    position: relative;
+    bottom: 15%;
+}
+
+#download {
+    position: relative;
+    left: 45%;
+}

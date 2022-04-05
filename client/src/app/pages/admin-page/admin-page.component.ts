@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { DomSanitizer } from '@angular/platform-browser';
+import { DownloadDialogComponent } from '@app/components/download-dialog/download-dialog.component';
 import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
 import { ONE_SECOND_MS } from './../../../../../common/constants/general-constants';
 import { Dic } from './../../../../../common/types';
@@ -38,7 +40,7 @@ export class AdminPageComponent implements OnInit {
     error: string = '';
     downloadJsonHref: any;
 
-    constructor(public socketHandler: ClientSocketHandler, public snackBar: MatSnackBar, private sanitizer: DomSanitizer) {
+    constructor(public socketHandler: ClientSocketHandler, public snackBar: MatSnackBar, private sanitizer: DomSanitizer, public dialog: MatDialog) {
         socketHandler.connect();
         socketHandler.getAdminPageInfo();
         this.titleValue = 'default dictionary';
@@ -73,6 +75,12 @@ export class AdminPageComponent implements OnInit {
         }
     }
 
+    download() {
+        this.dialog.open(DownloadDialogComponent, {
+            disableClose: true,
+        });
+    }
+
     openSnackBar(message: string, action: string) {
         this.snackBar.open(message, action, {
             duration: 3000,
@@ -83,7 +91,7 @@ export class AdminPageComponent implements OnInit {
         console.log(title, description);
         const dictionaryList: Dic[] = this.socketHandler.dictInfoList;
 
-        for (let dict of dictionaryList) {
+        for (const dict of dictionaryList) {
             if (dict.title !== oldTitle && dict.title === title) {
                 this.error = 'Le titre du dictionnaire existe déjà';
                 return false;
@@ -112,11 +120,11 @@ export class AdminPageComponent implements OnInit {
         this.socketHandler.downloadDictionary(title);
         this.generateDownloadJsonUri();
     }
-    //https://stackoverflow.com/questions/42360665/angular2-to-export-download-json-file
+    // https://stackoverflow.com/questions/42360665/angular2-to-export-download-json-file
     generateDownloadJsonUri() {
-        var theJSON = (this.socketHandler.dictionaryToDownload).toString();
+        const theJSON = this.socketHandler.dictionaryToDownload.toString();
         console.log(this.socketHandler.dictionaryToDownload);
-        var uri = this.sanitizer.bypassSecurityTrustUrl('data:text/json;charset=UTF-8,' + encodeURIComponent(theJSON));
+        const uri = this.sanitizer.bypassSecurityTrustUrl('data:text/json;charset=UTF-8,' + encodeURIComponent(theJSON));
         this.downloadJsonHref = uri;
     }
     addNewPlayer() {
