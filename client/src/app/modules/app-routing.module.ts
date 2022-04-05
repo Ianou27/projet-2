@@ -8,7 +8,7 @@ import { MaterialPageComponent } from '@app/pages/material-page/material-page.co
 const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
     { path: 'home', component: MainPageComponent },
-    { path: 'game', component: GamePageComponent },
+    { path: 'game/:mode', component: GamePageComponent },
     { path: 'material', component: MaterialPageComponent },
     { path: 'admin', component: AdminPageComponent },
     { path: '**', redirectTo: '/home' },

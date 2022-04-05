@@ -36,7 +36,7 @@ describe('Room Manager tests', () => {
 
     it('should  join Game', () => {
         const game = new Game();
-        game.player1Join({ username: 'rt', id: '1', room: 'room1' }, '60', databaseService);
+        game.player1Join({ username: 'rt', id: '1', room: 'room1' }, '60', databaseService, false);
         const room: Room = {
             player1: 'rt',
             player2: '',
@@ -55,19 +55,19 @@ describe('Room Manager tests', () => {
     it('convertMultiToSolo should call create SoloGame', () => {
         sinon.replace(idManager, 'getGame', () => {
             const game = new Game();
-            game.player1Join({ username: 'rt', id: '1', room: 'room1' }, '60', databaseService);
+            game.player1Join({ username: 'rt', id: '1', room: 'room1' }, '60', databaseService, false);
 
             return game;
         });
         sinon.replace(roomManager, 'cancelCreation', () => {});
         sinon.replace(roomManager, 'createSoloGame', () => {});
         const getUserSpy = sinon.spy(roomManager, 'convertMultiToSolo');
-        roomManager.convertMultiToSolo('test', idManager, sio, databaseService);
+        roomManager.convertMultiToSolo('test', idManager, sio, databaseService, false);
         assert(getUserSpy.called);
     });
 
     it('should   create SoloGame and call startSoloGame', () => {
-        roomManager.createSoloGame('username', '1234', idManager, sio, '30', databaseService, 'botName', BotType.Beginner);
+        roomManager.createSoloGame('username', '1234', idManager, sio, '30', databaseService, 'botName', BotType.Beginner, false);
 
         expect(idManager.games.length).to.equal(1);
     });
@@ -158,7 +158,7 @@ describe('Room Manager tests', () => {
         const socketId = 'id';
         const usersSpy = sinon.spy(idManager.users, 'push');
         const roomsSpy = sinon.spy(idManager.rooms, 'push');
-        roomManager.createRoom(username, room, socketId, idManager, '60', databaseService);
+        roomManager.createRoom(username, room, socketId, idManager, '60', databaseService, false);
         assert(usersSpy.called);
         assert(roomsSpy.called);
     });

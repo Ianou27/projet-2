@@ -3,4 +3,5 @@ export interface GameState {
     passesCount: number;
     gameFinished: boolean;
     winner: string;
+    modeLog: boolean;
 }

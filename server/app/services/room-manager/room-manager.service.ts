@@ -7,7 +7,15 @@ import { Game } from './../../classes/game/game';
 import { DatabaseService } from './../best-score/best-score.services';
 import { IdManager } from './../id-manager/id-manager.service';
 export class RoomManager {
-    createRoom(username: string, room: string, socketId: string, identification: IdManager, timer: string, databaseService: DatabaseService) {
+    createRoom(
+        username: string,
+        room: string,
+        socketId: string,
+        identification: IdManager,
+        timer: string,
+        databaseService: DatabaseService,
+        modeLog: boolean,
+    ) {
         const user = {
             username,
             id: socketId,
@@ -16,16 +24,17 @@ export class RoomManager {
         identification.users.push(user);
         identification.roomMessages[room] = [];
         const game = new Game();
-        game.player1Join(user, timer, databaseService);
+        game.player1Join(user, timer, databaseService, modeLog);
         identification.games.push(game);
         const roomObj = {
             player1: username,
             player2: '',
             time: timer,
+            mode2990: modeLog,
         };
         identification.rooms.push(roomObj);
     }
-    convertMultiToSolo(socketId: string, identification: IdManager, sio: io.Server, databaseService: DatabaseService) {
+    convertMultiToSolo(socketId: string, identification: IdManager, sio: io.Server, databaseService: DatabaseService, modeLog: boolean) {
         const game = identification.getGame(socketId);
         const botName = this.getRandomBotName(game.player1.user.username);
         this.cancelCreation(socketId, identification);
@@ -38,6 +47,7 @@ export class RoomManager {
             databaseService,
             botName,
             BotType.Beginner,
+            modeLog,
         );
     }
     createSoloGame(
@@ -49,6 +59,7 @@ export class RoomManager {
         databaseService: DatabaseService,
         botName: string,
         botType: BotType,
+        modeLog: boolean,
     ) {
         const user = {
             username,
@@ -59,13 +70,14 @@ export class RoomManager {
             player1: username,
             player2: botName,
             time: timer,
+            mode2990: modeLog,
         };
         identification.rooms.push(roomObj);
         identification.users.push(user);
         identification.roomMessages[username] = [];
         const game = new Game();
 
-        game.startSoloGame(user, sio, timer, databaseService, botName, botType);
+        game.startSoloGame(user, sio, timer, databaseService, botName, botType, modeLog);
         identification.games.push(game);
     }
 

@@ -1,5 +1,6 @@
 import { Orientation } from '@common/orientation';
 import * as fs from 'fs';
+import { Goal } from '../goal/goal-validation';
 import { letterValue } from './../../../../common/assets/reserve-letters';
 import { rowNumber } from './../../../../common/assets/row';
 import {
@@ -245,7 +246,7 @@ export class PlacementCommand {
             }
             if (!this.validatedWordDictionary(wordString, this.dictionaryArray)) return 0;
         }
-        return PointsCalculator.calculatedPointsPlacement(wordsFormed, letterPositions);
+        return PointsCalculator.calculatedPointsPlacement(wordsFormed, letterPositions) + Goal.validationGoal(wordsFormed, game);
     }
 
     static verifyWordsFormed(wordsFormed: Tile[][], letterPositions: Tile[]): Tile[][] {

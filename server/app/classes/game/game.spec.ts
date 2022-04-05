@@ -6,6 +6,7 @@ import { Timer } from '@app/services/timer-manager/timer-manager.service';
 import { CaseProperty } from '@common/assets/case-property';
 import { letterValue } from '@common/assets/reserve-letters';
 import { BotType } from '@common/botType';
+import { allGoals } from '@common/constants/goals';
 import { Tile } from '@common/tile/Tile';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
@@ -36,13 +37,14 @@ describe('Game', () => {
     beforeEach(() => {
         game = new Game();
         game.sio = new io.Server();
-        game.player1Join({ username: 'player1', id: '1', room: 'room1' }, '60', databaseService);
+        game.player1Join({ username: 'player1', id: '1', room: 'room1' }, '60', databaseService, false);
         game.player2 = new Player(game.reserveLetters.randomLettersInitialization(), false, 'player2', {
             username: 'player2',
             id: '2',
             room: 'room1',
         });
         game.timer = new Timer('60');
+        game.goals = allGoals;
     });
 
     it('constructor should construct a game with two players named player1 and player2', () => {
@@ -81,12 +83,12 @@ describe('Game', () => {
 
     it('method startSoloGame should set the value true to hisBot of the player2', () => {
         expect(game.player2.hisBot).equal(false);
-        game.startSoloGame(game.player1.user, game.sio, '60', databaseService, 'botname', BotType.Beginner);
+        game.startSoloGame(game.player1.user, game.sio, '60', databaseService, 'botname', BotType.Beginner, false);
         expect(game.player2.hisBot).equal(true);
     });
 
     it('method startSoloGame should initialize the attributes of game', () => {
-        game.startSoloGame(game.player1.user, game.sio, '60', databaseService, 'botname', BotType.Beginner);
+        game.startSoloGame(game.player1.user, game.sio, '60', databaseService, 'botname', BotType.Beginner, false);
         expect(game.roomName).equal(game.player1.user.room);
         expect(game.timer.timerMax).equal(60);
     });
@@ -287,5 +289,34 @@ describe('Game', () => {
         const command = '!placer h8v car';
         game.placementBot(command.split(' '));
         assert(spy.called);
+    });
+
+    it('method setGoals should initialize goals', () => {
+        game.setGoals();
+        expect(game.goals).not.equal(allGoals);
+    });
+
+    it('method setGoals should call changeGoal 4 times and change 4 goals', () => {
+        const spy = sinon.spy(game, 'changeGoal');
+        game.setGoals();
+        expect(spy.callCount).equal(4);
+    });
+
+    it('method setGoals should call verifyGoalsTaken', () => {
+        const spy = sinon.spy(game, 'verifyGoalsTaken');
+        game.setGoals();
+        assert(spy.called);
+    });
+
+    it('method verifyGoalsTaken should return false if goals is not present in array', () => {
+        const goalsTaken = [1, 2, 3];
+        const result = game.verifyGoalsTaken(goalsTaken, 4);
+        expect(result).equal(false);
+    });
+
+    it('method verifyGoalsTaken should return true if goals is present in array', () => {
+        const goalsTaken = [1, 2, 3];
+        const result = game.verifyGoalsTaken(goalsTaken, 3);
+        expect(result).equal(true);
     });
 });

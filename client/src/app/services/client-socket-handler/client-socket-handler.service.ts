@@ -3,6 +3,7 @@ import { LetterScore } from './../../../../../common/assets/reserve-letters';
 import { BotType } from './../../../../../common/botType';
 import { CommandType } from './../../../../../common/command-type';
 import { NUMBER_MAXIMUM_CLUE_COMMAND } from './../../../../../common/constants/general-constants';
+import { Goals } from './../../../../../common/constants/goals';
 import { Tile } from './../../../../../common/tile/Tile';
 import { InfoToJoin, Message, Room } from './../../../../../common/types';
 import { INITIAL_NUMBER_LETTERS_RESERVE, NUMBER_LETTER_TILEHOLDER } from './../../constants/general-constants';
@@ -43,7 +44,9 @@ export class ClientSocketHandler {
     gameOver: boolean = false;
     winner: string = '';
     timer: number = 0;
-    numberOfRooms: number = 0;
+    numberOfRoomsClassic: number = 0;
+    numberOfRoomsLog: number = 0;
+    goals: Goals;
 
     constructor(public socketService: SocketClientService, public boardService: BoardService, public tileHolderService: TileHolderService) {}
 
@@ -161,7 +164,6 @@ export class ClientSocketHandler {
         this.socketService.socket.on('asked', (username: string, socket: string, roomObj: Room) => {
             this.socketWantToJoin = socket;
             this.playerJoined = true;
-
             this.informationToJoin = {
                 username,
                 roomObj,
@@ -169,12 +171,16 @@ export class ClientSocketHandler {
         });
 
         this.socketService.on('playerDc', () => {
-            this.roomMessages.push({ username: 'Server', message: '  Partie interrompue : joueur deconnecté', player: 'server' });
-            this.socketService.send('finPartie');
+            this.roomMessages.push({
+                username: 'Server',
+                message: '  CONVERSION DE PARTIE : Joueur a abandonné la partie et a été remplacé par un joueur virtuel',
+                player: 'server',
+            });
             this.updateRooms();
         });
-
-        this.socketService.socket.on('updatePoint', (player: string, point: number) => {
+        // possible de reduire quelque ligne en emettant tous les points possible de faire un interface
+        this.socketService.socket.on('updatePoint', (player: string, point: number, goals: Goals) => {
+            this.goals = goals;
             if (player === 'player1') {
                 this.player1Point = point;
             } else if (player === 'player2') {
@@ -197,13 +203,13 @@ export class ClientSocketHandler {
         this.socketService.socket.emit('getBestScore');
     }
 
-    createRoom(username: string, room: string, time: string) {
-        this.socketService.socket.emit('createRoom', username, room, time);
+    createRoom(username: string, room: string, time: string, mode2990: boolean) {
+        this.socketService.socket.emit('createRoom', username, room, time, mode2990);
         this.updateRooms();
     }
 
-    createSoloGame(username: string, time: string, botType: BotType) {
-        this.socketService.socket.emit('createSoloGame', username, time, botType);
+    createSoloGame(username: string, time: string, botType: BotType, mode2990: boolean) {
+        this.socketService.socket.emit('createSoloGame', username, time, botType, mode2990);
     }
 
     joinRoom() {
@@ -271,12 +277,18 @@ export class ClientSocketHandler {
     }
 
     updateRoomView() {
-        let counter = 0;
+        let counterLog = 0;
+        let counterClassic = 0;
         this.allRooms.forEach((room) => {
             if (room.player2 === '') {
-                counter++;
+                if (room.mode2990) {
+                    counterLog++;
+                } else {
+                    counterClassic++;
+                }
             }
         });
-        this.numberOfRooms = counter;
+        this.numberOfRoomsLog = counterLog;
+        this.numberOfRoomsClassic = counterClassic;
     }
 }

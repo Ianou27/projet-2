@@ -25,14 +25,24 @@ export class SocketManager {
     async handleSockets(): Promise<void> {
         this.sio.on('connection', (socket) => {
             console.log(`Connexion par l'utilisateur avec id : ${socket.id}`);
-            socket.on('createRoom', (username: string, room: string, timer: string) => {
-                this.roomManager.createRoom(username, room, socket.id, this.identification, timer, this.databaseService);
+            socket.on('createRoom', (username: string, room: string, timer: string, modeLog: boolean) => {
+                this.roomManager.createRoom(username, room, socket.id, this.identification, timer, this.databaseService, modeLog);
                 socket.join(room);
             });
 
-            socket.on('createSoloGame', (username: string, timer: string, botType: BotType) => {
+            socket.on('createSoloGame', (username: string, timer: string, botType: BotType, modeLog: boolean) => {
                 const botName = this.roomManager.getRandomBotName(username);
-                this.roomManager.createSoloGame(username, socket.id, this.identification, this.sio, timer, this.databaseService, botName, botType);
+                this.roomManager.createSoloGame(
+                    username,
+                    socket.id,
+                    this.identification,
+                    this.sio,
+                    timer,
+                    this.databaseService,
+                    botName,
+                    botType,
+                    modeLog,
+                );
                 socket.join(username);
             });
 
@@ -40,9 +50,7 @@ export class SocketManager {
                 const player1Id = this.identification.getId(roomObj.player1);
                 const letters = this.roomManager.joinRoom(username, roomObj, socket.id, this.identification, this.sio);
                 socket.join(roomObj.player1);
-
                 this.sio.to(player1Id).emit('tileHolder', letters[0]);
-
                 this.sio.to(socket.id).emit('tileHolder', letters[1]);
                 this.sio.to(roomObj.player1).emit('startGame', roomObj.player1, username);
             });
@@ -143,10 +151,10 @@ export class SocketManager {
 
                             if (game.player1.user.id === socket.id) {
                                 this.sio.to(socket.id).emit('tileHolder', game.player1.getLetters());
-                                this.sio.to(currentRoom).emit('updatePoint', 'player1', game.player1.points);
+                                this.sio.to(currentRoom).emit('updatePoint', 'player1', game.player1.points, game.goals);
                             } else if (game.player2.user.id === socket.id) {
                                 this.sio.to(socket.id).emit('tileHolder', game.player2.getLetters());
-                                this.sio.to(currentRoom).emit('updatePoint', 'player2', game.player2.points);
+                                this.sio.to(currentRoom).emit('updatePoint', 'player2', game.player2.points, game.goals);
                             }
                         }
                     } else if (verification !== 'valide') {
@@ -284,12 +292,12 @@ export class SocketManager {
                 this.roomManager.cancelCreation(socket.id, this.identification);
             });
 
-            socket.on('convertToSoloGame', () => {
-                this.roomManager.convertMultiToSolo(socket.id, this.identification, this.sio, this.databaseService);
+            socket.on('convertToSoloGame', (modeLog: boolean) => {
+                this.roomManager.convertMultiToSolo(socket.id, this.identification, this.sio, this.databaseService, modeLog);
             });
             socket.on('disconnect', (reason) => {
                 const room = this.identification.getRoom(socket.id);
-
+                console.log(room);
                 if (room !== '') {
                     const game = this.identification.getGame(socket.id);
                     if (game.player2 !== undefined && !game.gameState.gameFinished) game.surrender(this.identification.surrender(socket.id));
@@ -298,6 +306,7 @@ export class SocketManager {
                     this.roomManager.deleteRoom(socket.id, this.identification);
                     this.sio.sockets.emit('rooms', this.identification.rooms);
 
+                    // mettre popup jv ici à changer
                     this.sio.to(room).emit('playerDc');
                 }
 
