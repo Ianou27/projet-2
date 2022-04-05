@@ -84,6 +84,10 @@ export class AdminPageComponent implements OnInit {
         console.log(title);
     }
 
+    downloadDict(title: string) {
+        console.log(title);
+    }
+
     addNewPlayer() {
         if (this.virtualPlayerType === 'Débutant') {
             this.socketHandler.addVirtualPlayerNames(this.virtualPlayerName, 'beginner');
