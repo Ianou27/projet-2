@@ -17,44 +17,50 @@
                 <p>Ajouter ou supprimer des dictionnaires dans le jeu</p>
                 <mat-divider></mat-divider>
                 <h2>Gérer les dictionnaires existants</h2>
-                <div>
+                <!-- <div class="dic">
                     <mat-form-field appearance="fill">
+                        <mat-label>Nom du dictionnaire</mat-label>
                         <mat-select [(value)]="displayDictNames()[0]" #selectedDictionary>
                             <mat-option *ngFor="let dictionary of displayDictNames(); index as i" [value]="displayDictNames()[i]">
                                 {{ dictionary }}
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
-                    <mat-form-field appearance="fill">
-                        <mat-label>Nom du dictionnaire</mat-label>
-                        <input
-                            matInput
-                            placeholder="Dictionnaire par défaut"
-                            [disabled]="selectedDictionary.value === displayDictNames()[0]"
-                            [value]="selectedDictionary.value"
-                        />
-                    </mat-form-field>
-                    <mat-form-field appearance="fill">
-                        <mat-label>Description du dictionnaire</mat-label>
-                        <textarea
-                            matInput
-                            placeholder="Ex. Dictionnaire par défaut"
-                            [disabled]="selectedDictionary.value === displayDictNames()[0]"
-                        ></textarea>
-                    </mat-form-field>
+                    
+
+                    
+                            
+                                <p style="font-weight:bold">Description: </p><div>{{ displayDescription(displayDictNames()[0]) }} </div>
+                           
+                        
                     <a mat-stroked-button>
                         Télécharger le dictionnaire
                         <mat-icon>save_alt</mat-icon>
                     </a>
-                </div>
-                <button mat-stroked-button *ngIf="selectedDictionary.value !== displayDictNames()[0]">
+                </div> -->
+                <!-- <button mat-stroked-button *ngIf="selectedDictionary.value !== displayDictNames()[0]">
                     Accepter les changements
                     <mat-icon>save</mat-icon>
                 </button>
                 <button mat-stroked-button *ngIf="selectedDictionary.value !== displayDictNames()[0]">
                     Supprimer le dictionnaire sélectionné
                     <mat-icon>delete</mat-icon>
-                </button>
+                </button> -->
+                <div *ngFor="let dic of this.socketHandler.dictInfoList" class="dic">
+                    <p style="font-weight: bold"> Title: </p>
+                     {{ dic.title }}
+                    <br>
+                    <p style="font-weight: bold">     Description:   </p>
+                     {{ dic.description }}
+                    <br>
+                
+
+
+
+                    
+
+
+                </div>
                 <mat-divider></mat-divider>
                 <h2>Téléverser un nouveau dictionnaire</h2>
                 <p></p>

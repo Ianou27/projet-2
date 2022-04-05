@@ -4,6 +4,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
+import { Dic } from '../../../../../common/types';
 import { ONE_SECOND_MS } from './../../../../../common/constants/general-constants';
 import { MyErrorStateMatcher } from './../join-page/errorStateMatcher/error-state-matcher';
 
@@ -112,10 +113,10 @@ export class AdminPageComponent implements OnInit {
     displayDictNames() {
         const dictionaries: string[] = [];
         const dictionaryList = this.socketHandler.dictInfoList;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        dictionaryList.forEach((dict: any) => dictionaries.push(dict.title));
+        dictionaryList.forEach((dict: Dic) => dictionaries.push(dict.title));
         return dictionaries;
     }
+    
 
     // utilisation de code ne provenant pas de nous, source :
     // https://fireflysemantics.medium.com/proxying-file-upload-buttons-with-angular-a5a3fc224c38
@@ -133,8 +134,16 @@ export class AdminPageComponent implements OnInit {
     }
     verifyDict(dict: string): boolean {
         const dictObject = JSON.parse(dict);
-
-        if (
+        const dictInfoList = this.socketHandler.dictInfoList;
+        
+        const dictInfoListFiltered = dictInfoList.filter((dictInfo: Dic) => dictInfo.title === dictObject.title);
+        console.log(dictInfoListFiltered.length);
+        if (dictInfoListFiltered.length !== 0) {
+            this.error = 'Ce dictionnaire existe deja';
+            return false;
+        }
+    
+        else if (
             typeof dictObject.title === 'string' &&
             dictObject.title !== '' &&
             typeof dictObject.description === 'string' &&

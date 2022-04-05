@@ -339,8 +339,18 @@ export class SocketManager {
             });
 
 
-            socket.on('uploadDictionary',  (file: JSON) => {
+            socket.on('uploadDictionary',  async (file: JSON) => {
                 this.dictionaryManager.uploadDictionary(file);
+                await this.databaseService.start();
+                this.sio
+                .to(socket.id)
+                .emit(
+                    'getAdminInfo',
+                    await this.databaseService.getDictionaryInfo(),
+                    await this.databaseService.getGameHistory(),
+                    await this.databaseService.getVirtualPlayers(),
+                );
+                await this.databaseService.closeConnection();
             });
 
 
