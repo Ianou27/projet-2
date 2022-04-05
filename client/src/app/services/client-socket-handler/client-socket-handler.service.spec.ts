@@ -240,7 +240,7 @@ describe('ChatService', () => {
         expect(emitSpy).toHaveBeenCalled();
         expect(emitSpy).toHaveBeenCalledWith('convertToSoloGame');
     });
-    it('should update numberOfRooms when ann empty room is added', () => {
+    it('should update numberOfRooms without mode2990 when an empty room is added', () => {
         service.allRooms = [
             {
                 player1: 'player1',
@@ -248,11 +248,18 @@ describe('ChatService', () => {
                 time: '60',
                 mode2990: false,
             },
+            {
+                player1: 'player1',
+                player2: '',
+                time: '60',
+                mode2990: true,
+            },
         ];
 
         service.updateRoomView();
 
         expect(service.numberOfRoomsClassic).toBe(1);
+        expect(service.numberOfRoomsLog).toBe(1);
     });
 
     describe('Receiving events', () => {

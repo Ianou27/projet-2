@@ -1,5 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { GoalType } from '../../../../../common/constants/goal-type';
+import { allGoals } from './../../../../../common/constants/goals';
 import { GoalsComponent } from './goals.component';
 
 describe('GoalsComponent', () => {
@@ -21,5 +23,15 @@ describe('GoalsComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('method getType should return Public if goalType is public', () => {
+        expect(component.getType(allGoals.palindrome)).toBe('Public');
+    });
+
+    it('method getType should return privé if goalType is private player 1 or 2', () => {
+        const goals = JSON.parse(JSON.stringify(allGoals));
+        goals.palindrome.type = GoalType.PrivatePlayer1;
+        expect(component.getType(goals.palindrome)).toBe('Privé');
     });
 });

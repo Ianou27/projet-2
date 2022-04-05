@@ -62,12 +62,25 @@ describe('JoinPageComponent', () => {
         });
     });
 
-    it('randomJoin() should change the attribute selectedRoomName to a random room of clientSocketHandler', () => {
+    it('randomJoin() without mode2990 should change the attribute selectedRoomName to a random room of mode classic clientSocketHandler', () => {
         const room: Room = {
             player1: 'player1',
             player2: 'player2',
             time: '60',
             mode2990: false,
+        };
+        component.clientSocketHandler.allRooms = [room];
+        component.randomJoin();
+        expect(component.selectedRoomName).toBe(room.player1);
+    });
+
+    it('randomJoin() with mode2990 should change the attribute selectedRoomName to a random room of mode2990 of clientSocketHandler', () => {
+        component.mode2990 = true;
+        const room: Room = {
+            player1: 'player1',
+            player2: 'player2',
+            time: '60',
+            mode2990: true,
         };
         component.clientSocketHandler.allRooms = [room];
         component.randomJoin();
