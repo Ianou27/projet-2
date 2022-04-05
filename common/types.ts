@@ -21,6 +21,10 @@ export type GameHistory = {
     player2Points: number;
     gameMode: string;
 }
+export type Dic ={
+    title: string;
+    description: string;
+}
 export type User = {
     username: string;
     id: string;

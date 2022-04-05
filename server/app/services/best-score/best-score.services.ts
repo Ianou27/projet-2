@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // import { injectable } from 'inversify';
 import { INDEX_OF_NOT_FOUND, NUMBER_ELEMENTS_DATABASE } from '@common/constants/general-constants';
-import { BestScore, GameHistory } from '@common/types';
+import { BestScore, Dic, GameHistory } from '@common/types';
 import * as fs from 'fs';
 import { Db, MongoClient } from 'mongodb';
 import 'reflect-metadata';
@@ -117,8 +117,8 @@ export class DatabaseService {
     async getDictionaryInfo(): Promise<any[]> {
         return await this.db.collection(DATABASE_COLLECTION_DIC).find().project({ title: 1, description: 1, _id: 0 }).toArray();
     }
-    async insertDictionary(json: JSON) {
-        await this.db.collection(DATABASE_COLLECTION_DIC).insertOne(json);
+    async insertDictionary(dictionary: Dic) {
+        await this.db.collection(DATABASE_COLLECTION_DIC).insertOne(dictionary);
     }
 
     async deleteDictionary(title: string) {
