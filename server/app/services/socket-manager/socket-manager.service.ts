@@ -352,8 +352,19 @@ export class SocketManager {
                 );
                 await this.databaseService.closeConnection();
             });
+            
 
-
+            socket.on('downloadDic', async (title:string) => {
+                let dic = this.dictionaryManager.downloadDictionary(title);
+               
+                this.sio
+                    .to(socket.id)
+                    .emit(
+                        'downloadDic',
+                        dic
+                    );
+            
+            });
             socket.on('deleteDic', async (title:string) => {
                 this.dictionaryManager.deleteDictionary(title);
                 await this.databaseService.start();

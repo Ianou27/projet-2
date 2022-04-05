@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTabChangeEvent } from '@angular/material/tabs';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
 import { ONE_SECOND_MS } from './../../../../../common/constants/general-constants';
 import { Dic } from './../../../../../common/types';
@@ -35,11 +36,12 @@ export class AdminPageComponent implements OnInit {
     alphaNumericRegex = /^[a-zA-Z]*$/;
     matcher = new MyErrorStateMatcher();
     error: string = '';
+    downloadJsonHref: any;
 
-    constructor(public socketHandler: ClientSocketHandler, public snackBar: MatSnackBar) {
+    constructor(public socketHandler: ClientSocketHandler, public snackBar: MatSnackBar, private sanitizer: DomSanitizer) {
         socketHandler.connect();
         socketHandler.getAdminPageInfo();
-        this.titleValue ='default dictionary';
+        this.titleValue = 'default dictionary';
         this.descriptionValue = 'Description de base';
     }
 
@@ -77,25 +79,26 @@ export class AdminPageComponent implements OnInit {
         });
     }
 
-    modifyDict(oldTitle:string , title: string, description: string):boolean {
+    modifyDict(oldTitle: string, title: string, description: string): boolean {
         console.log(title, description);
-        const dictionaryList:Dic[] = this.socketHandler.dictInfoList;
+        const dictionaryList: Dic[] = this.socketHandler.dictInfoList;
 
-        for(let dict  of dictionaryList) {
+        for (let dict of dictionaryList) {
             if (dict.title !== oldTitle && dict.title === title) {
-                this.error = "Le titre du dictionnaire existe déjà";
+                this.error = 'Le titre du dictionnaire existe déjà';
                 return false;
             }
         }
-        if(title.replace(/\s/g, '').length === 0 || description.replace(/\s/g, '').length === 0 || (description === this.displayDictDescription(oldTitle)[0] && oldTitle === title)) {
-            this.error = "Veuillez au moins changer une valeur et ne pas laisser de valeur vide";
+        if (
+            title.replace(/\s/g, '').length === 0 ||
+            description.replace(/\s/g, '').length === 0 ||
+            (description === this.displayDictDescription(oldTitle)[0] && oldTitle === title)
+        ) {
+            this.error = 'Veuillez au moins changer une valeur et ne pas laisser de valeur vide';
             return false;
-        }
-        
-        else{
+        } else {
             this.socketHandler.modifyDictionary(oldTitle, title, description);
             window.location.reload();
-            
         }
         return true;
     }
@@ -106,9 +109,16 @@ export class AdminPageComponent implements OnInit {
     }
 
     downloadDict(title: string) {
-        console.log(title);
+        this.socketHandler.downloadDictionary(title);
+        this.generateDownloadJsonUri();
     }
-
+    //https://stackoverflow.com/questions/42360665/angular2-to-export-download-json-file
+    generateDownloadJsonUri() {
+        var theJSON = (this.socketHandler.dictionaryToDownload).toString();
+        console.log(this.socketHandler.dictionaryToDownload);
+        var uri = this.sanitizer.bypassSecurityTrustUrl('data:text/json;charset=UTF-8,' + encodeURIComponent(theJSON));
+        this.downloadJsonHref = uri;
+    }
     addNewPlayer() {
         if (this.virtualPlayerType === 'Débutant') {
             this.socketHandler.addVirtualPlayerNames(this.virtualPlayerName, 'beginner');
@@ -143,7 +153,7 @@ export class AdminPageComponent implements OnInit {
         return names;
     }
 
-    displayDictDescription(name: string):string[] {
+    displayDictDescription(name: string): string[] {
         const descriptions: string[] = [];
         const dictionaryList = this.socketHandler.dictInfoList;
         dictionaryList.forEach((dict: Dic) => {
@@ -196,10 +206,9 @@ export class AdminPageComponent implements OnInit {
 
             if (this.verifyDict(this.selectedFile)) {
                 this.socketHandler.uploadDictionary(object);
-                
+
                 this.openSnackBar('Dictionnaire ajouté', 'Ok');
                 window.location.reload();
-
             }
         } catch (error) {
             this.error = "Le fichier n'est pas au bon format";

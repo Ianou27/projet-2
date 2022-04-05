@@ -49,10 +49,20 @@
                             [(ngModel)]="descriptionValue"
                         ></textarea>
                     </mat-form-field>
-                    <a mat-stroked-button class="download-button">
+                    <a mat-stroked-button class="download-button" (click)="downloadDict(titleValue ) " [href]="downloadJsonHref" download="download.json">
                         Télécharger le dictionnaire
                         <mat-icon>save_alt</mat-icon>
+                        
+                        
                     </a>
+                    <mat-spinner diameter="30"></mat-spinner>
+                   
+                    
+                    <a class="btn btn-clear" title="Download JSON" (click)="downloadDict(titleValue)" [href]="downloadJsonHref" download="download.json">
+                        download
+                    </a>
+                    
+
                 </div>
                 <button
                     mat-stroked-button

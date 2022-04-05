@@ -66,4 +66,11 @@ export class DictionaryManager {
         await this.databaseService.closeConnection();
     }
 
+    downloadDictionary(title: string):string {
+
+        //return the json file with the title of the dictionary 
+        return fs.readFileSync('./assets/dictionaries/' + title + '.json').toString();
+    }
+
+
 }

@@ -46,6 +46,7 @@ export class ClientSocketHandler {
     dictInfoList: any[] = [];
     virtualPlayerNameList: any[] = [];
     gameHistory: any[] = [];
+    dictionaryToDownload :string = '';
 
     constructor(public socketService: SocketClientService, public boardService: BoardService, public tileHolderService: TileHolderService) {}
 
@@ -159,7 +160,10 @@ export class ClientSocketHandler {
         this.socketService.on('timer', (timer: number) => {
             this.timer = timer;
         });
-
+        this.socketService.on('downloadDic', (dic: string) => {
+            this.dictionaryToDownload = dic;
+        });
+        
         this.socketService.socket.on('asked', (username: string, socket: string, roomObj: Room) => {
             this.socketWantToJoin = socket;
             this.playerJoined = true;
@@ -298,6 +302,10 @@ export class ClientSocketHandler {
     accepted() {
         this.socketService.socket.emit('accepted', this.socketWantToJoin, this.informationToJoin);
         this.updateRooms();
+    }
+
+    downloadDictionary(title: string) {
+        this.socketService.socket.emit('downloadDic', title);
     }
 
     cancelCreation() {
