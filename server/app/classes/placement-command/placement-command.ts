@@ -70,8 +70,8 @@ export class PlacementCommand {
                 tile.value = letterValue[letterPlace.toUpperCase()];
             }
             tile.letter = letterPlace.toUpperCase();
-
             positions.push(tile);
+            if (game.gameBoard.isBottomOrLeft(tile, placementInformations.orientation)) break;
             tile = game.gameBoard.nextTile(tile, placementInformations.orientation, false);
             game.playerTurn().changeLetter(letterPlace, '');
             lettersIter++;
@@ -150,7 +150,7 @@ export class PlacementCommand {
     }
 
     static insideBoardGame(placementInformations: PlacementInformations, game: Game): boolean {
-        let numberLettersToPlace = placementInformations.numberLetters;
+        let numberLettersToPlace = placementInformations.numberLetters - 1;
         let tile: Tile = game.gameBoard.cases[placementInformations.column][placementInformations.row];
         while (numberLettersToPlace > 0) {
             try {
