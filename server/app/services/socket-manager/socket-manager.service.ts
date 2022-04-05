@@ -16,7 +16,7 @@ export class SocketManager {
     sio: io.Server;
     timeLeft: number;
     constructor(server: http.Server, readonly databaseService: DatabaseService) {
-        this.sio = new io.Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
+        this.sio = new io.Server(server, { maxHttpBufferSize: 15e6, cors: { origin: '*', methods: ['GET', 'POST'] } });
         this.gameManager = new GameManager();
         this.identification = new IdManager();
         this.roomManager = new RoomManager();
@@ -334,6 +334,17 @@ export class SocketManager {
                     );
                 await this.databaseService.closeConnection();
             });
+
+            //uploadDictionary socket.on
+
+            socket.on('uploadDictionary',  (file: JSON) => {
+                console.log(file);
+            });
+
+
+
+                
+
 
             socket.on('resetGameHistory', async () => {
                 await this.databaseService.start();

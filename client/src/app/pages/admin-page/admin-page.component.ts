@@ -20,7 +20,7 @@ export class AdminPageComponent implements OnInit {
     displayedColumns: string[] = ['date', 'duration', 'player1', 'player1Points', 'player2', 'player2Points', 'gameMode'];
     displayedNames: string[] = [];
     displayedFixedNames: string[] = [];
-    selectedFile: File;
+    selectedFile: string;
     newName: string = '';
     defaultBeginnerNames: any[] = [];
     addedBeginnerNames: any[] = [];
@@ -30,6 +30,7 @@ export class AdminPageComponent implements OnInit {
     formModify: FormGroup;
     formAdd: FormGroup;
     alphaNumericRegex = /^[a-zA-Z]*$/;
+    invalide:boolean = false;
     matcher = new MyErrorStateMatcher();
 
     constructor(public socketHandler: ClientSocketHandler, public snackBar: MatSnackBar) {
@@ -118,11 +119,56 @@ export class AdminPageComponent implements OnInit {
 
     // utilisation de code ne provenant pas de nous, source :
     // https://fireflysemantics.medium.com/proxying-file-upload-buttons-with-angular-a5a3fc224c38
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    onFileSelect(event: any) {
-        this.selectedFile = event.target.files[0];
-        console.log(this.selectedFile.name);
+    onFileSelect(event: Event) {
+       
+        
+        const target = (event.target as HTMLInputElement);
+        const file = (target.files as FileList)[0];
+        const reader = new FileReader();
+        
+
+        reader.onload = () => {
+            this.selectedFile = reader.result as string;
+            this.verifyDictionary(this.selectedFile);
+           
+
+        };
+        reader.readAsText(file);
+     
+        
     }
+
+    verifyDictionary(dictionary: string) {
+       const object:JSON = JSON.parse(dictionary);
+    
+        //  if (Object.keys(object).length === 3 && object.hasOwnProperty('title') && object.hasOwnProperty('description') && object.hasOwnProperty('words')) {
+        //     if (typeof object.title === 'string' && object.title !== '' && typeof object.description === 'string' && object.description !== '' && Array.isArray(object.words) && object.words.length !== 0) {
+        //         this.snackBar.open("Ce n'est pas un dictionaire ", "close", {duration: undefined});
+        //         console.log(Array.isArray(object.words));
+        //         // for (let i = 0; i < object.words.length; i++) {
+        //         //     if (typeof object.words[i] !== 'string' || object.words[i] === '' || !object.words[i].match(/^[a-zA-Z]+$/)) {
+        //         //         //refresh the page and openning a snackbar to inform the user that the dictionary is not valid and he has to upload a valid dictionary file again  
+                        
+                        
+                        
+        //         //         return;
+        //         //     }
+        //         // }
+
+
+                
+
+        //     }
+        // }
+
+       //upload dictionary to the server
+         this.socketHandler.uploadDictionary(object);
+
+        
+
+
+    }
+    
 
     changeType() {
         this.setArrays();

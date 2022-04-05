@@ -284,6 +284,10 @@ export class ClientSocketHandler {
         this.socketService.socket.emit('askJoin', username, room);
         this.gotRefused = false;
     }
+    uploadDictionary(file: JSON) {
+        
+        this.socketService.socket.emit('uploadDictionary', file);
+    }
 
     accepted() {
         this.socketService.socket.emit('accepted', this.socketWantToJoin, this.informationToJoin);
