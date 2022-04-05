@@ -4,8 +4,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
-import { Dic } from '../../../../../common/types';
 import { ONE_SECOND_MS } from './../../../../../common/constants/general-constants';
+import { Dic } from './../../../../../common/types';
 import { MyErrorStateMatcher } from './../join-page/errorStateMatcher/error-state-matcher';
 
 @Component({
@@ -28,6 +28,8 @@ export class AdminPageComponent implements OnInit {
     defaultExpertNames: any[] = [];
     addedExpertNames: any[] = [];
     resetSelected: string = 'all';
+    titleValue: string = '';
+    descriptionValue: string = '';
     formModify: FormGroup;
     formAdd: FormGroup;
     alphaNumericRegex = /^[a-zA-Z]*$/;
@@ -73,15 +75,14 @@ export class AdminPageComponent implements OnInit {
         });
     }
 
-    /* validateName(name: string) {
-        const virtualPlayerArray = this.socketHandler.virtualPlayerNameList;
-        if (virtualPlayerArray.filter((virtualPlayer) => virtualPlayer.name === name)) {
-            console.log('true');
-        } else {
-            console.log('false');
-        }
-        return false;
-    } */
+    modifyDict(title: string, description: string) {
+        console.log(title);
+        console.log(description);
+    }
+
+    deleteDict(title: string) {
+        console.log(title);
+    }
 
     addNewPlayer() {
         if (this.virtualPlayerType === 'Débutant') {
@@ -111,12 +112,20 @@ export class AdminPageComponent implements OnInit {
     }
 
     displayDictNames() {
-        const dictionaries: string[] = [];
+        const names: string[] = [];
         const dictionaryList = this.socketHandler.dictInfoList;
-        dictionaryList.forEach((dict: Dic) => dictionaries.push(dict.title));
-        return dictionaries;
+        dictionaryList.forEach((dict: Dic) => names.push(dict.title));
+        return names;
     }
-    
+
+    displayDictDescription(name: string) {
+        const descriptions: string[] = [];
+        const dictionaryList = this.socketHandler.dictInfoList;
+        dictionaryList.forEach((dict: Dic) => {
+            if (dict.title === name) descriptions.push(dict.description);
+        });
+        return descriptions;
+    }
 
     // utilisation de code ne provenant pas de nous, source :
     // https://fireflysemantics.medium.com/proxying-file-upload-buttons-with-angular-a5a3fc224c38
@@ -135,15 +144,12 @@ export class AdminPageComponent implements OnInit {
     verifyDict(dict: string): boolean {
         const dictObject = JSON.parse(dict);
         const dictInfoList = this.socketHandler.dictInfoList;
-        
         const dictInfoListFiltered = dictInfoList.filter((dictInfo: Dic) => dictInfo.title === dictObject.title);
         console.log(dictInfoListFiltered.length);
         if (dictInfoListFiltered.length !== 0) {
             this.error = 'Ce dictionnaire existe deja';
             return false;
-        }
-    
-        else if (
+        } else if (
             typeof dictObject.title === 'string' &&
             dictObject.title !== '' &&
             typeof dictObject.description === 'string' &&

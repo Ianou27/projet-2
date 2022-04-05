@@ -17,7 +17,7 @@
                 <p>Ajouter ou supprimer des dictionnaires dans le jeu</p>
                 <mat-divider></mat-divider>
                 <h2>Gérer les dictionnaires existants</h2>
-                <!-- <div class="dic">
+                <div class="dic">
                     <mat-form-field appearance="fill">
                         <mat-label>Nom du dictionnaire</mat-label>
                         <mat-select [(value)]="displayDictNames()[0]" #selectedDictionary>
@@ -26,53 +26,56 @@
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
-                    
-
-                    
-                            
-                                <p style="font-weight:bold">Description: </p><div>{{ displayDescription(displayDictNames()[0]) }} </div>
-                           
-                        
-                    <a mat-stroked-button>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Nom du dictionnaire</mat-label>
+                        <input
+                            matInput
+                            placeholder="Dictionnaire par défaut"
+                            [disabled]="selectedDictionary.value === displayDictNames()[0]"
+                            (click)="titleValue = selectedDictionary.value"
+                            [(ngModel)]="titleValue"
+                        />
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Description du dictionnaire</mat-label>
+                        <textarea
+                            matInput
+                            placeholder="Ex. Dictionnaire par défaut"
+                            [disabled]="selectedDictionary.value === displayDictNames()[0]"
+                            (click)="descriptionValue = displayDictDescription(selectedDictionary.value)[0]"
+                            [(ngModel)]="descriptionValue"
+                        ></textarea>
+                    </mat-form-field>
+                    <a mat-stroked-button class="download-button">
                         Télécharger le dictionnaire
                         <mat-icon>save_alt</mat-icon>
                     </a>
-                </div> -->
-                <!-- <button mat-stroked-button *ngIf="selectedDictionary.value !== displayDictNames()[0]">
-                    Accepter les changements
+                </div>
+                <button
+                    mat-stroked-button
+                    *ngIf="selectedDictionary.value !== displayDictNames()[0]"
+                    (click)="modifyDict(titleValue, descriptionValue)"
+                >
+                    Modifier le dictionnaire
                     <mat-icon>save</mat-icon>
                 </button>
-                <button mat-stroked-button *ngIf="selectedDictionary.value !== displayDictNames()[0]">
+                <button
+                    mat-stroked-button
+                    *ngIf="selectedDictionary.value !== displayDictNames()[0]"
+                    (click)="titleValue = selectedDictionary.value; deleteDict(titleValue)"
+                >
                     Supprimer le dictionnaire sélectionné
                     <mat-icon>delete</mat-icon>
-                </button> -->
-                <div *ngFor="let dic of this.socketHandler.dictInfoList" class="dic">
-                    <p style="font-weight: bold"> Title: </p>
-                     {{ dic.title }}
-                    <br>
-                    <p style="font-weight: bold">     Description:   </p>
-                     {{ dic.description }}
-                    <br>
-                
-
-
-
-                    
-
-
-                </div>
+                </button>
                 <mat-divider></mat-divider>
                 <h2>Téléverser un nouveau dictionnaire</h2>
-                <p></p>
                 <div>
-                    <!-- // utilisation de code ne provenant pas de nous, source :
-                        // https://fireflysemantics.medium.com/proxying-file-upload-buttons-with-angular-a5a3fc224c38 -->
-                    <input class="ng-hide"type="file" accept='.json' (change)="onFileSelect($event)" #hiddenfileinput />
+                    <input class="ng-hide" type="file" accept=".json" (change)="onFileSelect($event)" #hiddenfileinput />
                     <button mat-stroked-button (click)="submit()">
                         Téléverser un dictionnaire
                         <mat-icon style="transform: rotate(90deg)">attachment</mat-icon>
                     </button>
-                    <div style='color:red' *ngIf="error !== ''">{{error}}</div>
+                    <div style="color: red" *ngIf="error !== ''">{{ error }}</div>
                 </div>
             </div>
         </mat-tab>
