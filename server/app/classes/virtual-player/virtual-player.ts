@@ -168,7 +168,6 @@ export class VirtualPlayer {
 
     static commandExpertPlayer(game: Game): string[] {
         const allPlacementCommands = this.findAllPlacementCommands(game);
-        console.log(allPlacementCommands);
         if (allPlacementCommands.length === 0) return this.exchangeAllLetters(game);
         let maxScoreCommand: PlacementScore = allPlacementCommands[0];
         for (const command of allPlacementCommands) {

@@ -2,14 +2,17 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
 import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
 import { QuitGameDialogComponent } from '@app/components/quit-game-dialog/quit-game-dialog.component';
+import { of } from 'rxjs';
 import { GamePageComponent } from './game-page.component';
 
 describe('GamePageComponent', () => {
     let component: GamePageComponent;
     let fixture: ComponentFixture<GamePageComponent>;
     let pushSpy: jasmine.Spy<(data: unknown, unused: string, url?: string | URL | null | undefined) => void>;
+    let params: string;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -23,6 +26,10 @@ describe('GamePageComponent', () => {
                             return;
                         },
                     },
+                },
+                {
+                    provide: ActivatedRoute,
+                    useValue: { params: of({ mode: 'mode2990' }) },
                 },
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -39,6 +46,8 @@ describe('GamePageComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
         expect(pushSpy).toHaveBeenCalled();
+        params = 'modeClassic';
+        expect(params).toBe('modeClassic');
     });
 
     it('should call pushState and openDialog', () => {

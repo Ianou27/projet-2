@@ -81,6 +81,18 @@ describe('Game', () => {
         assert(spy.called);
     });
 
+    it('method player1Join should call method setGoals if mode2990 is true', () => {
+        const spy = sinon.spy(game, 'setGoals');
+        game.player1Join({ username: 'player1', id: '1', room: 'room1' }, '60', databaseService, true);
+        assert(spy.called);
+    });
+
+    it('method startSoloGame should call method setGoals if mode2990 is true', () => {
+        const spy = sinon.spy(game, 'setGoals');
+        game.startSoloGame(game.player1.user, game.sio, '60', databaseService, 'botname', BotType.Beginner, true);
+        assert(spy.called);
+    });
+
     it('method startSoloGame should set the value true to hisBot of the player2', () => {
         expect(game.player2.hisBot).equal(false);
         game.startSoloGame(game.player1.user, game.sio, '60', databaseService, 'botname', BotType.Beginner, false);
@@ -248,6 +260,22 @@ describe('Game', () => {
         await game.surrender('player1');
         await game.surrender('player2');
         expect(game.gameState.gameFinished).to.equal(true);
+    });
+
+    it('method surrender should change player1 in bot if player1 surrender first', async () => {
+        sinon.replace(game, 'endGame', async () => {
+            return;
+        });
+        await game.surrender('player1');
+        expect(game.player2.hisBot).to.equal(true);
+    });
+
+    it('method surrender should change player2 in bot if player2 surrender first', async () => {
+        sinon.replace(game, 'endGame', async () => {
+            return;
+        });
+        await game.surrender('player2');
+        expect(game.player1.hisBot).to.equal(true);
     });
 
     it('method actionVirtualBeginnerPlayer with probability 10 or less should return command pass', () => {

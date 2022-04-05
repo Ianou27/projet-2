@@ -55,6 +55,7 @@ describe('Timer Manager tests', () => {
             player1: 'player1',
             player2: 'player2',
             time: '60',
+            mode2990: false,
         };
         idManager.users.push(user1);
         idManager.users.push(user2);
@@ -86,6 +87,7 @@ describe('Timer Manager tests', () => {
             player1: 'player1',
             player2: 'player2',
             time: '60',
+            mode2990: false,
         };
         idManager.users.push(user1);
         idManager.users.push(user2);

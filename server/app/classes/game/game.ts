@@ -270,24 +270,7 @@ export class Game {
         return VirtualPlayer.commandExpertPlayer(this);
     }
 
-    private setWinner() {
-        if (this.player1.points > this.player2.points) this.gameState.winner = this.player1.user.username;
-        else if (this.player1.points < this.player2.points) this.gameState.winner = this.player2.user.username;
-        else {
-            this.gameState.winner = 'tie';
-        }
-
-        this.sio.to(this.roomName).emit('endGame', this.gameState.winner);
-        this.sio.to(this.roomName).emit('updatePoint', 'player1', this.player1.points);
-        this.sio.to(this.roomName).emit('updatePoint', 'player2', this.player2.points);
-        this.sio.to(this.roomName).emit('roomMessage', {
-            username: 'Server',
-            message: 'lettre joueur 1 =>' + this.player1.lettersToStringArray() + ' \n lettre joueur 2 ' + this.player2.lettersToStringArray(),
-            player: 'server',
-        });
-    }
-
-    private async endGame() {
+    async endGame() {
         this.gameState.gameFinished = true;
         this.timer.stop();
         if (this.player1.getNumberLetters() === 0) {
@@ -326,5 +309,22 @@ export class Game {
             });
         }
         await this.databaseService.closeConnection();
+    }
+
+    private setWinner() {
+        if (this.player1.points > this.player2.points) this.gameState.winner = this.player1.user.username;
+        else if (this.player1.points < this.player2.points) this.gameState.winner = this.player2.user.username;
+        else {
+            this.gameState.winner = 'tie';
+        }
+
+        this.sio.to(this.roomName).emit('endGame', this.gameState.winner);
+        this.sio.to(this.roomName).emit('updatePoint', 'player1', this.player1.points);
+        this.sio.to(this.roomName).emit('updatePoint', 'player2', this.player2.points);
+        this.sio.to(this.roomName).emit('roomMessage', {
+            username: 'Server',
+            message: 'lettre joueur 1 =>' + this.player1.lettersToStringArray() + ' \n lettre joueur 2 ' + this.player2.lettersToStringArray(),
+            player: 'server',
+        });
     }
 }

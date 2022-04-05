@@ -8,8 +8,8 @@ import { allGoals } from '@common/constants/goals';
 import { Tile } from '@common/tile/Tile';
 import { expect } from 'chai';
 import * as sinon from 'sinon';
-import { Player } from '../player/player';
 import { Game } from './../game/game';
+import { Player } from './../player/player';
 import { Goal } from './goal-validation';
 
 describe('Goal', () => {
@@ -33,8 +33,9 @@ describe('Goal', () => {
             tile.value = letterValue[tile.letter];
             word.push(tile);
         }
+        game.goals = JSON.parse(JSON.stringify(allGoals));
         words.push(word);
-        expect(Goal.tripleE(words)).equal(allGoals.tripleE.value);
+        expect(Goal.tripleE(words, game)).equal(allGoals.tripleE.value);
     });
 
     it('method tripleE should return 0 if no word contains three e', () => {
@@ -44,8 +45,9 @@ describe('Goal', () => {
             tile.value = letterValue[tile.letter];
             word.push(tile);
         }
+        game.goals = JSON.parse(JSON.stringify(allGoals));
         words.push(word);
-        expect(Goal.tripleE(words)).equal(0);
+        expect(Goal.tripleE(words, game)).equal(0);
     });
 
     it('method specialTile should return the right value if word is placed on B4', () => {
@@ -53,9 +55,9 @@ describe('Goal', () => {
         tile.letter = 'A';
         tile.value = letterValue[tile.letter];
         word.push(tile);
-
+        game.goals = JSON.parse(JSON.stringify(allGoals));
         words.push(word);
-        expect(Goal.specialTile(words)).equal(allGoals.specialTile.value);
+        expect(Goal.specialTile(words, game)).equal(allGoals.specialTile.value);
     });
 
     it('method specialTile should return 0 if word is placed on B4', () => {
@@ -63,9 +65,9 @@ describe('Goal', () => {
         tile.letter = 'A';
         tile.value = letterValue[tile.letter];
         word.push(tile);
-
+        game.goals = JSON.parse(JSON.stringify(allGoals));
         words.push(word);
-        expect(Goal.specialTile(words)).equal(0);
+        expect(Goal.specialTile(words, game)).equal(0);
     });
 
     it('method threeWords should return the right value if there is at least three words', () => {
@@ -76,7 +78,8 @@ describe('Goal', () => {
             word.push(tile);
             words.push(word);
         }
-        expect(Goal.threeWords(words)).equal(allGoals.threeWords.value);
+        game.goals = JSON.parse(JSON.stringify(allGoals));
+        expect(Goal.threeWords(words, game)).equal(allGoals.threeWords.value);
     });
 
     it('method threeWords should return 0 if there is at least three words', () => {
@@ -88,7 +91,8 @@ describe('Goal', () => {
             words.push(word);
             word = [];
         }
-        expect(Goal.threeWords(words)).equal(0);
+        game.goals = JSON.parse(JSON.stringify(allGoals));
+        expect(Goal.threeWords(words, game)).equal(0);
     });
 
     it('method isPalindrome should return the right value if it is palindrome', () => {
@@ -98,8 +102,9 @@ describe('Goal', () => {
             tile.value = letterValue[tile.letter];
             word.push(tile);
         }
+        game.goals = JSON.parse(JSON.stringify(allGoals));
         words.push(word);
-        expect(Goal.isPalindrome(words)).equal(allGoals.palindrome.value);
+        expect(Goal.isPalindrome(words, game)).equal(allGoals.palindrome.value);
     });
 
     it('method isPalindrome should return 0 if it is palindrome', () => {
@@ -111,7 +116,8 @@ describe('Goal', () => {
         word[1].letter = 'E';
         word[1].value = letterValue[word[1].letter];
         words.push(word);
-        expect(Goal.isPalindrome(words)).equal(0);
+        game.goals = JSON.parse(JSON.stringify(allGoals));
+        expect(Goal.isPalindrome(words, game)).equal(0);
     });
 
     it('method hasWordScrabble should return 0 if no words is the word SCRABBLE', () => {
@@ -132,7 +138,8 @@ describe('Goal', () => {
             word.push(tile);
         }
         words.push(word);
-        const result = Goal.hasWordScrabble(words);
+        game.goals = JSON.parse(JSON.stringify(allGoals));
+        const result = Goal.hasWordScrabble(words, game);
         expect(result).equal(0);
     });
 
@@ -154,7 +161,8 @@ describe('Goal', () => {
             word.push(tile);
         }
         words.push(word);
-        const result = Goal.hasWordScrabble(words);
+        game.goals = JSON.parse(JSON.stringify(allGoals));
+        const result = Goal.hasWordScrabble(words, game);
         expect(result).equal(allGoals.scrabble.value);
     });
 
@@ -176,7 +184,8 @@ describe('Goal', () => {
             word.push(tile);
         }
         words.push(word);
-        const result = Goal.twoTenPointsLetters(words);
+        game.goals = JSON.parse(JSON.stringify(allGoals));
+        const result = Goal.twoTenPointsLetters(words, game);
         expect(result).equal(0);
     });
 
@@ -198,7 +207,8 @@ describe('Goal', () => {
             word.push(tile);
         }
         words.push(word);
-        const result = Goal.twoTenPointsLetters(words);
+        game.goals = JSON.parse(JSON.stringify(allGoals));
+        const result = Goal.twoTenPointsLetters(words, game);
         expect(result).equal(allGoals.twoTenPointsLetters.value);
     });
 
@@ -220,7 +230,8 @@ describe('Goal', () => {
             word.push(tile);
         }
         words.push(word);
-        const result = Goal.hasTwoStars(words);
+        game.goals = JSON.parse(JSON.stringify(allGoals));
+        const result = Goal.hasTwoStars(words, game);
         expect(result).equal(0);
     });
 
@@ -242,7 +253,8 @@ describe('Goal', () => {
             word.push(tile);
         }
         words.push(word);
-        const result = Goal.hasTwoStars(words);
+        game.goals = JSON.parse(JSON.stringify(allGoals));
+        const result = Goal.hasTwoStars(words, game);
         expect(result).equal(allGoals.twoStars.value);
     });
 
@@ -264,7 +276,8 @@ describe('Goal', () => {
             word.push(tile);
         }
         words.push(word);
-        const result = Goal.hasEightLetters(words);
+        game.goals = JSON.parse(JSON.stringify(allGoals));
+        const result = Goal.hasEightLetters(words, game);
         expect(result).equal(0);
     });
 
@@ -286,7 +299,8 @@ describe('Goal', () => {
             word.push(tile);
         }
         words.push(word);
-        const result = Goal.hasEightLetters(words);
+        game.goals = allGoals;
+        const result = Goal.hasEightLetters(words, game);
         expect(result).equal(allGoals.eightLetters.value);
     });
 
@@ -302,18 +316,16 @@ describe('Goal', () => {
         game.goals = goals;
         for (const goal in game.goals) {
             game.goals[goal].isInGame = true;
+            game.goals[goal].isDone = false;
         }
-        sinon.replace(Goal, 'turnVerification', () => {
-            return true;
-        });
-        const spyTripleE = sinon.stub(Goal, 'tripleE');
-        const spyEightLetters = sinon.stub(Goal, 'hasEightLetters');
-        const spyTwoStars = sinon.stub(Goal, 'hasTwoStars');
-        const spyScrabble = sinon.stub(Goal, 'hasWordScrabble');
-        const spyPalindrome = sinon.stub(Goal, 'isPalindrome');
-        const spySpecialTile = sinon.stub(Goal, 'specialTile');
-        const spyThreeWords = sinon.stub(Goal, 'threeWords');
-        const spyTwoTenPoints = sinon.stub(Goal, 'twoTenPointsLetters');
+        const spyTripleE = sinon.spy(Goal, 'tripleE');
+        const spyEightLetters = sinon.spy(Goal, 'hasEightLetters');
+        const spyTwoStars = sinon.spy(Goal, 'hasTwoStars');
+        const spyScrabble = sinon.spy(Goal, 'hasWordScrabble');
+        const spyPalindrome = sinon.spy(Goal, 'isPalindrome');
+        const spySpecialTile = sinon.spy(Goal, 'specialTile');
+        const spyThreeWords = sinon.spy(Goal, 'threeWords');
+        const spyTwoTenPoints = sinon.spy(Goal, 'twoTenPointsLetters');
         Goal.validationGoal(words, game);
         expect(spySpecialTile.called);
         expect(spyTripleE.called);

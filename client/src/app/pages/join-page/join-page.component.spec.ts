@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { WaitingPlayerDialogComponent } from '@app/components/waiting-player-dialog/waiting-player-dialog.component';
 import { WaitingPlayerTwoComponent } from '@app/components/waiting-player-two/waiting-player-two.component';
 import { Room } from './../../../../../common/types';
@@ -9,6 +9,7 @@ import { JoinPageComponent } from './join-page.component';
 describe('JoinPageComponent', () => {
     let component: JoinPageComponent;
     let fixture: ComponentFixture<JoinPageComponent>;
+    let model: string;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -25,6 +26,10 @@ describe('JoinPageComponent', () => {
                             return;
                         },
                     },
+                },
+                {
+                    provide: MAT_DIALOG_DATA,
+                    useValue: model,
                 },
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -62,6 +67,7 @@ describe('JoinPageComponent', () => {
             player1: 'player1',
             player2: 'player2',
             time: '60',
+            mode2990: false,
         };
         component.clientSocketHandler.allRooms = [room];
         component.randomJoin();

@@ -8,6 +8,7 @@ import { Socket } from 'socket.io-client';
 import { Tile } from '../../../../../common/tile/Tile';
 import { LetterScore } from './../../../../../common/assets/reserve-letters';
 import { BotType } from './../../../../../common/botType';
+import { GoalInformations } from './../../../../../common/constants/goal-information';
 import { InfoToJoin, Message, Room } from './../../../../../common/types';
 import { ClientSocketHandler } from './client-socket-handler.service';
 
@@ -72,6 +73,7 @@ describe('ChatService', () => {
             player1: 'player1',
             player2: '',
             time: '60',
+            mode2990: false,
         };
         const emitSpy = spyOn(service.socketService.socket, 'emit');
         service.askJoin('test', room);
@@ -99,16 +101,16 @@ describe('ChatService', () => {
     it('createRoom() should emit an event and call updateRooms()', () => {
         const updateRoomSpy = spyOn(service, 'updateRooms');
         const emitSpy = spyOn(service.socketService.socket, 'emit');
-        service.createRoom('test', 'testRoom', '60');
+        service.createRoom('test', 'testRoom', '60', false);
         expect(emitSpy).toHaveBeenCalled();
-        expect(emitSpy).toHaveBeenCalledWith('createRoom', 'test', 'testRoom', '60');
+        expect(emitSpy).toHaveBeenCalledWith('createRoom', 'test', 'testRoom', '60', false);
         expect(updateRoomSpy).toHaveBeenCalled();
     });
     it('createSoloGame() should emit an event createSoloGame', () => {
         const emitSpy = spyOn(service.socketService.socket, 'emit');
-        service.createSoloGame('test', '60', BotType.Beginner);
+        service.createSoloGame('test', '60', BotType.Beginner, false);
         expect(emitSpy).toHaveBeenCalled();
-        expect(emitSpy).toHaveBeenCalledWith('createSoloGame', 'test', '60', BotType.Beginner);
+        expect(emitSpy).toHaveBeenCalledWith('createSoloGame', 'test', '60', BotType.Beginner, false);
     });
     it('updateRoom() should send an event and updateRooms ', () => {
         const sendSpy = spyOn(service.socketService, 'send');
@@ -120,6 +122,7 @@ describe('ChatService', () => {
             player1: 'player1',
             player2: '',
             time: '60',
+            mode2990: false,
         };
         const info: InfoToJoin = {
             username: 'username',
@@ -243,12 +246,13 @@ describe('ChatService', () => {
                 player1: 'player1',
                 player2: '',
                 time: '60',
+                mode2990: false,
             },
         ];
 
         service.updateRoomView();
 
-        expect(service.numberOfRooms).toBe(1);
+        expect(service.numberOfRoomsClassic).toBe(1);
     });
 
     describe('Receiving events', () => {
@@ -295,7 +299,8 @@ describe('ChatService', () => {
 
         it('should handle tileHolder event', () => {
             const letters: Tile[] = [];
-            socketTestHelper.peerSideEmit('tileHolder', letters);
+            const goalPlayer: GoalInformations[] = [];
+            socketTestHelper.peerEmitTwoParams('tileHolder', letters, goalPlayer);
             expect(service.tileHolderService.tileHolder).toBe(letters);
         });
 
@@ -328,6 +333,7 @@ describe('ChatService', () => {
                 player1: 'player1',
                 player2: 'player2',
                 time: '60',
+                mode2990: false,
             };
 
             const rooms: Room[] = [];
@@ -371,6 +377,7 @@ describe('ChatService', () => {
                 player1: 'player1',
                 player2: '',
                 time: '60',
+                mode2990: false,
             };
             const info: InfoToJoin = {
                 username: 'username',
@@ -386,6 +393,7 @@ describe('ChatService', () => {
                 player1: 'player1',
                 player2: '',
                 time: '60',
+                mode2990: false,
             };
             const info: InfoToJoin = {
                 username: 'username',
@@ -409,11 +417,9 @@ describe('ChatService', () => {
 
         it('should handle playerDc event', () => {
             const pushSpy = spyOn(service.roomMessages, 'push');
-            const sendSpy = spyOn(service.socketService, 'send');
             const updateSpy = spyOn(service, 'updateRooms');
             socketTestHelper.peerSideEmit('playerDc');
             expect(pushSpy).toHaveBeenCalled();
-            expect(sendSpy).toHaveBeenCalled();
             expect(updateSpy).toHaveBeenCalled();
         });
         it('should handle updatePoint event and set player1 points', () => {

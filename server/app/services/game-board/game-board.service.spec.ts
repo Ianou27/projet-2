@@ -126,4 +126,9 @@ describe('GameBoard', () => {
     it('isLastTile should return false if tile position X or Y equals 0 or 14 depending on orientation', () => {
         expect(gameBoard.isBottomOrLeft(currentTile, Orientation.h)).equal(false);
     });
+
+    it('isTopOrRight should return true if tile position Y equals 0', () => {
+        const tile = gameBoard.cases[0][0];
+        expect(gameBoard.isTopOrRight(tile, Orientation.v)).equal(true);
+    });
 });

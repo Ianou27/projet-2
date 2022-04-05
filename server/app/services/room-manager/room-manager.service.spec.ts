@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { Game } from '@app/classes/game/game';
+import { Player } from '@app/classes/player/player';
 import { RoomManager } from '@app/services/room-manager/room-manager.service';
 import { BotType } from '@common/botType';
+import { GoalType } from '@common/constants/goal-type';
+import { allGoals } from '@common/constants/goals';
 import { Room, User } from '@common/types';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
@@ -41,6 +44,7 @@ describe('Room Manager tests', () => {
             player1: 'rt',
             player2: '',
             time: '60',
+            mode2990: false,
         };
         sinon.replace(idManager, 'getGame', () => {
             return game;
@@ -50,6 +54,38 @@ describe('Room Manager tests', () => {
         roomManager.joinRoom('rta', room, '12', idManager, sio);
 
         expect(idManager.rooms[0].player2).to.equal('rta');
+    });
+
+    it('method getGoalsPlayer should return goals of player2', () => {
+        const game = new Game();
+        game.player1 = new Player(game.reserveLetters.randomLettersInitialization(), true, 'player1', { username: 'aaa', id: '1', room: 'room1' });
+        game.player2 = new Player(game.reserveLetters.randomLettersInitialization(), false, 'player2', { username: 'bbb', id: '2', room: 'room1' });
+        game.goals = JSON.parse(JSON.stringify(allGoals));
+        game.goals.palindrome.type = GoalType.PrivatePlayer2;
+        game.goals.palindrome.isInGame = true;
+        game.goals.twoStars.isInGame = true;
+        game.goals.scrabble.isInGame = true;
+        game.goals.scrabble.type = GoalType.PrivatePlayer1;
+        const goals = roomManager.getGoalsPlayer(game, game.player2);
+        expect(goals.includes(game.goals.palindrome)).to.equal(true);
+        expect(goals.includes(game.goals.twoStars)).to.equal(true);
+        expect(goals.includes(game.goals.scrabble)).to.equal(false);
+    });
+
+    it('method getGoalsPlayer should return goals of player1', () => {
+        const game = new Game();
+        game.player1 = new Player(game.reserveLetters.randomLettersInitialization(), true, 'player1', { username: 'aaa', id: '1', room: 'room1' });
+        game.player2 = new Player(game.reserveLetters.randomLettersInitialization(), false, 'player2', { username: 'bbb', id: '2', room: 'room1' });
+        game.goals = JSON.parse(JSON.stringify(allGoals));
+        game.goals.palindrome.type = GoalType.PrivatePlayer1;
+        game.goals.palindrome.isInGame = true;
+        game.goals.twoStars.isInGame = true;
+        game.goals.scrabble.isInGame = true;
+        game.goals.scrabble.type = GoalType.PrivatePlayer2;
+        const goals = roomManager.getGoalsPlayer(game, game.player1);
+        expect(goals.includes(game.goals.palindrome)).to.equal(true);
+        expect(goals.includes(game.goals.twoStars)).to.equal(true);
+        expect(goals.includes(game.goals.scrabble)).to.equal(false);
     });
 
     it('convertMultiToSolo should call create SoloGame', () => {
@@ -84,6 +120,7 @@ describe('Room Manager tests', () => {
             player1: 'username',
             player2: '',
             time: '60',
+            mode2990: false,
         };
         idManager.rooms.push(room);
         const deleteSpy = sinon.stub(roomManager, 'deleteRoom');
@@ -97,6 +134,7 @@ describe('Room Manager tests', () => {
             player1: '-2',
             player2: 'username',
             time: '60',
+            mode2990: false,
         };
         idManager.rooms.push(room);
         roomManager.deleteRoom(socketId, idManager);
@@ -108,6 +146,7 @@ describe('Room Manager tests', () => {
             player1: 'test',
             player2: 'username',
             time: '60',
+            mode2990: false,
         };
         idManager.rooms.push(room);
         roomManager.deleteRoom(socketId, idManager);
@@ -121,6 +160,7 @@ describe('Room Manager tests', () => {
             player1: 'username',
             player2: '',
             time: '60',
+            mode2990: false,
         };
         idManager.rooms.push(room);
         roomManager.deleteRoom(socketId, idManager);
@@ -134,6 +174,7 @@ describe('Room Manager tests', () => {
             player1: 'username',
             player2: '-2',
             time: '60',
+            mode2990: false,
         };
         idManager.rooms.push(room);
         roomManager.deleteRoom(socketId, idManager);
@@ -146,6 +187,7 @@ describe('Room Manager tests', () => {
             player1: 'username',
             player2: 'player2',
             time: '60',
+            mode2990: false,
         };
         idManager.rooms.push(room);
         roomManager.deleteRoom(socketId, idManager);

@@ -179,6 +179,14 @@ describe('Game Manager', () => {
         assert(spyBoard.notCalled);
     });
 
+    it('method exchangeVerification should return Entrée invalide if format is exchangeFormatValid return false', () => {
+        sinon.replace(gameManager, 'exchangeFormatValid', () => {
+            return false;
+        });
+        const wrongCommand = ['!placer', 'Z0h', 'abz'];
+        expect(gameManager.exchangeVerification(wrongCommand, game)).to.equal('Entrée invalide');
+    });
+
     it('method exchangeVerification should call exchangeFormatValid and exchangeTileHolderValid if command is valid and return "valide"', () => {
         sinon.replace(gameManager, 'exchangeFormatValid', () => {
             return true;

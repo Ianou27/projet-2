@@ -76,6 +76,7 @@ describe('IdManager tests', () => {
             player1: 'user',
             player2: 'username',
             time: '60',
+            mode2990: false,
         };
         idManager.rooms.push(room);
 
@@ -92,6 +93,7 @@ describe('IdManager tests', () => {
                 player1: 'user',
                 player2: 'username',
                 time: '60',
+                mode2990: false,
             },
         ];
 
@@ -104,6 +106,7 @@ describe('IdManager tests', () => {
             player1: 'rt',
             player2: 'rta',
             time: '60',
+            mode2990: false,
         };
         idManager.rooms.push(room);
         sinon.replace(idManager, 'getUsername', () => {
@@ -118,6 +121,7 @@ describe('IdManager tests', () => {
             player1: 'rt',
             player2: 'rta',
             time: '60',
+            mode2990: false,
         };
         idManager.rooms.push(room);
         sinon.replace(idManager, 'getUsername', () => {

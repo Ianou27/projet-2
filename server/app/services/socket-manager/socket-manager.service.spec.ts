@@ -81,6 +81,7 @@ describe('SocketManager service tests', () => {
             player1: username,
             player2: '',
             time: '60',
+            mode2990: false,
         };
         service.identification.rooms.push(roomObj);
         clientSocket.emit('askJoin', username, roomObj);
@@ -95,6 +96,7 @@ describe('SocketManager service tests', () => {
             player1: 'username',
             player2: 's',
             time: '60',
+            mode2990: false,
         };
         service.identification.rooms = [roomObject];
         const infoObj = {
@@ -117,6 +119,7 @@ describe('SocketManager service tests', () => {
             player1: 'username',
             player2: 's',
             time: '60',
+            mode2990: false,
         };
         service.identification.rooms = [roomObject];
         const infoObj = {
@@ -154,6 +157,7 @@ describe('SocketManager service tests', () => {
             player1: 'username',
             player2: 'user2',
             time: '60',
+            mode2990: false,
         };
         service.identification.rooms = [roomObject];
         service.identification.roomMessages['room'] = [];
@@ -181,6 +185,7 @@ describe('SocketManager service tests', () => {
             player1: 'username',
             player2: 'user2',
             time: '60',
+            mode2990: false,
         };
         service.identification.rooms = [roomObject];
         service.identification.roomMessages['room'] = [];
@@ -207,6 +212,7 @@ describe('SocketManager service tests', () => {
             player1: 'username',
             player2: '',
             time: '60',
+            mode2990: false,
         };
         service.identification.rooms.push(roomObj);
         clientSocket.emit('updateRoom');
