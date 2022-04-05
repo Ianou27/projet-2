@@ -33,6 +33,7 @@
                             placeholder="Dictionnaire par défaut"
                             [disabled]="selectedDictionary.value === displayDictNames()[0]"
                             (click)="titleValue = selectedDictionary.value"
+                            [value]="selectedDictionary.value"
                             [(ngModel)]="titleValue"
                         />
                     </mat-form-field>
@@ -43,6 +44,7 @@
                             placeholder="Ex. Dictionnaire par défaut"
                             [disabled]="selectedDictionary.value === displayDictNames()[0]"
                             (click)="descriptionValue = displayDictDescription(selectedDictionary.value)[0]"
+                            [value]="displayDictDescription(selectedDictionary.value)[0]"
                             [(ngModel)]="descriptionValue"
                         ></textarea>
                     </mat-form-field>
