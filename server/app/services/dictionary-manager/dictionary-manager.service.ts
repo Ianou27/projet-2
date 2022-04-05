@@ -24,4 +24,46 @@ export class DictionaryManager {
             }
         });
     }
+
+    deleteDictionary(title: string) {
+        fs.unlink('./assets/dictionaries/' + title + '.json', async (err) => {
+            if (err) {
+                throw err;
+            }
+            await this.databaseService.start();
+            await this.databaseService.deleteDictionary(title);
+            await this.databaseService.closeConnection();
+        });
+    }
+
+    async modifyDictionary(oldTitle:string, newTitle:string , description:string) {
+
+        //modifie title of json file 
+
+        fs.rename('./assets/dictionaries/' + oldTitle + '.json', './assets/dictionaries/' + newTitle + '.json', async (err) => {
+            if (err) {
+                throw err;
+            }
+
+        });
+        //modifie title and description in the file 
+
+        fs.readFile('./assets/dictionaries/' + newTitle + '.json', async (err, data) => {
+            if (err) {
+                throw err;
+            }
+            let dictionary = JSON.parse(data.toString());
+            dictionary['title'] = newTitle;
+            dictionary['description'] = description;
+            fs.writeFile('./assets/dictionaries/' + newTitle + '.json', JSON.stringify(dictionary), async (err) => {
+                if (err) {
+                    throw err;
+                }
+            });
+        });
+        await this.databaseService.start();
+        await this.databaseService.modifyDictionary(oldTitle, newTitle, description);
+        await this.databaseService.closeConnection();
+    }
+
 }

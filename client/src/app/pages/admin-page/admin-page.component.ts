@@ -39,6 +39,8 @@ export class AdminPageComponent implements OnInit {
     constructor(public socketHandler: ClientSocketHandler, public snackBar: MatSnackBar) {
         socketHandler.connect();
         socketHandler.getAdminPageInfo();
+        this.titleValue ='default dictionary';
+        this.descriptionValue = 'Description de base';
     }
 
     ngOnInit(): void {
@@ -71,17 +73,36 @@ export class AdminPageComponent implements OnInit {
 
     openSnackBar(message: string, action: string) {
         this.snackBar.open(message, action, {
-            duration: 2000,
+            duration: 3000,
         });
     }
 
-    modifyDict(title: string, description: string) {
-        console.log(title);
-        console.log(description);
+    modifyDict(oldTitle:string , title: string, description: string):boolean {
+        console.log(title, description);
+        const dictionaryList:Dic[] = this.socketHandler.dictInfoList;
+
+        for(let dict  of dictionaryList) {
+            if (dict.title !== oldTitle && dict.title === title) {
+                this.error = "Le titre du dictionnaire existe déjà";
+                return false;
+            }
+        }
+        if(title.replace(/\s/g, '').length === 0 || description.replace(/\s/g, '').length === 0 || (description === this.displayDictDescription(oldTitle)[0] && oldTitle === title)) {
+            this.error = "Veuillez au moins changer une valeur et ne pas laisser de valeur vide";
+            return false;
+        }
+        
+        else{
+            this.socketHandler.modifyDictionary(oldTitle, title, description);
+            window.location.reload();
+            
+        }
+        return true;
     }
 
     deleteDict(title: string) {
-        console.log(title);
+        this.socketHandler.deleteDic(title);
+        window.location.reload();
     }
 
     downloadDict(title: string) {
@@ -122,7 +143,7 @@ export class AdminPageComponent implements OnInit {
         return names;
     }
 
-    displayDictDescription(name: string) {
+    displayDictDescription(name: string):string[] {
         const descriptions: string[] = [];
         const dictionaryList = this.socketHandler.dictInfoList;
         dictionaryList.forEach((dict: Dic) => {
@@ -175,7 +196,10 @@ export class AdminPageComponent implements OnInit {
 
             if (this.verifyDict(this.selectedFile)) {
                 this.socketHandler.uploadDictionary(object);
+                
                 this.openSnackBar('Dictionnaire ajouté', 'Ok');
+                window.location.reload();
+
             }
         } catch (error) {
             this.error = "Le fichier n'est pas au bon format";

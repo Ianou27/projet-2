@@ -124,6 +124,10 @@ export class DatabaseService {
     async deleteDictionary(title: string) {
         await this.db.collection(DATABASE_COLLECTION_DIC).deleteOne({ title });
     }
+    async modifyDictionary(oldTitle:string, newTitle:string , description:string) {
+        await this.db.collection(DATABASE_COLLECTION_DIC).updateOne({title:oldTitle},{$set:{title:newTitle,description:description}});
+
+    }
     // game Handler
 
     async insertGame(game: GameHistory) {

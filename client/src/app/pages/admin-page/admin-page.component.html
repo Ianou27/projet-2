@@ -21,7 +21,10 @@
                     <mat-form-field appearance="fill">
                         <mat-label>Nom du dictionnaire</mat-label>
                         <mat-select [(value)]="displayDictNames()[0]" #selectedDictionary>
-                            <mat-option *ngFor="let dictionary of displayDictNames(); index as i" [value]="displayDictNames()[i]">
+                            <mat-option 
+                            (click)=" titleValue = selectedDictionary.value; descriptionValue = displayDictDescription(selectedDictionary.value)[0]  "
+
+                            *ngFor="let dictionary of displayDictNames(); index as i" [value]="displayDictNames()[i]">
                                 {{ dictionary }}
                             </mat-option>
                         </mat-select>
@@ -32,8 +35,7 @@
                             matInput
                             placeholder="Dictionnaire par défaut"
                             [disabled]="selectedDictionary.value === displayDictNames()[0]"
-                            (click)="titleValue = selectedDictionary.value"
-                            [value]="selectedDictionary.value"
+                            [value]="titleValue"
                             [(ngModel)]="titleValue"
                         />
                     </mat-form-field>
@@ -43,8 +45,7 @@
                             matInput
                             placeholder="Ex. Dictionnaire par défaut"
                             [disabled]="selectedDictionary.value === displayDictNames()[0]"
-                            (click)="descriptionValue = displayDictDescription(selectedDictionary.value)[0]"
-                            [value]="displayDictDescription(selectedDictionary.value)[0]"
+                            [value]="descriptionValue"
                             [(ngModel)]="descriptionValue"
                         ></textarea>
                     </mat-form-field>
@@ -56,7 +57,7 @@
                 <button
                     mat-stroked-button
                     *ngIf="selectedDictionary.value !== displayDictNames()[0]"
-                    (click)="modifyDict(titleValue, descriptionValue)"
+                    (click)="modifyDict(selectedDictionary.value,titleValue, descriptionValue)"
                 >
                     Modifier le dictionnaire
                     <mat-icon>save</mat-icon>

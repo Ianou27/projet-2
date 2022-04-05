@@ -354,9 +354,34 @@ export class SocketManager {
             });
 
 
-
-                
-
+            socket.on('deleteDic', async (title:string) => {
+                this.dictionaryManager.deleteDictionary(title);
+                await this.databaseService.start();
+                this.sio
+                    .to(socket.id)
+                    .emit(
+                        'getAdminInfo',
+                        await this.databaseService.getDictionaryInfo(),
+                        await this.databaseService.getGameHistory(),
+                        await this.databaseService.getVirtualPlayers(),
+                    );
+                await this.databaseService.closeConnection();
+            });
+            socket.on('modifyDictionary', async (oldTitle:string, newTitle:string , description:string) => {
+                this.dictionaryManager.modifyDictionary(oldTitle, newTitle, description);
+                await this.databaseService.start();
+              
+                this.sio
+                    .to(socket.id)
+                    .emit(
+                        'getAdminInfo',
+                        await this.databaseService.getDictionaryInfo(),
+                        await this.databaseService.getGameHistory(),
+                        await this.databaseService.getVirtualPlayers(),
+                    );
+                await this.databaseService.closeConnection();
+            });
+            
 
             socket.on('resetGameHistory', async () => {
                 await this.databaseService.start();
@@ -371,6 +396,8 @@ export class SocketManager {
                     );
                 await this.databaseService.closeConnection();
             });
+            
+            
 
             socket.on('resetBestScore', async () => {
                 await this.databaseService.start();

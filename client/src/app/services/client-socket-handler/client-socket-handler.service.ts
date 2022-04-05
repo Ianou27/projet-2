@@ -288,6 +288,12 @@ export class ClientSocketHandler {
         
         this.socketService.socket.emit('uploadDictionary', file);
     }
+    deleteDic(title: string) {
+        this.socketService.socket.emit('deleteDic', title);
+    }
+    modifyDictionary(oldTitle: string, newTitle: string, description: string) {
+        this.socketService.socket.emit('modifyDictionary', oldTitle, newTitle , description);
+    }
 
     accepted() {
         this.socketService.socket.emit('accepted', this.socketWantToJoin, this.informationToJoin);
