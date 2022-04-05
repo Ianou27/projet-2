@@ -139,7 +139,7 @@ export class AdminPageComponent implements OnInit {
     }
 
     verifyDictionary(dictionary: string) {
-       const object:JSON = JSON.parse(dictionary);
+       const object:JSON = JSON.parse(dictionary.toString());;
     
         //  if (Object.keys(object).length === 3 && object.hasOwnProperty('title') && object.hasOwnProperty('description') && object.hasOwnProperty('words')) {
         //     if (typeof object.title === 'string' && object.title !== '' && typeof object.description === 'string' && object.description !== '' && Array.isArray(object.words) && object.words.length !== 0) {

@@ -4,6 +4,7 @@
 import { InfoToJoin, Room } from '@common/types';
 import * as http from 'http';
 import * as io from 'socket.io';
+import { DictionaryManager } from '../dictionary-manager/dictionary-manager.service';
 import { DatabaseService } from './../best-score/best-score.services';
 import { GameManager } from './../game-manager/game-manager.service';
 import { IdManager } from './../id-manager/id-manager.service';
@@ -13,6 +14,7 @@ export class SocketManager {
     gameManager: GameManager;
     identification: IdManager;
     roomManager: RoomManager;
+    dictionaryManager: DictionaryManager;
     sio: io.Server;
     timeLeft: number;
     constructor(server: http.Server, readonly databaseService: DatabaseService) {
@@ -20,6 +22,7 @@ export class SocketManager {
         this.gameManager = new GameManager();
         this.identification = new IdManager();
         this.roomManager = new RoomManager();
+        this.dictionaryManager = new DictionaryManager();
     }
 
     async handleSockets(): Promise<void> {
@@ -335,10 +338,9 @@ export class SocketManager {
                 await this.databaseService.closeConnection();
             });
 
-            //uploadDictionary socket.on
 
             socket.on('uploadDictionary',  (file: JSON) => {
-                console.log(file);
+                this.dictionaryManager.uploadDictionary(file);
             });
 
 
