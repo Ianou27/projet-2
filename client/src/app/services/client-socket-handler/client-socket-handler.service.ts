@@ -3,7 +3,7 @@ import { LetterScore } from './../../../../../common/assets/reserve-letters';
 import { BotType } from './../../../../../common/botType';
 import { CommandType } from './../../../../../common/command-type';
 import { NUMBER_MAXIMUM_CLUE_COMMAND } from './../../../../../common/constants/general-constants';
-import { Goals } from './../../../../../common/constants/goals';
+import { GoalInformations } from './../../../../../common/constants/goal-information';
 import { Tile } from './../../../../../common/tile/Tile';
 import { InfoToJoin, Message, Room } from './../../../../../common/types';
 import { INITIAL_NUMBER_LETTERS_RESERVE, NUMBER_LETTER_TILEHOLDER } from './../../constants/general-constants';
@@ -46,7 +46,7 @@ export class ClientSocketHandler {
     timer: number = 0;
     numberOfRoomsClassic: number = 0;
     numberOfRoomsLog: number = 0;
-    goals: Goals;
+    goals: GoalInformations[];
 
     constructor(public socketService: SocketClientService, public boardService: BoardService, public tileHolderService: TileHolderService) {}
 
@@ -73,8 +73,9 @@ export class ClientSocketHandler {
             if (tileHolder) this.tileHolderService.tileHolder = tileHolder;
         });
 
-        this.socketService.on('tileHolder', (letters: Tile[]) => {
+        this.socketService.socket.on('tileHolder', (letters: Tile[], goalPlayer: GoalInformations[]) => {
             this.tileHolderService.tileHolder = letters;
+            this.goals = goalPlayer;
         });
 
         this.socketService.socket.on('modification', (updatedBoard: Tile[][], playerTurn: string) => {
@@ -179,8 +180,7 @@ export class ClientSocketHandler {
             this.updateRooms();
         });
         // possible de reduire quelque ligne en emettant tous les points possible de faire un interface
-        this.socketService.socket.on('updatePoint', (player: string, point: number, goals: Goals) => {
-            this.goals = goals;
+        this.socketService.socket.on('updatePoint', (player: string, point: number) => {
             if (player === 'player1') {
                 this.player1Point = point;
             } else if (player === 'player2') {

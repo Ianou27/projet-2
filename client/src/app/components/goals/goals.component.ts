@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
-import { Goals } from './../../../../../common/constants/goals';
+import { GoalInformations } from './../../../../../common/constants/goal-information';
+import { GoalType } from './../../../../../common/constants/goal-type';
 
 @Component({
     selector: 'app-goals',
@@ -8,10 +9,15 @@ import { Goals } from './../../../../../common/constants/goals';
     styleUrls: ['./goals.component.scss'],
 })
 export class GoalsComponent {
-    goals: Goals;
-    goalsList: string[];
+    goals: GoalInformations[];
     constructor(public clientSocketHandler: ClientSocketHandler) {
         this.goals = clientSocketHandler.goals;
-        this.goalsList = Object.keys(this.goals);
+    }
+
+    getType(goal: GoalInformations) {
+        if (goal.type === GoalType.Public) {
+            return 'Public';
+        }
+        return 'Privé';
     }
 }
