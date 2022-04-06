@@ -31,7 +31,6 @@ export class BoardComponent implements OnInit {
             }
             case 'Enter': {
                 this.placeWord();
-                this.letterPlaced = [];
                 break;
             }
             default: {
@@ -67,8 +66,10 @@ export class BoardComponent implements OnInit {
             }
             command += this.letterPlaced[i];
         }
+        console.log(command);
         this.clientSocketHandler.roomMessage = command;
         this.clientSocketHandler.sendToRoom();
+        this.letterPlaced = [];
     }
 
     removeLetter() {
