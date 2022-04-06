@@ -249,11 +249,12 @@ export class Game {
     passTurn(): void {
         this.changeTurnTwoPlayers();
         this.gameState.passesCount++;
-        this.gameStateUpdate();
+
         this.timer.reset();
         this.sio.to(this.player1.user.room).emit('modification', this.gameBoard.cases, this.playerTurn().name);
         this.sio.to(this.player1.user.id).emit('tileHolder', this.player1.letters);
         this.sio.to(this.player2.user.id).emit('tileHolder', this.player2.letters);
+        this.gameStateUpdate();
     }
 
     actionVirtualBeginnerPlayer(probability: number): string[] {
@@ -318,7 +319,6 @@ export class Game {
             this.gameState.winner = 'tie';
         }
 
-        this.sio.to(this.roomName).emit('endGame', this.gameState.winner);
         this.sio.to(this.roomName).emit('updatePoint', 'player1', this.player1.points);
         this.sio.to(this.roomName).emit('updatePoint', 'player2', this.player2.points);
         this.sio.to(this.roomName).emit('roomMessage', {
@@ -326,5 +326,6 @@ export class Game {
             message: 'lettre joueur 1 =>' + this.player1.lettersToStringArray() + ' \n lettre joueur 2 ' + this.player2.lettersToStringArray(),
             player: 'server',
         });
+        this.sio.to(this.roomName).emit('endGame', this.gameState.winner);
     }
 }
