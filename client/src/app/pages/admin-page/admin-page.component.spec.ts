@@ -3,8 +3,10 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { DownloadDialogComponent } from '@app/components/download-dialog/download-dialog.component';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
 import { AdminPageComponent } from './admin-page.component';
@@ -14,6 +16,7 @@ describe('AdminPageComponent', () => {
     let component: AdminPageComponent;
     let fixture: ComponentFixture<AdminPageComponent>;
     let clientSocketHandlerSpy: SpyObj<ClientSocketHandler>;
+    let windowMock: any;
 
     beforeEach(() => {
         clientSocketHandlerSpy = jasmine.createSpyObj(
@@ -24,6 +27,9 @@ describe('AdminPageComponent', () => {
                 'addVirtualPlayerNames',
                 'deleteVirtualPlayerName',
                 'modifyVirtualPlayerNames',
+                'modifyDictionary',
+                'deleteDic',
+                'downloadDictionary',
                 'resetVirtualPlayers',
                 'resetDictionary',
                 'resetGameHistory',
@@ -45,14 +51,29 @@ describe('AdminPageComponent', () => {
                 dictInfoList: [{ title: 'titre', description: 'description' }],
             },
         );
+        windowMock = { location: { reload: jasmine.createSpy('reload') } };
     });
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [AdminPageComponent],
-            imports: [AppMaterialModule, NoopAnimationsModule, FormsModule],
+            declarations: [AdminPageComponent, DownloadDialogComponent],
+            imports: [AppMaterialModule, NoopAnimationsModule, FormsModule, MatDialogModule],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
-            providers: [{ provide: ClientSocketHandler, useValue: clientSocketHandlerSpy }],
+            providers: [
+                { provide: ClientSocketHandler, useValue: clientSocketHandlerSpy },
+                {
+                    provide: MatDialog,
+                    useValue: {
+                        open: () => {
+                            return;
+                        },
+                        closeAll: () => {
+                            return;
+                        },
+                    },
+                },
+                { provide: window, useValue: windowMock },
+            ],
         }).compileComponents();
     });
 
@@ -77,11 +98,50 @@ describe('AdminPageComponent', () => {
         expect(component.showCard).toBeFalse();
     });
 
+    it('download should call open on the dialog and disable the option to click outside to close', () => {
+        const dialogSpy = spyOn(component.dialog, 'open');
+        component.download();
+        expect(dialogSpy).toHaveBeenCalledWith(DownloadDialogComponent, {
+            disableClose: true,
+            height: '250px',
+            width: '400px',
+        });
+    });
+
     it('openSnackBar should call open on the injected snack bar', () => {
         const snackSpy = spyOn(component.snackBar, 'open');
         component.openSnackBar('Allo', 'Bye');
         expect(snackSpy).toHaveBeenCalled();
-        expect(snackSpy).toHaveBeenCalledWith('Allo', 'Bye', { duration: 2000 });
+        expect(snackSpy).toHaveBeenCalledWith('Allo', 'Bye', { duration: 3000 });
+    });
+
+    it('modifyDict should return false if given already existant name', () => {
+        const returnValue = component.modifyDict('test', 'titre', 'description');
+        expect(component.error).toEqual('Le titre du dictionnaire existe déjà');
+        expect(returnValue).toBeFalse();
+    });
+
+    it('modifyDict should return false if no value changed', () => {
+        const returnValue = component.modifyDict('titre', 'titre', 'description');
+        expect(component.error).toEqual('Veuillez au moins changer une valeur et ne pas laisser de valeur vide');
+        expect(returnValue).toBeFalse();
+    });
+
+    it('modifyDict should return false if no value changed', () => {
+        const reloadSpy = spyOn(window.location, 'reload');
+        const returnValue = component.modifyDict('titre', 'nouveau titre', 'nouvelle description');
+        expect(reloadSpy).toHaveBeenCalled();
+        expect(returnValue).toBeTrue();
+    });
+
+    it('deleteDict', () => {
+        const reloadSpy = spyOn(window.location, 'reload');
+        component.deleteDict('titre');
+        expect(reloadSpy).toHaveBeenCalled();
+    });
+
+    it('downloadDict', () => {
+        component.downloadDict('titre');
     });
 
     it('should add a new player', () => {

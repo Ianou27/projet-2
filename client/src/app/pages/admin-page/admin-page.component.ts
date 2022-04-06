@@ -4,7 +4,6 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTabChangeEvent } from '@angular/material/tabs';
-
 import { DownloadDialogComponent } from '@app/components/download-dialog/download-dialog.component';
 import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
 import { ONE_SECOND_MS } from './../../../../../common/constants/general-constants';
@@ -79,9 +78,8 @@ export class AdminPageComponent implements OnInit {
         this.dialog.open(DownloadDialogComponent, {
             disableClose: true,
             height: '250px',
-             width: '400px',
+            width: '400px',
         });
-
     }
 
     openSnackBar(message: string, action: string) {
@@ -91,7 +89,6 @@ export class AdminPageComponent implements OnInit {
     }
 
     modifyDict(oldTitle: string, title: string, description: string): boolean {
-        console.log(title, description);
         const dictionaryList: Dic[] = this.socketHandler.dictInfoList;
 
         for (const dict of dictionaryList) {
@@ -120,16 +117,10 @@ export class AdminPageComponent implements OnInit {
     }
 
     downloadDict(title: string) {
-        
-                
-                 this.socketHandler.downloadDictionary(title);
-
-            
-       
-       
+        this.socketHandler.downloadDictionary(title);
     }
     // https://stackoverflow.com/questions/42360665/angular2-to-export-download-json-file
-    
+
     addNewPlayer() {
         if (this.virtualPlayerType === 'Débutant') {
             this.socketHandler.addVirtualPlayerNames(this.virtualPlayerName, 'beginner');
@@ -173,8 +164,6 @@ export class AdminPageComponent implements OnInit {
         return descriptions;
     }
 
-    // utilisation de code ne provenant pas de nous, source :
-    // https://fireflysemantics.medium.com/proxying-file-upload-buttons-with-angular-a5a3fc224c38
     onFileSelect(event: Event) {
         this.error = '';
 
@@ -187,13 +176,13 @@ export class AdminPageComponent implements OnInit {
         };
         reader.readAsText(file);
     }
+
     verifyDict(dict: string): boolean {
         const dictObject = JSON.parse(dict);
         const dictInfoList = this.socketHandler.dictInfoList;
         const dictInfoListFiltered = dictInfoList.filter((dictInfo: Dic) => dictInfo.title === dictObject.title);
-        console.log(dictInfoListFiltered.length);
         if (dictInfoListFiltered.length !== 0) {
-            this.error = 'Ce dictionnaire existe deja';
+            this.error = 'Ce dictionnaire existe déjà';
             return false;
         } else if (
             typeof dictObject.title === 'string' &&
@@ -207,10 +196,11 @@ export class AdminPageComponent implements OnInit {
             return true;
         } else {
             this.error =
-                ' Le format du dictionnaire n est pas valide\n Il faut un titre, une description, un tableau de mots et que tous les mots dans le tableaux soient dans l alphabet anglais sans espace';
+                "Le format du dictionnaire n'est pas valide\n Il faut un titre, une description, un tableau de mots et que tous les mots dans le tableaux soient dans l'alphabet anglais sans espace";
             return false;
         }
     }
+
     submit() {
         try {
             const object: JSON = JSON.parse(this.selectedFile.toString());
