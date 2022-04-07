@@ -25,6 +25,7 @@ import { BestScoreComponent } from './pages/best-score/best-score.component';
 import { JoinPageComponent } from './pages/join-page/join-page.component';
 import { FormatTimePipe } from './pipes/format-time.pipe';
 import { GoalsComponent } from './components/goals/goals.component';
+import { DownloadDialogComponent } from './components/download-dialog/download-dialog.component';
 
 /**
  * Main module that is used in main.ts.
@@ -54,6 +55,7 @@ import { GoalsComponent } from './components/goals/goals.component';
         BestScoreComponent,
         AdminPageComponent,
         GoalsComponent,
+        DownloadDialogComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule, MatDialogModule],
     providers: [],

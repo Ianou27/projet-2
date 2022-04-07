@@ -1,22 +1,26 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // import { injectable } from 'inversify';
 import { INDEX_OF_NOT_FOUND, NUMBER_ELEMENTS_DATABASE } from '@common/constants/general-constants';
-import { BestScore } from '@common/types';
+import { BestScore, Dic, GameHistory } from '@common/types';
 import * as fs from 'fs';
 import { Db, MongoClient } from 'mongodb';
 import 'reflect-metadata';
 import { Service } from 'typedi';
-
+import { BEGINNER_BOT, EXPERT_BOT } from '../../../assets/bot-name';
 // CHANGE the URL for your database information
 const DATABASE_URL = 'mongodb+srv://riad:tpUUYHQYgUZuXvgY@cluster0.pwwqd.mongodb.net/DataBase?retryWrites=true&w=majority';
 const DATABASE_NAME = 'DataBase';
 const DATABASE_COLLECTION_CLASSIC = 'bestScoreClassic';
 const DATABASE_COLLECTION_LOG = 'bestScoreLog2990';
 const DATABASE_COLLECTION_DIC = 'dictionnaire';
+const DATABASE_COLLECTION_GAME = 'game';
+const DATABASE_COLLECTION_VIRTUAL = 'joueurVirtuels';
 
 @Service()
 export class DatabaseService {
     db: Db;
     client: MongoClient;
+
     dictionaryArray: JSON = JSON.parse(fs.readFileSync('./assets/dictionnary.json').toString());
     async start(url: string = DATABASE_URL): Promise<MongoClient | null> {
         try {
@@ -74,7 +78,7 @@ export class DatabaseService {
             await this.db.collection(collection).insertOne(bestScore);
         }
     }
-
+    // score Handler
     async bestScoreClassic(): Promise<any[]> {
         return await this.db.collection(DATABASE_COLLECTION_CLASSIC).find().sort({ score: -1 }).toArray();
     }
@@ -82,21 +86,6 @@ export class DatabaseService {
     async bestScoreLog(): Promise<any[]> {
         return await this.db.collection(DATABASE_COLLECTION_LOG).find().sort({ score: -1 }).toArray();
     }
-
-    async getDictionary(): Promise<any[]> {
-        return await this.db.collection(DATABASE_COLLECTION_DIC).find().toArray();
-    }
-
-    async insertDictionary(json: JSON) {
-        await this.db.collection(DATABASE_COLLECTION_DIC).insertOne(json);
-    }
-
-
-    async deleteDictionary(title: string) {
-
-        await this.db.collection(DATABASE_COLLECTION_DIC).deleteOne({ title: title });
-    }
-
     async updateBesScoreClassic(score: BestScore) {
         const db = await this.db.collection(DATABASE_COLLECTION_CLASSIC).find().sort({ score: -1 }).toArray();
         let index = -1;
@@ -120,4 +109,99 @@ export class DatabaseService {
             }
         }
     }
+    // Dic handler
+    async getDictionary(): Promise<any[]> {
+        return await this.db.collection(DATABASE_COLLECTION_DIC).find().toArray();
+    }
+
+    async getDictionaryInfo(): Promise<any[]> {
+        return await this.db.collection(DATABASE_COLLECTION_DIC).find().project({ title: 1, description: 1, _id: 0 }).toArray();
+    }
+    async insertDictionary(dictionary: Dic) {
+        await this.db.collection(DATABASE_COLLECTION_DIC).insertOne(dictionary);
+    }
+
+    async deleteDictionary(title: string) {
+        await this.db.collection(DATABASE_COLLECTION_DIC).deleteOne({ title });
+    }
+    async modifyDictionary(oldTitle:string, newTitle:string , description:string) {
+        await this.db.collection(DATABASE_COLLECTION_DIC).updateOne({title:oldTitle},{$set:{title:newTitle,description:description}});
+
+    }
+    // game Handler
+
+    async insertGame(game: GameHistory) {
+        await this.db.collection(DATABASE_COLLECTION_GAME).insertOne(game);
+    }
+
+    async getGameHistory(): Promise<any[]> {
+        return await this.db.collection(DATABASE_COLLECTION_GAME).find().toArray();
+    }
+    // VirtualPlayer Handler
+
+    async getVirtualPlayers() {
+        return await this.db.collection(DATABASE_COLLECTION_VIRTUAL).find().toArray();
+    }
+
+    async deleteVirtualPlayer(name: string) {
+        if (EXPERT_BOT.includes(name) || BEGINNER_BOT.includes(name)) {
+            return;
+        }
+
+        await this.db.collection(DATABASE_COLLECTION_VIRTUAL).deleteOne({ name });
+    }
+
+    async addVirtualPlayer(name: string, type: string) {
+        const db = await this.db.collection(DATABASE_COLLECTION_VIRTUAL).find().toArray();
+        if (!db.some((player) => player.name === name)) {
+            await this.db.collection(DATABASE_COLLECTION_VIRTUAL).insertOne({ name, type });
+        }
+    }
+    async modifyVirtualPlayer(oldName: string, newName: string) {
+        if (EXPERT_BOT.includes(oldName) || BEGINNER_BOT.includes(oldName) || EXPERT_BOT.includes(newName) || BEGINNER_BOT.includes(newName)) {
+            return;
+        }
+        const db = await this.db.collection(DATABASE_COLLECTION_VIRTUAL).find().toArray();
+        if (db.some((player) => player.name === oldName)) {
+            await this.db.collection(DATABASE_COLLECTION_VIRTUAL).updateOne({ name: oldName }, { $set: { name: newName } });
+        }
+    }
+
+
+    async resetVirtualPlayers() {
+        
+        const db = await this.db.collection(DATABASE_COLLECTION_VIRTUAL).find().toArray();
+        for (const player of db) {
+            if (!BEGINNER_BOT.includes(player.name) && !EXPERT_BOT.includes(player.name)) {
+                await this.db.collection(DATABASE_COLLECTION_VIRTUAL).deleteOne({ name: player.name });
+            }
+        }
+    }
+
+    async resetGameHistory() {
+        await this.db.collection(DATABASE_COLLECTION_GAME).deleteMany({});
+    }
+    async resetDictionary() {
+        const db = await this.db.collection(DATABASE_COLLECTION_DIC).find().project({ title: 1, description: 1, _id: 0 }).toArray();
+        for (const dictionary of db) {
+            if (dictionary.title !== "default dictionary") {
+                await this.db.collection(DATABASE_COLLECTION_DIC).deleteOne({ title: dictionary.title });
+            }
+        }
+    }
+
+    async resetBestScores() {
+        await this.db.collection(DATABASE_COLLECTION_CLASSIC).deleteMany({});
+        await this.db.collection(DATABASE_COLLECTION_LOG).deleteMany({});
+        await this.populateDB( DATABASE_COLLECTION_CLASSIC);
+        await this.populateDB( DATABASE_COLLECTION_LOG);
+    }
+
+    async resetAll() {
+        await this.resetGameHistory();
+        await this.resetVirtualPlayers();
+        await this.resetDictionary();
+        await this.resetBestScores();
+    }
+        
 }

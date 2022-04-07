@@ -22,6 +22,7 @@ import { Player } from './../player/player';
 import { ReserveLetters } from './../reserve-letters/reserve-letters';
 import { VirtualPlayer } from './../virtual-player/virtual-player';
 
+import { GameHistory } from './../../../../common/types';
 export class Game {
     gameBoard: GameBoardService;
     player1: Player;
@@ -33,6 +34,7 @@ export class Game {
     sio: io.Server;
     databaseService: DatabaseService;
     goals: Goals;
+    gameStartingDate:string;
 
     constructor() {
         this.reserveLetters = new ReserveLetters();
@@ -77,6 +79,11 @@ export class Game {
 
     startGame() {
         this.timer.start(this, this.sio);
+    
+        
+        this.gameStartingDate = new Date().toLocaleString('en-CA', {timeZone: 'America/Montreal'});
+
+        
         this.randomTurnGame();
         this.sio.to(this.player1.user.id).emit('turn', this.player1.hisTurn);
         this.sio.to(this.player2.user.id).emit('turn', this.player2.hisTurn);
@@ -270,6 +277,24 @@ export class Game {
     actionVirtualExpertPlayer(): string[] {
         return VirtualPlayer.commandExpertPlayer(this);
     }
+    async registerGame(){
+        
+
+        let game: GameHistory ={
+            date: this.gameStartingDate,
+            duration: this.timer.gameTime.toString() + " secondes",
+            player1: this.player1.user.username,
+            player1Points: this.player1.points,
+            player2Points: this.player2.points,
+            player2: this.player2.user.username,
+            gameMode: "TEST",
+
+
+        }
+        await this.databaseService.start();
+        await this.databaseService.insertGame(game);
+        await this.databaseService.closeConnection();
+    }
 
     async endGame() {
         this.gameState.gameFinished = true;
@@ -309,6 +334,7 @@ export class Game {
                 score: this.player2.points,
             });
         }
+        this.registerGame();
         await this.databaseService.closeConnection();
     }
 

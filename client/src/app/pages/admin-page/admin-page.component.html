@@ -6,7 +6,7 @@
 </mat-toolbar>
 
 <section>
-    <mat-tab-group backgroundColor="primary" mat-stretch-tabs>
+    <mat-tab-group backgroundColor="primary" mat-stretch-tabs (selectedTabChange)="onTabChange($event)">
         <mat-tab>
             <ng-template mat-tab-label>
                 <mat-icon class="example-tab-icon">book</mat-icon>
@@ -17,10 +17,19 @@
                 <p>Ajouter ou supprimer des dictionnaires dans le jeu</p>
                 <mat-divider></mat-divider>
                 <h2>Gérer les dictionnaires existants</h2>
-                <div>
+                <div class="dic">
                     <mat-form-field appearance="fill">
-                        <mat-select [(value)]="defaultDict" #selectedDictionary>
-                            <mat-option *ngFor="let dictionary of selectedDict; index as i" [value]="selectedDict[i]"> {{ dictionary }} </mat-option>
+                        <mat-label>Nom du dictionnaire</mat-label>
+                        <mat-select [(value)]="displayDictNames()[0]" #selectedDictionary>
+                            <mat-option
+                                (click)="
+                                    titleValue = selectedDictionary.value; descriptionValue = displayDictDescription(selectedDictionary.value)[0]
+                                "
+                                *ngFor="let dictionary of displayDictNames(); index as i"
+                                [value]="displayDictNames()[i]"
+                            >
+                                {{ dictionary }}
+                            </mat-option>
                         </mat-select>
                     </mat-form-field>
                     <mat-form-field appearance="fill">
@@ -28,8 +37,9 @@
                         <input
                             matInput
                             placeholder="Dictionnaire par défaut"
-                            [disabled]="selectedDictionary.value === selectedDict[0]"
-                            [value]="selectedDictionary.value"
+                            [disabled]="selectedDictionary.value === displayDictNames()[0]"
+                            [value]="titleValue"
+                            [(ngModel)]="titleValue"
                         />
                     </mat-form-field>
                     <mat-form-field appearance="fill">
@@ -37,38 +47,46 @@
                         <textarea
                             matInput
                             placeholder="Ex. Dictionnaire par défaut"
-                            [disabled]="selectedDictionary.value === selectedDict[0]"
+                            [disabled]="selectedDictionary.value === displayDictNames()[0]"
+                            [value]="descriptionValue"
+                            [(ngModel)]="descriptionValue"
                         ></textarea>
                     </mat-form-field>
-                    <a mat-stroked-button>
+                    <a mat-stroked-button class="download-button" (click)="downloadDict(titleValue); download()">
                         Télécharger le dictionnaire
                         <mat-icon>save_alt</mat-icon>
                     </a>
                 </div>
-                <button mat-stroked-button *ngIf="selectedDictionary.value !== selectedDict[0]">
-                    Accepter les changements
+                <button
+                    mat-stroked-button
+                    *ngIf="selectedDictionary.value !== displayDictNames()[0]"
+                    (click)="modifyDict(selectedDictionary.value, titleValue, descriptionValue)"
+                >
+                    Modifier le dictionnaire
                     <mat-icon>save</mat-icon>
                 </button>
-                <button mat-stroked-button *ngIf="selectedDictionary.value !== selectedDict[0]">
+                <button
+                    mat-stroked-button
+                    *ngIf="selectedDictionary.value !== displayDictNames()[0]"
+                    (click)="titleValue = selectedDictionary.value; deleteDict(titleValue)"
+                >
                     Supprimer le dictionnaire sélectionné
                     <mat-icon>delete</mat-icon>
                 </button>
                 <mat-divider></mat-divider>
                 <h2>Téléverser un nouveau dictionnaire</h2>
-                <p></p>
                 <div>
-                    <!-- // utilisation de code ne provenant pas de nous, source :
-                        // https://fireflysemantics.medium.com/proxying-file-upload-buttons-with-angular-a5a3fc224c38 -->
-                    <input style="display: none" type="file" (change)="onFileSelect($event)" #hiddenfileinput />
-                    <button mat-stroked-button (click)="hiddenfileinput.click()">
+                    <input class="ng-hide" type="file" accept=".json" (change)="onFileSelect($event)" #hiddenfileinput />
+                    <button mat-stroked-button (click)="submit()">
                         Téléverser un dictionnaire
                         <mat-icon style="transform: rotate(90deg)">attachment</mat-icon>
                     </button>
+                    <div style="color: red" *ngIf="error !== ''">{{ error }}</div>
                 </div>
             </div>
         </mat-tab>
 
-        <mat-tab label="Joueurs virtuels">
+        <mat-tab label="Joueurs virtuels" class="virtualPlayer">
             <ng-template mat-tab-label>
                 <mat-icon class="example-tab-icon">android</mat-icon>
                 Joueurs virtuels
@@ -86,27 +104,57 @@
                     </mat-selection-list>
                 </div>
                 <div *ngIf="newNames.selectedOptions.selected[0]?.value">
-                    <mat-form-field appearance="fill">
+                    <mat-form-field appearance="fill" [formGroup]="formModify" class="input">
                         <mat-label>Nom du joueur virtuel</mat-label>
-                        <input matInput placeholder="Bob" value="{{ newNames.selectedOptions.selected[0]?.value }}" />
+                        <input
+                            matInput
+                            [placeholder]="newNames.selectedOptions.selected[0]?.value"
+                            [(ngModel)]="newName"
+                            [errorStateMatcher]="matcher"
+                            formControlName="modifiedName"
+                        />
+                        <mat-hint align="end">Minimum 3 lettres</mat-hint>
+                        <mat-error *ngIf="myErrorModify('modifiedName', 'required')">Veuillez entrer un nom</mat-error>
+                        <mat-error *ngIf="myErrorModify('modifiedName', 'minlength')">Veuillez entrer un nom d'au moins 3 lettres</mat-error>
+                        <mat-error *ngIf="myErrorModify('modifiedName', 'pattern')">Pas de chiffres et/ou caractères spéciaux</mat-error>
                     </mat-form-field>
-                    <button mat-stroked-button>
+                    <button
+                        mat-stroked-button
+                        [disabled]="formModify.invalid"
+                        (click)="modifyPlayerName(newNames.selectedOptions.selected[0]?.value)"
+                    >
                         Modifier
                         <mat-icon>save</mat-icon>
                     </button>
                 </div>
                 <mat-card *ngIf="showCard" class="add-player">
-                    <mat-form-field appearance="fill">
+                    <mat-form-field appearance="fill" [formGroup]="formAdd" class="input">
                         <mat-label>Nom du joueur virtuel</mat-label>
-                        <input matInput placeholder="Bob" />
+                        <input matInput placeholder="Bob" [(ngModel)]="virtualPlayerName" [errorStateMatcher]="matcher" formControlName="newName" />
+                        <mat-hint align="end">Assurez-vous que votre nom ne figure pas déjà dans une des 2 listes</mat-hint>
+                        <mat-error *ngIf="myErrorAdd('newName', 'required')">Veuillez entrer un nom</mat-error>
+                        <mat-error *ngIf="myErrorAdd('newName', 'minlength')">Veuillez entrer un nom d'au moins 3 lettres</mat-error>
+                        <mat-error *ngIf="myErrorAdd('newName', 'pattern')">Pas de chiffres et/ou caractères spéciaux</mat-error>
                     </mat-form-field>
-                    <button mat-stroked-button>Ajouter</button>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Type du joueur virtuel</mat-label>
+                        <mat-select [(ngModel)]="virtualPlayerType">
+                            <mat-option value="Débutant"> Débutant </mat-option>
+                            <mat-option value="Expert"> Expert </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <button mat-stroked-button [disabled]="formAdd.invalid" (click)="addNewPlayer(); showCard = !showCard">Ajouter</button>
+                    <button mat-stroked-button (click)="showCard = !showCard">Fermer</button>
                 </mat-card>
                 <button mat-stroked-button (click)="showCard = !showCard">
                     Ajouter un joueur virtuel
                     <mat-icon>add</mat-icon>
                 </button>
-                <button mat-stroked-button *ngIf="newNames.selectedOptions.selected[0]">
+                <button
+                    mat-stroked-button
+                    *ngIf="newNames.selectedOptions.selected[0]"
+                    (click)="deletePlayerName(newNames.selectedOptions.selected[0]?.value)"
+                >
                     Supprimer le nom du joueur sélectionné
                     <mat-icon>delete</mat-icon>
                 </button>
@@ -120,7 +168,7 @@
             </ng-template>
             <div class="tab-content">
                 <h1>Historique des parties jouées</h1>
-                <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                <table mat-table [dataSource]="this.socketHandler.gameHistory" class="mat-elevation-z8">
                     <!-- Date Column -->
                     <ng-container matColumnDef="date">
                         <th mat-header-cell *matHeaderCellDef>Date et heure du début de la partie</th>
@@ -137,9 +185,9 @@
                         <td mat-cell *matCellDef="let element">{{ element.player1 }}</td>
                     </ng-container>
                     <!-- Score 1 Column -->
-                    <ng-container matColumnDef="firstPlayerScore">
+                    <ng-container matColumnDef="player1Points">
                         <th mat-header-cell *matHeaderCellDef>Score joueur 1</th>
-                        <td mat-cell *matCellDef="let element">{{ element.firstPlayerScore }}</td>
+                        <td mat-cell *matCellDef="let element">{{ element.player1Points }}</td>
                     </ng-container>
                     <!-- Player 2 Column -->
                     <ng-container matColumnDef="player2">
@@ -147,14 +195,14 @@
                         <td mat-cell *matCellDef="let element">{{ element.player2 }}</td>
                     </ng-container>
                     <!-- Score 2 Column -->
-                    <ng-container matColumnDef="secondPlayerScore">
+                    <ng-container matColumnDef="player2Points">
                         <th mat-header-cell *matHeaderCellDef>Score joueur 2</th>
-                        <td mat-cell *matCellDef="let element">{{ element.secondPlayerScore }}</td>
+                        <td mat-cell *matCellDef="let element">{{ element.player2Points }}</td>
                     </ng-container>
                     <!-- Mode Column -->
-                    <ng-container matColumnDef="mode">
+                    <ng-container matColumnDef="gameMode">
                         <th mat-header-cell *matHeaderCellDef>Mode</th>
-                        <td mat-cell *matCellDef="let element">{{ element.mode }}</td>
+                        <td mat-cell *matCellDef="let element">{{ element.gameMode }}</td>
                     </ng-container>
 
                     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -174,7 +222,16 @@
                     Attention: Cette option supprime tout ce qui a été ajouté. Cela inclue les dictionnaires, les noms de joueurs virtuels, les
                     meilleurs scores et l'historique des parties jouées.
                 </p>
-                <button mat-stroked-button>
+                <mat-form-field appearance="fill">
+                    <mat-select [(value)]="resetSelected">
+                        <mat-option value="all"> -- Toutes les données -- </mat-option>
+                        <mat-option value="dictionaries"> Dictionnaires </mat-option>
+                        <mat-option value="virtualPlayer"> Joueurs Virtuels </mat-option>
+                        <mat-option value="history"> Historique des parties </mat-option>
+                        <mat-option value="bestScore"> Meilleurs scores </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <button mat-stroked-button (click)="reset()" (click)="openSnackBar('Données réinitialisées', 'OK!')">
                     Réinitialiser les réglages
                     <mat-icon color="warn">warning</mat-icon>
                 </button>

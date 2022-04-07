@@ -12,6 +12,10 @@
     margin-bottom: 20px;
 }
 
+.input {
+    margin-bottom: 20px;
+}
+
 mat-form-field {
     padding-right: 20px;
 }
@@ -30,4 +34,12 @@ button {
 
 table {
     width: 100%;
+}
+
+.dic {
+    display: flex;
+}
+
+.download-button {
+    height: 35px;
 }

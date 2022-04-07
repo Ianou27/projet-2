@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@angular/core';
 import { LetterScore } from './../../../../../common/assets/reserve-letters';
 import { BotType } from './../../../../../common/botType';
@@ -29,8 +30,8 @@ export class ClientSocketHandler {
     informationToJoin: InfoToJoin;
     gotAccepted: boolean = false;
     gotRefused: boolean = false;
-    bestClassicScores: unknown[] = [];
-    bestLog2990Scores: unknown[] = [];
+    bestClassicScores: any[] = [];
+    bestLog2990Scores: any[] = [];
     myTurn: boolean = true;
     player1Point: number = 0;
     player2Point: number = 0;
@@ -47,6 +48,10 @@ export class ClientSocketHandler {
     numberOfRoomsClassic: number = 0;
     numberOfRoomsLog: number = 0;
     goals: GoalInformations[];
+    dictInfoList: any[] = [];
+    virtualPlayerNameList: any[] = [];
+    gameHistory: any[] = [];
+    dictionaryToDownload :string = '';
 
     constructor(public socketService: SocketClientService, public boardService: BoardService, public tileHolderService: TileHolderService) {}
 
@@ -134,9 +139,15 @@ export class ClientSocketHandler {
             this.playerJoined = didJoin;
         });
 
-        this.socketService.socket.on('getBestScore', (scoresClassic: unknown[], scoresLog: unknown[]) => {
+        this.socketService.socket.on('getBestScore', (scoresClassic: any[], scoresLog: any[]) => {
             this.bestClassicScores = scoresClassic;
             this.bestLog2990Scores = scoresLog;
+        });
+
+        this.socketService.socket.on('getAdminInfo', (dictionaryNameList: any[], history: any[], virtualPlayerNames: any[]) => {
+            this.dictInfoList = dictionaryNameList;
+            this.virtualPlayerNameList = virtualPlayerNames;
+            this.gameHistory = history;
         });
 
         this.socketService.on('joining', (obj: InfoToJoin) => {
@@ -161,7 +172,10 @@ export class ClientSocketHandler {
         this.socketService.on('timer', (timer: number) => {
             this.timer = timer;
         });
-
+        this.socketService.on('downloadDic', (dic: string) => {
+            this.dictionaryToDownload = dic;
+        });
+        
         this.socketService.socket.on('asked', (username: string, socket: string, roomObj: Room) => {
             this.socketWantToJoin = socket;
             this.playerJoined = true;
@@ -206,6 +220,36 @@ export class ClientSocketHandler {
     createRoom(username: string, room: string, time: string, mode2990: boolean) {
         this.socketService.socket.emit('createRoom', username, room, time, mode2990);
         this.updateRooms();
+    }
+    async addVirtualPlayerNames(name: string, type: string) {
+        this.socketService.socket.emit('addVirtualPlayerNames', name, type);
+    }
+    async deleteVirtualPlayerName(name: string) {
+        this.socketService.socket.emit('deleteVirtualPlayerName', name);
+    }
+    async modifyVirtualPlayerNames(oldName: string, newName: string) {
+        this.socketService.socket.emit('modifyVirtualPlayerNames', oldName, newName);
+    }
+
+    async getAdminPageInfo() {
+        this.socketService.socket.emit('getAdminInfo');
+    }
+
+    async resetAll() {
+        this.socketService.socket.emit('resetAll');
+    }
+    async resetVirtualPlayers() {
+        this.socketService.socket.emit('resetVirtualPlayers');
+    }
+    async resetDictionary() {
+        this.socketService.socket.emit('resetDictionary');
+    }
+    async resetGameHistory() {
+        this.socketService.socket.emit('resetGameHistory');
+    }
+
+    async resetBestScores() {
+        this.socketService.socket.emit('resetBestScore');
     }
 
     createSoloGame(username: string, time: string, botType: BotType, mode2990: boolean) {
@@ -262,10 +306,24 @@ export class ClientSocketHandler {
         this.socketService.socket.emit('askJoin', username, room);
         this.gotRefused = false;
     }
+    uploadDictionary(file: JSON) {
+        
+        this.socketService.socket.emit('uploadDictionary', file);
+    }
+    deleteDic(title: string) {
+        this.socketService.socket.emit('deleteDic', title);
+    }
+    modifyDictionary(oldTitle: string, newTitle: string, description: string) {
+        this.socketService.socket.emit('modifyDictionary', oldTitle, newTitle , description);
+    }
 
     accepted() {
         this.socketService.socket.emit('accepted', this.socketWantToJoin, this.informationToJoin);
         this.updateRooms();
+    }
+
+    downloadDictionary(title: string) {
+        this.socketService.socket.emit('downloadDic', title);
     }
 
     cancelCreation() {
