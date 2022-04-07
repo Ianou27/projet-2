@@ -1,12 +1,13 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { JoinPageComponent } from '@app/pages/join-page/join-page.component';
 import { WaitingPlayerDialogComponent } from './waiting-player-dialog.component';
 
 describe('WaitingPlayerDialogComponent', () => {
     let component: WaitingPlayerDialogComponent;
     let fixture: ComponentFixture<WaitingPlayerDialogComponent>;
+    let param: string;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -23,6 +24,10 @@ describe('WaitingPlayerDialogComponent', () => {
                             return;
                         },
                     },
+                },
+                {
+                    provide: MAT_DIALOG_DATA,
+                    useValue: param,
                 },
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],

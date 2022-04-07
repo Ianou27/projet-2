@@ -236,9 +236,9 @@ describe('ChatService', () => {
 
     it('convertToSoloGame() should emit the convertToSoloGame event', () => {
         const emitSpy = spyOn(service.socketService.socket, 'emit');
-        service.convertToSoloGame();
+        service.convertToSoloGame(false);
         expect(emitSpy).toHaveBeenCalled();
-        expect(emitSpy).toHaveBeenCalledWith('convertToSoloGame');
+        expect(emitSpy).toHaveBeenCalledWith('convertToSoloGame', false);
     });
     it('should update numberOfRooms without mode2990 when an empty room is added', () => {
         service.allRooms = [
