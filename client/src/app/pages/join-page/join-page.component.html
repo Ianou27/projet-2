@@ -46,7 +46,19 @@
                             <mat-form-field>
                                 <mat-select [(value)]="selectedDico" placeholder="Choisir un dictionnaire">
                                     <mat-option value="Dictionnaire par defaut">Dictionnaire par defaut</mat-option>
-                                    <mat-option value="Dictionnaire 2" disabled>Dictionnaire 2 (Indisponible)</mat-option>
+                                    <!-- <mat-option
+                                        *ngFor="let dictionary of displayDictNames(); index as i"
+                                        [value]="displayDictNames()[i]"
+                                    >
+                                        {{ dictionary }}
+                                    </mat-option> -->
+                                    <mat-option
+                                        *ngFor="let dictionary of dictionariess; index as i"
+                                        [value]="dictionariess"
+                                        [matTooltip]="dictionary.description"
+                                    >
+                                        {{ dictionary.text }}
+                                    </mat-option>
                                 </mat-select>
                             </mat-form-field>
                         </td>
@@ -108,9 +120,21 @@
                         </mat-form-field>
                         <h2>Dictionnaire:</h2>
                         <mat-form-field>
-                            <mat-select [(value)]="selectedDico" placeholder="Choisir un dictionnaire">
+                            <mat-select [(value)]="displayDictNames()[0]" placeholder="Choisir un dictionnaire">
                                 <mat-option value="Dictionnaire par defaut">Dictionnaire par defaut</mat-option>
-                                <mat-option value="Dictionnaire 2" disabled>Dictionnaire 2 (Indisponible)</mat-option>
+                                <!-- <mat-option
+                                        *ngFor="let dictionary of displayDictNames(); index as i"
+                                        [value]="displayDictNames()[i]"
+                                    >
+                                        {{ dictionary }}
+                                    </mat-option> -->
+                                <mat-option
+                                    *ngFor="let dictionary of dictionariess; index as i"
+                                    [value]="dictionariess"
+                                    [matTooltip]="dictionary.description"
+                                >
+                                    {{ dictionary.text }}
+                                </mat-option>
                             </mat-select>
                         </mat-form-field>
                     </form>

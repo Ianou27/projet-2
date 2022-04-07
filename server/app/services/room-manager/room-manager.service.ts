@@ -10,6 +10,35 @@ import { Player } from './../../classes/player/player';
 import { DatabaseService } from './../best-score/best-score.services';
 import { IdManager } from './../id-manager/id-manager.service';
 export class RoomManager {
+    static getGoalsPlayer(game: Game, player: Player): GoalInformations[] {
+        const goals = game.goals;
+        const goalsPlayer: GoalInformations[] = [];
+        for (const goal in goals) {
+            if (!goals[goal].isInGame) {
+                continue;
+            }
+            if (goals[goal].type === GoalType.Public) {
+                goalsPlayer.push(goals[goal]);
+            } else if (game.player1 === player && goals[goal].type === GoalType.PrivatePlayer1) {
+                goalsPlayer.push(goals[goal]);
+            } else if (game.player2 === player && goals[goal].type === GoalType.PrivatePlayer2) {
+                goalsPlayer.push(goals[goal]);
+            } else if ((goals[goal].type === GoalType.PrivatePlayer2 || goals[goal].type === GoalType.PrivatePlayer1) && goals[goal].isDone) {
+                goalsPlayer.push(goals[goal]);
+            }
+        }
+        const copyGoalsPlayer: GoalInformations[] = [];
+        goalsPlayer.forEach((element) => {
+            if (element.type === GoalType.PrivatePlayer1 || element.type === GoalType.PrivatePlayer2) {
+                copyGoalsPlayer.unshift(element);
+            } else {
+                copyGoalsPlayer.push(element);
+            }
+        });
+
+        return copyGoalsPlayer;
+    }
+
     createRoom(
         username: string,
         room: string,
@@ -79,7 +108,7 @@ export class RoomManager {
         identification.users.push(user);
         identification.roomMessages[username] = [];
         const game = new Game();
-
+        console.log(modeLog);
         game.startSoloGame(user, sio, timer, databaseService, botName, botType, modeLog);
         identification.games.push(game);
     }
@@ -151,20 +180,5 @@ export class RoomManager {
             randomName = BEGINNER_BOT[Math.floor(Math.random() * BEGINNER_BOT.length)];
         }
         return randomName.concat(' (Joueur virtuel)');
-    }
-
-    getGoalsPlayer(game: Game, player: Player): GoalInformations[] {
-        const goals = game.goals;
-        const goalsPlayer: GoalInformations[] = [];
-        for (const goal in goals) {
-            if (goals[goal].isInGame && goals[goal].type === GoalType.Public) {
-                goalsPlayer.push(goals[goal]);
-            } else if (goals[goal].isInGame && game.player1 === player && goals[goal].type === GoalType.PrivatePlayer1) {
-                goalsPlayer.push(goals[goal]);
-            } else if (goals[goal].isInGame && game.player2 === player && goals[goal].type === GoalType.PrivatePlayer2) {
-                goalsPlayer.push(goals[goal]);
-            }
-        }
-        return goalsPlayer;
     }
 }

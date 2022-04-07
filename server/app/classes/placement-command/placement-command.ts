@@ -1,6 +1,5 @@
 import { Orientation } from '@common/orientation';
 import * as fs from 'fs';
-import { Goal } from '../goal/goal-validation';
 import { letterValue } from './../../../../common/assets/reserve-letters';
 import { rowNumber } from './../../../../common/assets/row';
 import {
@@ -14,6 +13,7 @@ import {
 import { Tile } from './../../../../common/tile/Tile';
 import { PlacementInformations } from './../../../assets/placement-informations';
 import { Game } from './../game/game';
+import { Goal } from './../goal/goal-validation';
 import { PointsCalculator } from './../points-calculator/points-calculator';
 
 export class PlacementCommand {

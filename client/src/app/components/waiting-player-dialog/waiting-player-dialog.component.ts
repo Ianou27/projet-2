@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { Component, Inject } from '@angular/core';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { JoinPageComponent } from '@app/pages/join-page/join-page.component';
 import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
 
@@ -9,7 +9,11 @@ import { ClientSocketHandler } from '@app/services/client-socket-handler/client-
     styleUrls: ['./waiting-player-dialog.component.scss'],
 })
 export class WaitingPlayerDialogComponent {
-    constructor(private multiplayerDialog: MatDialog, public clientSocketHandler: ClientSocketHandler) {}
+    constructor(
+        private multiplayerDialog: MatDialog,
+        public clientSocketHandler: ClientSocketHandler,
+        @Inject(MAT_DIALOG_DATA) public data: string,
+    ) {}
 
     goBack() {
         this.multiplayerDialog.open(JoinPageComponent, {
@@ -30,7 +34,10 @@ export class WaitingPlayerDialogComponent {
     }
 
     convertToSolo() {
-        this.clientSocketHandler.convertToSoloGame();
+        let mode2990 = false;
+        console.log(this.data);
+        if (this.data === 'mode2990') mode2990 = true;
+        this.clientSocketHandler.convertToSoloGame(mode2990);
         this.multiplayerDialog.closeAll();
     }
 }

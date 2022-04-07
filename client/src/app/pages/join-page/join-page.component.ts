@@ -4,6 +4,8 @@ import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { WaitingPlayerDialogComponent } from '@app/components/waiting-player-dialog/waiting-player-dialog.component';
 import { WaitingPlayerTwoComponent } from '@app/components/waiting-player-two/waiting-player-two.component';
 import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
+// eslint-disable-next-line no-restricted-imports
+import { Dic } from '../../../../../common/types';
 import { BotType } from './../../../../../common/botType';
 import { MyErrorStateMatcher } from './errorStateMatcher/error-state-matcher';
 
@@ -37,9 +39,28 @@ export class JoinPageComponent implements OnInit {
         { value: '300', text: '5:00' },
     ];
 
+    // À enlever et changer dans le .ts
+    // dictionaries: Dic[] = this.socketHandler.dictInfoList;
+    dictionariess = [
+        // { value: '1', text: 'Dictionnaire par defaut' },
+        { value: '2', text: 'Dictionnaire 2 wow', description: 'Exemple de descrition du deuxième dictionnaire' },
+        {
+            value: '3',
+            text: 'Dictionnaire mandarin',
+            description: 'Tout ca n`est qu`un exemple à enlever après le vrai lien entre les dictionnaires',
+        },
+        { value: '4', text: 'Dictionnaire compliqué', description: 'smoke okok yeyeyeyeyey hahahah jadore les dictionnaires' },
+    ];
+    // Jusqu'ici
+
     botType = [{ value: BotType.Beginner }, { value: BotType.Expert }];
 
-    constructor(public waitDialog: MatDialog, public clientSocketHandler: ClientSocketHandler, @Inject(MAT_DIALOG_DATA) public data: string) {}
+    constructor(
+        public waitDialog: MatDialog,
+        public socketHandler: ClientSocketHandler,
+        public clientSocketHandler: ClientSocketHandler,
+        @Inject(MAT_DIALOG_DATA) public data: string,
+    ) {}
 
     ngOnInit(): void {
         this.form = new FormGroup({
@@ -56,6 +77,7 @@ export class JoinPageComponent implements OnInit {
     openWait() {
         this.waitDialog.open(WaitingPlayerDialogComponent, {
             disableClose: true,
+            data: this.data,
         });
     }
     openWaitToJoin() {
@@ -86,5 +108,12 @@ export class JoinPageComponent implements OnInit {
 
     goHome() {
         this.waitDialog.closeAll();
+    }
+
+    displayDictNames() {
+        const names: string[] = [];
+        const dictionaryList = this.socketHandler.dictInfoList;
+        dictionaryList.forEach((dict: Dic) => names.push(dict.title));
+        return names;
     }
 }

@@ -4,8 +4,8 @@ import { InfoToJoin, Room } from '@common/types';
 import * as http from 'http';
 import * as io from 'socket.io';
 import { helpInformation } from './../../../assets/help-informations';
-import { DictionaryManager } from '../dictionary-manager/dictionary-manager.service';
 import { DatabaseService } from './../best-score/best-score.services';
+import { DictionaryManager } from './../dictionary-manager/dictionary-manager.service';
 import { GameManager } from './../game-manager/game-manager.service';
 import { IdManager } from './../id-manager/id-manager.service';
 import { RoomManager } from './../room-manager/room-manager.service';
@@ -54,8 +54,8 @@ export class SocketManager {
                 const letters = this.roomManager.joinRoom(username, roomObj, socket.id, this.identification, this.sio);
                 const game = this.identification.getGame(player1Id);
                 socket.join(roomObj.player1);
-                this.sio.to(player1Id).emit('tileHolder', letters[0], this.roomManager.getGoalsPlayer(game, game.player1));
-                this.sio.to(socket.id).emit('tileHolder', letters[1], this.roomManager.getGoalsPlayer(game, game.player2));
+                this.sio.to(game.player1.user.id).emit('tileHolder', letters[0], RoomManager.getGoalsPlayer(game, game.player1));
+                this.sio.to(game.player2.user.id).emit('tileHolder', letters[1], RoomManager.getGoalsPlayer(game, game.player2));
                 this.sio.to(roomObj.player1).emit('startGame', roomObj.player1, username);
             });
 
@@ -154,14 +154,10 @@ export class SocketManager {
                             this.sio.to(currentRoom).emit('modification', game.gameBoard.cases, game.playerTurn().name);
 
                             if (game.player1.user.id === socket.id) {
-                                this.sio
-                                    .to(socket.id)
-                                    .emit('tileHolder', game.player1.getLetters(), this.roomManager.getGoalsPlayer(game, game.player1));
+                                this.sio.to(socket.id).emit('tileHolder', game.player1.getLetters(), RoomManager.getGoalsPlayer(game, game.player1));
                                 this.sio.to(currentRoom).emit('updatePoint', 'player1', game.player1.points);
                             } else if (game.player2.user.id === socket.id) {
-                                this.sio
-                                    .to(socket.id)
-                                    .emit('tileHolder', game.player2.getLetters(), this.roomManager.getGoalsPlayer(game, game.player2));
+                                this.sio.to(socket.id).emit('tileHolder', game.player2.getLetters(), RoomManager.getGoalsPlayer(game, game.player2));
                                 this.sio.to(currentRoom).emit('updatePoint', 'player2', game.player2.points);
                             }
                         }
@@ -190,6 +186,8 @@ export class SocketManager {
                         this.gameManager.pass(game);
                         this.sio.to(currentRoom).emit('modification', game.gameBoard.cases, game.playerTurn().name);
                     }
+                    this.sio.to(game.player1.user.id).emit('tileHolder', game.player1.getLetters(), RoomManager.getGoalsPlayer(game, game.player1));
+                    this.sio.to(game.player2.user.id).emit('tileHolder', game.player2.getLetters(), RoomManager.getGoalsPlayer(game, game.player2));
                 }
             });
 
@@ -360,34 +358,26 @@ export class SocketManager {
                 await this.databaseService.closeConnection();
             });
 
-
-            socket.on('uploadDictionary',  async (file: JSON) => {
+            socket.on('uploadDictionary', async (file: JSON) => {
                 this.dictionaryManager.uploadDictionary(file);
                 await this.databaseService.start();
                 this.sio
-                .to(socket.id)
-                .emit(
-                    'getAdminInfo',
-                    await this.databaseService.getDictionaryInfo(),
-                    await this.databaseService.getGameHistory(),
-                    await this.databaseService.getVirtualPlayers(),
-                );
-                await this.databaseService.closeConnection();
-            });
-            
-
-            socket.on('downloadDic', async (title:string) => {
-                let dic = this.dictionaryManager.downloadDictionary(title);
-               
-                this.sio
                     .to(socket.id)
                     .emit(
-                        'downloadDic',
-                        dic
+                        'getAdminInfo',
+                        await this.databaseService.getDictionaryInfo(),
+                        await this.databaseService.getGameHistory(),
+                        await this.databaseService.getVirtualPlayers(),
                     );
-            
+                await this.databaseService.closeConnection();
             });
-            socket.on('deleteDic', async (title:string) => {
+
+            socket.on('downloadDic', async (title: string) => {
+                const dic = this.dictionaryManager.downloadDictionary(title);
+
+                this.sio.to(socket.id).emit('downloadDic', dic);
+            });
+            socket.on('deleteDic', async (title: string) => {
                 this.dictionaryManager.deleteDictionary(title);
                 await this.databaseService.start();
                 this.sio
@@ -400,10 +390,10 @@ export class SocketManager {
                     );
                 await this.databaseService.closeConnection();
             });
-            socket.on('modifyDictionary', async (oldTitle:string, newTitle:string , description:string) => {
+            socket.on('modifyDictionary', async (oldTitle: string, newTitle: string, description: string) => {
                 this.dictionaryManager.modifyDictionary(oldTitle, newTitle, description);
                 await this.databaseService.start();
-              
+
                 this.sio
                     .to(socket.id)
                     .emit(
@@ -414,7 +404,6 @@ export class SocketManager {
                     );
                 await this.databaseService.closeConnection();
             });
-            
 
             socket.on('resetGameHistory', async () => {
                 await this.databaseService.start();
@@ -429,8 +418,6 @@ export class SocketManager {
                     );
                 await this.databaseService.closeConnection();
             });
-            
-            
 
             socket.on('resetBestScore', async () => {
                 await this.databaseService.start();
@@ -480,12 +467,12 @@ export class SocketManager {
                         this.gameManager.exchange(command, game);
 
                         this.sio.to(game.player1.user.room).emit('modification', game.gameBoard.cases, game.playerTurn().name);
-
-                        if (socket.id === game.player1.user.id) {
-                            this.sio.to(socket.id).emit('tileHolder', game.player1.getLetters());
-                        } else if (socket.id === game.player2.user.id) {
-                            this.sio.to(socket.id).emit('tileHolder', game.player2.getLetters());
-                        }
+                        this.sio
+                            .to(game.player1.user.id)
+                            .emit('tileHolder', game.player1.getLetters(), RoomManager.getGoalsPlayer(game, game.player1));
+                        this.sio
+                            .to(game.player2.user.id)
+                            .emit('tileHolder', game.player2.getLetters(), RoomManager.getGoalsPlayer(game, game.player2));
                     } else {
                         this.sio.to(socket.id).emit('commandValidated', verification);
                     }
