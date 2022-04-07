@@ -1,4 +1,5 @@
 import { DatabaseService } from '@app/services/best-score/best-score.services';
+import { RoomManager } from '@app/services/room-manager/room-manager.service';
 import { BotType } from '@common/botType';
 import { GoalType } from '@common/constants/goal-type';
 import { allGoals, Goals } from '@common/constants/goals';
@@ -14,7 +15,7 @@ import {
     TWENTY_SECONDS_MS,
 } from './../../../../common/constants/general-constants';
 import { GameState } from './../../../../common/gameState';
-import { User } from './../../../../common/types';
+import { GameHistory, User } from './../../../../common/types';
 import { GameBoardService } from './../../services/game-board/game-board.service';
 import { Timer } from './../../services/timer-manager/timer-manager.service';
 import { PlacementCommand } from './../placement-command/placement-command';
@@ -22,7 +23,6 @@ import { Player } from './../player/player';
 import { ReserveLetters } from './../reserve-letters/reserve-letters';
 import { VirtualPlayer } from './../virtual-player/virtual-player';
 
-import { GameHistory } from './../../../../common/types';
 export class Game {
     gameBoard: GameBoardService;
     player1: Player;
@@ -34,7 +34,7 @@ export class Game {
     sio: io.Server;
     databaseService: DatabaseService;
     goals: Goals;
-    gameStartingDate:string;
+    gameStartingDate: string;
 
     constructor() {
         this.reserveLetters = new ReserveLetters();
@@ -79,11 +79,9 @@ export class Game {
 
     startGame() {
         this.timer.start(this, this.sio);
-    
-        
-        this.gameStartingDate = new Date().toLocaleString('en-CA', {timeZone: 'America/Montreal'});
 
-        
+        this.gameStartingDate = new Date().toLocaleString('en-CA', { timeZone: 'America/Montreal' });
+
         this.randomTurnGame();
         this.sio.to(this.player1.user.id).emit('turn', this.player1.hisTurn);
         this.sio.to(this.player2.user.id).emit('turn', this.player2.hisTurn);
@@ -108,17 +106,13 @@ export class Game {
         this.startGame();
         this.sio.to(user.id).emit('tileHolder', this.player1.letters);
         this.sio.to(this.player1.user.room).emit('modification', this.gameBoard.cases, this.playerTurn().name);
-        if (modeLog) {
-            this.setGoals();
-        }
-        this.sio.to(user.id).emit('startGame', user.username, botName, this.goals);
+        if (modeLog) this.setGoals();
+        this.sio.to(user.id).emit('startGame', user.username, botName, RoomManager.getGoalsPlayer(this, this.player1));
     }
 
     randomTurnGame() {
         const player1Turn = Boolean(Math.round(Math.random()));
-        if (!player1Turn) {
-            this.changeTurnTwoPlayers();
-        }
+        if (!player1Turn) this.changeTurnTwoPlayers();
     }
 
     setGoals() {
@@ -240,7 +234,6 @@ export class Game {
     playerTurnValid(playerName: string): boolean {
         return playerName === this.playerTurn().name;
     }
-
     exchangeLetters(commandInformations: string[]): void {
         const player: Player = this.playerTurn();
         const oldLetters = commandInformations[1];
@@ -252,7 +245,6 @@ export class Game {
         this.gameState.passesCount = 0;
         this.timer.reset();
     }
-
     passTurn(): void {
         this.changeTurnTwoPlayers();
         this.gameState.passesCount++;
@@ -263,7 +255,6 @@ export class Game {
         this.sio.to(this.player2.user.id).emit('tileHolder', this.player2.letters);
         this.gameStateUpdate();
     }
-
     actionVirtualBeginnerPlayer(probability: number): string[] {
         if (probability <= PROBABILITY_PASS_COMMAND_BOT) {
             return CommandType.pass.split(' ');
@@ -273,29 +264,23 @@ export class Game {
             return VirtualPlayer.placementLettersCommand(VirtualPlayer.getProbability(), this);
         }
     }
-
     actionVirtualExpertPlayer(): string[] {
         return VirtualPlayer.commandExpertPlayer(this);
     }
-    async registerGame(){
-        
-
-        let game: GameHistory ={
+    async registerGame() {
+        const game: GameHistory = {
             date: this.gameStartingDate,
-            duration: this.timer.gameTime.toString() + " secondes",
+            duration: this.timer.gameTime.toString() + ' secondes',
             player1: this.player1.user.username,
             player1Points: this.player1.points,
             player2Points: this.player2.points,
             player2: this.player2.user.username,
-            gameMode: "TEST",
-
-
-        }
+            gameMode: 'TEST',
+        };
         await this.databaseService.start();
         await this.databaseService.insertGame(game);
         await this.databaseService.closeConnection();
     }
-
     async endGame() {
         this.gameState.gameFinished = true;
         this.timer.stop();
@@ -337,14 +322,12 @@ export class Game {
         this.registerGame();
         await this.databaseService.closeConnection();
     }
-
     private setWinner() {
         if (this.player1.points > this.player2.points) this.gameState.winner = this.player1.user.username;
         else if (this.player1.points < this.player2.points) this.gameState.winner = this.player2.user.username;
         else {
             this.gameState.winner = 'tie';
         }
-
         this.sio.to(this.roomName).emit('updatePoint', 'player1', this.player1.points);
         this.sio.to(this.roomName).emit('updatePoint', 'player2', this.player2.points);
         this.sio.to(this.roomName).emit('roomMessage', {

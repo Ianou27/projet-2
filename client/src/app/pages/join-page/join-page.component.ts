@@ -71,6 +71,7 @@ export class JoinPageComponent implements OnInit {
     openWait() {
         this.waitDialog.open(WaitingPlayerDialogComponent, {
             disableClose: true,
+            data: this.data,
         });
     }
     openWaitToJoin() {
