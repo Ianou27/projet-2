@@ -187,7 +187,7 @@ export class SocketManager {
                         this.sio.to(currentRoom).emit('modification', game.gameBoard.cases, game.playerTurn().name);
                     }
                     this.sio.to(game.player1.user.id).emit('tileHolder', game.player1.getLetters(), RoomManager.getGoalsPlayer(game, game.player1));
-                    this.sio.to(game.player2.user.id).emit('tileHolder', game.player1.getLetters(), RoomManager.getGoalsPlayer(game, game.player2));
+                    this.sio.to(game.player2.user.id).emit('tileHolder', game.player2.getLetters(), RoomManager.getGoalsPlayer(game, game.player2));
                 }
             });
 
@@ -472,7 +472,7 @@ export class SocketManager {
                             .emit('tileHolder', game.player1.getLetters(), RoomManager.getGoalsPlayer(game, game.player1));
                         this.sio
                             .to(game.player2.user.id)
-                            .emit('tileHolder', game.player1.getLetters(), RoomManager.getGoalsPlayer(game, game.player2));
+                            .emit('tileHolder', game.player2.getLetters(), RoomManager.getGoalsPlayer(game, game.player2));
                     } else {
                         this.sio.to(socket.id).emit('commandValidated', verification);
                     }

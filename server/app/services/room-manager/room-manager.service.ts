@@ -14,15 +14,29 @@ export class RoomManager {
         const goals = game.goals;
         const goalsPlayer: GoalInformations[] = [];
         for (const goal in goals) {
-            if (goals[goal].isInGame && goals[goal].type === GoalType.Public) {
+            if (!goals[goal].isInGame) {
+                continue;
+            }
+            if (goals[goal].type === GoalType.Public) {
                 goalsPlayer.push(goals[goal]);
-            } else if (goals[goal].isInGame && game.player1 === player && goals[goal].type === GoalType.PrivatePlayer1) {
+            } else if (game.player1 === player && goals[goal].type === GoalType.PrivatePlayer1) {
                 goalsPlayer.push(goals[goal]);
-            } else if (goals[goal].isInGame && game.player2 === player && goals[goal].type === GoalType.PrivatePlayer2) {
+            } else if (game.player2 === player && goals[goal].type === GoalType.PrivatePlayer2) {
+                goalsPlayer.push(goals[goal]);
+            } else if ((goals[goal].type === GoalType.PrivatePlayer2 || goals[goal].type === GoalType.PrivatePlayer1) && goals[goal].isDone) {
                 goalsPlayer.push(goals[goal]);
             }
         }
-        return goalsPlayer;
+        const copyGoalsPlayer: GoalInformations[] = [];
+        goalsPlayer.forEach((element) => {
+            if (element.type === GoalType.PrivatePlayer1 || element.type === GoalType.PrivatePlayer2) {
+                copyGoalsPlayer.unshift(element);
+            } else {
+                copyGoalsPlayer.push(element);
+            }
+        });
+
+        return copyGoalsPlayer;
     }
 
     createRoom(
