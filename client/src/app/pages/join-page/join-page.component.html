@@ -46,7 +46,9 @@
                             <mat-form-field>
                                 <mat-select [(value)]="selectedDico" placeholder="Choisir un dictionnaire">
                                     <mat-option value="Dictionnaire par defaut">Dictionnaire par defaut</mat-option>
-                                    <mat-option value="Dictionnaire 2" disabled>Dictionnaire 2 (Indisponible)</mat-option>
+                                    <mat-option *ngFor="let dictionary of dictionaries" [value]="dictionary.value">
+                                        {{ dictionary.text }}
+                                    </mat-option>
                                 </mat-select>
                             </mat-form-field>
                         </td>
@@ -110,7 +112,9 @@
                         <mat-form-field>
                             <mat-select [(value)]="selectedDico" placeholder="Choisir un dictionnaire">
                                 <mat-option value="Dictionnaire par defaut">Dictionnaire par defaut</mat-option>
-                                <mat-option value="Dictionnaire 2" disabled>Dictionnaire 2 (Indisponible)</mat-option>
+                                <mat-option *ngFor="let dictionary of dictionaries" [value]="dictionary.value">
+                                    {{ dictionary.text }}
+                                </mat-option>
                             </mat-select>
                         </mat-form-field>
                     </form>

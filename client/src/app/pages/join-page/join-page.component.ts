@@ -6,6 +6,7 @@ import { WaitingPlayerTwoComponent } from '@app/components/waiting-player-two/wa
 import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
 import { BotType } from './../../../../../common/botType';
 import { MyErrorStateMatcher } from './errorStateMatcher/error-state-matcher';
+// import { Dictionary } from './...';
 
 @Component({
     selector: 'app-join-page',
@@ -35,6 +36,12 @@ export class JoinPageComponent implements OnInit {
         { value: '240', text: '4:00' },
         { value: '270', text: '4:30' },
         { value: '300', text: '5:00' },
+    ];
+    dictionaries /* : Dictionary[]*/ = [
+        // { value: '1', text: 'Dictionnaire par defaut' },
+        { value: '2', text: 'Dictionnaire 2...' },
+        { value: '3', text: 'Dictionnaire 3...' },
+        { value: '4', text: 'Dictionnaire 4...' },
     ];
 
     botType = [{ value: BotType.Beginner }, { value: BotType.Expert }];
