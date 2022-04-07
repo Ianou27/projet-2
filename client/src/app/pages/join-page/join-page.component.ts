@@ -40,7 +40,7 @@ export class JoinPageComponent implements OnInit {
     ];
 
     // À enlever et changer dans le .ts
-    dictionaries: Dic[] = this.socketHandler.dictInfoList;
+    // dictionaries: Dic[] = this.socketHandler.dictInfoList;
     dictionariess = [
         // { value: '1', text: 'Dictionnaire par defaut' },
         { value: '2', text: 'Dictionnaire 2 wow', description: 'Exemple de descrition du deuxième dictionnaire' },
