@@ -51,7 +51,7 @@ export class ClientSocketHandler {
     dictInfoList: any[] = [];
     virtualPlayerNameList: any[] = [];
     gameHistory: any[] = [];
-    dictionaryToDownload :string = '';
+    dictionaryToDownload: string = '';
 
     constructor(public socketService: SocketClientService, public boardService: BoardService, public tileHolderService: TileHolderService) {}
 
@@ -175,7 +175,7 @@ export class ClientSocketHandler {
         this.socketService.on('downloadDic', (dic: string) => {
             this.dictionaryToDownload = dic;
         });
-        
+
         this.socketService.socket.on('asked', (username: string, socket: string, roomObj: Room) => {
             this.socketWantToJoin = socket;
             this.playerJoined = true;
@@ -307,14 +307,13 @@ export class ClientSocketHandler {
         this.gotRefused = false;
     }
     uploadDictionary(file: JSON) {
-        
         this.socketService.socket.emit('uploadDictionary', file);
     }
     deleteDic(title: string) {
         this.socketService.socket.emit('deleteDic', title);
     }
     modifyDictionary(oldTitle: string, newTitle: string, description: string) {
-        this.socketService.socket.emit('modifyDictionary', oldTitle, newTitle , description);
+        this.socketService.socket.emit('modifyDictionary', oldTitle, newTitle, description);
     }
 
     accepted() {
@@ -330,8 +329,8 @@ export class ClientSocketHandler {
         this.socketService.socket.emit('cancelCreation');
         this.updateRooms();
     }
-    convertToSoloGame() {
-        this.socketService.socket.emit('convertToSoloGame');
+    convertToSoloGame(mode2990: boolean) {
+        this.socketService.socket.emit('convertToSoloGame', mode2990);
     }
 
     updateRoomView() {
