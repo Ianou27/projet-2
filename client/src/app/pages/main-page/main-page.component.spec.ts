@@ -3,6 +3,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
+import { TileComponent } from '@app/components/tile/tile.component';
 import { BestScoreComponent } from '@app/pages/best-score/best-score.component';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { CommunicationService } from '@app/services/communication/communication.service';
@@ -21,7 +22,7 @@ describe('MainPageComponent', () => {
 
         await TestBed.configureTestingModule({
             imports: [RouterTestingModule, HttpClientModule],
-            declarations: [MainPageComponent],
+            declarations: [MainPageComponent, TileComponent],
             providers: [
                 { provide: CommunicationService, useValue: communicationServiceSpy },
                 {
@@ -48,6 +49,15 @@ describe('MainPageComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('should set value after view checked', () => {
+        const title = fixture.debugElement.nativeElement.getElementsByClassName('rectangle')[0];
+        const letter = title.children[0].children[0].children[0] as HTMLElement;
+        const score = title.children[0].children[0].children[1] as HTMLElement;
+        expect(title.children[0].children[0].children[0].id).toEqual('letterTitle');
+        expect(letter.style.fontSize).toEqual('40px');
+        expect(score.style.fontSize).toEqual('20px');
     });
 
     it('openDialog should call open on the dialog and disable the option to click outside to close', () => {
