@@ -1,6 +1,6 @@
 #tile-holder {
     margin-top: 0px;
-    margin-left: 125px;
+    margin-left: 100px;
     height: 80px;
     width: 500px;
     border-radius: 15px;
@@ -13,9 +13,18 @@
     gap: 10px;
 }
 
+.container {
+    display: flex;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1%;
+}
+
 button {
     position: relative;
-    left: 40%;
 }
 
 div:focus {

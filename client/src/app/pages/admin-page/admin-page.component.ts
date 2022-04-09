@@ -19,7 +19,6 @@ export class AdminPageComponent implements OnInit {
     showCard: boolean = false;
     virtualPlayer: string = 'Débutants';
     virtualPlayerName: string = '';
-    virtualPlayerType: string = '';
     displayedColumns: string[] = ['date', 'duration', 'player1', 'player1Points', 'player2', 'player2Points', 'gameMode'];
     displayedNames: string[] = [];
     displayedFixedNames: string[] = [];
@@ -122,24 +121,25 @@ export class AdminPageComponent implements OnInit {
     // https://stackoverflow.com/questions/42360665/angular2-to-export-download-json-file
 
     addNewPlayer() {
-        if (this.virtualPlayerType === 'Débutant') {
+        if (this.virtualPlayer === 'Débutants') {
             this.socketHandler.addVirtualPlayerNames(this.virtualPlayerName, 'beginner');
         } else {
             this.socketHandler.addVirtualPlayerNames(this.virtualPlayerName, 'expert');
         }
         this.virtualPlayerName = '';
-        this.virtualPlayerType = '';
         this.refreshDisplayedData();
     }
 
     deletePlayerName(selectedName: string) {
         this.socketHandler.deleteVirtualPlayerName(selectedName);
         this.refreshDisplayedData();
+        this.openSnackBar('Nom supprimé', 'OK!');
     }
 
     modifyPlayerName(oldName: string) {
         this.socketHandler.modifyVirtualPlayerNames(oldName, this.newName);
         this.refreshDisplayedData();
+        this.openSnackBar('Nom modifié', 'OK!');
     }
 
     initialNameDisplay() {
