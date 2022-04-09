@@ -145,7 +145,7 @@ describe('AdminPageComponent', () => {
     });
 
     it('should add a new player', () => {
-        component.virtualPlayerType = 'Débutant';
+        component.virtualPlayer = 'Débutants';
         component.virtualPlayerName = 'Player';
         const refreshSpy = spyOn<any>(component, 'refreshDisplayedData');
         component.addNewPlayer();
@@ -153,7 +153,7 @@ describe('AdminPageComponent', () => {
     });
 
     it('should add a new player', () => {
-        component.virtualPlayerType = 'Expert';
+        component.virtualPlayer = 'Experts';
         component.virtualPlayerName = 'Player';
         fixture.detectChanges();
         const refreshSpy = spyOn<any>(component, 'refreshDisplayedData');

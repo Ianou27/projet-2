@@ -126,6 +126,14 @@
                         Modifier
                         <mat-icon>save</mat-icon>
                     </button>
+                    <button
+                        mat-stroked-button
+                        *ngIf="newNames.selectedOptions.selected[0]"
+                        (click)="deletePlayerName(newNames.selectedOptions.selected[0]?.value)"
+                    >
+                        Supprimer le nom du joueur sélectionné
+                        <mat-icon>delete</mat-icon>
+                    </button>
                 </div>
                 <mat-card *ngIf="showCard" class="add-player">
                     <mat-form-field appearance="fill" [formGroup]="formAdd" class="input">
@@ -136,27 +144,12 @@
                         <mat-error *ngIf="myErrorAdd('newName', 'minlength')">Veuillez entrer un nom d'au moins 3 lettres</mat-error>
                         <mat-error *ngIf="myErrorAdd('newName', 'pattern')">Pas de chiffres et/ou caractères spéciaux</mat-error>
                     </mat-form-field>
-                    <mat-form-field appearance="fill">
-                        <mat-label>Type du joueur virtuel</mat-label>
-                        <mat-select [(ngModel)]="virtualPlayerType">
-                            <mat-option value="Débutant"> Débutant </mat-option>
-                            <mat-option value="Expert"> Expert </mat-option>
-                        </mat-select>
-                    </mat-form-field>
                     <button mat-stroked-button [disabled]="formAdd.invalid" (click)="addNewPlayer(); showCard = !showCard">Ajouter</button>
                     <button mat-stroked-button (click)="showCard = !showCard">Fermer</button>
                 </mat-card>
                 <button mat-stroked-button (click)="showCard = !showCard">
                     Ajouter un joueur virtuel
                     <mat-icon>add</mat-icon>
-                </button>
-                <button
-                    mat-stroked-button
-                    *ngIf="newNames.selectedOptions.selected[0]"
-                    (click)="deletePlayerName(newNames.selectedOptions.selected[0]?.value)"
-                >
-                    Supprimer le nom du joueur sélectionné
-                    <mat-icon>delete</mat-icon>
                 </button>
             </div>
         </mat-tab>
