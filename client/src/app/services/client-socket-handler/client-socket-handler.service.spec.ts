@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-lines */
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-magic-numbers */
@@ -262,6 +263,74 @@ describe('ChatService', () => {
         expect(service.numberOfRoomsLog).toBe(1);
     });
 
+    it('addVirtualPlayerNames() should emit the addVirtualPlayerNames event', () => {
+        const name = 'player';
+        const type = 'beginner';
+        const emitSpy = spyOn(service.socketService.socket, 'emit');
+        service.addVirtualPlayerNames(name, type);
+        expect(emitSpy).toHaveBeenCalled();
+        expect(emitSpy).toHaveBeenCalledWith('addVirtualPlayerNames', name, type);
+    });
+
+    it('deleteVirtualPlayerName() should emit the deleteVirtualPlayerName event', () => {
+        const name = 'player';
+        const emitSpy = spyOn(service.socketService.socket, 'emit');
+        service.deleteVirtualPlayerName(name);
+        expect(emitSpy).toHaveBeenCalled();
+        expect(emitSpy).toHaveBeenCalledWith('deleteVirtualPlayerName', name);
+    });
+
+    it('modifyVirtualPlayerNames() should emit the modifyVirtualPlayerNames event', () => {
+        const name = 'player';
+        const name2 = 'player';
+        const emitSpy = spyOn(service.socketService.socket, 'emit');
+        service.modifyVirtualPlayerNames(name, name2);
+        expect(emitSpy).toHaveBeenCalled();
+        expect(emitSpy).toHaveBeenCalledWith('modifyVirtualPlayerNames', name, name2);
+    });
+
+    it('getAdminPageInfo() should emit the getAdminPageInfo event', () => {
+        const emitSpy = spyOn(service.socketService.socket, 'emit');
+        service.getAdminPageInfo();
+        expect(emitSpy).toHaveBeenCalled();
+        expect(emitSpy).toHaveBeenCalledWith('getAdminInfo');
+    });
+
+    it('resetAll() should emit the resetAll event', () => {
+        const emitSpy = spyOn(service.socketService.socket, 'emit');
+        service.resetAll();
+        expect(emitSpy).toHaveBeenCalled();
+        expect(emitSpy).toHaveBeenCalledWith('resetAll');
+    });
+
+    it('resetVirtualPlayers() should emit the resetVirtualPlayers event', () => {
+        const emitSpy = spyOn(service.socketService.socket, 'emit');
+        service.resetVirtualPlayers();
+        expect(emitSpy).toHaveBeenCalled();
+        expect(emitSpy).toHaveBeenCalledWith('resetVirtualPlayers');
+    });
+
+    it('resetDictionary() should emit the resetDictionary event', () => {
+        const emitSpy = spyOn(service.socketService.socket, 'emit');
+        service.resetDictionary();
+        expect(emitSpy).toHaveBeenCalled();
+        expect(emitSpy).toHaveBeenCalledWith('resetDictionary');
+    });
+
+    it('resetGameHistory() should emit the resetGameHistory event', () => {
+        const emitSpy = spyOn(service.socketService.socket, 'emit');
+        service.resetGameHistory();
+        expect(emitSpy).toHaveBeenCalled();
+        expect(emitSpy).toHaveBeenCalledWith('resetGameHistory');
+    });
+
+    it('resetBestScores() should emit the resetBestScores event', () => {
+        const emitSpy = spyOn(service.socketService.socket, 'emit');
+        service.resetBestScores();
+        expect(emitSpy).toHaveBeenCalled();
+        expect(emitSpy).toHaveBeenCalledWith('resetBestScore');
+    });
+
     describe('Receiving events', () => {
         beforeEach(() => {
             service.configureBaseSocketFeatures();
@@ -466,6 +535,22 @@ describe('ChatService', () => {
             socketTestHelper.peerEmitTwoParams('getBestScore', bestScoresClassic, bestScoresLog);
             expect(service.bestClassicScores).toEqual(bestScoresClassic);
             expect(service.bestLog2990Scores).toEqual(bestScoresLog);
+        });
+
+        it('should get admin page related info', () => {
+            const dictionaryNameList = ['Dictionnaire1', 'Dictionnaire2'];
+            const virtualPlayerNames = ['Riad', 'Richard'];
+            const history: any[] = ['history'];
+            socketTestHelper.peerEmitThreeParams('getAdminInfo', dictionaryNameList, history, virtualPlayerNames);
+            expect(service.dictInfoList).toEqual(dictionaryNameList);
+            expect(service.virtualPlayerNameList).toEqual(virtualPlayerNames);
+            expect(service.gameHistory).toEqual(history);
+        });
+
+        it('should handle handle downloadDic', () => {
+            const dictionary = 'Dictionnaire1';
+            socketTestHelper.peerSideEmit('downloadDic', 'Dictionnaire1');
+            expect(service.dictionaryToDownload).toEqual(dictionary);
         });
     });
 });
