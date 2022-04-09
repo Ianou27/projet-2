@@ -105,13 +105,17 @@ export class AdminPageComponent implements OnInit {
             return false;
         } else {
             this.socketHandler.modifyDictionary(oldTitle, title, description);
-            window.location.reload();
+            this.reloadPage();
         }
         return true;
     }
 
     deleteDict(title: string) {
         this.socketHandler.deleteDic(title);
+        this.reloadPage();
+    }
+
+    reloadPage() {
         window.location.reload();
     }
 
@@ -209,7 +213,7 @@ export class AdminPageComponent implements OnInit {
                 this.socketHandler.uploadDictionary(object);
 
                 this.openSnackBar('Dictionnaire ajouté', 'Ok');
-                window.location.reload();
+                this.reloadPage();
             }
         } catch (error) {
             this.error = "Le fichier n'est pas au bon format";

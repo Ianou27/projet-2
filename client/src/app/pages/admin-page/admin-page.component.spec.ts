@@ -72,7 +72,7 @@ describe('AdminPageComponent', () => {
                         },
                     },
                 },
-                { provide: window, useValue: windowMock },
+                { provide: Window, useValue: windowMock },
             ],
         }).compileComponents();
     });
@@ -128,15 +128,27 @@ describe('AdminPageComponent', () => {
     });
 
     it('modifyDict should return false if no value changed', () => {
-        const reloadSpy = spyOn(window.location, 'reload');
+        component.reloadPage = () => {
+            return;
+        };
+        const reloadSpy = spyOn(component, 'reloadPage');
         const returnValue = component.modifyDict('titre', 'nouveau titre', 'nouvelle description');
         expect(reloadSpy).toHaveBeenCalled();
         expect(returnValue).toBeTrue();
     });
 
-    it('deleteDict', () => {
-        const reloadSpy = spyOn(window.location, 'reload');
+    it('deleteDict should reload page', () => {
+        component.reloadPage = () => {
+            return;
+        };
+        const reloadSpy = spyOn(component, 'reloadPage');
         component.deleteDict('titre');
+        expect(reloadSpy).toHaveBeenCalled();
+    });
+
+    it('reload page should call reload', () => {
+        const reloadSpy = spyOn<any>(window.location, 'reload').and.stub();
+        component.reloadPage();
         expect(reloadSpy).toHaveBeenCalled();
     });
 
