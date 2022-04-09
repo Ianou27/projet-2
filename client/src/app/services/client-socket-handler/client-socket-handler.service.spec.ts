@@ -331,6 +331,36 @@ describe('ChatService', () => {
         expect(emitSpy).toHaveBeenCalledWith('resetBestScore');
     });
 
+    /* it('uploadDictionary() should emit the uploadDictionary event', () => {
+        const emitSpy = spyOn(service.socketService.socket, 'emit');
+        let file = '';
+        file: JSON = JSON.parse(file);
+        service.uploadDictionary(file);
+        expect(emitSpy).toHaveBeenCalled();
+        expect(emitSpy).toHaveBeenCalledWith('uploadDictionary');
+    }); */
+
+    it('deleteDic() should emit the deleteDic event', () => {
+        const emitSpy = spyOn(service.socketService.socket, 'emit');
+        service.deleteDic('test');
+        expect(emitSpy).toHaveBeenCalled();
+        expect(emitSpy).toHaveBeenCalledWith('deleteDic', 'test');
+    });
+
+    it('modifyDictionary() should emit the modifyDictionary event', () => {
+        const emitSpy = spyOn(service.socketService.socket, 'emit');
+        service.modifyDictionary('test', 'dictionnaire', 'dictionnaire de scrabble');
+        expect(emitSpy).toHaveBeenCalled();
+        expect(emitSpy).toHaveBeenCalledWith('modifyDictionary');
+    });
+
+    it('downloadDictionary() should emit the downloadDictionary event', () => {
+        const emitSpy = spyOn(service.socketService.socket, 'emit');
+        service.downloadDictionary('test');
+        expect(emitSpy).toHaveBeenCalled();
+        expect(emitSpy).toHaveBeenCalledWith('downloadDic', 'test');
+    });
+
     describe('Receiving events', () => {
         beforeEach(() => {
             service.configureBaseSocketFeatures();
