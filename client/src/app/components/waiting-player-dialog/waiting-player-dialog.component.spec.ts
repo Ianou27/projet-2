@@ -7,7 +7,7 @@ import { WaitingPlayerDialogComponent } from './waiting-player-dialog.component'
 describe('WaitingPlayerDialogComponent', () => {
     let component: WaitingPlayerDialogComponent;
     let fixture: ComponentFixture<WaitingPlayerDialogComponent>;
-    let model: string;
+    let param: string;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -27,7 +27,7 @@ describe('WaitingPlayerDialogComponent', () => {
                 },
                 {
                     provide: MAT_DIALOG_DATA,
-                    useValue: model,
+                    useValue: param,
                 },
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],

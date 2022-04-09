@@ -1,20 +1,23 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { WaitingPlayerDialogComponent } from '@app/components/waiting-player-dialog/waiting-player-dialog.component';
 import { WaitingPlayerTwoComponent } from '@app/components/waiting-player-two/waiting-player-two.component';
 import { Room } from './../../../../../common/types';
+import { MyErrorStateMatcher } from './errorStateMatcher/error-state-matcher';
 import { JoinPageComponent } from './join-page.component';
 
 describe('JoinPageComponent', () => {
     let component: JoinPageComponent;
     let fixture: ComponentFixture<JoinPageComponent>;
     let model: string;
+    let matcher: MyErrorStateMatcher;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [JoinPageComponent, WaitingPlayerDialogComponent, WaitingPlayerTwoComponent],
-            imports: [MatDialogModule],
+            imports: [MatDialogModule, FormsModule, ReactiveFormsModule],
             providers: [
                 {
                     provide: MatDialog,
@@ -30,6 +33,10 @@ describe('JoinPageComponent', () => {
                 {
                     provide: MAT_DIALOG_DATA,
                     useValue: model,
+                },
+                {
+                    provide: MyErrorStateMatcher,
+                    useValue: (matcher = new MyErrorStateMatcher()),
                 },
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -51,6 +58,7 @@ describe('JoinPageComponent', () => {
         component.openWait();
         expect(dialogSpy).toHaveBeenCalledWith(WaitingPlayerDialogComponent, {
             disableClose: true,
+            data: undefined,
         });
     });
 
@@ -103,6 +111,7 @@ describe('JoinPageComponent', () => {
 
     it('goHome() should close the dialog', () => {
         const closeSpy = spyOn(component.waitDialog, 'closeAll');
+        matcher.isErrorState(null);
         component.goHome();
         expect(closeSpy).toHaveBeenCalled();
     });
