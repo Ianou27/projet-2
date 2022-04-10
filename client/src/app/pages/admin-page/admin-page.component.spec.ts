@@ -29,6 +29,7 @@ describe('AdminPageComponent', () => {
                 'modifyVirtualPlayerNames',
                 'modifyDictionary',
                 'deleteDic',
+                'uploadDictionary',
                 'downloadDictionary',
                 'resetVirtualPlayers',
                 'resetDictionary',
@@ -287,5 +288,60 @@ describe('AdminPageComponent', () => {
         component.emptyArray();
         expect(component.displayedFixedNames).toEqual([]);
         expect(component.displayedNames).toEqual([]);
+    });
+
+    it('should detect file input change and set uploadedFile  model', () => {
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(new File([''], 'test-file.json'));
+
+        const inputDebugElement = fixture.debugElement.query(By.css('input[type=file]'));
+        inputDebugElement.nativeElement.files = dataTransfer.files;
+
+        inputDebugElement.nativeElement.dispatchEvent(new InputEvent('change'));
+
+        fixture.detectChanges();
+
+        expect(component.error).toEqual('');
+        expect(component.selectedFile).toBeUndefined();
+    });
+
+    it('submit should call other methods', () => {
+        component.reloadPage = () => {
+            return;
+        };
+        const reloadSpy = spyOn(component, 'reloadPage');
+        const snackBarSpy = spyOn(component, 'openSnackBar');
+        component.selectedFile = '{"title": "test", "description": "ce dictionnaire est seulement un test  ss", "words":["aa","aalenien"]}';
+        component.submit();
+        expect(reloadSpy).toHaveBeenCalled();
+        expect(snackBarSpy).toHaveBeenCalled();
+    });
+
+    it('submit should change error when file is not the correct format', () => {
+        component.selectedFile = '';
+        component.submit();
+        expect(component.error).toEqual("Le fichier n'est pas au bon format");
+    });
+
+    it('verifyDict returns false if new dictionnary title is the same as an already existant dictionary', () => {
+        component.selectedFile = '{"title": "titre", "description": "ce dictionnaire est seulement un test", "words":["aa","aalenien"]}';
+        const returnVal = component.verifyDict(component.selectedFile);
+        expect(component.error).toEqual('Ce dictionnaire existe déjà');
+        expect(returnVal).toBeFalsy();
+    });
+
+    it('verifyDict returns true if new dictionnary is valid', () => {
+        component.selectedFile = '{"title": "test", "description": "ce dictionnaire est seulement un test", "words":["aa","aalenien"]}';
+        const returnVal = component.verifyDict(component.selectedFile);
+        expect(returnVal).toBeTruthy();
+    });
+
+    it('verifyDict returns false if new dictionnary is not valid', () => {
+        component.selectedFile = '{"title": "test"}';
+        const returnVal = component.verifyDict(component.selectedFile);
+        expect(component.error).toEqual(
+            "Le format du dictionnaire n'est pas valide\n Il faut un titre, une description, un tableau de mots et que tous les mots dans le tableaux soient dans l'alphabet anglais sans espace",
+        );
+        expect(returnVal).toBeFalsy();
     });
 });
