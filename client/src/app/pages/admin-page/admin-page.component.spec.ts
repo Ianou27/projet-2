@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
@@ -290,6 +291,8 @@ describe('AdminPageComponent', () => {
         expect(component.displayedNames).toEqual([]);
     });
 
+    // Code pour ce test trouvé sur stack overflow
+    // https://stackoverflow.com/questions/55356093/how-to-write-the-unit-testing-for-the-file-upload-method-in-the-angular-7-or-2
     it('should detect file input change and set uploadedFile  model', () => {
         const dataTransfer = new DataTransfer();
         dataTransfer.items.add(new File([''], 'test-file.json'));
@@ -343,5 +346,15 @@ describe('AdminPageComponent', () => {
             "Le format du dictionnaire n'est pas valide\n Il faut un titre, une description, un tableau de mots et que tous les mots dans le tableaux soient dans l'alphabet anglais sans espace",
         );
         expect(returnVal).toBeFalsy();
+    });
+
+    it('myErrorModify should return true', () => {
+        const returnVal = component.myErrorModify('modifiedName', 'required');
+        expect(returnVal).toBeTruthy();
+    });
+
+    it('myErrorAdd should return true', () => {
+        const returnVal = component.myErrorAdd('newName', 'required');
+        expect(returnVal).toBeTruthy();
     });
 });
