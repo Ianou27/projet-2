@@ -39,19 +39,18 @@ export class JoinPageComponent implements OnInit {
         { value: '300', text: '5:00' },
     ];
 
-    // À enlever et changer dans le .ts
-    // dictionaries: Dic[] = this.socketHandler.dictInfoList;
-    dictionariess = [
-        // { value: '1', text: 'Dictionnaire par defaut' },
-        { value: '2', text: 'Dictionnaire 2 wow', description: 'Exemple de descrition du deuxième dictionnaire' },
-        {
-            value: '3',
-            text: 'Dictionnaire mandarin',
-            description: 'Tout ca n`est qu`un exemple à enlever après le vrai lien entre les dictionnaires',
-        },
-        { value: '4', text: 'Dictionnaire compliqué', description: 'smoke okok yeyeyeyeyey hahahah jadore les dictionnaires' },
-    ];
-    // Jusqu'ici
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    dictionaries: any[] = [];
+    // dictionariess = [
+    //     // { value: '1', text: 'Dictionnaire par defaut' },
+    //     { value: '2', text: 'Dictionnaire 2 wow', description: 'Exemple de descrition du deuxième dictionnaire' },
+    //     {
+    //         value: '3',
+    //         text: 'Dictionnaire mandarin',
+    //         description: 'Tout ca n`est qu`un exemple à enlever après le vrai lien entre les dictionnaires',
+    //     },
+    //     { value: '4', text: 'Dictionnaire compliqué', description: 'smoke okok yeyeyeyeyey hahahah jadore les dictionnaires' },
+    // ];
 
     botType = [{ value: BotType.Beginner }, { value: BotType.Expert }];
 
@@ -68,6 +67,7 @@ export class JoinPageComponent implements OnInit {
         });
         if (this.data === 'mode2990') this.mode2990 = true;
         else this.mode2990 = false;
+        this.dictionaries = this.socketHandler.dictInfoList;
     }
 
     myError = (controlName: string, errorName: string) => {
