@@ -25,6 +25,8 @@ export class JoinPageComponent implements OnInit {
     selectedRoomName: string;
     matcher = new MyErrorStateMatcher();
     mode2990: boolean;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    dictionaries: any[];
 
     time = [
         { value: '30', text: '0:30' },
@@ -39,8 +41,6 @@ export class JoinPageComponent implements OnInit {
         { value: '300', text: '5:00' },
     ];
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    dictionaries: any[] = [];
     // dictionariess = [
     //     // { value: '1', text: 'Dictionnaire par defaut' },
     //     { value: '2', text: 'Dictionnaire 2 wow', description: 'Exemple de descrition du deuxième dictionnaire' },
@@ -59,7 +59,10 @@ export class JoinPageComponent implements OnInit {
         public socketHandler: ClientSocketHandler,
         public clientSocketHandler: ClientSocketHandler,
         @Inject(MAT_DIALOG_DATA) public data: string,
-    ) {}
+    ) {
+        socketHandler.connect();
+        socketHandler.getAdminPageInfo();
+    }
 
     ngOnInit(): void {
         this.form = new FormGroup({
@@ -67,7 +70,6 @@ export class JoinPageComponent implements OnInit {
         });
         if (this.data === 'mode2990') this.mode2990 = true;
         else this.mode2990 = false;
-        this.dictionaries = this.socketHandler.dictInfoList;
     }
 
     myError = (controlName: string, errorName: string) => {
@@ -115,5 +117,12 @@ export class JoinPageComponent implements OnInit {
         const dictionaryList = this.socketHandler.dictInfoList;
         dictionaryList.forEach((dict: Dic) => names.push(dict.title));
         return names;
+    }
+
+    displayDescriptions() {
+        const descriptions: string[] = [];
+        const dictionaryList = this.socketHandler.dictInfoList;
+        dictionaryList.forEach((dict: Dic) => descriptions.push(dict.description));
+        return descriptions;
     }
 }
