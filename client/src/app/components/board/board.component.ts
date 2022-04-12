@@ -12,9 +12,12 @@ import { Orientation } from './../../../../../common/orientation';
     styleUrls: ['./board.component.scss'],
 })
 export class BoardComponent implements OnInit {
-    letterPlaced: string[] = [];
-    orientation = Orientation.default;
-    constructor(public boardService: BoardService, public clientSocketHandler: ClientSocketHandler) {}
+    letterPlaced: string[];
+    orientation: Orientation;
+    constructor(public boardService: BoardService, public clientSocketHandler: ClientSocketHandler) {
+        this.letterPlaced = [];
+        this.orientation = Orientation.default;
+    }
     @HostListener('keydown', ['$event'])
     keyHandler(event: KeyboardEvent) {
         // utilisation de code ne provenant pas de nous, source :

@@ -8,5 +8,4 @@ import { Component, Input } from '@angular/core';
 export class TileComponent {
     @Input() letter: string = '';
     @Input() value: number = 0;
-    letterFontSize: number;
 }

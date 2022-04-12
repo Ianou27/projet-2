@@ -14,7 +14,7 @@ export class GoalsComponent {
         this.goals = clientSocketHandler.goals;
     }
 
-    getType(goal: GoalInformations) {
+    getType(goal: GoalInformations): string {
         if (goal.type === GoalType.Public) {
             return 'Public';
         }

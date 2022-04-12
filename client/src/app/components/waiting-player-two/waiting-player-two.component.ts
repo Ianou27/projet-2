@@ -10,8 +10,10 @@ import { ClientSocketHandler } from '@app/services/client-socket-handler/client-
     styleUrls: ['./waiting-player-two.component.scss'],
 })
 export class WaitingPlayerTwoComponent {
-    isBeingRedirected: boolean = false;
-    constructor(private multiplayerDialog: MatDialog, public clientSocketHandler: ClientSocketHandler) {}
+    isBeingRedirected: boolean;
+    constructor(private multiplayerDialog: MatDialog, public clientSocketHandler: ClientSocketHandler) {
+        this.isBeingRedirected = false;
+    }
 
     join() {
         this.multiplayerDialog.closeAll();

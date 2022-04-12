@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { BotType } from '@common/botType';
 import { InfoToJoin, Room } from '@common/types';
 import * as http from 'http';
@@ -27,7 +26,6 @@ export class SocketManager {
 
     async handleSockets(): Promise<void> {
         this.sio.on('connection', (socket) => {
-            console.log(`Connexion par l'utilisateur avec id : ${socket.id}`);
             socket.on('createRoom', (username: string, room: string, timer: string, modeLog: boolean) => {
                 this.roomManager.createRoom(username, room, socket.id, this.identification, timer, this.databaseService, modeLog);
                 socket.join(room);
@@ -217,12 +215,10 @@ export class SocketManager {
             socket.on('getBestScore', async () => {
                 try {
                     await this.databaseService.start();
-                    console.log('Database connection successful !');
                     this.sio
                         .to(socket.id)
                         .emit('getBestScore', await this.databaseService.bestScoreClassic(), await this.databaseService.bestScoreLog());
                 } catch {
-                    console.error('Database connection failed !');
                     this.sio.to(socket.id).emit(
                         'getBestScore',
                         [
@@ -244,7 +240,6 @@ export class SocketManager {
             socket.on('getAdminInfo', async () => {
                 try {
                     await this.databaseService.start();
-                    console.log('Database connection successful !');
                     this.sio
                         .to(socket.id)
                         .emit(
@@ -256,7 +251,6 @@ export class SocketManager {
 
                     await this.databaseService.closeConnection();
                 } catch {
-                    console.error('Database connection failed !');
                     // this.sio.to(socket.id).emit(
                     //     'getDictionaries',
                     //     [
@@ -487,7 +481,6 @@ export class SocketManager {
             });
             socket.on('disconnect', (reason) => {
                 const room = this.identification.getRoom(socket.id);
-                console.log(room);
                 if (room !== '') {
                     const game = this.identification.getGame(socket.id);
                     if (game.player2 !== undefined && !game.gameState.gameFinished) game.surrender(this.identification.surrender(socket.id));
@@ -501,8 +494,6 @@ export class SocketManager {
                 }
 
                 this.identification.deleteUser(socket.id);
-                console.log(`Deconnexion par l'utilisateur avec id : ${socket.id}`);
-                console.log(`Raison de deconnexion : ${reason}`);
             });
         });
     }

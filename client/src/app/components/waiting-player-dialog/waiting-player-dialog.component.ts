@@ -35,7 +35,6 @@ export class WaitingPlayerDialogComponent {
 
     convertToSolo() {
         let mode2990 = false;
-        console.log(this.data);
         if (this.data === 'mode2990') mode2990 = true;
         this.clientSocketHandler.convertToSoloGame(mode2990);
         this.multiplayerDialog.closeAll();

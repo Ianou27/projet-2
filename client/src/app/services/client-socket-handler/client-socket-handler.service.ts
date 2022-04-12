@@ -332,7 +332,6 @@ export class ClientSocketHandler {
     convertToSoloGame(mode2990: boolean) {
         this.socketService.socket.emit('convertToSoloGame', mode2990);
     }
-
     updateRoomView() {
         let counterLog = 0;
         let counterClassic = 0;

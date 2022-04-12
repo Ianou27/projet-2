@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { GoalType } from '../../../../../common/constants/goal-type';
+import { GoalType } from './../../../../../common/constants/goal-type';
 import { allGoals } from './../../../../../common/constants/goals';
 import { GoalsComponent } from './goals.component';
 

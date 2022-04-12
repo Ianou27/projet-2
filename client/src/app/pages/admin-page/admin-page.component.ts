@@ -24,7 +24,7 @@ export class AdminPageComponent implements OnInit {
     displayedFixedNames: string[] = [];
     selectedFile: string;
     newName: string = '';
-    defaultBeginnerNames: any[] = [];
+    defaultBeginnerNames: string[] = [];
     addedBeginnerNames: any[] = [];
     defaultExpertNames: any[] = [];
     addedExpertNames: any[] = [];
@@ -199,8 +199,7 @@ export class AdminPageComponent implements OnInit {
         ) {
             return true;
         } else {
-            this.error =
-                "Le format du dictionnaire n'est pas valide\n Il faut un titre, une description, un tableau de mots et que tous les mots dans le tableaux soient dans l'alphabet anglais sans espace";
+            this.error = 'FORMAT INVALIDE\n Il faut un titre, une description, un tableau de mots valide sans espace';
             return false;
         }
     }

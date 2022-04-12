@@ -71,9 +71,6 @@ export class DatabaseService {
                 score: 10,
             },
         ];
-
-        // eslint-disable-next-line no-console
-        console.log('THIS ADDS DATA TO THE DATABASE, DO NOT USE OTHERWISE');
         for (const bestScore of bestScores) {
             await this.db.collection(collection).insertOne(bestScore);
         }
@@ -124,9 +121,8 @@ export class DatabaseService {
     async deleteDictionary(title: string) {
         await this.db.collection(DATABASE_COLLECTION_DIC).deleteOne({ title });
     }
-    async modifyDictionary(oldTitle:string, newTitle:string , description:string) {
-        await this.db.collection(DATABASE_COLLECTION_DIC).updateOne({title:oldTitle},{$set:{title:newTitle,description:description}});
-
+    async modifyDictionary(oldTitle: string, newTitle: string, description: string) {
+        await this.db.collection(DATABASE_COLLECTION_DIC).updateOne({ title: oldTitle }, { $set: { title: newTitle, description } });
     }
     // game Handler
 
@@ -167,9 +163,7 @@ export class DatabaseService {
         }
     }
 
-
     async resetVirtualPlayers() {
-        
         const db = await this.db.collection(DATABASE_COLLECTION_VIRTUAL).find().toArray();
         for (const player of db) {
             if (!BEGINNER_BOT.includes(player.name) && !EXPERT_BOT.includes(player.name)) {
@@ -184,7 +178,7 @@ export class DatabaseService {
     async resetDictionary() {
         const db = await this.db.collection(DATABASE_COLLECTION_DIC).find().project({ title: 1, description: 1, _id: 0 }).toArray();
         for (const dictionary of db) {
-            if (dictionary.title !== "default dictionary") {
+            if (dictionary.title !== 'default dictionary') {
                 await this.db.collection(DATABASE_COLLECTION_DIC).deleteOne({ title: dictionary.title });
             }
         }
@@ -193,8 +187,8 @@ export class DatabaseService {
     async resetBestScores() {
         await this.db.collection(DATABASE_COLLECTION_CLASSIC).deleteMany({});
         await this.db.collection(DATABASE_COLLECTION_LOG).deleteMany({});
-        await this.populateDB( DATABASE_COLLECTION_CLASSIC);
-        await this.populateDB( DATABASE_COLLECTION_LOG);
+        await this.populateDB(DATABASE_COLLECTION_CLASSIC);
+        await this.populateDB(DATABASE_COLLECTION_LOG);
     }
 
     async resetAll() {
@@ -203,5 +197,4 @@ export class DatabaseService {
         await this.resetDictionary();
         await this.resetBestScores();
     }
-        
 }

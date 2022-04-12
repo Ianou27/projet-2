@@ -4,9 +4,8 @@ import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { WaitingPlayerDialogComponent } from '@app/components/waiting-player-dialog/waiting-player-dialog.component';
 import { WaitingPlayerTwoComponent } from '@app/components/waiting-player-two/waiting-player-two.component';
 import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
-// eslint-disable-next-line no-restricted-imports
-import { Dic } from '../../../../../common/types';
 import { BotType } from './../../../../../common/botType';
+import { Dic } from './../../../../../common/types';
 import { MyErrorStateMatcher } from './errorStateMatcher/error-state-matcher';
 
 @Component({
@@ -18,28 +17,17 @@ export class JoinPageComponent implements OnInit {
     name: string;
     confirmName: string;
     form: FormGroup;
-    alphaNumericRegex = /^[a-zA-Z]*$/;
-    selectedDico = 'Dictionnaire par defaut';
-    selectedPlayer = BotType.Beginner;
-    selectedTime = '60';
+    alphaNumericRegex: RegExp;
+    selectedDico: string;
+    selectedPlayer: BotType;
+    selectedTime: string;
     selectedRoomName: string;
-    matcher = new MyErrorStateMatcher();
+    matcher: MyErrorStateMatcher;
     mode2990: boolean;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     dictionaries: any[];
 
-    time = [
-        { value: '30', text: '0:30' },
-        { value: '60', text: '1:00' },
-        { value: '90', text: '1:30' },
-        { value: '120', text: '2:00' },
-        { value: '150', text: '2:30' },
-        { value: '180', text: '3:00' },
-        { value: '210', text: '3:30' },
-        { value: '240', text: '4:00' },
-        { value: '270', text: '4:30' },
-        { value: '300', text: '5:00' },
-    ];
+    time: { value: string; text: string }[];
 
     // dictionariess = [
     //     // { value: '1', text: 'Dictionnaire par defaut' },
@@ -62,6 +50,23 @@ export class JoinPageComponent implements OnInit {
     ) {
         socketHandler.connect();
         socketHandler.getAdminPageInfo();
+        this.time = [
+            { value: '30', text: '0:30' },
+            { value: '60', text: '1:00' },
+            { value: '90', text: '1:30' },
+            { value: '120', text: '2:00' },
+            { value: '150', text: '2:30' },
+            { value: '180', text: '3:00' },
+            { value: '210', text: '3:30' },
+            { value: '240', text: '4:00' },
+            { value: '270', text: '4:30' },
+            { value: '300', text: '5:00' },
+        ];
+        this.matcher = new MyErrorStateMatcher();
+        this.selectedTime = '60';
+        this.selectedDico = BotType.Beginner;
+        this.selectedDico = 'Dictionnaire par defaut';
+        this.alphaNumericRegex = /^[a-zA-Z]*$/;
     }
 
     ngOnInit(): void {

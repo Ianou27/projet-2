@@ -8,11 +8,12 @@ import { ClientSocketHandler } from '@app/services/client-socket-handler/client-
     styleUrls: ['./best-score.component.scss'],
 })
 export class BestScoreComponent {
-    displayedColumns = ['score', 'name'];
+    displayedColumns: string[];
 
     constructor(public waitDialog: MatDialog, public clientSocketHandler: ClientSocketHandler) {
         this.clientSocketHandler.connect();
         this.clientSocketHandler.getScores();
+        this.displayedColumns = ['score', 'name'];
     }
 
     goHome() {

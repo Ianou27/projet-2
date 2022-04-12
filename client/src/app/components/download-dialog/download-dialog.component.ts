@@ -8,10 +8,12 @@ import { ClientSocketHandler } from '@app/services/client-socket-handler/client-
     styleUrls: ['./download-dialog.component.scss'],
 })
 export class DownloadDialogComponent {
-    dicName: string = 'dict';
+    dicName: string;
     downloadJsonHref: unknown;
 
-    constructor(public socketHandler: ClientSocketHandler, private sanitizer: DomSanitizer) {}
+    constructor(public socketHandler: ClientSocketHandler, private sanitizer: DomSanitizer) {
+        this.dicName = 'dict';
+    }
 
     generateDownloadJsonUri() {
         const theJSON = this.socketHandler.dictionaryToDownload.toString();

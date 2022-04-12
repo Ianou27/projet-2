@@ -63,10 +63,6 @@ export class GameManager {
         return message.length > MAXIMUM_CHARACTERS_MESSAGE ? false : true;
     }
 
-    characterVerification(message: string): boolean {
-        return message.trim().length === 0 ? false : true;
-    }
-
     messageVerification(message: string): string {
         let erreur = 'valide';
         if (!this.messageLengthVerification(message)) {
