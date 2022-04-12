@@ -31,6 +31,7 @@ export class BoardComponent implements OnInit {
             }
             case 'Enter': {
                 this.placeWord();
+                this.letterPlaced = [];
                 break;
             }
             default: {
@@ -66,10 +67,9 @@ export class BoardComponent implements OnInit {
             }
             command += this.letterPlaced[i];
         }
-        console.log(command);
         this.clientSocketHandler.roomMessage = command;
         this.clientSocketHandler.sendToRoom();
-        this.letterPlaced = [];
+        this.clientSocketHandler.tileHolderService.removedLetters = [];
     }
 
     removeLetter() {
@@ -145,7 +145,6 @@ export class BoardComponent implements OnInit {
     handleLeftClick(event: MouseEvent) {
         const current = event.currentTarget as HTMLElement;
         if (!this.verificationSelection(current)) return;
-        // if (!document.getElementsByClassName('tileEmptyHorizontal')[0] || !document.getElementsByClassName('tileEmptyVertical')) return;
         switch (current.children[0].classList[0]) {
             case 'tileEmpty': {
                 current.children[0].classList.replace('tileEmpty', 'tileEmptyHorizontal');

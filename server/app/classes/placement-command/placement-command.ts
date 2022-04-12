@@ -49,7 +49,8 @@ export class PlacementCommand {
 
     static restoreBoard(game: Game, letterPositions: Tile[]) {
         for (const tile of letterPositions) {
-            game.playerTurn().changeLetter('', game.gameBoard.cases[tile.positionX][tile.positionY].letter);
+            const letterToChange = tile.value === 0 ? '*' : game.gameBoard.cases[tile.positionX][tile.positionY].letter;
+            game.playerTurn().changeLetter('', letterToChange);
             game.gameBoard.cases[tile.positionX][tile.positionY].letter = '';
             game.gameBoard.cases[tile.positionX][tile.positionY].value = 0;
         }
@@ -244,6 +245,7 @@ export class PlacementCommand {
             for (const wordLetter of word) {
                 wordString = wordString.concat(wordLetter.letter);
             }
+            if (game.goals.scrabble.isInGame && !game.goals.scrabble.isDone && wordString === 'SCRABBLE') continue;
             if (!this.validatedWordDictionary(wordString, this.dictionaryArray)) return 0;
         }
         return PointsCalculator.calculatedPointsPlacement(wordsFormed, letterPositions) + Goal.validationGoal(wordsFormed, game);
