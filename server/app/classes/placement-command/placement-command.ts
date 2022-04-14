@@ -13,7 +13,7 @@ import {
 import { Tile } from './../../../../common/tile/Tile';
 import { PlacementInformations } from './../../../assets/placement-informations';
 import { Game } from './../game/game';
-import { Goal } from './../goal/goal-validation';
+import { Goal } from './../goal/goal';
 import { PointsCalculator } from './../points-calculator/points-calculator';
 
 export class PlacementCommand {
