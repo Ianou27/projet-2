@@ -66,7 +66,7 @@ describe('Room Manager tests', () => {
         game.goals.twoStars.isInGame = true;
         game.goals.scrabble.isInGame = true;
         game.goals.scrabble.type = GoalType.PrivatePlayer1;
-        const goals = roomManager.getGoalsPlayer(game, game.player2);
+        const goals = RoomManager.getGoalsPlayer(game, game.player2);
         expect(goals.includes(game.goals.palindrome)).to.equal(true);
         expect(goals.includes(game.goals.twoStars)).to.equal(true);
         expect(goals.includes(game.goals.scrabble)).to.equal(false);
@@ -82,7 +82,7 @@ describe('Room Manager tests', () => {
         game.goals.twoStars.isInGame = true;
         game.goals.scrabble.isInGame = true;
         game.goals.scrabble.type = GoalType.PrivatePlayer2;
-        const goals = roomManager.getGoalsPlayer(game, game.player1);
+        const goals = RoomManager.getGoalsPlayer(game, game.player1);
         expect(goals.includes(game.goals.palindrome)).to.equal(true);
         expect(goals.includes(game.goals.twoStars)).to.equal(true);
         expect(goals.includes(game.goals.scrabble)).to.equal(false);

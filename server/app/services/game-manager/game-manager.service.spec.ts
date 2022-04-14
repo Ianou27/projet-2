@@ -117,16 +117,6 @@ describe('Game Manager', () => {
         expect(gameManager.messageLengthVerification(message)).to.equal(true);
     });
 
-    it('method characterVerification should return false if message has only spaces', () => {
-        const message = '       ';
-        expect(gameManager.characterVerification(message)).to.equal(false);
-    });
-
-    it('method characterVerification should return true if message does not have only spaces', () => {
-        const message = 'abcde';
-        expect(gameManager.characterVerification(message)).to.equal(true);
-    });
-
     it('method messageVerification should call lengthVerification and return "message trop long" if it has more than 512 characters', () => {
         let testMessageLong = 'ABCDEFGHIJKLMNOP';
         // eslint-disable-next-line @typescript-eslint/no-magic-numbers

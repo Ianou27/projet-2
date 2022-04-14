@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-magic-numbers */
 /* eslint-disable guard-for-in */
 /* eslint-disable max-lines */
 import { CaseProperty } from '@common/assets/case-property';
