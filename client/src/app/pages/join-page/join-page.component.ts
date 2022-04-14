@@ -6,7 +6,7 @@ import { WaitingPlayerTwoComponent } from '@app/components/waiting-player-two/wa
 import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
 import { BotType } from './../../../../../common/botType';
 import { Dic } from './../../../../../common/types';
-import { MyErrorStateMatcher } from './errorStateMatcher/error-state-matcher';
+import { MyErrorStateMatcher } from './../../classes/errorStateMatcher/error-state-matcher';
 
 @Component({
     selector: 'app-join-page',

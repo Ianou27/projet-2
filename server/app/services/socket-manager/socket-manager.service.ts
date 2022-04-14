@@ -488,8 +488,6 @@ export class SocketManager {
                     socket.leave(room);
                     this.roomManager.deleteRoom(socket.id, this.identification);
                     this.sio.sockets.emit('rooms', this.identification.rooms);
-
-                    // mettre popup jv ici à changer
                     this.sio.to(room).emit('playerDc');
                 }
 

@@ -6,9 +6,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { DownloadDialogComponent } from '@app/components/download-dialog/download-dialog.component';
 import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
+import { MyErrorStateMatcher } from '../../classes/errorStateMatcher/error-state-matcher';
 import { ONE_SECOND_MS } from './../../../../../common/constants/general-constants';
 import { Dic } from './../../../../../common/types';
-import { MyErrorStateMatcher } from './../join-page/errorStateMatcher/error-state-matcher';
 
 @Component({
     selector: 'app-admin-page',

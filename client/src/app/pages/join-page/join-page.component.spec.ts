@@ -5,7 +5,7 @@ import { MatDialog, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/d
 import { WaitingPlayerDialogComponent } from '@app/components/waiting-player-dialog/waiting-player-dialog.component';
 import { WaitingPlayerTwoComponent } from '@app/components/waiting-player-two/waiting-player-two.component';
 import { Room } from './../../../../../common/types';
-import { MyErrorStateMatcher } from './errorStateMatcher/error-state-matcher';
+import { MyErrorStateMatcher } from './../../classes/errorStateMatcher/error-state-matcher';
 import { JoinPageComponent } from './join-page.component';
 
 describe('JoinPageComponent', () => {
