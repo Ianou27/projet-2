@@ -53,7 +53,7 @@ export class JoinPageComponent implements OnInit {
         ];
         this.matcher = new MyErrorStateMatcher();
         this.selectedTime = '60';
-        this.selectedDico = BotType.Beginner;
+        this.selectedPlayer = BotType.Beginner;
         this.selectedDico = 'Dictionnaire par defaut';
         this.alphaNumericRegex = /^[a-zA-Z]*$/;
     }
