@@ -104,10 +104,10 @@ export class Game {
         this.player2.typeBot = botType;
         this.sio = sio;
         this.startGame();
-        this.sio.to(user.id).emit('tileHolder', this.player1.letters);
-        this.sio.to(this.player1.user.room).emit('modification', this.gameBoard.cases, this.playerTurn().name);
         if (modeLog) this.setGoals();
-        this.sio.to(user.id).emit('startGame', user.username, botName, RoomManager.getGoalsPlayer(this, this.player1));
+        this.sio.to(user.id).emit('tileHolder', this.player1.letters, RoomManager.getGoalsPlayer(this, this.player1));
+        this.sio.to(this.player1.user.room).emit('modification', this.gameBoard.cases, this.playerTurn().name);
+        this.sio.to(user.id).emit('startGame', user.username, botName);
     }
 
     randomTurnGame() {
