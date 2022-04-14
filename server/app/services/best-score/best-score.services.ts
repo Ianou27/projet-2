@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// import { injectable } from 'inversify';
 import { INDEX_OF_NOT_FOUND, NUMBER_ELEMENTS_DATABASE } from '@common/constants/general-constants';
 import { BestScore, Dic, GameHistory } from '@common/types';
 import * as fs from 'fs';
@@ -7,8 +5,7 @@ import { Db, MongoClient } from 'mongodb';
 import 'reflect-metadata';
 import { Service } from 'typedi';
 import { BEGINNER_BOT, EXPERT_BOT } from './../../../assets/bot-name';
-import { DictMongo, Score } from './../../../assets/type';
-// CHANGE the URL for your database information
+import { DictMongo, History, Score } from './../../../assets/type';
 const DATABASE_URL = 'mongodb+srv://riad:tpUUYHQYgUZuXvgY@cluster0.pwwqd.mongodb.net/DataBase?retryWrites=true&w=majority';
 const DATABASE_NAME = 'DataBase';
 const DATABASE_COLLECTION_CLASSIC = 'bestScoreClassic';
@@ -131,8 +128,8 @@ export class DatabaseService {
         await this.db.collection(DATABASE_COLLECTION_GAME).insertOne(game);
     }
 
-    async getGameHistory(): Promise<any[]> {
-        return await this.db.collection(DATABASE_COLLECTION_GAME).find().toArray();
+    async getGameHistory(): Promise<History[]> {
+        return (await this.db.collection(DATABASE_COLLECTION_GAME).find().toArray()) as History[];
     }
     // VirtualPlayer Handler
 
