@@ -37,8 +37,6 @@ export class Timer {
         if (this.timeLeft !== NO_TIME_LEFT) {
             this.timeLeft = this.timerMax;
         }
-
-        
     }
 
     stop() {

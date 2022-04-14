@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 import { Game } from '@app/classes/game/game';
 import { Player } from '@app/classes/player/player';
@@ -13,7 +14,6 @@ describe('Timer Manager tests', () => {
     const idManager = new IdManager();
     const game = new Game();
     const sio = new io.Server();
-    // const gameManager = new GameManager();
 
     beforeEach(() => {
         timer.timeLeft = 60;
@@ -32,7 +32,6 @@ describe('Timer Manager tests', () => {
     it('start should do nothing if time is -1', (done) => {
         timer.timeLeft = -1;
         timer.start(game, sio);
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
         setTimeout(() => {
             done();
         }, 1200);
@@ -61,7 +60,6 @@ describe('Timer Manager tests', () => {
         idManager.users.push(user2);
         idManager.rooms.push(room);
         timer.timeLeft = 1;
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
         sinon.replace(game, 'passTurn', () => {});
         timer.start(game, sio);
         setTimeout(() => {
@@ -92,7 +90,6 @@ describe('Timer Manager tests', () => {
         idManager.users.push(user1);
         idManager.users.push(user2);
         idManager.rooms.push(room);
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
         sinon.replace(game, 'passTurn', () => {});
         timer.start(game, sio);
         setTimeout(() => {
