@@ -24,7 +24,7 @@ export class AdminPageComponent implements OnInit {
     displayedFixedNames: string[] = [];
     selectedFile: string;
     newName: string = '';
-    defaultBeginnerNames: string[] = [];
+    defaultBeginnerNames: any[] = [];
     addedBeginnerNames: any[] = [];
     defaultExpertNames: any[] = [];
     addedExpertNames: any[] = [];
