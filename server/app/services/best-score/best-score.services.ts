@@ -7,7 +7,7 @@ import { Db, MongoClient } from 'mongodb';
 import 'reflect-metadata';
 import { Service } from 'typedi';
 import { BEGINNER_BOT, EXPERT_BOT } from './../../../assets/bot-name';
-import { DictMongo } from './../../../assets/type';
+import { DictMongo, Score } from './../../../assets/type';
 // CHANGE the URL for your database information
 const DATABASE_URL = 'mongodb+srv://riad:tpUUYHQYgUZuXvgY@cluster0.pwwqd.mongodb.net/DataBase?retryWrites=true&w=majority';
 const DATABASE_NAME = 'DataBase';
@@ -77,12 +77,12 @@ export class DatabaseService {
         }
     }
     // score Handler
-    async bestScoreClassic(): Promise<any[]> {
-        return await this.db.collection(DATABASE_COLLECTION_CLASSIC).find().sort({ score: -1 }).toArray();
+    async bestScoreClassic(): Promise<Score[]> {
+        return (await this.db.collection(DATABASE_COLLECTION_CLASSIC).find().sort({ score: -1 }).toArray()) as Score[];
     }
 
-    async bestScoreLog(): Promise<any[]> {
-        return await this.db.collection(DATABASE_COLLECTION_LOG).find().sort({ score: -1 }).toArray();
+    async bestScoreLog(): Promise<Score[]> {
+        return (await this.db.collection(DATABASE_COLLECTION_LOG).find().sort({ score: -1 }).toArray()) as Score[];
     }
     async updateBesScoreClassic(score: BestScore) {
         const db = await this.db.collection(DATABASE_COLLECTION_CLASSIC).find().sort({ score: -1 }).toArray();
@@ -112,8 +112,8 @@ export class DatabaseService {
         return (await this.db.collection(DATABASE_COLLECTION_DIC).find().toArray()) as DictMongo[];
     }
 
-    async getDictionaryInfo(): Promise<any[]> {
-        return await this.db.collection(DATABASE_COLLECTION_DIC).find().project({ title: 1, description: 1, _id: 0 }).toArray();
+    async getDictionaryInfo(): Promise<DictMongo[]> {
+        return (await this.db.collection(DATABASE_COLLECTION_DIC).find().project({ title: 1, description: 1, _id: 0 }).toArray()) as DictMongo[];
     }
     async insertDictionary(dictionary: Dic) {
         await this.db.collection(DATABASE_COLLECTION_DIC).insertOne(dictionary);
