@@ -8,6 +8,7 @@
 import { Game } from '@app/classes/game/game';
 import { Player } from '@app/classes/player/player';
 import { Tile } from '@common/tile/Tile';
+import { Room } from '@common/types';
 // import { Game } from '@app/classes/game/game';
 import { Server } from 'app/server';
 import { fail } from 'assert';
@@ -22,6 +23,7 @@ describe('SocketManager service tests', () => {
     let service: SocketManager;
     let server: Server;
     let clientSocket: Socket;
+    const lettersTilePlayer: Tile[] = [];
 
     const urlString = 'http://localhost:3000';
     beforeEach(async () => {
@@ -46,7 +48,7 @@ describe('SocketManager service tests', () => {
         const username = 'username';
         const room = 'room';
         sinon.replace(service.roomManager, 'createRoom', () => {});
-        const spy = sinon.stub(service.roomManager, 'createRoom');
+        const spy = sinon.spy(service.roomManager, 'createRoom');
         clientSocket.emit('createRoom', username, room);
         setTimeout(() => {
             assert(spy.called);
@@ -54,26 +56,37 @@ describe('SocketManager service tests', () => {
         }, RESPONSE_DELAY);
     });
 
-    it('should handle a joinRoom event', () => {
+    it('should handle a joinRoom event', (done) => {
+        const game = new Game();
+        game.player1 = new Player(lettersTilePlayer, true, 'player1', { username: 'rt', id: '1', room: 'room1' });
+        game.player2 = new Player(lettersTilePlayer, false, 'player2', { username: 'aa', id: '2', room: 'room1' });
+        service.identification.games.push(game);
         const username = 'username';
-        const roomObj = {
+        const roomObj: Room = {
             player1: username,
             player2: '',
+            time: '',
+            mode2990: false,
         };
+        service.identification.rooms.push(roomObj);
         const tiles: Tile[][] = [];
         sinon.replace(service.roomManager, 'joinRoom', () => {
             return tiles;
+        });
+        sinon.replace(service.identification, 'getId', () => {
+            return '1';
         });
         const spy = sinon.spy(service.roomManager, 'joinRoom');
         clientSocket.emit('joinRoom', username, roomObj);
         setTimeout(() => {
             assert(spy.called);
+            done();
         }, RESPONSE_DELAY);
     });
 
     it('should handle a askJoin event', (done) => {
         const username = 'username';
-        const roomObj = {
+        const roomObj: Room = {
             player1: username,
             player2: '',
             time: '60',
@@ -139,7 +152,7 @@ describe('SocketManager service tests', () => {
         sinon.replace(service.gameManager, 'messageVerification', () => {
             return '';
         });
-        const spyVerification = sinon.stub(service.gameManager, 'messageVerification');
+        const spyVerification = sinon.spy(service.gameManager, 'messageVerification');
         clientSocket.emit('roomMessage', message);
         setTimeout(() => {
             assert(spyVerification.called);
@@ -166,7 +179,7 @@ describe('SocketManager service tests', () => {
         sinon.replace(service.identification, 'getUsername', () => {
             return 'username';
         });
-        const spyVerification = sinon.stub(service.gameManager, 'messageVerification');
+        const spyVerification = sinon.spy(service.gameManager, 'messageVerification');
         clientSocket.emit('roomMessage', message);
         setTimeout(() => {
             assert(spyVerification.called);
@@ -194,7 +207,7 @@ describe('SocketManager service tests', () => {
         sinon.replace(service.identification, 'getUsername', () => {
             return 'user2';
         });
-        const spyVerification = sinon.stub(service.gameManager, 'messageVerification');
+        const spyVerification = sinon.spy(service.gameManager, 'messageVerification');
         clientSocket.emit('roomMessage', message);
         setTimeout(() => {
             assert(spyVerification.called);
@@ -233,7 +246,7 @@ describe('SocketManager service tests', () => {
         sinon.replace(service.roomManager, 'getRandomBotName', () => {
             return 'bot';
         });
-        const spy = sinon.stub(service.roomManager, 'createSoloGame');
+        const spy = sinon.spy(service.roomManager, 'createSoloGame');
         clientSocket.emit('createSoloGame', username, '60');
         setTimeout(() => {
             assert(spy.called);
@@ -241,86 +254,48 @@ describe('SocketManager service tests', () => {
         }, RESPONSE_DELAY);
     });
 
-    it('should call gameManager methods on indice event when everything is valid', (done) => {
-        const gameObj = new Game();
-        const a: boolean = clientSocket.disconnected;
-        const user1 = {
-            username: 'player1',
-            id: a.toString(),
-            room: 'room1',
-        };
-        const user2 = {
-            username: 'player2',
-            id: 'b',
-            room: 'room1',
-        };
-        gameObj.player1 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user1);
-        gameObj.player2 = new Player(gameObj.reserveLetters.randomLettersInitialization(), false, 'player2', user2);
-        sinon.replace(service.identification, 'getGame', () => {
-            return gameObj;
-        });
-        sinon.replace(service.identification, 'getPlayer', () => {
-            return 'AAAAA';
-        });
-        const getGameSpy = sinon.spy(service.identification, 'getGame');
-        const getPlayerSpy = sinon.spy(service.identification, 'getPlayer');
-        sinon.replace(gameObj, 'playerTurnValid', () => {
-            return true;
-        });
-        const gamePlayerTurnSpy = sinon.spy(gameObj, 'playerTurnValid');
-        sinon.replace(service.gameManager, 'clueCommandValid', () => {
-            return true;
-        });
-        const clueCommandSpy = sinon.spy(service.gameManager, 'clueCommandValid');
-        sinon.replace(service.gameManager, 'formatClueCommand', () => {
-            return ['!indice'];
-        });
-        const clueFormatSpy = sinon.spy(service.gameManager, 'formatClueCommand');
-
-        clientSocket.emit('indice', ['!indice']);
+    it('should handle placer event', (done) => {
+        const command = ['!placer'];
+        const spy = sinon.stub(service.commandManager, 'commandPlace');
+        clientSocket.emit('placer', command);
         setTimeout(() => {
-            assert(getGameSpy.called);
-            assert(getPlayerSpy.called);
-            assert(gamePlayerTurnSpy.called);
-            assert(clueCommandSpy.called);
-            assert(clueFormatSpy.called);
+            assert(spy.called);
             done();
         }, RESPONSE_DELAY);
     });
 
-    it('should call gameManager methods on indice event', (done) => {
-        const gameObj = new Game();
-        const a: boolean = clientSocket.disconnected;
-        const user1 = {
-            username: 'player1',
-            id: a.toString(),
-            room: 'room1',
-        };
-        const user2 = {
-            username: 'player2',
-            id: 'b',
-            room: 'room1',
-        };
-        gameObj.player1 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user1);
-        gameObj.player2 = new Player(gameObj.reserveLetters.randomLettersInitialization(), false, 'player2', user2);
-        sinon.replace(service.identification, 'getGame', () => {
-            return gameObj;
-        });
-        sinon.replace(service.identification, 'getPlayer', () => {
-            return 'AAAAA';
-        });
-        const getGameSpy = sinon.spy(service.identification, 'getGame');
-        const getPlayerSpy = sinon.spy(service.identification, 'getPlayer');
-        sinon.replace(gameObj, 'playerTurnValid', () => {
-            return true;
-        });
-        const gamePlayerTurnSpy = sinon.spy(gameObj, 'playerTurnValid');
+    it('should handle echanger event', (done) => {
+        const spy = sinon.stub(service.commandManager, 'commandExchange');
+        clientSocket.emit('echanger', ['!échanger']);
+        setTimeout(() => {
+            assert(spy.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
 
+    it('should handle reserve event', (done) => {
+        const spy = sinon.stub(service.commandManager, 'commandReserve');
+        clientSocket.emit('réserve', ['!réserve']);
+        setTimeout(() => {
+            assert(spy.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
+    it('should handle indice event', (done) => {
+        const spy = sinon.stub(service.commandManager, 'commandClue');
         clientSocket.emit('indice', ['!indice']);
         setTimeout(() => {
-            assert(getGameSpy.called);
-            assert(getPlayerSpy.called);
-            assert(gamePlayerTurnSpy.called);
+            assert(spy.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
+    it('should handle aide event', (done) => {
+        const spy = sinon.stub(service.commandManager, 'commandHelp');
+        clientSocket.emit('aide', ['!aide']);
+        setTimeout(() => {
+            assert(spy.called);
             done();
         }, RESPONSE_DELAY);
     });
