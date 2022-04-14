@@ -2,8 +2,8 @@ import { BotType } from '@common/botType';
 import { InfoToJoin, Room } from '@common/types';
 import * as http from 'http';
 import * as io from 'socket.io';
-import { helpInformation } from './../../../assets/help-informations';
 import { DatabaseService } from './../best-score/best-score.services';
+import { CommandManager } from './../command-manager/command-manager';
 import { DictionaryManager } from './../dictionary-manager/dictionary-manager.service';
 import { GameManager } from './../game-manager/game-manager.service';
 import { IdManager } from './../id-manager/id-manager.service';
@@ -16,12 +16,14 @@ export class SocketManager {
     dictionaryManager: DictionaryManager;
     sio: io.Server;
     timeLeft: number;
+    commandManager: CommandManager;
     constructor(server: http.Server, readonly databaseService: DatabaseService) {
         this.sio = new io.Server(server, { maxHttpBufferSize: 15e6, cors: { origin: '*', methods: ['GET', 'POST'] } });
         this.gameManager = new GameManager();
         this.identification = new IdManager();
         this.roomManager = new RoomManager();
         this.dictionaryManager = new DictionaryManager();
+        this.commandManager = new CommandManager();
     }
 
     async handleSockets(): Promise<void> {
@@ -116,95 +118,18 @@ export class SocketManager {
                 this.sio.sockets.emit('rooms', this.identification.rooms);
             });
             socket.on('placer', (command: string[]) => {
-                const username = this.identification.getUsername(socket.id);
-                const currentRoom = this.identification.getRoom(socket.id);
-                const game = this.identification.getGame(socket.id);
-                if (!game.playerTurnValid(this.identification.getPlayer(socket.id))) {
-                    if (game.player1.user.id === socket.id) {
-                        this.sio.to(socket.id).emit('commandValidated', " Ce n'est pas ton tour", game.gameBoard.cases, game.player1.letters);
-                    } else {
-                        this.sio.to(socket.id).emit('commandValidated', " Ce n'est pas ton tour", game.gameBoard.cases, game.player2.letters);
-                    }
-                } else {
-                    const verification: string = this.gameManager.placeVerification(command, game);
-                    if (verification === 'valide') {
-                        const message = this.gameManager.placeWord(command, game);
-                        if (message !== 'placer') {
-                            if (game.player1.user.id === socket.id) {
-                                this.sio.to(socket.id).emit('commandValidated', message, game.gameBoard.cases, game.player1.letters);
-                            } else {
-                                this.sio.to(socket.id).emit('commandValidated', message, game.gameBoard.cases, game.player2.letters);
-                            }
-                        } else {
-                            this.sio
-                                .to(currentRoom)
-                                .emit(
-                                    'updateReserve',
-                                    game.reserveLetters.letters.length,
-                                    game.player1.getNumberLetters(),
-                                    game.player2.getNumberLetters(),
-                                );
-                            this.sio.to(currentRoom).emit('roomMessage', {
-                                username: 'Server',
-                                message: username + ' a placé le mot ' + command[2] + ' en ' + command[1],
-                                player: 'server',
-                            });
-                            this.sio.to(currentRoom).emit('modification', game.gameBoard.cases, game.playerTurn().name);
-
-                            if (game.player1.user.id === socket.id) {
-                                this.sio.to(socket.id).emit('tileHolder', game.player1.getLetters(), RoomManager.getGoalsPlayer(game, game.player1));
-                                this.sio.to(currentRoom).emit('updatePoint', 'player1', game.player1.points);
-                            } else if (game.player2.user.id === socket.id) {
-                                this.sio.to(socket.id).emit('tileHolder', game.player2.getLetters(), RoomManager.getGoalsPlayer(game, game.player2));
-                                this.sio.to(currentRoom).emit('updatePoint', 'player2', game.player2.points);
-                            }
-                        }
-                    } else if (verification !== 'valide') {
-                        if (game.player1.user.id === socket.id) {
-                            this.sio.to(socket.id).emit('commandValidated', verification, game.gameBoard.cases, game.player1.letters);
-                        } else {
-                            this.sio.to(socket.id).emit('commandValidated', verification, game.gameBoard.cases, game.player2.letters);
-                        }
-                    }
-                }
+                this.commandManager.commandPlace(this.sio, this.identification, this.gameManager, socket.id, command);
             });
             socket.on('passer', () => {
-                const username = this.identification.getUsername(socket.id);
-                const currentRoom = this.identification.getRoom(socket.id);
-                const game = this.identification.getGame(socket.id);
-                if (!game.gameState.gameFinished) {
-                    if (!game.playerTurnValid(this.identification.getPlayer(socket.id))) {
-                        this.sio.to(socket.id).emit('commandValidated', " Ce n'est pas ton tour");
-                    } else {
-                        this.sio.to(currentRoom).emit('roomMessage', {
-                            username: 'Server',
-                            message: username + ' a passé son tour ',
-                            player: 'server',
-                        });
-                        this.gameManager.pass(game);
-                        this.sio.to(currentRoom).emit('modification', game.gameBoard.cases, game.playerTurn().name);
-                    }
-                    this.sio.to(game.player1.user.id).emit('tileHolder', game.player1.getLetters(), RoomManager.getGoalsPlayer(game, game.player1));
-                    this.sio.to(game.player2.user.id).emit('tileHolder', game.player2.getLetters(), RoomManager.getGoalsPlayer(game, game.player2));
-                }
+                this.commandManager.commandPass(this.sio, this.identification, this.gameManager, socket.id);
             });
 
             socket.on('réserve', (command: string[]) => {
-                const game = this.identification.getGame(socket.id);
-                if (this.gameManager.reserveCommandValid(command)) {
-                    this.sio.to(socket.id).emit('reserveLetters', this.gameManager.reserve(game));
-                } else {
-                    this.sio.to(socket.id).emit('commandValidated', 'Format invalide');
-                }
+                this.commandManager.commandReserve(this.sio, this.identification, this.gameManager, socket.id, command);
             });
 
             socket.on('aide', (command: string[]) => {
-                if (this.gameManager.helpCommandValid(command)) {
-                    this.sio.to(socket.id).emit('commandValidated', command);
-                    this.sio.to(socket.id).emit('helpInformation', helpInformation);
-                } else {
-                    this.sio.to(socket.id).emit('commandValidated', 'Format invalide');
-                }
+                this.commandManager.commandHelp(this.sio, this.identification, this.gameManager, socket.id, command);
             });
 
             socket.on('forceDisconnect', async () => {
@@ -420,57 +345,11 @@ export class SocketManager {
             });
 
             socket.on('indice', (command: string[]) => {
-                const game = this.identification.getGame(socket.id);
-                if (!game.playerTurnValid(this.identification.getPlayer(socket.id))) {
-                    this.sio.to(socket.id).emit('commandValidated', " Ce n'est pas ton tour");
-                } else {
-                    if (this.gameManager.clueCommandValid(command)) {
-                        const yes = this.gameManager.formatClueCommand(game);
-                        this.sio.to(socket.id).emit('cluesMessage', yes);
-                    } else {
-                        this.sio.to(socket.id).emit('commandValidated', 'Format invalide');
-                    }
-                }
+                this.commandManager.commandClue(this.sio, this.identification, this.gameManager, socket.id, command);
             });
 
             socket.on('echanger', (command: string[]) => {
-                const game = this.identification.getGame(socket.id);
-                if (!game.playerTurnValid(this.identification.getPlayer(socket.id))) {
-                    this.sio.to(socket.id).emit('commandValidated', " Ce n'est pas ton tour");
-                } else {
-                    const verification: string = this.gameManager.exchangeVerification(command, game);
-                    let player2: string;
-
-                    if (socket.id === game.player1.user.id) {
-                        player2 = game.player2.user.id;
-                    } else {
-                        player2 = game.player1.user.id;
-                    }
-
-                    if (verification === 'valide') {
-                        this.sio.to(socket.id).emit('roomMessage', {
-                            username: 'Server',
-                            message: 'Vous avez échangé les lettres ' + command[1],
-                            player: 'server',
-                        });
-                        this.sio.to(player2).emit('roomMessage', {
-                            username: 'Server',
-                            message: 'Votre adversaire a échangé ' + command[1].length + ' lettres',
-                            player: 'server',
-                        });
-                        this.gameManager.exchange(command, game);
-
-                        this.sio.to(game.player1.user.room).emit('modification', game.gameBoard.cases, game.playerTurn().name);
-                        this.sio
-                            .to(game.player1.user.id)
-                            .emit('tileHolder', game.player1.getLetters(), RoomManager.getGoalsPlayer(game, game.player1));
-                        this.sio
-                            .to(game.player2.user.id)
-                            .emit('tileHolder', game.player2.getLetters(), RoomManager.getGoalsPlayer(game, game.player2));
-                    } else {
-                        this.sio.to(socket.id).emit('commandValidated', verification);
-                    }
-                }
+                this.commandManager.commandExchange(this.sio, this.identification, this.gameManager, socket.id, command);
             });
             socket.on('cancelCreation', () => {
                 this.roomManager.cancelCreation(socket.id, this.identification);
