@@ -6,7 +6,8 @@ import * as fs from 'fs';
 import { Db, MongoClient } from 'mongodb';
 import 'reflect-metadata';
 import { Service } from 'typedi';
-import { BEGINNER_BOT, EXPERT_BOT } from '../../../assets/bot-name';
+import { BEGINNER_BOT, EXPERT_BOT } from './../../../assets/bot-name';
+import { DictMongo } from './../../../assets/type';
 // CHANGE the URL for your database information
 const DATABASE_URL = 'mongodb+srv://riad:tpUUYHQYgUZuXvgY@cluster0.pwwqd.mongodb.net/DataBase?retryWrites=true&w=majority';
 const DATABASE_NAME = 'DataBase';
@@ -107,8 +108,8 @@ export class DatabaseService {
         }
     }
     // Dic handler
-    async getDictionary(): Promise<any[]> {
-        return await this.db.collection(DATABASE_COLLECTION_DIC).find().toArray();
+    async getDictionary(): Promise<DictMongo[]> {
+        return (await this.db.collection(DATABASE_COLLECTION_DIC).find().toArray()) as DictMongo[];
     }
 
     async getDictionaryInfo(): Promise<any[]> {

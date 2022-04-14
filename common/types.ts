@@ -14,18 +14,18 @@ export type InfoToJoin = {
 };
 
 export type GameHistory = {
-    date:string;
-    duration:string;
+    date: string;
+    duration: string;
     player1: string;
     player1Points: number;
     player2: string;
     player2Points: number;
     gameMode: string;
-}
-export type Dic ={
+};
+export type Dic = {
     title: string;
     description: string;
-}
+};
 export type User = {
     username: string;
     id: string;
