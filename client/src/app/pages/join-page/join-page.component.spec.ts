@@ -115,4 +115,14 @@ describe('JoinPageComponent', () => {
         component.goHome();
         expect(closeSpy).toHaveBeenCalled();
     });
+
+    // it('displayDictNames() should open and show the title of the dictionaries', () => {
+    //     const dictionaryList = component.displayDictNames();
+    //     expect(dictionaryList).toEqual(['titre']);
+    // });
+
+    it('displayDescriptions() should open and show the description of the dictionaries', () => {
+        const dictionary = component.displayDescriptions();
+        expect(dictionary).toEqual(['description']);
+    });
 });
