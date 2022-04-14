@@ -1,4 +1,4 @@
-<div *ngFor="let goal of this.goals">
+<div *ngFor="let goal of this.clientSocketHandler.goals">
     <mat-card *ngIf="goal.isInGame" class="goal {{ goal.isDone.toString() }}">
         <div *ngIf="goal.name === 'scrabble'">
             <mat-card-title>{{ this.getType(goal) }} : Scrabble!</mat-card-title>

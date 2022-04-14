@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
 import { GoalInformations } from './../../../../../common/constants/goal-information';
 import { GoalType } from './../../../../../common/constants/goal-type';
@@ -8,15 +8,9 @@ import { GoalType } from './../../../../../common/constants/goal-type';
     templateUrl: './goals.component.html',
     styleUrls: ['./goals.component.scss'],
 })
-export class GoalsComponent implements OnInit {
+export class GoalsComponent {
     goals: GoalInformations[];
-    constructor(public clientSocketHandler: ClientSocketHandler) {
-        // this.goals = clientSocketHandler.goals;
-    }
-
-    ngOnInit(): void {
-        this.goals = this.clientSocketHandler.goals;
-    }
+    constructor(public clientSocketHandler: ClientSocketHandler) {}
 
     getType(goal: GoalInformations): string {
         if (goal.type === GoalType.Public) {
