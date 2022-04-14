@@ -1,4 +1,5 @@
 import * as io from 'socket.io';
+import { RoomManager } from '../room-manager/room-manager.service';
 import { NO_TIME_LEFT, ONE_SECOND_MS } from './../../../../common/constants/general-constants';
 import { Game } from './../../classes/game/game';
 
@@ -25,8 +26,8 @@ export class Timer {
                 });
                 game.passTurn();
                 sio.to(game.player1.user.room).emit('modification', game.gameBoard.cases, game.playerTurn().name);
-                sio.to(game.player1.user.id).emit('tileHolder', game.player1.letters);
-                sio.to(game.player2.user.id).emit('tileHolder', game.player2.letters);
+                sio.to(game.player1.user.id).emit('tileHolder', game.player1.letters, RoomManager.getGoalsPlayer(game, game.player1));
+                sio.to(game.player2.user.id).emit('tileHolder', game.player2.letters, RoomManager.getGoalsPlayer(game, game.player1));
                 if (!game.gameState.gameFinished) this.timeLeft = this.timerMax;
             }
         }, ONE_SECOND_MS);

@@ -10,9 +10,7 @@ import { GoalType } from './../../../../../common/constants/goal-type';
 })
 export class GoalsComponent {
     goals: GoalInformations[];
-    constructor(public clientSocketHandler: ClientSocketHandler) {
-        this.goals = clientSocketHandler.goals;
-    }
+    constructor(public clientSocketHandler: ClientSocketHandler) {}
 
     getType(goal: GoalInformations): string {
         if (goal.type === GoalType.Public) {

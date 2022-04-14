@@ -10,9 +10,36 @@
     </div>
     <section>
         <div class="justified">
-            <button mat-raised-button color="primary" routerLink="/game/modeClassic">Scrabble Classique</button>
-            <button mat-raised-button color="primary" routerLink="/game/mode2990">Scrabble LOG2990</button>
-            <button mat-raised-button color="primary" (click)="openDialog()">Meilleurs Scores</button>
+            <button
+                mat-raised-button
+                matTooltipClass="tooltip"
+                matTooltip="Jouez une partie classique de Scrabble contre des advesaires en ligne ou même des joueurs virtuels !"
+                matTooltipPosition="right"
+                color="primary"
+                routerLink="/game/modeClassic"
+            >
+                Scrabble Classique
+            </button>
+            <button
+                mat-raised-button
+                matTooltipClass="tooltip"
+                matTooltip="Jouez une partie de Scrabble avec des objectifs valant des points supplémentaires !"
+                matTooltipPosition="right"
+                color="primary"
+                routerLink="/game/mode2990"
+            >
+                Scrabble LOG2990
+            </button>
+            <button
+                mat-raised-button
+                matTooltipClass="tooltip"
+                matTooltip="Tableau des meilleurs scores des joueurs de Scrabble"
+                matTooltipPosition="right"
+                color="primary"
+                (click)="openDialog()"
+            >
+                Meilleurs Scores
+            </button>
         </div>
     </section>
 </div>

@@ -29,17 +29,6 @@ export class JoinPageComponent implements OnInit {
 
     time: { value: string; text: string }[];
 
-    // dictionariess = [
-    //     // { value: '1', text: 'Dictionnaire par defaut' },
-    //     { value: '2', text: 'Dictionnaire 2 wow', description: 'Exemple de descrition du deuxième dictionnaire' },
-    //     {
-    //         value: '3',
-    //         text: 'Dictionnaire mandarin',
-    //         description: 'Tout ca n`est qu`un exemple à enlever après le vrai lien entre les dictionnaires',
-    //     },
-    //     { value: '4', text: 'Dictionnaire compliqué', description: 'smoke okok yeyeyeyeyey hahahah jadore les dictionnaires' },
-    // ];
-
     botType = [{ value: BotType.Beginner }, { value: BotType.Expert }];
 
     constructor(
@@ -64,7 +53,7 @@ export class JoinPageComponent implements OnInit {
         ];
         this.matcher = new MyErrorStateMatcher();
         this.selectedTime = '60';
-        this.selectedDico = BotType.Beginner;
+        this.selectedPlayer = BotType.Beginner;
         this.selectedDico = 'Dictionnaire par defaut';
         this.alphaNumericRegex = /^[a-zA-Z]*$/;
     }

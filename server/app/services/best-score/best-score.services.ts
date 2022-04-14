@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// import { injectable } from 'inversify';
 import { INDEX_OF_NOT_FOUND, NUMBER_ELEMENTS_DATABASE } from '@common/constants/general-constants';
 import { BestScore, Dic, GameHistory } from '@common/types';
 import * as fs from 'fs';
@@ -7,8 +5,7 @@ import { Db, MongoClient } from 'mongodb';
 import 'reflect-metadata';
 import { Service } from 'typedi';
 import { BEGINNER_BOT, EXPERT_BOT } from './../../../assets/bot-name';
-import { DictMongo } from './../../../assets/type';
-// CHANGE the URL for your database information
+import { DictMongo, History, Score } from './../../../assets/type';
 const DATABASE_URL = 'mongodb+srv://riad:tpUUYHQYgUZuXvgY@cluster0.pwwqd.mongodb.net/DataBase?retryWrites=true&w=majority';
 const DATABASE_NAME = 'DataBase';
 const DATABASE_COLLECTION_CLASSIC = 'bestScoreClassic';
@@ -52,23 +49,23 @@ export class DatabaseService {
     async populateDB(collection: string): Promise<void> {
         const bestScores: BestScore[] = [
             {
-                player: 'Bob',
+                player: 'Luffy',
                 score: 20,
             },
             {
-                player: 'Jack',
+                player: 'Zoro',
                 score: 18,
             },
             {
-                player: 'Ian',
+                player: 'Sandy',
                 score: 16,
             },
             {
-                player: 'Ricky',
+                player: 'Nami',
                 score: 15,
             },
             {
-                player: 'Zoro',
+                player: 'TonyTonyChopper',
                 score: 10,
             },
         ];
@@ -77,12 +74,12 @@ export class DatabaseService {
         }
     }
     // score Handler
-    async bestScoreClassic(): Promise<any[]> {
-        return await this.db.collection(DATABASE_COLLECTION_CLASSIC).find().sort({ score: -1 }).toArray();
+    async bestScoreClassic(): Promise<Score[]> {
+        return (await this.db.collection(DATABASE_COLLECTION_CLASSIC).find().sort({ score: -1 }).toArray()) as Score[];
     }
 
-    async bestScoreLog(): Promise<any[]> {
-        return await this.db.collection(DATABASE_COLLECTION_LOG).find().sort({ score: -1 }).toArray();
+    async bestScoreLog(): Promise<Score[]> {
+        return (await this.db.collection(DATABASE_COLLECTION_LOG).find().sort({ score: -1 }).toArray()) as Score[];
     }
     async updateBesScoreClassic(score: BestScore) {
         const db = await this.db.collection(DATABASE_COLLECTION_CLASSIC).find().sort({ score: -1 }).toArray();
@@ -112,8 +109,8 @@ export class DatabaseService {
         return (await this.db.collection(DATABASE_COLLECTION_DIC).find().toArray()) as DictMongo[];
     }
 
-    async getDictionaryInfo(): Promise<any[]> {
-        return await this.db.collection(DATABASE_COLLECTION_DIC).find().project({ title: 1, description: 1, _id: 0 }).toArray();
+    async getDictionaryInfo(): Promise<DictMongo[]> {
+        return (await this.db.collection(DATABASE_COLLECTION_DIC).find().project({ title: 1, description: 1, _id: 0 }).toArray()) as DictMongo[];
     }
     async insertDictionary(dictionary: Dic) {
         await this.db.collection(DATABASE_COLLECTION_DIC).insertOne(dictionary);
@@ -131,8 +128,8 @@ export class DatabaseService {
         await this.db.collection(DATABASE_COLLECTION_GAME).insertOne(game);
     }
 
-    async getGameHistory(): Promise<any[]> {
-        return await this.db.collection(DATABASE_COLLECTION_GAME).find().toArray();
+    async getGameHistory(): Promise<History[]> {
+        return (await this.db.collection(DATABASE_COLLECTION_GAME).find().toArray()) as History[];
     }
     // VirtualPlayer Handler
 

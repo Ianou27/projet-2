@@ -544,21 +544,21 @@ describe('ChatService', () => {
         it('should handle getBestScore event and set both array to their own specific values', () => {
             const bestScoresClassic: unknown[] = [
                 {
-                    player: 'Bob',
+                    player: 'Luffy',
                     score: 20,
                 },
                 {
-                    player: 'Jack',
+                    player: 'Zoro',
                     score: 18,
                 },
             ];
             const bestScoresLog: unknown[] = [
                 {
-                    player: 'Ricky',
+                    player: 'Nami',
                     score: 15,
                 },
                 {
-                    player: 'Zoro',
+                    player: 'TonyTonyChopper',
                     score: 10,
                 },
             ];
