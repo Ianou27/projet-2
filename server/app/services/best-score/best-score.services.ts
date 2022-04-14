@@ -49,23 +49,23 @@ export class DatabaseService {
     async populateDB(collection: string): Promise<void> {
         const bestScores: BestScore[] = [
             {
-                player: 'Bob',
+                player: 'Luffy',
                 score: 20,
             },
             {
-                player: 'Jack',
+                player: 'Zoro',
                 score: 18,
             },
             {
-                player: 'Ian',
+                player: 'Sandy',
                 score: 16,
             },
             {
-                player: 'Ricky',
+                player: 'Nami',
                 score: 15,
             },
             {
-                player: 'Zoro',
+                player: 'TonyTonyChopper',
                 score: 10,
             },
         ];
