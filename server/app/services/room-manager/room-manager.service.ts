@@ -108,7 +108,6 @@ export class RoomManager {
         identification.users.push(user);
         identification.roomMessages[username] = [];
         const game = new Game();
-        console.log(modeLog);
         game.startSoloGame(user, sio, timer, databaseService, botName, botType, modeLog);
         identification.games.push(game);
     }
