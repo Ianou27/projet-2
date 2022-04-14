@@ -245,7 +245,7 @@ export class PlacementCommand {
             for (const wordLetter of word) {
                 wordString = wordString.concat(wordLetter.letter);
             }
-            if (game.goals.scrabble.isInGame && !game.goals.scrabble.isDone && wordString === 'SCRABBLE') continue;
+            if (game.gameState.modeLog && game.goals.scrabble.isInGame && !game.goals.scrabble.isDone && wordString === 'SCRABBLE') continue;
             if (!this.validatedWordDictionary(wordString, this.dictionaryArray)) return 0;
         }
         return PointsCalculator.calculatedPointsPlacement(wordsFormed, letterPositions) + Goal.validationGoal(wordsFormed, game);
