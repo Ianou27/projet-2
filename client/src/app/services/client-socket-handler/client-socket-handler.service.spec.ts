@@ -351,7 +351,7 @@ describe('ChatService', () => {
         const emitSpy = spyOn(service.socketService.socket, 'emit');
         service.modifyDictionary('test', 'dictionnaire', 'dictionnaire de scrabble');
         expect(emitSpy).toHaveBeenCalled();
-        expect(emitSpy).toHaveBeenCalledWith('modifyDictionary');
+        expect(emitSpy).toHaveBeenCalledWith('modifyDictionary', 'test', 'dictionnaire', 'dictionnaire de scrabble');
     });
 
     it('downloadDictionary() should emit the downloadDictionary event', () => {

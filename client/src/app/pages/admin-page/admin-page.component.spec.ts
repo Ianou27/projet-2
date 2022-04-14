@@ -342,9 +342,7 @@ describe('AdminPageComponent', () => {
     it('verifyDict returns false if new dictionnary is not valid', () => {
         component.selectedFile = '{"title": "test"}';
         const returnVal = component.verifyDict(component.selectedFile);
-        expect(component.error).toEqual(
-            "Le format du dictionnaire n'est pas valide\n Il faut un titre, une description, un tableau de mots et que tous les mots dans le tableaux soient dans l'alphabet anglais sans espace",
-        );
+        expect(component.error).toEqual('FORMAT INVALIDE\n Il faut un titre, une description, un tableau de mots valide sans espace');
         expect(returnVal).toBeFalsy();
     });
 
