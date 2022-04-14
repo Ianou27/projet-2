@@ -10,7 +10,7 @@ import { expect } from 'chai';
 import * as sinon from 'sinon';
 import { Game } from './../game/game';
 import { Player } from './../player/player';
-import { Goal } from './goal-validation';
+import { Goal } from './goal';
 
 describe('Goal', () => {
     let words: Tile[][];
