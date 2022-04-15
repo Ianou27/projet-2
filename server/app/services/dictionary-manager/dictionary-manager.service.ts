@@ -92,7 +92,7 @@ export class DictionaryManager {
         return fs.readFileSync('./assets/dictionaries/' + title + '.json').toString();
     }
 
-    async resetDictionarySocket(sio: io.Server, socketId: string) {
+    async resetDictionary(sio: io.Server, socketId: string) {
         await this.databaseService.start();
         await this.databaseService.resetDictionary();
         sio.to(socketId).emit(

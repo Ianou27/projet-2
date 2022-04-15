@@ -1,7 +1,7 @@
 import * as io from 'socket.io';
-import { RoomManager } from '../room-manager/room-manager.service';
 import { NO_TIME_LEFT, ONE_SECOND_MS } from './../../../../common/constants/general-constants';
 import { Game } from './../../classes/game/game';
+import { RoomManager } from './../room-manager/room-manager.service';
 
 export class Timer {
     timeLeft: number;

@@ -168,7 +168,7 @@ export class SocketManager {
             });
 
             socket.on('resetDictionary', async () => {
-                await this.dictionaryManager.resetDictionarySocket(this.sio, socket.id);
+                await this.dictionaryManager.resetDictionary(this.sio, socket.id);
             });
 
             socket.on('uploadDictionary', async (file: Dic) => {

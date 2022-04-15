@@ -1,8 +1,8 @@
 import * as io from 'socket.io';
-import { helpInformation } from '../../../assets/help-informations';
-import { GameManager } from '../game-manager/game-manager.service';
-import { IdManager } from '../id-manager/id-manager.service';
-import { RoomManager } from '../room-manager/room-manager.service';
+import { helpInformation } from './../../../assets/help-informations';
+import { GameManager } from './../game-manager/game-manager.service';
+import { IdManager } from './../id-manager/id-manager.service';
+import { RoomManager } from './../room-manager/room-manager.service';
 
 export class CommandManager {
     commandPlace(sio: io.Server, identification: IdManager, gameManager: GameManager, socketId: string, command: string[]) {

@@ -1,15 +1,10 @@
 /* eslint-disable dot-notation */
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable max-lines */
-// import { Game } from '@app/classes/game/game';
-// import { CaseProperty } from '@common/assets/case-property';
-// import { letterValue } from '@common/assets/reserve-letters';
-// import { Game } from '@app/classes/game/game';
 import { Game } from '@app/classes/game/game';
 import { Player } from '@app/classes/player/player';
 import { Tile } from '@common/tile/Tile';
 import { Room } from '@common/types';
-// import { Game } from '@app/classes/game/game';
 import { Server } from 'app/server';
 import { fail } from 'assert';
 import { assert, expect } from 'chai';
@@ -357,5 +352,123 @@ describe('SocketManager service tests', () => {
                 done();
             }, RESPONSE_DELAY);
         }
+    });
+
+    it('should handle resetBestScore event', (done) => {
+        const spy = sinon.stub(service.databaseService, 'resetBestScores');
+
+        clientSocket.emit('resetBestScore');
+        setTimeout(() => {
+            assert(spy.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
+    it('should handle resetGameHistory event', (done) => {
+        const spy = sinon.stub(service.adminManager, 'resetGameHistory');
+        clientSocket.emit('resetGameHistory');
+        setTimeout(() => {
+            assert(spy.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
+    it('should handle modifyDictionary event', (done) => {
+        const spy = sinon.stub(service.dictionaryManager, 'modifyDictionary');
+        clientSocket.emit('modifyDictionary');
+        setTimeout(() => {
+            assert(spy.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
+    it('should handle deleteDic event', (done) => {
+        const spy = sinon.stub(service.dictionaryManager, 'deleteDictionary');
+        clientSocket.emit('deleteDic');
+        setTimeout(() => {
+            assert(spy.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
+    it('should handle downloadDic event', (done) => {
+        const spy = sinon.stub(service.dictionaryManager, 'downloadDictionary');
+        clientSocket.emit('downloadDic');
+        setTimeout(() => {
+            assert(spy.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
+    it('should handle uploadDictionary event', (done) => {
+        const spy = sinon.stub(service.dictionaryManager, 'uploadDictionary');
+        clientSocket.emit('uploadDictionary');
+        setTimeout(() => {
+            assert(spy.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
+    it('should handle resetDictionary event', (done) => {
+        const spy = sinon.stub(service.dictionaryManager, 'resetDictionary');
+        clientSocket.emit('resetDictionary');
+        setTimeout(() => {
+            assert(spy.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
+    it('should handle resetVirtualPlayers event', (done) => {
+        const spy = sinon.stub(service.adminManager, 'resetVirtualPlayers');
+        clientSocket.emit('resetVirtualPlayers');
+        setTimeout(() => {
+            assert(spy.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
+    it('should handle resetAll event', (done) => {
+        const spy = sinon.stub(service.adminManager, 'resetAll');
+        clientSocket.emit('resetAll');
+        setTimeout(() => {
+            assert(spy.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
+    it('should handle modifyVirtualPlayerNames event', (done) => {
+        const spy = sinon.stub(service.adminManager, 'modifyVirtualPlayerNames');
+        clientSocket.emit('modifyVirtualPlayerNames');
+        setTimeout(() => {
+            assert(spy.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
+    it('should handle deleteVirtualPlayerName event', (done) => {
+        const spy = sinon.stub(service.adminManager, 'deleteVirtualPlayerName');
+        clientSocket.emit('deleteVirtualPlayerName');
+        setTimeout(() => {
+            assert(spy.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
+    it('should handle addVirtualPlayerNames event', (done) => {
+        const spy = sinon.stub(service.adminManager, 'addVirtualPlayerNames');
+        clientSocket.emit('addVirtualPlayerNames');
+        setTimeout(() => {
+            assert(spy.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
+    it('should handle getAdminInfo event', (done) => {
+        const spy = sinon.stub(service.adminManager, 'getAdminInformations');
+        clientSocket.emit('getAdminInfo');
+        setTimeout(() => {
+            assert(spy.called);
+            done();
+        }, RESPONSE_DELAY);
     });
 });
