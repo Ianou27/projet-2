@@ -45,6 +45,7 @@ describe('Placement Command', () => {
     afterEach(() => {
         lettersTilePlayer1 = [];
         lettersTilePlayer2 = [];
+        sinon.restore();
     });
 
     it('method validatedPlaceCommandFormat should return false if it compose of 3 terms', () => {

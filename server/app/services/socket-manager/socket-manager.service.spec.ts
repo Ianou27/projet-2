@@ -355,11 +355,14 @@ describe('SocketManager service tests', () => {
     });
 
     it('should handle resetBestScore event', (done) => {
-        const spy = sinon.stub(service.databaseService, 'resetBestScores');
-
+        const spy1 = sinon.stub(service.databaseService, 'start');
+        const spy2 = sinon.stub(service.databaseService, 'resetBestScores');
+        const spy3 = sinon.stub(service.databaseService, 'closeConnection');
         clientSocket.emit('resetBestScore');
         setTimeout(() => {
-            assert(spy.called);
+            assert(spy1.called);
+            assert(spy2.called);
+            assert(spy3.called);
             done();
         }, RESPONSE_DELAY);
     });

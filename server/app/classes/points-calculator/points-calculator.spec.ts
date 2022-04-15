@@ -76,6 +76,20 @@ describe('Points Calculator', () => {
         expect(isNew).to.equal(true);
     });
 
+    it('method calculatedPointsPlacement should add 50 points to a 7 letters placement', () => {
+        const newLettersString: string[] = ['A', 'A', 'A', 'A', 'A', 'A', 'A'];
+        const newLettersTile: Tile[] = [];
+        const newWords: Tile[][] = [];
+        for (let i = 0; i < newLettersString.length; i++) {
+            const tile = new Tile(WORD_LETTER_NO_MULTIPLIER, 0, i);
+            tile.letter = newLettersString[i];
+            tile.value = 0;
+            newLettersTile.push(tile);
+        }
+        const result = PointsCalculator.calculatedPointsPlacement(newWords, newLettersTile);
+        expect(result).to.equal(50);
+    });
+
     it('method newLetterOnBoard should return false if the letter was just placed', () => {
         for (let i = 0; i < placementInformations.letters.length; i++) {
             game.gameBoard.addLetterTile(letterTile[i].positionX, placementInformations.row, letterTile[i].letter);

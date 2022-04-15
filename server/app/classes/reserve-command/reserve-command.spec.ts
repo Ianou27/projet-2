@@ -19,7 +19,7 @@ describe('Reserve Command', () => {
     });
 
     it('reserve should return false if the command his longer than 1', () => {
-        expect(ReserveCommand.verifyFormat(['!réserve 1234'])).to.equal(false);
+        expect(ReserveCommand.verifyFormat('!réserve 1234'.split(' '))).to.equal(false);
     });
 
     it('reserve should return a dictionnary with the right keys and values', () => {

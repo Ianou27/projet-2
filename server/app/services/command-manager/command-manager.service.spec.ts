@@ -80,9 +80,39 @@ describe('CommandManager service tests', () => {
         }, RESPONSE_DELAY);
     });
 
-    it('should handle aide event if Invalid', (done) => {
+    it('should handle aide event valid', (done) => {
         sinon.replace(service.gameManager, 'helpCommandValid', () => {
             return false;
+        });
+        const gameObj = new Game();
+
+        const a: boolean = clientSocket.disconnected;
+        const user1 = {
+            username: 'player1',
+            id: a.toString(),
+            room: 'room1',
+        };
+        const user2 = {
+            username: 'player2',
+            id: 'b',
+            room: 'room1',
+        };
+        gameObj.player1 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user1);
+        gameObj.player2 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user2);
+        sinon.replace(service.identification, 'getGame', () => {
+            return gameObj;
+        });
+        const reserveSpy = sinon.spy(service.gameManager, 'helpCommandValid');
+        commandManager.commandHelp(service.sio, service.identification, service.gameManager, '', '!aide'.split(' '));
+        setTimeout(() => {
+            expect(reserveSpy.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
+    it('should handle aide event if Invalid', (done) => {
+        sinon.replace(service.gameManager, 'helpCommandValid', () => {
+            return true;
         });
         const gameObj = new Game();
 
@@ -204,6 +234,47 @@ describe('CommandManager service tests', () => {
         commandManager.commandPlace(service.sio, service.identification, service.gameManager, '', '!placer aaa'.split(' '));
         setTimeout(() => {
             assert(passerSpy.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
+    it('should handle valid place command if it is player 2', (done) => {
+        const gameObj = new Game();
+
+        const a: boolean = clientSocket.disconnected;
+        const user1 = {
+            username: 'player1',
+            id: a.toString(),
+            room: 'room1',
+        };
+        const user2 = {
+            username: 'player2',
+            id: 'b',
+            room: 'room1',
+        };
+        gameObj.player1 = new Player(gameObj.reserveLetters.randomLettersInitialization(), false, 'player1', user1);
+        gameObj.player2 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player2', user2);
+        sinon.replace(gameObj, 'playerTurnValid', () => {
+            return true;
+        });
+        sinon.replace(service.gameManager, 'placeVerification', () => {
+            return 'valide';
+        });
+        sinon.replace(service.gameManager, 'placeWord', () => {
+            return 'placer';
+        });
+        sinon.replace(service.gameManager, 'pass', () => {});
+        sinon.replace(gameObj, 'playerTurn', () => {
+            return gameObj.player2;
+        });
+
+        sinon.replace(service.identification, 'getGame', () => {
+            return gameObj;
+        });
+        const spy = sinon.spy(service.identification, 'getGame');
+        commandManager.commandPlace(service.sio, service.identification, service.gameManager, 'b', '!placer aaa'.split(' '));
+        setTimeout(() => {
+            assert(spy.called);
             done();
         }, RESPONSE_DELAY);
     });
@@ -356,12 +427,12 @@ describe('CommandManager service tests', () => {
         const a: boolean = clientSocket.disconnected;
         const user1 = {
             username: 'player1',
-            id: a.toString(),
+            id: 'b',
             room: 'room1',
         };
         const user2 = {
             username: 'player2',
-            id: 'b',
+            id: a.toString(),
             room: 'room1',
         };
         gameObj.player1 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user1);
@@ -537,6 +608,48 @@ describe('CommandManager service tests', () => {
         const getPlayerSpy = sinon.spy(service.identification, 'getPlayer');
         sinon.replace(gameObj, 'playerTurnValid', () => {
             return true;
+        });
+        const gamePlayerTurnSpy = sinon.spy(gameObj, 'playerTurnValid');
+        sinon.replace(service.gameManager, 'clueCommandValid', () => {
+            return false;
+        });
+        const clueCommandSpy = sinon.spy(service.gameManager, 'clueCommandValid');
+
+        commandManager.commandClue(service.sio, service.identification, service.gameManager, '', '!indice'.split(' '));
+        setTimeout(() => {
+            assert(getGameSpy.called);
+            assert(getPlayerSpy.called);
+            assert(gamePlayerTurnSpy.called);
+            assert(clueCommandSpy.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
+    it('should call gameManager methods on indice event when command its not the turn', (done) => {
+        const gameObj = new Game();
+        const a: boolean = clientSocket.disconnected;
+        const user1 = {
+            username: 'player1',
+            id: a.toString(),
+            room: 'room1',
+        };
+        const user2 = {
+            username: 'player2',
+            id: 'b',
+            room: 'room1',
+        };
+        gameObj.player1 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user1);
+        gameObj.player2 = new Player(gameObj.reserveLetters.randomLettersInitialization(), false, 'player2', user2);
+        sinon.replace(service.identification, 'getGame', () => {
+            return gameObj;
+        });
+        sinon.replace(service.identification, 'getPlayer', () => {
+            return 'AAAAA';
+        });
+        const getGameSpy = sinon.spy(service.identification, 'getGame');
+        const getPlayerSpy = sinon.spy(service.identification, 'getPlayer');
+        sinon.replace(gameObj, 'playerTurnValid', () => {
+            return false;
         });
         const gamePlayerTurnSpy = sinon.spy(gameObj, 'playerTurnValid');
         sinon.replace(service.gameManager, 'clueCommandValid', () => {

@@ -29,7 +29,7 @@ export class RoomManager {
         }
         const copyGoalsPlayer: GoalInformations[] = [];
         goalsPlayer.forEach((element) => {
-            if ((element.type === GoalType.PrivatePlayer1 || element.type === GoalType.PrivatePlayer2) && element.isDone) {
+            if (element.type === GoalType.PrivatePlayer1 || element.type === GoalType.PrivatePlayer2) {
                 copyGoalsPlayer.unshift(element);
             } else {
                 copyGoalsPlayer.push(element);
