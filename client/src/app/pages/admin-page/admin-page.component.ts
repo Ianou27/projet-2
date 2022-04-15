@@ -206,7 +206,7 @@ export class AdminPageComponent implements OnInit {
 
     submit() {
         try {
-            const object: JSON = JSON.parse(this.selectedFile.toString());
+            const object: Dic = JSON.parse(this.selectedFile.toString());
 
             if (this.verifyDict(this.selectedFile)) {
                 this.socketHandler.uploadDictionary(object);

@@ -8,11 +8,11 @@ export class DictionaryManager {
         this.databaseService = new DatabaseService();
     }
 
-    uploadDictionary(dictionary: JSON) {
+    uploadDictionary(dictionary: Dic) {
         //create an object with only properties title and description of dictionary object and save it in database
         let dictObject: Dic = {
-            title: dictionary['title'],
-            description: dictionary['description'],
+            title: dictionary.title,
+            description: dictionary.description,
         };
         fs.writeFile('./assets/dictionaries/' + dictionary['title'] + '.json', JSON.stringify(dictionary), async (err) => {
             

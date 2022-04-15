@@ -25,6 +25,7 @@ export type GameHistory = {
 export type Dic = {
     title: string;
     description: string;
+    words?: string[];
 };
 export type User = {
     username: string;

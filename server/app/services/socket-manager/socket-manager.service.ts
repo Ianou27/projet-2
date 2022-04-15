@@ -1,5 +1,5 @@
 import { BotType } from '@common/botType';
-import { InfoToJoin, Room } from '@common/types';
+import { Dic, InfoToJoin, Room } from '@common/types';
 import * as http from 'http';
 import * as io from 'socket.io';
 import { DatabaseService } from './../best-score/best-score.services';
@@ -277,7 +277,7 @@ export class SocketManager {
                 await this.databaseService.closeConnection();
             });
 
-            socket.on('uploadDictionary', async (file: JSON) => {
+            socket.on('uploadDictionary', async (file: Dic) => {
                 this.dictionaryManager.uploadDictionary(file);
                 await this.databaseService.start();
                 this.sio

@@ -6,7 +6,7 @@ import { CommandType } from './../../../../../common/command-type';
 import { NUMBER_MAXIMUM_CLUE_COMMAND } from './../../../../../common/constants/general-constants';
 import { GoalInformations } from './../../../../../common/constants/goal-information';
 import { Tile } from './../../../../../common/tile/Tile';
-import { InfoToJoin, Message, Room } from './../../../../../common/types';
+import { Dic, InfoToJoin, Message, Room } from './../../../../../common/types';
 import { INITIAL_NUMBER_LETTERS_RESERVE, NUMBER_LETTER_TILEHOLDER } from './../../constants/general-constants';
 import { BoardService } from './../board/board.service';
 import { SocketClientService } from './../socket-client/socket-client.service';
@@ -306,7 +306,7 @@ export class ClientSocketHandler {
         this.socketService.socket.emit('askJoin', username, room);
         this.gotRefused = false;
     }
-    uploadDictionary(file: JSON) {
+    uploadDictionary(file: Dic) {
         this.socketService.socket.emit('uploadDictionary', file);
     }
     deleteDic(title: string) {
