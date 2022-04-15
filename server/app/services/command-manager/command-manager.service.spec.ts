@@ -8,7 +8,7 @@ import * as sinon from 'sinon';
 import { io as ioClient, Socket } from 'socket.io-client';
 import { Container } from 'typedi';
 import { SocketManager } from './../socket-manager/socket-manager.service';
-import { CommandManager } from './command-manager';
+import { CommandManager } from './command-manager.service';
 
 describe('CommandManager service tests', () => {
     let commandManager: CommandManager;

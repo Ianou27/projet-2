@@ -2,7 +2,7 @@ import { BotType } from '@common/botType';
 import { Dic, InfoToJoin, Room } from '@common/types';
 import * as http from 'http';
 import * as io from 'socket.io';
-import { CommandManager } from './../command-manager/command-manager';
+import { CommandManager } from './../command-manager/command-manager.service';
 import { DatabaseService } from './../database/database.services';
 import { DictionaryManager } from './../dictionary-manager/dictionary-manager.service';
 import { GameManager } from './../game-manager/game-manager.service';
