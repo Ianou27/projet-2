@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 /* eslint-disable max-len */
-import { DatabaseService } from '@app/services/best-score/best-score.services';
+import { DatabaseService } from '@app/services/database/database.services';
 import { GameBoardService } from '@app/services/game-board/game-board.service';
 import { Timer } from '@app/services/timer-manager/timer-manager.service';
 import { CaseProperty } from '@common/assets/case-property';

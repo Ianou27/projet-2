@@ -4,8 +4,8 @@ import * as fs from 'fs';
 import { Db, MongoClient } from 'mongodb';
 import 'reflect-metadata';
 import { Service } from 'typedi';
-import { BEGINNER_BOT, EXPERT_BOT } from './../../../assets/bot-name';
-import { DictMongo, History, Score } from './../../../assets/type';
+import { BEGINNER_BOT, EXPERT_BOT } from '../../../assets/bot-name';
+import { DictMongo, History, Score } from '../../../assets/type';
 const DATABASE_URL = 'mongodb+srv://riad:tpUUYHQYgUZuXvgY@cluster0.pwwqd.mongodb.net/DataBase?retryWrites=true&w=majority';
 const DATABASE_NAME = 'DataBase';
 const DATABASE_COLLECTION_CLASSIC = 'bestScoreClassic';
@@ -173,6 +173,7 @@ export class DatabaseService {
     async resetGameHistory() {
         await this.db.collection(DATABASE_COLLECTION_GAME).deleteMany({});
     }
+
     async resetDictionary() {
         const db = await this.db.collection(DATABASE_COLLECTION_DIC).find().project({ title: 1, description: 1, _id: 0 }).toArray();
         for (const dictionary of db) {

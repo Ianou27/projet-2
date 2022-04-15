@@ -10,7 +10,7 @@ import { Game } from './../../classes/game/game';
 import { HelpCommand } from './../../classes/help-command/help-command';
 import { PlacementCommand } from './../../classes/placement-command/placement-command';
 import { Player } from './../../classes/player/player';
-import { DatabaseService } from './../best-score/best-score.services';
+import { DatabaseService } from './../database/database.services';
 import { GameManager } from './game-manager.service';
 
 describe('Game Manager', () => {

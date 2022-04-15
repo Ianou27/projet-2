@@ -7,7 +7,7 @@ import * as io from 'socket.io';
 import { BEGINNER_BOT } from './../../../assets/bot-name';
 import { Game } from './../../classes/game/game';
 import { Player } from './../../classes/player/player';
-import { DatabaseService } from './../best-score/best-score.services';
+import { DatabaseService } from './../database/database.services';
 import { IdManager } from './../id-manager/id-manager.service';
 export class RoomManager {
     static getGoalsPlayer(game: Game, player: Player): GoalInformations[] {

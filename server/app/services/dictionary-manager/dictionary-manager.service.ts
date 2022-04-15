@@ -1,6 +1,6 @@
 import { Dic } from '@common/types';
 import * as fs from 'fs';
-import { DatabaseService } from '../best-score/best-score.services';
+import { DatabaseService } from './../database/database.services';
 
 export class DictionaryManager {
     databaseService: DatabaseService;

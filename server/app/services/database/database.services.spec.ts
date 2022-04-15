@@ -8,7 +8,7 @@ import { describe } from 'mocha';
 import { MongoClient } from 'mongodb';
 // import { MongoClient } from 'mongodb';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import { DatabaseService } from './best-score.services';
+import { DatabaseService } from './database.services';
 describe('Database service', () => {
     let databaseService: DatabaseService;
     let mongoServer: MongoMemoryServer;

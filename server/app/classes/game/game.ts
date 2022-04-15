@@ -1,4 +1,4 @@
-import { DatabaseService } from '@app/services/best-score/best-score.services';
+import { DatabaseService } from '@app/services/database/database.services';
 import { RoomManager } from '@app/services/room-manager/room-manager.service';
 import { BotType } from '@common/botType';
 import { GoalType } from '@common/constants/goal-type';

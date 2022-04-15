@@ -9,7 +9,7 @@ import { Room, User } from '@common/types';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
 import * as io from 'socket.io';
-import { DatabaseService } from './../best-score/best-score.services';
+import { DatabaseService } from './../database/database.services';
 import { IdManager } from './../id-manager/id-manager.service';
 
 describe('Room Manager tests', () => {
