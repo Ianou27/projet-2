@@ -170,7 +170,6 @@ export class AdminPageComponent implements OnInit {
 
     onFileSelect(event: Event) {
         this.error = '';
-
         const target = event.target as HTMLInputElement;
         const file = (target.files as FileList)[0];
         const reader = new FileReader();
@@ -207,12 +206,10 @@ export class AdminPageComponent implements OnInit {
     submit() {
         try {
             const object: Dic = JSON.parse(this.selectedFile.toString());
-
             if (this.verifyDict(this.selectedFile)) {
                 this.socketHandler.uploadDictionary(object);
 
                 this.openSnackBar('Dictionnaire ajouté', 'Ok');
-                this.reloadPage();
             }
         } catch (error) {
             this.error = "Le fichier n'est pas au bon format";
