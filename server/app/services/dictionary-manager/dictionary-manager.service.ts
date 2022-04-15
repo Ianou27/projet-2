@@ -1,5 +1,6 @@
 import { Dic } from '@common/types';
 import * as fs from 'fs';
+import * as io from 'socket.io';
 import { DatabaseService } from './../database/database.services';
 
 export class DictionaryManager {
@@ -8,8 +9,7 @@ export class DictionaryManager {
         this.databaseService = new DatabaseService();
     }
 
-    uploadDictionary(dictionary: Dic) {
-        // create an object with only properties title and description of dictionary object and save it in database
+    async uploadDictionary(sio: io.Server, socketId: string, dictionary: Dic) {
         const dictObject: Dic = {
             title: dictionary.title,
             description: dictionary.description,
@@ -22,9 +22,17 @@ export class DictionaryManager {
                 throw err;
             }
         });
+        await this.databaseService.start();
+        sio.to(socketId).emit(
+            'getAdminInfo',
+            await this.databaseService.getDictionaryInfo(),
+            await this.databaseService.getGameHistory(),
+            await this.databaseService.getVirtualPlayers(),
+        );
+        await this.databaseService.closeConnection();
     }
 
-    deleteDictionary(title: string) {
+    async deleteDictionary(title: string, sio: io.Server, socketId: string) {
         fs.unlink('./assets/dictionaries/' + title + '.json', async (err) => {
             if (err) {
                 throw err;
@@ -33,18 +41,23 @@ export class DictionaryManager {
             await this.databaseService.deleteDictionary(title);
             await this.databaseService.closeConnection();
         });
+        await this.databaseService.start();
+        sio.to(socketId).emit(
+            'getAdminInfo',
+            await this.databaseService.getDictionaryInfo(),
+            await this.databaseService.getGameHistory(),
+            await this.databaseService.getVirtualPlayers(),
+        );
+        await this.databaseService.closeConnection();
     }
 
-    async modifyDictionary(oldTitle: string, newTitle: string, description: string) {
+    async modifyDictionary(oldTitle: string, newTitle: string, description: string, sio: io.Server, socketId: string) {
         console.log(oldTitle, newTitle, description);
-        // modifie title of json file
         await fs.rename('./assets/dictionaries/' + oldTitle + '.json', './assets/dictionaries/' + newTitle + '.json', async (err) => {
             if (err) {
                 throw err;
             }
         });
-
-        // modifie title and description in the file
 
         await fs.readFile('./assets/dictionaries/' + newTitle + '.json', async (err, data) => {
             if (err) {
@@ -53,9 +66,9 @@ export class DictionaryManager {
             const dictionary = JSON.parse(data.toString());
             dictionary.title = newTitle;
             dictionary.description = description;
-            await fs.writeFile('./assets/dictionaries/' + newTitle + '.json', JSON.stringify(dictionary), async (err) => {
-                if (err) {
-                    throw err;
+            await fs.writeFile('./assets/dictionaries/' + newTitle + '.json', JSON.stringify(dictionary), async (error) => {
+                if (error) {
+                    throw error;
                 }
             });
         });
@@ -63,10 +76,31 @@ export class DictionaryManager {
         await this.databaseService.start();
         await this.databaseService.modifyDictionary(oldTitle, newTitle, description);
         await this.databaseService.closeConnection();
+
+        await this.databaseService.start();
+
+        sio.to(socketId).emit(
+            'getAdminInfo',
+            await this.databaseService.getDictionaryInfo(),
+            await this.databaseService.getGameHistory(),
+            await this.databaseService.getVirtualPlayers(),
+        );
+        await this.databaseService.closeConnection();
     }
 
     downloadDictionary(title: string): string {
-        // return the json file with the title of the dictionary
         return fs.readFileSync('./assets/dictionaries/' + title + '.json').toString();
+    }
+
+    async resetDictionarySocket(sio: io.Server, socketId: string) {
+        await this.databaseService.start();
+        await this.databaseService.resetDictionary();
+        sio.to(socketId).emit(
+            'getAdminInfo',
+            await this.databaseService.getDictionaryInfo(),
+            await this.databaseService.getGameHistory(),
+            await this.databaseService.getVirtualPlayers(),
+        );
+        await this.databaseService.closeConnection();
     }
 }

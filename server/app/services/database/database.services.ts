@@ -3,9 +3,10 @@ import { BestScore, Dic, GameHistory } from '@common/types';
 import * as fs from 'fs';
 import { Db, MongoClient } from 'mongodb';
 import 'reflect-metadata';
+import * as io from 'socket.io';
 import { Service } from 'typedi';
-import { BEGINNER_BOT, EXPERT_BOT } from '../../../assets/bot-name';
-import { DictMongo, History, Score } from '../../../assets/type';
+import { BEGINNER_BOT, EXPERT_BOT } from './../../../assets/bot-name';
+import { DictMongo, History, Score } from './../../../assets/type';
 const DATABASE_URL = 'mongodb+srv://riad:tpUUYHQYgUZuXvgY@cluster0.pwwqd.mongodb.net/DataBase?retryWrites=true&w=majority';
 const DATABASE_NAME = 'DataBase';
 const DATABASE_COLLECTION_CLASSIC = 'bestScoreClassic';
@@ -195,5 +196,27 @@ export class DatabaseService {
         await this.resetVirtualPlayers();
         await this.resetDictionary();
         await this.resetBestScores();
+    }
+    async getBestScore(sio: io.Server, socketId: string) {
+        try {
+            await this.start();
+            sio.to(socketId).emit('getBestScore', await this.bestScoreClassic(), await this.bestScoreLog());
+        } catch {
+            sio.to(socketId).emit(
+                'getBestScore',
+                [
+                    {
+                        player: 'Accès à la BD impossible',
+                        score: 'ERREUR',
+                    },
+                ],
+                [
+                    {
+                        player: 'Accès à la BD impossible',
+                        score: 'ERREUR',
+                    },
+                ],
+            );
+        }
     }
 }

@@ -2,6 +2,7 @@ import { BotType } from '@common/botType';
 import { Dic, InfoToJoin, Room } from '@common/types';
 import * as http from 'http';
 import * as io from 'socket.io';
+import { AdminManager } from './../admin-manager/admin-manager.service';
 import { CommandManager } from './../command-manager/command-manager.service';
 import { DatabaseService } from './../database/database.services';
 import { DictionaryManager } from './../dictionary-manager/dictionary-manager.service';
@@ -17,6 +18,7 @@ export class SocketManager {
     sio: io.Server;
     timeLeft: number;
     commandManager: CommandManager;
+    adminManager: AdminManager;
     constructor(server: http.Server, readonly databaseService: DatabaseService) {
         this.sio = new io.Server(server, { maxHttpBufferSize: 15e6, cors: { origin: '*', methods: ['GET', 'POST'] } });
         this.gameManager = new GameManager();
@@ -24,6 +26,7 @@ export class SocketManager {
         this.roomManager = new RoomManager();
         this.dictionaryManager = new DictionaryManager();
         this.commandManager = new CommandManager();
+        this.adminManager = new AdminManager();
     }
 
     async handleSockets(): Promise<void> {
@@ -138,204 +141,53 @@ export class SocketManager {
             });
 
             socket.on('getBestScore', async () => {
-                try {
-                    await this.databaseService.start();
-                    this.sio
-                        .to(socket.id)
-                        .emit('getBestScore', await this.databaseService.bestScoreClassic(), await this.databaseService.bestScoreLog());
-                } catch {
-                    this.sio.to(socket.id).emit(
-                        'getBestScore',
-                        [
-                            {
-                                player: 'Accès à la BD impossible',
-                                score: 'ERREUR',
-                            },
-                        ],
-                        [
-                            {
-                                player: 'Accès à la BD impossible',
-                                score: 'ERREUR',
-                            },
-                        ],
-                    );
-                }
+                await this.databaseService.getBestScore(this.sio, socket.id);
             });
 
             socket.on('getAdminInfo', async () => {
-                try {
-                    await this.databaseService.start();
-                    this.sio
-                        .to(socket.id)
-                        .emit(
-                            'getAdminInfo',
-                            await this.databaseService.getDictionaryInfo(),
-                            await this.databaseService.getGameHistory(),
-                            await this.databaseService.getVirtualPlayers(),
-                        );
-
-                    await this.databaseService.closeConnection();
-                } catch {
-                    // this.sio.to(socket.id).emit(
-                    //     'getDictionaries',
-                    //     [
-                    //         {
-                    //             player: 'Accès à la BD impossible',
-                    //             score: 'ERREUR',
-                    //         },
-                    //     ],
-                    //     [
-                    //         {
-                    //             player: 'Accès à la BD impossible',
-                    //             score: 'ERREUR',
-                    //         },
-                    //     ],
-                    // );
-                }
+                await this.adminManager.getAdminInformations(this.sio, this.databaseService, socket.id);
             });
             socket.on('addVirtualPlayerNames', async (name: string, type: string) => {
-                await this.databaseService.start();
-                await this.databaseService.addVirtualPlayer(name, type);
-                this.sio
-                    .to(socket.id)
-                    .emit(
-                        'getAdminInfo',
-                        await this.databaseService.getDictionaryInfo(),
-                        await this.databaseService.getGameHistory(),
-                        await this.databaseService.getVirtualPlayers(),
-                    );
-                await this.databaseService.closeConnection();
+                await this.adminManager.addVirtualPlayerNames(this.sio, this.databaseService, socket.id, name, type);
             });
 
             socket.on('deleteVirtualPlayerName', async (name: string) => {
-                await this.databaseService.start();
-                await this.databaseService.deleteVirtualPlayer(name);
-                this.sio
-                    .to(socket.id)
-                    .emit(
-                        'getAdminInfo',
-                        await this.databaseService.getDictionaryInfo(),
-                        await this.databaseService.getGameHistory(),
-                        await this.databaseService.getVirtualPlayers(),
-                    );
-                await this.databaseService.closeConnection();
+                await this.adminManager.deleteVirtualPlayerName(this.sio, this.databaseService, socket.id, name);
             });
 
             socket.on('modifyVirtualPlayerNames', async (oldName: string, newName: string) => {
-                await this.databaseService.start();
-                await this.databaseService.modifyVirtualPlayer(oldName, newName);
-                this.sio
-                    .to(socket.id)
-                    .emit(
-                        'getAdminInfo',
-                        await this.databaseService.getDictionaryInfo(),
-                        await this.databaseService.getGameHistory(),
-                        await this.databaseService.getVirtualPlayers(),
-                    );
-                await this.databaseService.closeConnection();
+                await this.adminManager.modifyVirtualPlayerNames(this.sio, this.databaseService, socket.id, oldName, newName);
             });
 
             socket.on('resetAll', async () => {
-                await this.databaseService.start();
-                await this.databaseService.resetAll();
-                this.sio
-                    .to(socket.id)
-                    .emit(
-                        'getAdminInfo',
-                        await this.databaseService.getDictionaryInfo(),
-                        await this.databaseService.getGameHistory(),
-                        await this.databaseService.getVirtualPlayers(),
-                    );
-                await this.databaseService.closeConnection();
+                await this.adminManager.resetAll(this.sio, this.databaseService, socket.id);
             });
 
             socket.on('resetVirtualPlayers', async () => {
-                await this.databaseService.start();
-                await this.databaseService.resetVirtualPlayers();
-                this.sio
-                    .to(socket.id)
-                    .emit(
-                        'getAdminInfo',
-                        await this.databaseService.getDictionaryInfo(),
-                        await this.databaseService.getGameHistory(),
-                        await this.databaseService.getVirtualPlayers(),
-                    );
-                await this.databaseService.closeConnection();
+                await this.adminManager.resetVirtualPlayers(this.sio, this.databaseService, socket.id);
             });
 
             socket.on('resetDictionary', async () => {
-                await this.databaseService.start();
-                await this.databaseService.resetDictionary();
-                this.sio
-                    .to(socket.id)
-                    .emit(
-                        'getAdminInfo',
-                        await this.databaseService.getDictionaryInfo(),
-                        await this.databaseService.getGameHistory(),
-                        await this.databaseService.getVirtualPlayers(),
-                    );
-                await this.databaseService.closeConnection();
+                await this.dictionaryManager.resetDictionarySocket(this.sio, socket.id);
             });
 
             socket.on('uploadDictionary', async (file: Dic) => {
-                this.dictionaryManager.uploadDictionary(file);
-                await this.databaseService.start();
-                this.sio
-                    .to(socket.id)
-                    .emit(
-                        'getAdminInfo',
-                        await this.databaseService.getDictionaryInfo(),
-                        await this.databaseService.getGameHistory(),
-                        await this.databaseService.getVirtualPlayers(),
-                    );
-                await this.databaseService.closeConnection();
+                await this.dictionaryManager.uploadDictionary(this.sio, socket.id, file);
             });
 
             socket.on('downloadDic', async (title: string) => {
                 const dic = this.dictionaryManager.downloadDictionary(title);
-
                 this.sio.to(socket.id).emit('downloadDic', dic);
             });
             socket.on('deleteDic', async (title: string) => {
-                this.dictionaryManager.deleteDictionary(title);
-                await this.databaseService.start();
-                this.sio
-                    .to(socket.id)
-                    .emit(
-                        'getAdminInfo',
-                        await this.databaseService.getDictionaryInfo(),
-                        await this.databaseService.getGameHistory(),
-                        await this.databaseService.getVirtualPlayers(),
-                    );
-                await this.databaseService.closeConnection();
+                await this.dictionaryManager.deleteDictionary(title, this.sio, socket.id);
             });
             socket.on('modifyDictionary', async (oldTitle: string, newTitle: string, description: string) => {
-                this.dictionaryManager.modifyDictionary(oldTitle, newTitle, description);
-                await this.databaseService.start();
-
-                this.sio
-                    .to(socket.id)
-                    .emit(
-                        'getAdminInfo',
-                        await this.databaseService.getDictionaryInfo(),
-                        await this.databaseService.getGameHistory(),
-                        await this.databaseService.getVirtualPlayers(),
-                    );
-                await this.databaseService.closeConnection();
+                await this.dictionaryManager.modifyDictionary(oldTitle, newTitle, description, this.sio, socket.id);
             });
 
             socket.on('resetGameHistory', async () => {
-                await this.databaseService.start();
-                await this.databaseService.resetGameHistory();
-                this.sio
-                    .to(socket.id)
-                    .emit(
-                        'getAdminInfo',
-                        await this.databaseService.getDictionaryInfo(),
-                        await this.databaseService.getGameHistory(),
-                        await this.databaseService.getVirtualPlayers(),
-                    );
-                await this.databaseService.closeConnection();
+                await this.adminManager.resetGameHistory(this.sio, this.databaseService, socket.id);
             });
 
             socket.on('resetBestScore', async () => {
@@ -369,7 +221,6 @@ export class SocketManager {
                     this.sio.sockets.emit('rooms', this.identification.rooms);
                     this.sio.to(room).emit('playerDc');
                 }
-
                 this.identification.deleteUser(socket.id);
             });
         });
