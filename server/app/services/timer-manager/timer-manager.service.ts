@@ -41,7 +41,6 @@ export class Timer {
     }
 
     stop() {
-        this.gameTime += this.timerMax - this.timeLeft;
         this.timeLeft = NO_TIME_LEFT;
     }
 }

@@ -16,7 +16,7 @@ export type InfoToJoin = {
 
 export type GameHistory = {
     date: string;
-    duration: string;
+    duration: number;
     player1: string;
     player1Points: number;
     player2: string;
