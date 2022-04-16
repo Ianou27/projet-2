@@ -315,17 +315,8 @@ export class Game {
             }
         }
         await this.databaseService.start();
-        await this.databaseService.updateBesScoreClassic({
-            player: this.player1.user.username,
-            score: this.player1.points,
-        });
-
-        if (!this.player2.hisBot) {
-            await this.databaseService.updateBesScoreClassic({
-                player: this.player2.user.username,
-                score: this.player2.points,
-            });
-        }
+        
+        await this.databaseService.updateScore(this);
         this.registerGame();
         await this.databaseService.closeConnection();
     }

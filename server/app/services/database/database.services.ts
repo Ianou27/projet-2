@@ -1,3 +1,4 @@
+import { Game } from '@app/classes/game/game';
 import { INDEX_OF_NOT_FOUND, NUMBER_ELEMENTS_DATABASE } from '@common/constants/general-constants';
 import { BestScore, Dic, GameHistory } from '@common/types';
 import * as fs from 'fs';
@@ -81,8 +82,29 @@ export class DatabaseService {
     async bestScoreLog(): Promise<Score[]> {
         return (await this.db.collection(DATABASE_COLLECTION_LOG).find().sort({ score: -1 }).toArray()) as Score[];
     }
-    async updateBesScoreClassic(score: BestScore) {
-        const db = await this.db.collection(DATABASE_COLLECTION_CLASSIC).find().sort({ score: -1 }).toArray();
+    async updateScore(game: Game) {
+        if (!game.player1.hisBot) {
+            await this.insertBestScore(
+                {
+                    player: game.player1.user.username,
+                    score: game.player1.points,
+                },
+                game.gameState.modeLog,
+            );
+        }
+        if (!game.player2.hisBot) {
+            await this.insertBestScore(
+                {
+                    player: game.player2.user.username,
+                    score: game.player2.points,
+                },
+                game.gameState.modeLog,
+            );
+        }
+    }
+    async insertBestScore(score: BestScore, modeLog: boolean) {
+        const dbName = modeLog ? DATABASE_COLLECTION_LOG : DATABASE_COLLECTION_CLASSIC;
+        const db = await this.db.collection(dbName).find().sort({ score: -1 }).toArray();
         let index = -1;
         for (let i = 0; i < NUMBER_ELEMENTS_DATABASE; i++) {
             if (db[i].score <= score.score) {
@@ -94,13 +116,9 @@ export class DatabaseService {
         if (index !== INDEX_OF_NOT_FOUND) {
             const player = db[index].player.split('-');
             if (db[index].score === score.score && !player.includes(score.player)) {
-                await this.db
-                    .collection(DATABASE_COLLECTION_CLASSIC)
-                    .updateOne({ score: db[index].score }, { $set: { player: db[index].player + '-' + score.player } });
+                await this.db.collection(dbName).updateOne({ score: db[index].score }, { $set: { player: db[index].player + '-' + score.player } });
             } else if (db[index].score < score.score) {
-                await this.db
-                    .collection(DATABASE_COLLECTION_CLASSIC)
-                    .replaceOne({ score: db[4].score }, { player: score.player, score: score.score });
+                await this.db.collection(dbName).replaceOne({ score: db[4].score }, { player: score.player, score: score.score });
             }
         }
     }
@@ -130,8 +148,8 @@ export class DatabaseService {
         return (await this.db.collection(DATABASE_COLLECTION_GAME).find().toArray()) as History[];
     }
 
-    async getVirtualPlayers() : Promise<Bot[]>{
-        return await this.db.collection(DATABASE_COLLECTION_VIRTUAL).find().toArray() as Bot[];
+    async getVirtualPlayers(): Promise<Bot[]> {
+        return (await this.db.collection(DATABASE_COLLECTION_VIRTUAL).find().toArray()) as Bot[];
     }
 
     async deleteVirtualPlayer(name: string) {
