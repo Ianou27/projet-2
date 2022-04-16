@@ -174,7 +174,7 @@ export class DatabaseService {
     async resetDictionary() {
         const db = await this.db.collection(DATABASE_COLLECTION_DIC).find().project({ title: 1, description: 1, _id: 0 }).toArray();
         for (const dictionary of db) {
-            if (dictionary.title !== 'default dictionary') {
+            if (dictionary.title !== 'default-dictionary') {
                 await this.db.collection(DATABASE_COLLECTION_DIC).deleteOne({ title: dictionary.title });
             }
         }

@@ -50,6 +50,21 @@ export class DictionaryManager {
         );
         await this.databaseService.closeConnection();
     }
+    
+
+    async deleteAllDictionaries() {
+        const files = fs.readdirSync('./assets/dictionaries/');
+        for (const file of files) {
+
+            if (file !== 'default-dictionary.json') {
+                fs.unlinkSync('./assets/dictionaries/' + file);
+            }
+        }
+
+    }
+
+    
+    
 
     async modifyDictionary(oldTitle: string, newTitle: string, description: string, sio: io.Server, socketId: string) {
         console.log(oldTitle, newTitle, description);
@@ -93,6 +108,7 @@ export class DictionaryManager {
     }
 
     async resetDictionary(sio: io.Server, socketId: string) {
+        this.deleteAllDictionaries();
         await this.databaseService.start();
         await this.databaseService.resetDictionary();
         sio.to(socketId).emit(

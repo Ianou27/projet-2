@@ -153,7 +153,7 @@ export class SocketManager {
             });
 
             socket.on('resetAll', async () => {
-                await this.adminManager.resetAll(this.sio, this.databaseService, socket.id);
+                await this.adminManager.resetAll(this.sio, this.databaseService, socket.id, this.dictionaryManager);
             });
 
             socket.on('resetVirtualPlayers', async () => {

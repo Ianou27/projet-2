@@ -1,9 +1,10 @@
 import * as io from 'socket.io';
+import { DictionaryManager } from '../dictionary-manager/dictionary-manager.service';
 import { DatabaseService } from './../database/database.services';
 
 export class AdminManager {
     async getAdminInformations(sio: io.Server, databaseService: DatabaseService, socketId: string) {
-        try {
+       
             await databaseService.start();
             sio.to(socketId).emit(
                 'getAdminInfo',
@@ -13,23 +14,7 @@ export class AdminManager {
             );
 
             await databaseService.closeConnection();
-        } catch {
-            // this.sio.to(socket.id).emit(
-            //     'getDictionaries',
-            //     [
-            //         {
-            //             player: 'Accès à la BD impossible',
-            //             score: 'ERREUR',
-            //         },
-            //     ],
-            //     [
-            //         {
-            //             player: 'Accès à la BD impossible',
-            //             score: 'ERREUR',
-            //         },
-            //     ],
-            // );
-        }
+       
     }
 
     async addVirtualPlayerNames(sio: io.Server, databaseService: DatabaseService, socketId: string, name: string, type: string) {
@@ -68,7 +53,8 @@ export class AdminManager {
         await databaseService.closeConnection();
     }
 
-    async resetAll(sio: io.Server, databaseService: DatabaseService, socketId: string) {
+    async resetAll(sio: io.Server, databaseService: DatabaseService, socketId: string, dictionaryManager: DictionaryManager) {
+        dictionaryManager.deleteAllDictionaries();
         await databaseService.start();
         await databaseService.resetAll();
         sio.to(socketId).emit(
