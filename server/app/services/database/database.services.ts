@@ -6,7 +6,7 @@ import 'reflect-metadata';
 import * as io from 'socket.io';
 import { Service } from 'typedi';
 import { BEGINNER_BOT, EXPERT_BOT } from './../../../assets/bot-name';
-import { DictMongo, History, Score } from './../../../assets/type';
+import { Bot, DictMongo, History, Score } from './../../../assets/type';
 const DATABASE_URL = 'mongodb+srv://riad:tpUUYHQYgUZuXvgY@cluster0.pwwqd.mongodb.net/DataBase?retryWrites=true&w=majority';
 const DATABASE_NAME = 'DataBase';
 const DATABASE_COLLECTION_CLASSIC = 'bestScoreClassic';
@@ -130,8 +130,8 @@ export class DatabaseService {
         return (await this.db.collection(DATABASE_COLLECTION_GAME).find().toArray()) as History[];
     }
 
-    async getVirtualPlayers() {
-        return await this.db.collection(DATABASE_COLLECTION_VIRTUAL).find().toArray();
+    async getVirtualPlayers() : Promise<Bot[]>{
+        return await this.db.collection(DATABASE_COLLECTION_VIRTUAL).find().toArray() as Bot[];
     }
 
     async deleteVirtualPlayer(name: string) {

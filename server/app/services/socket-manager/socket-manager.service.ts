@@ -37,9 +37,8 @@ export class SocketManager {
                 socket.join(informations.room);
             });
 
-            socket.on('createSoloGame', (informations: CreateSoloRoomInformations) => {
-                const botName = this.roomManager.getRandomBotName(informations.username);
-                informations.botName = botName;
+            socket.on('createSoloGame', async (informations: CreateSoloRoomInformations) => {
+                informations.botName = await this.roomManager.getRandomBotName(informations.username, this.databaseService, informations.botType);;
                 informations.socketId = socket.id;
                 this.roomManager.createSoloGame(informations, this.identification, this.sio, this.databaseService);
                 socket.join(informations.username);

@@ -22,3 +22,8 @@ export interface History extends WithId<Document> {
     player2: string;
     gameMode: string;
 }
+export interface Bot extends WithId<Document> {
+    id: ObjectId;
+    type: string;
+    name: string;
+};

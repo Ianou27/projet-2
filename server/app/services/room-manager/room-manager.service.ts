@@ -1,9 +1,11 @@
+
+import { BotType } from '@common/botType';
 import { GoalInformations } from '@common/constants/goal-information';
 import { GoalType } from '@common/constants/goal-type';
 import { Tile } from '@common/tile/Tile';
-import { CreateRoomInformations, CreateSoloRoomInformations, Room } from '@common/types';
+import {CreateRoomInformations, CreateSoloRoomInformations, Room } from '@common/types';
+import { Bot } from 'assets/type';
 import * as io from 'socket.io';
-import { BEGINNER_BOT } from './../../../assets/bot-name';
 import { Game } from './../../classes/game/game';
 import { Player } from './../../classes/player/player';
 import { DatabaseService } from './../database/database.services';
@@ -57,9 +59,9 @@ export class RoomManager {
         };
         identification.rooms.push(roomObj);
     }
-    convertMultiToSolo(informations: CreateSoloRoomInformations, identification: IdManager, sio: io.Server, databaseService: DatabaseService) {
+    async convertMultiToSolo(informations: CreateSoloRoomInformations, identification: IdManager, sio: io.Server, databaseService: DatabaseService) {
         const game = identification.getGame(informations.socketId);
-        informations.botName = this.getRandomBotName(game.player1.user.username);
+        informations.botName = await this.getRandomBotName(game.player1.user.username,databaseService,BotType.Beginner);
         informations.timer = game.timer.timerMax.toString();
         this.cancelCreation(informations.socketId, identification);
         this.createSoloGame(informations, identification, sio, databaseService);
@@ -145,11 +147,27 @@ export class RoomManager {
         });
     }
 
-    getRandomBotName(username: string): string {
+    async getRandomBotName(username: string, databaseService:DatabaseService, botType:string): Promise<string> {
+        await databaseService.start();
+        let type:string;
+        if(botType === BotType.Beginner){
+            type = 'beginner';
+        }else {
+            type = 'expert';
+        }
+        
+        const botsNames: Bot[] = await databaseService.getVirtualPlayers();
+        const botsNamesArray: string[] = [];
+        botsNames.forEach((bot :Bot) => {
+            if (bot.type === type) {
+                botsNamesArray.push(bot.name);
+            }
+        });
         let randomName = username;
         while (randomName === username) {
-            randomName = BEGINNER_BOT[Math.floor(Math.random() * BEGINNER_BOT.length)];
+            randomName = botsNamesArray[Math.floor(Math.random() * botsNamesArray.length)];
         }
-        return randomName.concat(' (Joueur virtuel)');
+        databaseService.closeConnection();
+        return randomName.concat(' ' + botType);
     }
 }
