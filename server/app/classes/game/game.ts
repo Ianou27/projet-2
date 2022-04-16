@@ -271,14 +271,18 @@ export class Game {
         return VirtualPlayer.commandExpertPlayer(this);
     }
     async registerGame() {
+        const mode = this.gameState.modeLog ? 'LOG2990' : 'CLASSIC';
+
+        console.log(this.timer.gameTime);
+
         const game: GameHistory = {
             date: this.gameStartingDate,
-            duration: this.timer.gameTime.toString() + ' secondes',
+            duration: this.timer.gameTime,
             player1: this.player1.user.username,
             player1Points: this.player1.points,
             player2Points: this.player2.points,
             player2: this.player2.user.username,
-            gameMode: 'TEST',
+            gameMode: mode,
         };
         await this.databaseService.start();
         await this.databaseService.insertGame(game);

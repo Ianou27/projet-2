@@ -170,7 +170,7 @@
                     <!-- Duration Column -->
                     <ng-container matColumnDef="duration">
                         <th mat-header-cell *matHeaderCellDef>Durée</th>
-                        <td mat-cell *matCellDef="let element">{{ element.duration }}</td>
+                        <td mat-cell *matCellDef="let element">{{ element.duration |formatTime}}</td>
                     </ng-container>
                     <!-- Player1 Column -->
                     <ng-container matColumnDef="player1">
