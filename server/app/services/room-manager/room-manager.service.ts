@@ -49,7 +49,7 @@ export class RoomManager {
         identification.users.push(user);
         identification.roomMessages[informations.room] = [];
         const game = new Game();
-        game.player1Join(user, informations.timer, databaseService, informations.modeLog,informations.dictionary);
+        game.player1Join(user, informations.timer, databaseService, informations.modeLog, informations.dictionary);
         identification.games.push(game);
         const roomObj = {
             player1: informations.username,
@@ -72,7 +72,7 @@ export class RoomManager {
             modeLog,
             botType: BotType.Beginner,
             botName,
-            dictionary: '',
+            dictionary: game.dictionaryName,
         };
         this.createSoloGame(informations, identification, sio, databaseService);
     }

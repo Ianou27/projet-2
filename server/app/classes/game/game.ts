@@ -3,6 +3,7 @@ import { RoomManager } from '@app/services/room-manager/room-manager.service';
 import { BotType } from '@common/botType';
 import { GoalType } from '@common/constants/goal-type';
 import { allGoals, Goals } from '@common/constants/goals';
+import * as fs from 'fs';
 import * as io from 'socket.io';
 import { CommandType } from './../../../../common/command-type';
 import {
@@ -22,7 +23,6 @@ import { PlacementCommand } from './../placement-command/placement-command';
 import { Player } from './../player/player';
 import { ReserveLetters } from './../reserve-letters/reserve-letters';
 import { VirtualPlayer } from './../virtual-player/virtual-player';
-import * as fs from 'fs';
 
 export class Game {
     gameBoard: GameBoardService;
@@ -36,8 +36,9 @@ export class Game {
     databaseService: DatabaseService;
     goals: Goals;
     gameStartingDate: string;
+    dictionaryName: string;
     dictionaryArray: string[];
-    
+
     constructor() {
         this.reserveLetters = new ReserveLetters();
         this.gameBoard = new GameBoardService();
@@ -56,6 +57,7 @@ export class Game {
         this.timer = new Timer(timer);
         this.roomName = user.room;
         this.timer = new Timer(timer);
+        this.dictionaryName = dictionary;
         this.dictionaryArray = JSON.parse(fs.readFileSync('./assets/dictionaries/' + dictionary + '.json').toString()).words;
         this.databaseService = databaseService;
         if (modeLog) {
@@ -101,6 +103,7 @@ export class Game {
             id: 'bot',
             room: user.room,
         };
+        this.dictionaryName = informations.dictionary;
         this.dictionaryArray = JSON.parse(fs.readFileSync('./assets/dictionaries/' + informations.dictionary + '.json').toString()).words;
         this.player2 = new Player(this.reserveLetters.randomLettersInitialization(), false, 'player2', userBot);
         this.player2.changeHisBot(true);
@@ -109,7 +112,7 @@ export class Game {
         this.startGame();
         if (informations.modeLog) this.setGoals();
         this.sio.to(user.id).emit('tileHolder', this.player1.letters, RoomManager.getGoalsPlayer(this, this.player1));
-        this.sio.to(this.player1.user.room).emit('modification', this.gameBoard.cases, this.playerTurn().name);
+        this.sio.to(this.roomName).emit('modification', this.gameBoard.cases, this.playerTurn().name);
         this.sio.to(user.id).emit('startGame', user.username, informations.botName);
     }
 
@@ -163,18 +166,18 @@ export class Game {
             }, timeoutActionBot);
         }
     }
-
     getCommandBot(typeBot: BotType, probability: number): string[] {
         if (typeBot === BotType.Beginner) return this.actionVirtualBeginnerPlayer(probability);
         return this.actionVirtualExpertPlayer();
     }
-
     placementBot(command: string[]) {
+        const playerBot: Player = this.player1.hisBot ? this.player1 : this.player2;
+        const playerBotString: string = this.player1.hisBot ? 'player1' : 'player2';
         switch (command[0]) {
             case CommandType.exchange: {
                 this.exchangeLetters(command);
-                this.sio.to(this.player1.user.room).emit('modification', this.gameBoard.cases, this.playerTurn().name);
-                this.sio.to(this.player1.user.id).emit('roomMessage', {
+                this.sio.to(this.roomName).emit('modification', this.gameBoard.cases, this.playerTurn().name);
+                this.sio.to(this.roomName).emit('roomMessage', {
                     username: 'Server',
                     message: 'Votre adversaire a échangé ' + command[1].length + ' lettres',
                     player: 'server',
@@ -183,59 +186,58 @@ export class Game {
             }
             case CommandType.pass: {
                 this.passTurn();
-                this.sio.to(this.player1.user.room).emit('roomMessage', {
+                this.sio.to(this.roomName).emit('roomMessage', {
                     username: 'Server',
-                    message: this.player2.user.username + ' a passé son tour ',
+                    message: playerBot.user.username + ' a passé son tour ',
                     player: 'server',
                 });
-                this.sio.to(this.player1.user.room).emit('modification', this.gameBoard.cases, this.playerTurn().name);
+                this.sio.to(this.roomName).emit('modification', this.gameBoard.cases, this.playerTurn().name);
                 break;
             }
             case CommandType.place: {
                 PlacementCommand.placeWord(command, this);
                 this.sio
-                    .to(this.player1.user.room)
+                    .to(this.roomName)
                     .emit('updateReserve', this.reserveLetters.letters.length, this.player1.getNumberLetters(), this.player2.getNumberLetters());
-                this.sio.to(this.player1.user.room).emit('roomMessage', {
+                this.sio.to(this.roomName).emit('roomMessage', {
                     username: 'Server',
-                    message: this.player2.user.username + ' a placé le mot ' + command[2] + ' en ' + command[1],
+                    message: playerBot.user.username + ' a placé le mot ' + command[2] + ' en ' + command[1],
                     player: 'server',
                 });
-                this.sio.to(this.player1.user.room).emit('modification', this.gameBoard.cases, this.playerTurn().name, this.goals);
-                this.sio.to(this.player1.user.room).emit('updatePoint', 'player2', this.player2.points);
+                this.sio.to(this.roomName).emit('modification', this.gameBoard.cases, this.playerTurn().name, this.goals);
+                this.sio.to(this.roomName).emit('updatePoint', playerBotString, playerBot.points);
                 break;
             }
         }
     }
-
     playerTurn(): Player {
         if (this.player1.getHisTurn()) {
             return this.player1;
         }
         return this.player2;
     }
-
-    async surrender(winner: string, botName: string) {
+    async surrender(human: string, botName: string) {
         if (this.player1.hisBot || this.player2.hisBot) {
             this.gameState.gameFinished = true;
             this.timer.stop();
-            this.sio.to(this.roomName).emit('endGame', winner);
+            this.registerGame();
         } else {
-            if (winner === this.player1.user.username) {
+            if (human === this.player1.user.username) {
                 this.player2.hisBot = true;
                 this.player2.user.username = botName;
                 this.player2.typeBot = BotType.Beginner;
                 if (this.player2.hisTurn) this.changeTurnTwoPlayers();
+                this.sio.to(this.roomName).emit('startGame', human, botName);
             } else {
                 this.player1.hisBot = true;
                 this.player1.user.username = botName;
                 this.player1.typeBot = BotType.Beginner;
                 if (this.player1.hisTurn) this.changeTurnTwoPlayers();
+                this.sio.to(this.roomName).emit('startGame', botName, human);
             }
-            this.sio.to(this.player1.user.room).emit('modification', this.gameBoard.cases, this.playerTurn().name);
+            this.sio.to(this.roomName).emit('modification', this.gameBoard.cases, this.playerTurn().name);
         }
     }
-
     playerTurnValid(playerName: string): boolean {
         return playerName === this.playerTurn().name;
     }
@@ -253,9 +255,8 @@ export class Game {
     passTurn(): void {
         this.changeTurnTwoPlayers();
         this.gameState.passesCount++;
-
         this.timer.reset();
-        this.sio.to(this.player1.user.room).emit('modification', this.gameBoard.cases, this.playerTurn().name);
+        this.sio.to(this.roomName).emit('modification', this.gameBoard.cases, this.playerTurn().name);
         this.sio.to(this.player1.user.id).emit('tileHolder', this.player1.letters);
         this.sio.to(this.player2.user.id).emit('tileHolder', this.player2.letters);
         this.gameStateUpdate();
