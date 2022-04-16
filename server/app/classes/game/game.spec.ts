@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 /* eslint-disable max-len */
 import { DatabaseService } from '@app/services/database/database.services';
@@ -8,6 +9,7 @@ import { letterValue } from '@common/assets/reserve-letters';
 import { BotType } from '@common/botType';
 import { allGoals } from '@common/constants/goals';
 import { Tile } from '@common/tile/Tile';
+import { CreateSoloRoomInformations } from '@common/types';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
 import * as io from 'socket.io';
@@ -89,18 +91,45 @@ describe('Game', () => {
 
     it('method startSoloGame should call method setGoals if mode2990 is true', () => {
         const spy = sinon.spy(game, 'setGoals');
-        game.startSoloGame(game.player1.user, game.sio, '60', databaseService, 'botname', BotType.Beginner, true);
+        const informations: CreateSoloRoomInformations = {
+            username: '',
+            socketId: '',
+            room: '',
+            timer: '60',
+            modeLog: true,
+            botType: BotType.Beginner,
+            botName: 'botname',
+        };
+        game.startSoloGame(game.player1.user, game.sio, databaseService, informations);
         assert(spy.called);
     });
 
     it('method startSoloGame should set the value true to hisBot of the player2', () => {
         expect(game.player2.hisBot).equal(false);
-        game.startSoloGame(game.player1.user, game.sio, '60', databaseService, 'botname', BotType.Beginner, false);
+        const informations: CreateSoloRoomInformations = {
+            username: '',
+            socketId: '',
+            room: '',
+            timer: '60',
+            modeLog: true,
+            botType: BotType.Beginner,
+            botName: 'botname',
+        };
+        game.startSoloGame(game.player1.user, game.sio, databaseService, informations);
         expect(game.player2.hisBot).equal(true);
     });
 
     it('method startSoloGame should initialize the attributes of game', () => {
-        game.startSoloGame(game.player1.user, game.sio, '60', databaseService, 'botname', BotType.Beginner, false);
+        const informations: CreateSoloRoomInformations = {
+            username: '',
+            socketId: '',
+            room: '',
+            timer: '60',
+            modeLog: true,
+            botType: BotType.Beginner,
+            botName: 'botname',
+        };
+        game.startSoloGame(game.player1.user, game.sio, databaseService, informations);
         expect(game.roomName).equal(game.player1.user.room);
         expect(game.timer.timerMax).equal(60);
     });

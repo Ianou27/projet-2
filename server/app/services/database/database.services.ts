@@ -74,7 +74,6 @@ export class DatabaseService {
             await this.db.collection(collection).insertOne(bestScore);
         }
     }
-    // score Handler
     async bestScoreClassic(): Promise<Score[]> {
         return (await this.db.collection(DATABASE_COLLECTION_CLASSIC).find().sort({ score: -1 }).toArray()) as Score[];
     }
@@ -105,7 +104,6 @@ export class DatabaseService {
             }
         }
     }
-    // Dic handler
     async getDictionary(): Promise<DictMongo[]> {
         return (await this.db.collection(DATABASE_COLLECTION_DIC).find().toArray()) as DictMongo[];
     }
@@ -123,7 +121,6 @@ export class DatabaseService {
     async modifyDictionary(oldTitle: string, newTitle: string, description: string) {
         await this.db.collection(DATABASE_COLLECTION_DIC).updateOne({ title: oldTitle }, { $set: { title: newTitle, description } });
     }
-    // game Handler
 
     async insertGame(game: GameHistory) {
         await this.db.collection(DATABASE_COLLECTION_GAME).insertOne(game);
@@ -132,7 +129,6 @@ export class DatabaseService {
     async getGameHistory(): Promise<History[]> {
         return (await this.db.collection(DATABASE_COLLECTION_GAME).find().toArray()) as History[];
     }
-    // VirtualPlayer Handler
 
     async getVirtualPlayers() {
         return await this.db.collection(DATABASE_COLLECTION_VIRTUAL).find().toArray();

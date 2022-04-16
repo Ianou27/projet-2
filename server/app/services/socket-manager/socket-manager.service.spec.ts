@@ -3,8 +3,9 @@
 /* eslint-disable max-lines */
 import { Game } from '@app/classes/game/game';
 import { Player } from '@app/classes/player/player';
+import { BotType } from '@common/botType';
 import { Tile } from '@common/tile/Tile';
-import { Room } from '@common/types';
+import { CreateRoomInformations, CreateSoloRoomInformations, Room } from '@common/types';
 import { Server } from 'app/server';
 import { fail } from 'assert';
 import { assert, expect } from 'chai';
@@ -40,11 +41,16 @@ describe('SocketManager service tests', () => {
     });
 
     it('should handle a createRoom event', (done) => {
-        const username = 'username';
-        const room = 'room';
+        const informations: CreateRoomInformations = {
+            username: 'test',
+            socketId: 'test',
+            room: 'testRoom',
+            timer: '60',
+            modeLog: false,
+        };
         sinon.replace(service.roomManager, 'createRoom', () => {});
         const spy = sinon.spy(service.roomManager, 'createRoom');
-        clientSocket.emit('createRoom', username, room);
+        clientSocket.emit('createRoom', informations);
         setTimeout(() => {
             assert(spy.called);
             done();
@@ -236,13 +242,21 @@ describe('SocketManager service tests', () => {
     });
 
     it('should handle a createSoloGame event', (done) => {
-        const username = 'username';
         sinon.replace(service.roomManager, 'createSoloGame', () => {});
         sinon.replace(service.roomManager, 'getRandomBotName', () => {
             return 'bot';
         });
         const spy = sinon.spy(service.roomManager, 'createSoloGame');
-        clientSocket.emit('createSoloGame', username, '60');
+        const informations: CreateSoloRoomInformations = {
+            username: 'test',
+            socketId: 'test',
+            room: 'testRoom',
+            timer: '60',
+            modeLog: false,
+            botType: BotType.Beginner,
+            botName: 'name',
+        };
+        clientSocket.emit('createSoloGame', informations);
         setTimeout(() => {
             assert(spy.called);
             done();

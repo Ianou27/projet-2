@@ -1,5 +1,5 @@
 import { BotType } from '@common/botType';
-import { Dic, InfoToJoin, Room } from '@common/types';
+import { CreateRoomInformations, CreateSoloRoomInformations, Dic, InfoToJoin, Room } from '@common/types';
 import * as http from 'http';
 import * as io from 'socket.io';
 import { AdminManager } from './../admin-manager/admin-manager.service';
@@ -31,25 +31,18 @@ export class SocketManager {
 
     async handleSockets(): Promise<void> {
         this.sio.on('connection', (socket) => {
-            socket.on('createRoom', (username: string, room: string, timer: string, modeLog: boolean) => {
-                this.roomManager.createRoom(username, room, socket.id, this.identification, timer, this.databaseService, modeLog);
-                socket.join(room);
+            socket.on('createRoom', (informations: CreateRoomInformations) => {
+                informations.socketId = socket.id;
+                this.roomManager.createRoom(informations, this.identification, this.databaseService);
+                socket.join(informations.room);
             });
 
-            socket.on('createSoloGame', (username: string, timer: string, botType: BotType, modeLog: boolean) => {
-                const botName = this.roomManager.getRandomBotName(username);
-                this.roomManager.createSoloGame(
-                    username,
-                    socket.id,
-                    this.identification,
-                    this.sio,
-                    timer,
-                    this.databaseService,
-                    botName,
-                    botType,
-                    modeLog,
-                );
-                socket.join(username);
+            socket.on('createSoloGame', (informations: CreateSoloRoomInformations) => {
+                const botName = this.roomManager.getRandomBotName(informations.username);
+                informations.botName = botName;
+                informations.socketId = socket.id;
+                this.roomManager.createSoloGame(informations, this.identification, this.sio, this.databaseService);
+                socket.join(informations.username);
             });
 
             socket.on('joinRoom', (username: string, roomObj: Room) => {
@@ -208,7 +201,16 @@ export class SocketManager {
             });
 
             socket.on('convertToSoloGame', (modeLog: boolean) => {
-                this.roomManager.convertMultiToSolo(socket.id, this.identification, this.sio, this.databaseService, modeLog);
+                const informations: CreateSoloRoomInformations = {
+                    username: '',
+                    socketId: socket.id,
+                    room: '',
+                    timer: '',
+                    modeLog,
+                    botType: BotType.Beginner,
+                    botName: '',
+                };
+                this.roomManager.convertMultiToSolo(informations, this.identification, this.sio, this.databaseService);
             });
             socket.on('disconnect', (reason) => {
                 const room = this.identification.getRoom(socket.id);

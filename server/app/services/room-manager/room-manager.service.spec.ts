@@ -5,7 +5,7 @@ import { RoomManager } from '@app/services/room-manager/room-manager.service';
 import { BotType } from '@common/botType';
 import { GoalType } from '@common/constants/goal-type';
 import { allGoals } from '@common/constants/goals';
-import { Room, User } from '@common/types';
+import { CreateRoomInformations, CreateSoloRoomInformations, Room, User } from '@common/types';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
 import * as io from 'socket.io';
@@ -98,12 +98,30 @@ describe('Room Manager tests', () => {
         sinon.replace(roomManager, 'cancelCreation', () => {});
         sinon.replace(roomManager, 'createSoloGame', () => {});
         const getUserSpy = sinon.spy(roomManager, 'convertMultiToSolo');
-        roomManager.convertMultiToSolo('test', idManager, sio, databaseService, false);
+        const informations: CreateSoloRoomInformations = {
+            username: '',
+            socketId: 'test',
+            room: '',
+            timer: '',
+            modeLog: false,
+            botType: BotType.Beginner,
+            botName: '',
+        };
+        roomManager.convertMultiToSolo(informations, idManager, sio, databaseService);
         assert(getUserSpy.called);
     });
 
     it('should   create SoloGame and call startSoloGame', () => {
-        roomManager.createSoloGame('username', '1234', idManager, sio, '30', databaseService, 'botName', BotType.Beginner, false);
+        const informations: CreateSoloRoomInformations = {
+            username: 'username',
+            socketId: '1234',
+            room: '1234',
+            timer: '30',
+            modeLog: false,
+            botType: BotType.Beginner,
+            botName: 'botName',
+        };
+        roomManager.createSoloGame(informations, idManager, sio, databaseService);
 
         expect(idManager.games.length).to.equal(1);
     });
@@ -195,12 +213,16 @@ describe('Room Manager tests', () => {
     });
 
     it('should create a room', () => {
-        const username = 'username';
-        const room = 'room';
-        const socketId = 'id';
         const usersSpy = sinon.spy(idManager.users, 'push');
         const roomsSpy = sinon.spy(idManager.rooms, 'push');
-        roomManager.createRoom(username, room, socketId, idManager, '60', databaseService, false);
+        const informations: CreateRoomInformations = {
+            username: 'username',
+            socketId: 'id',
+            room: 'room',
+            timer: '60',
+            modeLog: false,
+        };
+        roomManager.createRoom(informations, idManager, databaseService);
         assert(usersSpy.called);
         assert(roomsSpy.called);
     });

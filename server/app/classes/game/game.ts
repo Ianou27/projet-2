@@ -15,7 +15,7 @@ import {
     TWENTY_SECONDS_MS,
 } from './../../../../common/constants/general-constants';
 import { GameState } from './../../../../common/gameState';
-import { GameHistory, User } from './../../../../common/types';
+import { CreateSoloRoomInformations, GameHistory, User } from './../../../../common/types';
 import { GameBoardService } from './../../services/game-board/game-board.service';
 import { Timer } from './../../services/timer-manager/timer-manager.service';
 import { PlacementCommand } from './../placement-command/placement-command';
@@ -89,25 +89,25 @@ export class Game {
         this.sio.to(this.player2.user.id).emit('modification', this.gameBoard.cases, this.playerTurn().name);
     }
 
-    startSoloGame(user: User, sio: io.Server, timer: string, databaseService: DatabaseService, botName: string, botType: BotType, modeLog: boolean) {
+    startSoloGame(user: User, sio: io.Server, databaseService: DatabaseService, informations: CreateSoloRoomInformations) {
         this.databaseService = databaseService;
-        this.timer = new Timer(timer);
+        this.timer = new Timer(informations.timer);
         this.player1 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player1', user);
         this.roomName = user.room;
         const userBot = {
-            username: botName,
+            username: informations.botName,
             id: 'bot',
             room: user.room,
         };
         this.player2 = new Player(this.reserveLetters.randomLettersInitialization(), false, 'player2', userBot);
         this.player2.changeHisBot(true);
-        this.player2.typeBot = botType;
+        this.player2.typeBot = informations.botType;
         this.sio = sio;
         this.startGame();
-        if (modeLog) this.setGoals();
+        if (informations.modeLog) this.setGoals();
         this.sio.to(user.id).emit('tileHolder', this.player1.letters, RoomManager.getGoalsPlayer(this, this.player1));
         this.sio.to(this.player1.user.room).emit('modification', this.gameBoard.cases, this.playerTurn().name);
-        this.sio.to(user.id).emit('startGame', user.username, botName);
+        this.sio.to(user.id).emit('startGame', user.username, informations.botName);
     }
 
     randomTurnGame() {
@@ -154,6 +154,7 @@ export class Game {
             const probability = VirtualPlayer.getProbability();
             const timeoutActionBot =
                 probability <= PROBABILITY_PASS_COMMAND_BOT && this.playerTurn().typeBot === BotType.Beginner ? TWENTY_SECONDS_MS : THREE_SECONDS_MS;
+            console.log(this.playerTurn().typeBot);
             setTimeout(() => {
                 const command = this.getCommandBot(this.playerTurn().typeBot, probability);
                 this.placementBot(command);

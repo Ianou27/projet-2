@@ -10,7 +10,7 @@ import { Tile } from '../../../../../common/tile/Tile';
 import { LetterScore } from './../../../../../common/assets/reserve-letters';
 import { BotType } from './../../../../../common/botType';
 import { GoalInformations } from './../../../../../common/constants/goal-information';
-import { InfoToJoin, Message, Room } from './../../../../../common/types';
+import { CreateRoomInformations, CreateSoloRoomInformations, InfoToJoin, Message, Room } from './../../../../../common/types';
 import { ClientSocketHandler } from './client-socket-handler.service';
 
 describe('ChatService', () => {
@@ -102,16 +102,32 @@ describe('ChatService', () => {
     it('createRoom() should emit an event and call updateRooms()', () => {
         const updateRoomSpy = spyOn(service, 'updateRooms');
         const emitSpy = spyOn(service.socketService.socket, 'emit');
-        service.createRoom('test', 'testRoom', '60', false);
+        const informations: CreateRoomInformations = {
+            username: 'test',
+            socketId: 'test',
+            room: 'testRoom',
+            timer: '60',
+            modeLog: false,
+        };
+        service.createRoom(informations);
         expect(emitSpy).toHaveBeenCalled();
-        expect(emitSpy).toHaveBeenCalledWith('createRoom', 'test', 'testRoom', '60', false);
+        expect(emitSpy).toHaveBeenCalledWith('createRoom', informations);
         expect(updateRoomSpy).toHaveBeenCalled();
     });
     it('createSoloGame() should emit an event createSoloGame', () => {
         const emitSpy = spyOn(service.socketService.socket, 'emit');
-        service.createSoloGame('test', '60', BotType.Beginner, false);
+        const informations: CreateSoloRoomInformations = {
+            username: 'test',
+            socketId: 'test',
+            room: 'testRoom',
+            timer: '60',
+            modeLog: false,
+            botName: 'username',
+            botType: BotType.Beginner,
+        };
+        service.createSoloGame(informations);
         expect(emitSpy).toHaveBeenCalled();
-        expect(emitSpy).toHaveBeenCalledWith('createSoloGame', 'test', '60', BotType.Beginner, false);
+        expect(emitSpy).toHaveBeenCalledWith('createSoloGame', informations);
     });
     it('updateRoom() should send an event and updateRooms ', () => {
         const sendSpy = spyOn(service.socketService, 'send');
@@ -237,9 +253,18 @@ describe('ChatService', () => {
 
     it('convertToSoloGame() should emit the convertToSoloGame event', () => {
         const emitSpy = spyOn(service.socketService.socket, 'emit');
-        service.convertToSoloGame(false);
+        const informations: CreateSoloRoomInformations = {
+            username: 'test',
+            socketId: 'test',
+            room: 'testRoom',
+            timer: '60',
+            modeLog: false,
+            botType: BotType.Beginner,
+            botName: 'name',
+        };
+        service.convertToSoloGame(informations);
         expect(emitSpy).toHaveBeenCalled();
-        expect(emitSpy).toHaveBeenCalledWith('convertToSoloGame', false);
+        expect(emitSpy).toHaveBeenCalledWith('convertToSoloGame', informations);
     });
     it('should update numberOfRooms without mode2990 when an empty room is added', () => {
         service.allRooms = [

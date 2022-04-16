@@ -1,3 +1,4 @@
+import { BotType } from './botType';
 import { Orientation } from './orientation';
 import { Tile } from './tile/Tile';
 
@@ -53,4 +54,22 @@ export interface TilePlacementPossible {
 export interface PlacementScore {
     score: number;
     command: string;
+}
+
+export interface CreateRoomInformations {
+    username: string;
+    socketId: string;
+    room: string;
+    timer: string;
+    modeLog: boolean;
+}
+
+export interface CreateSoloRoomInformations {
+    username: string;
+    socketId: string;
+    room: string;
+    timer: string;
+    modeLog: boolean;
+    botType: BotType;
+    botName: string;
 }

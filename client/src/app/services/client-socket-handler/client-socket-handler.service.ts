@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@angular/core';
 import { LetterScore } from './../../../../../common/assets/reserve-letters';
-import { BotType } from './../../../../../common/botType';
 import { CommandType } from './../../../../../common/command-type';
 import { NUMBER_MAXIMUM_CLUE_COMMAND } from './../../../../../common/constants/general-constants';
 import { GoalInformations } from './../../../../../common/constants/goal-information';
 import { Tile } from './../../../../../common/tile/Tile';
-import { Dic, InfoToJoin, Message, Room } from './../../../../../common/types';
+import { CreateRoomInformations, CreateSoloRoomInformations, Dic, InfoToJoin, Message, Room } from './../../../../../common/types';
 import { INITIAL_NUMBER_LETTERS_RESERVE, NUMBER_LETTER_TILEHOLDER } from './../../constants/general-constants';
 import { BoardService } from './../board/board.service';
 import { SocketClientService } from './../socket-client/socket-client.service';
@@ -217,8 +216,8 @@ export class ClientSocketHandler {
         this.socketService.socket.emit('getBestScore');
     }
 
-    createRoom(username: string, room: string, time: string, mode2990: boolean) {
-        this.socketService.socket.emit('createRoom', username, room, time, mode2990);
+    createRoom(informations: CreateRoomInformations) {
+        this.socketService.socket.emit('createRoom', informations);
         this.updateRooms();
     }
     async addVirtualPlayerNames(name: string, type: string) {
@@ -252,8 +251,8 @@ export class ClientSocketHandler {
         this.socketService.socket.emit('resetBestScore');
     }
 
-    createSoloGame(username: string, time: string, botType: BotType, mode2990: boolean) {
-        this.socketService.socket.emit('createSoloGame', username, time, botType, mode2990);
+    createSoloGame(informations: CreateSoloRoomInformations) {
+        this.socketService.socket.emit('createSoloGame', informations);
     }
 
     joinRoom() {
@@ -329,8 +328,8 @@ export class ClientSocketHandler {
         this.socketService.socket.emit('cancelCreation');
         this.updateRooms();
     }
-    convertToSoloGame(mode2990: boolean) {
-        this.socketService.socket.emit('convertToSoloGame', mode2990);
+    convertToSoloGame(informations: CreateSoloRoomInformations) {
+        this.socketService.socket.emit('convertToSoloGame', informations);
     }
     updateRoomView() {
         let counterLog = 0;

@@ -1,8 +1,7 @@
-import { BotType } from '@common/botType';
 import { GoalInformations } from '@common/constants/goal-information';
 import { GoalType } from '@common/constants/goal-type';
 import { Tile } from '@common/tile/Tile';
-import { Room } from '@common/types';
+import { CreateRoomInformations, CreateSoloRoomInformations, Room } from '@common/types';
 import * as io from 'socket.io';
 import { BEGINNER_BOT } from './../../../assets/bot-name';
 import { Game } from './../../classes/game/game';
@@ -39,76 +38,49 @@ export class RoomManager {
         return copyGoalsPlayer;
     }
 
-    createRoom(
-        username: string,
-        room: string,
-        socketId: string,
-        identification: IdManager,
-        timer: string,
-        databaseService: DatabaseService,
-        modeLog: boolean,
-    ) {
+    createRoom(informations: CreateRoomInformations, identification: IdManager, databaseService: DatabaseService) {
         const user = {
-            username,
-            id: socketId,
-            room,
+            username: informations.username,
+            id: informations.socketId,
+            room: informations.room,
         };
         identification.users.push(user);
-        identification.roomMessages[room] = [];
+        identification.roomMessages[informations.room] = [];
         const game = new Game();
-        game.player1Join(user, timer, databaseService, modeLog);
+        game.player1Join(user, informations.timer, databaseService, informations.modeLog);
         identification.games.push(game);
         const roomObj = {
-            player1: username,
+            player1: informations.username,
             player2: '',
-            time: timer,
-            mode2990: modeLog,
+            time: informations.timer,
+            mode2990: informations.modeLog,
         };
         identification.rooms.push(roomObj);
     }
-    convertMultiToSolo(socketId: string, identification: IdManager, sio: io.Server, databaseService: DatabaseService, modeLog: boolean) {
-        const game = identification.getGame(socketId);
-        const botName = this.getRandomBotName(game.player1.user.username);
-        this.cancelCreation(socketId, identification);
-        this.createSoloGame(
-            game.player1.user.username,
-            socketId,
-            identification,
-            sio,
-            game.timer.timerMax.toString(),
-            databaseService,
-            botName,
-            BotType.Beginner,
-            modeLog,
-        );
+    convertMultiToSolo(informations: CreateSoloRoomInformations, identification: IdManager, sio: io.Server, databaseService: DatabaseService) {
+        const game = identification.getGame(informations.socketId);
+        informations.botName = this.getRandomBotName(game.player1.user.username);
+        informations.timer = game.timer.timerMax.toString();
+        this.cancelCreation(informations.socketId, identification);
+        this.createSoloGame(informations, identification, sio, databaseService);
     }
-    createSoloGame(
-        username: string,
-        socketId: string,
-        identification: IdManager,
-        sio: io.Server,
-        timer: string,
-        databaseService: DatabaseService,
-        botName: string,
-        botType: BotType,
-        modeLog: boolean,
-    ) {
+    createSoloGame(informations: CreateSoloRoomInformations, identification: IdManager, sio: io.Server, databaseService: DatabaseService) {
         const user = {
-            username,
-            id: socketId,
-            room: username,
+            username: informations.username,
+            id: informations.socketId,
+            room: informations.username,
         };
         const roomObj = {
-            player1: username,
-            player2: botName,
-            time: timer,
-            mode2990: modeLog,
+            player1: informations.username,
+            player2: informations.botName,
+            time: informations.timer,
+            mode2990: informations.modeLog,
         };
         identification.rooms.push(roomObj);
         identification.users.push(user);
-        identification.roomMessages[username] = [];
+        identification.roomMessages[informations.username] = [];
         const game = new Game();
-        game.startSoloGame(user, sio, timer, databaseService, botName, botType, modeLog);
+        game.startSoloGame(user, sio, databaseService, informations);
         identification.games.push(game);
     }
 

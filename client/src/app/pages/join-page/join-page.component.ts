@@ -5,7 +5,7 @@ import { WaitingPlayerDialogComponent } from '@app/components/waiting-player-dia
 import { WaitingPlayerTwoComponent } from '@app/components/waiting-player-two/waiting-player-two.component';
 import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
 import { BotType } from './../../../../../common/botType';
-import { Dic } from './../../../../../common/types';
+import { CreateRoomInformations, CreateSoloRoomInformations, Dic } from './../../../../../common/types';
 import { MyErrorStateMatcher } from './../../classes/errorStateMatcher/error-state-matcher';
 
 @Component({
@@ -93,13 +93,29 @@ export class JoinPageComponent implements OnInit {
     }
 
     createRoom() {
-        this.clientSocketHandler.createRoom(this.name, this.name, this.selectedTime, this.mode2990);
+        const informations: CreateRoomInformations = {
+            username: this.name,
+            socketId: this.name,
+            room: this.name,
+            timer: this.selectedTime,
+            modeLog: this.mode2990,
+        };
+        this.clientSocketHandler.createRoom(informations);
         this.clientSocketHandler.username = this.name;
         this.openWait();
     }
 
     createSoloGame() {
-        this.clientSocketHandler.createSoloGame(this.name, this.selectedTime, this.selectedPlayer, this.mode2990);
+        const informations: CreateSoloRoomInformations = {
+            username: this.name,
+            socketId: this.name,
+            room: this.name,
+            timer: this.selectedTime,
+            modeLog: this.mode2990,
+            botType: this.selectedPlayer,
+            botName: '',
+        };
+        this.clientSocketHandler.createSoloGame(informations);
     }
 
     goHome() {
