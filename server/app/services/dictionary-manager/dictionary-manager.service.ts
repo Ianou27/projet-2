@@ -10,19 +10,17 @@ export class DictionaryManager {
     }
 
     async uploadDictionary(sio: io.Server, socketId: string, dictionary: Dic) {
+        await this.databaseService.start();
         const dictObject: Dic = {
             title: dictionary.title,
             description: dictionary.description,
         };
         fs.writeFile('./assets/dictionaries/' + dictionary.title + '.json', JSON.stringify(dictionary), async (err) => {
-            await this.databaseService.start();
-            await this.databaseService.insertDictionary(dictObject);
-            await this.databaseService.closeConnection();
             if (err) {
                 throw err;
             }
         });
-        await this.databaseService.start();
+        await this.databaseService.insertDictionary(dictObject);
         sio.to(socketId).emit(
             'getAdminInfo',
             await this.databaseService.getDictionaryInfo(),
