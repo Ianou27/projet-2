@@ -22,6 +22,7 @@ import { PlacementCommand } from './../placement-command/placement-command';
 import { Player } from './../player/player';
 import { ReserveLetters } from './../reserve-letters/reserve-letters';
 import { VirtualPlayer } from './../virtual-player/virtual-player';
+import * as fs from 'fs';
 
 export class Game {
     gameBoard: GameBoardService;
@@ -35,7 +36,8 @@ export class Game {
     databaseService: DatabaseService;
     goals: Goals;
     gameStartingDate: string;
-
+    dictionaryArray: string[];
+    
     constructor() {
         this.reserveLetters = new ReserveLetters();
         this.gameBoard = new GameBoardService();
@@ -49,11 +51,12 @@ export class Game {
         this.gameState = gameState;
     }
 
-    player1Join(user: User, timer: string, databaseService: DatabaseService, modeLog: boolean) {
+    player1Join(user: User, timer: string, databaseService: DatabaseService, modeLog: boolean, dictionary: string) {
         this.player1 = new Player(this.reserveLetters.randomLettersInitialization(), true, 'player1', user);
         this.timer = new Timer(timer);
         this.roomName = user.room;
         this.timer = new Timer(timer);
+        this.dictionaryArray = JSON.parse(fs.readFileSync('./assets/dictionaries/' + dictionary + '.json').toString()).words;
         this.databaseService = databaseService;
         if (modeLog) {
             this.setGoals();
@@ -81,7 +84,6 @@ export class Game {
         this.timer.start(this, this.sio);
 
         this.gameStartingDate = new Date().toLocaleString('en-CA', { timeZone: 'America/Montreal' });
-
         this.randomTurnGame();
         this.sio.to(this.player1.user.id).emit('turn', this.player1.hisTurn);
         this.sio.to(this.player2.user.id).emit('turn', this.player2.hisTurn);
@@ -99,6 +101,7 @@ export class Game {
             id: 'bot',
             room: user.room,
         };
+        this.dictionaryArray = JSON.parse(fs.readFileSync('./assets/dictionaries/' + informations.dictionary + '.json').toString()).words;
         this.player2 = new Player(this.reserveLetters.randomLettersInitialization(), false, 'player2', userBot);
         this.player2.changeHisBot(true);
         this.player2.typeBot = informations.botType;
@@ -154,7 +157,6 @@ export class Game {
             const probability = VirtualPlayer.getProbability();
             const timeoutActionBot =
                 probability <= PROBABILITY_PASS_COMMAND_BOT && this.playerTurn().typeBot === BotType.Beginner ? TWENTY_SECONDS_MS : THREE_SECONDS_MS;
-            console.log(this.playerTurn().typeBot);
             setTimeout(() => {
                 const command = this.getCommandBot(this.playerTurn().typeBot, probability);
                 this.placementBot(command);
@@ -272,9 +274,6 @@ export class Game {
     }
     async registerGame() {
         const mode = this.gameState.modeLog ? 'LOG2990' : 'CLASSIC';
-
-        console.log(this.timer.gameTime);
-
         const game: GameHistory = {
             date: this.gameStartingDate,
             duration: this.timer.gameTime,
