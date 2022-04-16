@@ -31,15 +31,16 @@ export class DictionaryManager {
     }
 
     async deleteDictionary(title: string, sio: io.Server, socketId: string) {
+        await this.databaseService.start();
         fs.unlink('./assets/dictionaries/' + title + '.json', async (err) => {
             if (err) {
                 throw err;
             }
-            await this.databaseService.start();
-            await this.databaseService.deleteDictionary(title);
-            await this.databaseService.closeConnection();
+            
+            
+            
         });
-        await this.databaseService.start();
+        await this.databaseService.deleteDictionary(title);
         sio.to(socketId).emit(
             'getAdminInfo',
             await this.databaseService.getDictionaryInfo(),
@@ -65,7 +66,7 @@ export class DictionaryManager {
     
 
     async modifyDictionary(oldTitle: string, newTitle: string, description: string, sio: io.Server, socketId: string) {
-        console.log(oldTitle, newTitle, description);
+        await this.databaseService.start();
         await fs.rename('./assets/dictionaries/' + oldTitle + '.json', './assets/dictionaries/' + newTitle + '.json', async (err) => {
             if (err) {
                 throw err;
@@ -86,11 +87,8 @@ export class DictionaryManager {
             });
         });
 
-        await this.databaseService.start();
+        
         await this.databaseService.modifyDictionary(oldTitle, newTitle, description);
-        await this.databaseService.closeConnection();
-
-        await this.databaseService.start();
 
         sio.to(socketId).emit(
             'getAdminInfo',
