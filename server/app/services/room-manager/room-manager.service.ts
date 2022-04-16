@@ -49,13 +49,14 @@ export class RoomManager {
         identification.users.push(user);
         identification.roomMessages[informations.room] = [];
         const game = new Game();
-        game.player1Join(user, informations.timer, databaseService, informations.modeLog);
+        game.player1Join(user, informations.timer, databaseService, informations.modeLog, informations.dictionary);
         identification.games.push(game);
         const roomObj = {
             player1: informations.username,
             player2: '',
             time: informations.timer,
             mode2990: informations.modeLog,
+            dictionary: informations.dictionary,
         };
         identification.rooms.push(roomObj);
     }
@@ -71,6 +72,7 @@ export class RoomManager {
             modeLog,
             botType: BotType.Beginner,
             botName,
+            dictionary: game.dictionaryName,
         };
         this.createSoloGame(informations, identification, sio, databaseService);
     }
@@ -85,6 +87,7 @@ export class RoomManager {
             player2: informations.botName,
             time: informations.timer,
             mode2990: informations.modeLog,
+            dictionary: informations.dictionary,
         };
         identification.rooms.push(roomObj);
         identification.users.push(user);

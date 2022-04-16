@@ -7,6 +7,7 @@ export type Room = {
     player2: string;
     time: string;
     mode2990: boolean;
+    dictionary: string;
 };
 
 export type InfoToJoin = {
@@ -62,6 +63,7 @@ export interface CreateRoomInformations {
     room: string;
     timer: string;
     modeLog: boolean;
+    dictionary: string;
 }
 
 export interface CreateSoloRoomInformations {
@@ -72,4 +74,5 @@ export interface CreateSoloRoomInformations {
     modeLog: boolean;
     botType: BotType;
     botName: string;
+    dictionary: string;
 }

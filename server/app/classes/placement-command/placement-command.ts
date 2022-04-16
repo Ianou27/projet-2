@@ -1,5 +1,4 @@
 import { Orientation } from '@common/orientation';
-import * as fs from 'fs';
 import { letterValue } from './../../../../common/assets/reserve-letters';
 import { rowNumber } from './../../../../common/assets/row';
 import {
@@ -17,8 +16,6 @@ import { Goal } from './../goal/goal';
 import { PointsCalculator } from './../points-calculator/points-calculator';
 
 export class PlacementCommand {
-    static dictionaryArray: string[] = JSON.parse(fs.readFileSync('./assets/dictionnary.json').toString()).words;
-
     static validatedPlaceCommandFormat(commandInformations: string[]): boolean {
         if (commandInformations.length !== 3) return false;
         const command: string = commandInformations.join(' ');
@@ -246,7 +243,7 @@ export class PlacementCommand {
                 wordString = wordString.concat(wordLetter.letter);
             }
             if (game.gameState.modeLog && game.goals.scrabble.isInGame && !game.goals.scrabble.isDone && wordString === 'SCRABBLE') continue;
-            if (!this.validatedWordDictionary(wordString, this.dictionaryArray)) return 0;
+            if (!this.validatedWordDictionary(wordString, game.dictionaryArray)) return 0;
         }
         return PointsCalculator.calculatedPointsPlacement(wordsFormed, letterPositions) + Goal.validationGoal(wordsFormed, game);
     }

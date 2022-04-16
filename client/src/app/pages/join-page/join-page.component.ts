@@ -24,6 +24,7 @@ export class JoinPageComponent implements OnInit {
     selectedRoomName: string;
     matcher: MyErrorStateMatcher;
     mode2990: boolean;
+    dictionary: string;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     dictionaries: any[];
 
@@ -56,6 +57,7 @@ export class JoinPageComponent implements OnInit {
         this.selectedPlayer = BotType.Beginner;
         this.selectedDico = 'Dictionnaire par defaut';
         this.alphaNumericRegex = /^[a-zA-Z]*$/;
+        this.dictionary = 'default-dictionary';
     }
 
     ngOnInit(): void {
@@ -99,6 +101,7 @@ export class JoinPageComponent implements OnInit {
             room: this.name,
             timer: this.selectedTime,
             modeLog: this.mode2990,
+            dictionary: this.dictionary,
         };
         this.clientSocketHandler.createRoom(informations);
         this.clientSocketHandler.username = this.name;
@@ -114,6 +117,7 @@ export class JoinPageComponent implements OnInit {
             modeLog: this.mode2990,
             botType: this.selectedPlayer,
             botName: '',
+            dictionary: this.dictionary,
         };
         this.clientSocketHandler.createSoloGame(informations);
     }
@@ -135,4 +139,5 @@ export class JoinPageComponent implements OnInit {
         dictionaryList.forEach((dict: Dic) => descriptions.push(dict.description));
         return descriptions;
     }
+  
 }
