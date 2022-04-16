@@ -211,16 +211,22 @@ export class SocketManager {
                 };
                 this.roomManager.convertMultiToSolo(informations, this.identification, this.sio, this.databaseService);
             });
-            socket.on('disconnect', (reason) => {
+            socket.on('disconnect', async (reason) => {
                 const room = this.identification.getRoom(socket.id);
                 if (room !== '') {
                     const game = this.identification.getGame(socket.id);
-                    if (game.player2 !== undefined && !game.gameState.gameFinished) game.surrender(this.identification.surrender(socket.id));
+
+                    if (game.player2 !== undefined && !game.gameState.gameFinished) {
+                        let winner: string = this.identification.surrender(socket.id);
+                        let botName:string = await this.roomManager.getRandomBotName(winner, this.databaseService, BotType.Beginner);
+                        game.surrender(winner,botName);
+                        this.sio.to(room).emit('playerDc');
+                        this.sio.to(room).emit('startGame', winner, botName);
+                    };
 
                     socket.leave(room);
                     this.roomManager.deleteRoom(socket.id, this.identification);
                     this.sio.sockets.emit('rooms', this.identification.rooms);
-                    this.sio.to(room).emit('playerDc');
                 }
                 this.identification.deleteUser(socket.id);
             });

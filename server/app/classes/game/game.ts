@@ -213,7 +213,7 @@ export class Game {
         return this.player2;
     }
 
-    async surrender(winner: string) {
+    async surrender(winner: string, botName: string) {
         if (this.player1.hisBot || this.player2.hisBot) {
             this.gameState.gameFinished = true;
             this.timer.stop();
@@ -221,10 +221,12 @@ export class Game {
         } else {
             if (winner === this.player1.user.username) {
                 this.player2.hisBot = true;
+                this.player2.user.username = botName;
                 this.player2.typeBot = BotType.Beginner;
                 if (this.player2.hisTurn) this.changeTurnTwoPlayers();
             } else {
                 this.player1.hisBot = true;
+                this.player1.user.username = botName;
                 this.player1.typeBot = BotType.Beginner;
                 if (this.player1.hisTurn) this.changeTurnTwoPlayers();
             }
