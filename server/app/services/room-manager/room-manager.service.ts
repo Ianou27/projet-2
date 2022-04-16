@@ -59,11 +59,19 @@ export class RoomManager {
         };
         identification.rooms.push(roomObj);
     }
-    async convertMultiToSolo(informations: CreateSoloRoomInformations, identification: IdManager, sio: io.Server, databaseService: DatabaseService) {
-        const game = identification.getGame(informations.socketId);
-        informations.botName = await this.getRandomBotName(game.player1.user.username,databaseService,BotType.Beginner);
-        informations.timer = game.timer.timerMax.toString();
-        this.cancelCreation(informations.socketId, identification);
+    async convertMultiToSolo(modeLog: boolean, identification: IdManager, sio: io.Server, databaseService: DatabaseService, socketId: string) {
+        const game = identification.getGame(socketId);
+        const botName = await this.getRandomBotName(game.player1.user.username,databaseService, BotType.Beginner);
+        this.cancelCreation(socketId, identification);
+        const informations: CreateSoloRoomInformations = {
+            username: game.player1.user.username,
+            socketId: socketId,
+            room: game.player1.user.room,
+            timer: game.timer.timerMax.toString(),
+            modeLog,
+            botType: BotType.Beginner,
+            botName,
+        };
         this.createSoloGame(informations, identification, sio, databaseService);
     }
     createSoloGame(informations: CreateSoloRoomInformations, identification: IdManager, sio: io.Server, databaseService: DatabaseService) {

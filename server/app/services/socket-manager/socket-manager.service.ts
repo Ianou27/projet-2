@@ -200,16 +200,8 @@ export class SocketManager {
             });
 
             socket.on('convertToSoloGame', (modeLog: boolean) => {
-                const informations: CreateSoloRoomInformations = {
-                    username: '',
-                    socketId: socket.id,
-                    room: '',
-                    timer: '',
-                    modeLog,
-                    botType: BotType.Beginner,
-                    botName: '',
-                };
-                this.roomManager.convertMultiToSolo(informations, this.identification, this.sio, this.databaseService);
+  
+                this.roomManager.convertMultiToSolo(modeLog, this.identification, this.sio, this.databaseService, socket.id);
             });
             socket.on('disconnect', async (reason) => {
                 const room = this.identification.getRoom(socket.id);

@@ -328,8 +328,8 @@ export class ClientSocketHandler {
         this.socketService.socket.emit('cancelCreation');
         this.updateRooms();
     }
-    convertToSoloGame(informations: CreateSoloRoomInformations) {
-        this.socketService.socket.emit('convertToSoloGame', informations);
+    convertToSoloGame(modeLog: boolean) {
+        this.socketService.socket.emit('convertToSoloGame', modeLog);
     }
     updateRoomView() {
         let counterLog = 0;
