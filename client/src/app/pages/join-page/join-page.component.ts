@@ -37,8 +37,8 @@ export class JoinPageComponent implements OnInit {
         public clientSocketHandler: ClientSocketHandler,
         @Inject(MAT_DIALOG_DATA) public data: string,
     ) {
-        socketHandler.connect();
-        socketHandler.getAdminPageInfo();
+        clientSocketHandler.connect();
+        clientSocketHandler.getAdminPageInfo();
         this.time = [
             { value: '30', text: '0:30' },
             { value: '60', text: '1:00' },
@@ -124,14 +124,14 @@ export class JoinPageComponent implements OnInit {
 
     displayDictNames() {
         const names: string[] = [];
-        const dictionaryList = this.socketHandler.dictInfoList;
+        const dictionaryList = this.clientSocketHandler.dictInfoList;
         dictionaryList.forEach((dict: Dic) => names.push(dict.title));
         return names;
     }
 
     displayDescriptions() {
         const descriptions: string[] = [];
-        const dictionaryList = this.socketHandler.dictInfoList;
+        const dictionaryList = this.clientSocketHandler.dictInfoList;
         dictionaryList.forEach((dict: Dic) => descriptions.push(dict.description));
         return descriptions;
     }

@@ -1,3 +1,4 @@
+/* eslint-disable dot-notation */
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -45,7 +46,6 @@ describe('WaitingPlayerDialogComponent', () => {
     });
 
     it('goBack() should open the dialog and cancel room creation', () => {
-        // eslint-disable-next-line dot-notation
         const openSpy = spyOn(component['multiplayerDialog'], 'open');
         const cancelSpy = spyOn(component.clientSocketHandler, 'cancelCreation');
         component.goBack();
@@ -56,7 +56,6 @@ describe('WaitingPlayerDialogComponent', () => {
     });
 
     it('accept() should close the dialogs and call accepted() in the clientSocketHandler ', () => {
-        // eslint-disable-next-line dot-notation
         const closeSpy = spyOn(component['multiplayerDialog'], 'closeAll');
         const acceptSpy = spyOn(component.clientSocketHandler, 'accepted').and.stub();
         component.accept();
@@ -72,11 +71,21 @@ describe('WaitingPlayerDialogComponent', () => {
     });
 
     it('convertToSolo() should call convertToSoloGame() in the clientSocketHandler and close all dialogs', () => {
-        // eslint-disable-next-line dot-notation
         const closeSpy = spyOn(component['multiplayerDialog'], 'closeAll');
-        const refusedSpy = spyOn(component.clientSocketHandler, 'convertToSoloGame');
+        const convertSpy = spyOn(component.clientSocketHandler, 'convertToSoloGame');
         component.convertToSolo();
-        expect(refusedSpy).toHaveBeenCalled();
+        expect(convertSpy).toHaveBeenCalled();
+        expect(convertSpy).toHaveBeenCalledWith(false);
+        expect(closeSpy).toHaveBeenCalled();
+    });
+
+    it('convertToSolo() should call convertToSoloGame() in the clientSocketHandler and close all dialogs', () => {
+        component.data = 'mode2990';
+        const closeSpy = spyOn(component['multiplayerDialog'], 'closeAll');
+        const convertSpy = spyOn(component.clientSocketHandler, 'convertToSoloGame');
+        component.convertToSolo();
+        expect(convertSpy).toHaveBeenCalled();
+        expect(convertSpy).toHaveBeenCalledWith(true);
         expect(closeSpy).toHaveBeenCalled();
     });
 });
