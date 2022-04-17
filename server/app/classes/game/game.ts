@@ -201,7 +201,7 @@ export class Game {
                     .emit('updateReserve', this.reserveLetters.letters.length, this.player1.getNumberLetters(), this.player2.getNumberLetters());
                 this.sio.to(this.roomName).emit('roomMessage', {
                     username: 'Server',
-                    message: playerBot.user.username + ' a placé le mot ' + command[2] + ' en ' + command[1],
+                    message: playerBot.user.username + ' a placé les lettres ' + command[2] + ' en ' + command[1],
                     player: 'server',
                 });
                 this.sio.to(this.roomName).emit('modification', this.gameBoard.cases, this.playerTurn().name, this.goals);
@@ -327,11 +327,20 @@ export class Game {
         }
         this.sio.to(this.roomName).emit('updatePoint', 'player1', this.player1.points);
         this.sio.to(this.roomName).emit('updatePoint', 'player2', this.player2.points);
-        this.sio.to(this.roomName).emit('roomMessage', {
-            username: 'Server',
-            message: 'lettre joueur 1 =>' + this.player1.lettersToStringArray() + ' \n lettre joueur 2 ' + this.player2.lettersToStringArray(),
-            player: 'server',
-        });
+        if (this.player1.lettersToStringArray().length > 0) {
+            this.sio.to(this.roomName).emit('roomMessage', {
+                username: '',
+                message: 'Lettres restantes joueur 1 : ' + this.player1.lettersToStringArray(),
+                player: '',
+            });
+        }
+        if (this.player2.lettersToStringArray().length > 0) {
+            this.sio.to(this.roomName).emit('roomMessage', {
+                username: '',
+                message: 'Lettres restantes joueur 2 : ' + this.player2.lettersToStringArray(),
+                player: '',
+            });
+        }
         this.sio.to(this.roomName).emit('endGame', this.gameState.winner);
     }
 }

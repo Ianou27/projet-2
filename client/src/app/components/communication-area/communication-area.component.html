@@ -4,7 +4,10 @@
             <ng-container *ngFor="let m of this.clientSocketHandler.roomMessages">
                 <li *ngIf="m.username !== ''" class="{{ m.player }}">{{ m.username }}: {{ m.message }}</li>
                 <li *ngIf="m.username === '' && m.message !== '\n' && m.message[0] !== '!'">{{ m.message }}</li>
-                <li *ngIf="m.username === '' && m.message[0] === '!'" class="bold">{{ m.message }}</li>
+                <li *ngIf="m.username === '' && m.message[0] === '!' && m.player === 'clue'">
+                    <strong>{{ this.subdivisionCommand(true, m.message) }}</strong> {{ this.subdivisionCommand(false, m.message) }}
+                </li>
+                <li *ngIf="m.username === '' && m.message[0] === '!' && m.player !== 'clue'" class="bold">{{ m.message }}</li>
                 <li *ngIf="m.username === '' && m.message === '\n'" class="empty"></li>
             </ng-container>
         </ul>

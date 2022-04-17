@@ -34,7 +34,7 @@ export class CommandManager {
                     );
                     sio.to(currentRoom).emit('roomMessage', {
                         username: 'Server',
-                        message: username + ' a placé le mot ' + command[2] + ' en ' + command[1],
+                        message: username + ' a placé les lettres ' + command[2] + ' en ' + command[1],
                         player: 'server',
                     });
                     sio.to(currentRoom).emit('modification', game.gameBoard.cases, game.playerTurn().name);

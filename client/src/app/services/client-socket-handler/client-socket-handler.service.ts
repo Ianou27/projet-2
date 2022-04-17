@@ -104,9 +104,9 @@ export class ClientSocketHandler {
 
         this.socketService.on('cluesMessage', (clues: string[]) => {
             if (clues.length < NUMBER_MAXIMUM_CLUE_COMMAND)
-                this.roomMessages.push({ player: 'Server', username: 'Server', message: 'Moins de 3 placements possibles' });
+                this.roomMessages.push({ player: '', username: '', message: 'Moins de 3 placements possibles' });
             clues.forEach((clue) => {
-                this.roomMessages.push({ player: 'Server', username: 'Server', message: clue });
+                this.roomMessages.push({ player: 'clue', username: '', message: clue });
             });
         });
 

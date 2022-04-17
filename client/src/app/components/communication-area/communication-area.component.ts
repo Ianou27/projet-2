@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
+import { INDEX_OF_NOT_FOUND } from './../../../../../common/constants/general-constants';
 
 @Component({
     selector: 'app-communication-area',
@@ -11,5 +12,11 @@ export class CommunicationAreaComponent implements OnInit {
 
     ngOnInit(): void {
         this.clientSocketHandler.init();
+    }
+
+    subdivisionCommand(beforeFor: boolean, message: string): string {
+        if (message.indexOf('pour') === INDEX_OF_NOT_FOUND && beforeFor) return message;
+        else if (beforeFor) return message.substring(0, message.indexOf('pour'));
+        return message.substring(message.indexOf('pour'));
     }
 }

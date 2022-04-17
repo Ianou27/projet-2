@@ -39,10 +39,13 @@ export class Player {
     }
 
     lettersToStringArray(): string[] {
-        const lettersPlayer = [];
+        let lettersPlayer = [];
         for (const letterTile of this.letters) {
             lettersPlayer.push(letterTile.letter);
         }
+        lettersPlayer = lettersPlayer.filter((letter) => {
+            return letter !== '';
+        });
         return lettersPlayer;
     }
 

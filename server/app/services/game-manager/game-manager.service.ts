@@ -101,10 +101,11 @@ export class GameManager {
 
     formatClueCommand(game: Game): string[] {
         const clues = ClueCommand.findClues(game);
-        const text: string[] = ['Possibilités de placements'];
+        const text: string[] = ['\n', 'Possibilités de placements : ', '\n'];
         for (const clue of clues) {
             text.push(clue.command + ' pour ' + clue.score.toString() + ' points');
         }
+        text.push('\n');
         return text;
     }
 
