@@ -40,7 +40,7 @@ describe('Virtual Player', () => {
         }
         game = new Game();
         game.sio = new io.Server();
-        game.player1Join({ username: 'player1', id: '1', room: 'room1' }, '60', databaseService, false);
+        game.player1Join({ username: 'player1', id: '1', room: 'room1' }, '60', databaseService, false, 'default-dictionary');
         game.player1.letters = lettersTilePlayer1;
         game.player2 = new Player(game.reserveLetters.randomLettersInitialization(), false, 'player2', {
             username: 'player2',

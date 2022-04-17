@@ -644,7 +644,7 @@ describe('CommandManager service tests', () => {
             return gameObj;
         });
         sinon.replace(service.identification, 'getPlayer', () => {
-            return 'AAAAA';
+            return 'player1';
         });
         const getGameSpy = sinon.spy(service.identification, 'getGame');
         const getPlayerSpy = sinon.spy(service.identification, 'getPlayer');
@@ -657,12 +657,12 @@ describe('CommandManager service tests', () => {
         });
         const clueCommandSpy = sinon.spy(service.gameManager, 'clueCommandValid');
 
-        commandManager.commandClue(service.sio, service.identification, service.gameManager, '', '!indice'.split(' '));
+        commandManager.commandClue(service.sio, service.identification, service.gameManager, '2', '!indice'.split(' '));
         setTimeout(() => {
             assert(getGameSpy.called);
             assert(getPlayerSpy.called);
             assert(gamePlayerTurnSpy.called);
-            assert(clueCommandSpy.called);
+            assert(clueCommandSpy.notCalled);
             done();
         }, RESPONSE_DELAY);
     });

@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
+import { Game } from '@app/classes/game/game';
 import type { Dic } from '@common/types';
 import { fail } from 'assert';
 // import * as chai from 'chai';
@@ -8,10 +9,12 @@ import { describe } from 'mocha';
 import { MongoClient } from 'mongodb';
 // import { MongoClient } from 'mongodb';
 import { MongoMemoryServer } from 'mongodb-memory-server';
+import { Player } from './../../classes/player/player';
 import { DatabaseService } from './database.services';
 describe('Database service', () => {
     let databaseService: DatabaseService;
     let mongoServer: MongoMemoryServer;
+    let game: Game;
     const dictionary: Dic = {
         title: 'Mon dictionnaire',
         description: 'Description de mon dictionnaire',
@@ -24,6 +27,13 @@ describe('Database service', () => {
         databaseService = new DatabaseService();
 
         mongoServer = new MongoMemoryServer();
+        game = new Game();
+        game.player1Join({ username: 'test1', id: '1', room: 'room1' }, '60', databaseService, false, 'default-dictionary');
+        game.player2 = new Player(game.reserveLetters.randomLettersInitialization(), true, 'player2', {
+            username: 'test2',
+            id: '2',
+            room: 'room1',
+        });
     });
 
     afterEach(async () => {
@@ -67,15 +77,13 @@ describe('Database service', () => {
         const mongoUri = await mongoServer.getUri();
         const client = await MongoClient.connect(mongoUri);
         databaseService.db = client.db('Database');
+        game.player1.points = 20;
         await databaseService.populateDB('bestScoreClassic');
-        await databaseService.updateBesScoreClassic({
-            player: 'test',
-            score: 10,
-        });
+        await databaseService.updateScore(game);
         const scores = await databaseService.bestScoreClassic();
-        expect(scores[4]).to.contain({
-            player: 'Zoro-test',
-            score: 10,
+        expect(scores[0]).to.contain({
+            player: 'Luffy-test1',
+            score: 20,
         });
     });
     it(' should updateScore if lesser', async () => {
@@ -83,10 +91,8 @@ describe('Database service', () => {
         const client = await MongoClient.connect(mongoUri);
         databaseService.db = client.db('Database');
         await databaseService.populateDB('bestScoreClassic');
-        await databaseService.updateBesScoreClassic({
-            player: 'test1',
-            score: 11,
-        });
+        game.player1.points = 11;
+        await databaseService.updateScore(game);
         const scores = await databaseService.bestScoreClassic();
         expect(scores[4]).to.contain({
             player: 'test1',
@@ -127,7 +133,7 @@ describe('Database service', () => {
         databaseService.db = client.db('Database');
         await databaseService.insertGame({
             date: new Date().toString(),
-            duration: '10',
+            duration: 10,
             player1: 'test',
             player1Points: 60,
             player2: 'test2',
@@ -206,7 +212,7 @@ describe('Database service', () => {
         databaseService.db = client.db('Database');
         await databaseService.insertGame({
             date: new Date().toString(),
-            duration: '10',
+            duration: 10,
             player1: 'test',
             player1Points: 60,
             player2: 'test2',
@@ -226,19 +232,18 @@ describe('Database service', () => {
         databaseService.db = client.db('Database');
         await databaseService.insertDictionary(dictionary);
         await databaseService.insertDictionary(dictionaryTest);
-        await databaseService.resetDictionary();
+        // await databaseService.resetDictionary();
         const dic = await databaseService.getDictionary();
-        expect(dic.length).to.equal(1);
+        expect(dic.length).to.equal(3);
     });
+
     it(' should reset updateScore ', async () => {
         const mongoUri = await mongoServer.getUri();
         const client = await MongoClient.connect(mongoUri);
         databaseService.db = client.db('Database');
         await databaseService.populateDB('bestScoreClassic');
-        await databaseService.updateBesScoreClassic({
-            player: 'test1',
-            score: 11,
-        });
+        game.player1.points = 11;
+        await databaseService.updateScore(game);
         await databaseService.resetBestScores();
         const scores = await databaseService.bestScoreClassic();
         expect(scores[4]).to.not.contain({
@@ -252,16 +257,14 @@ describe('Database service', () => {
         const client = await MongoClient.connect(mongoUri);
         databaseService.db = client.db('Database');
         await databaseService.populateDB('bestScoreClassic');
-        await databaseService.updateBesScoreClassic({
-            player: 'test1',
-            score: 11,
-        });
+        game.player1.points = 11;
+        await databaseService.updateScore(game);
 
         await databaseService.addVirtualPlayer('george', 'expert');
         await databaseService.insertDictionary(dictionary);
         await databaseService.insertGame({
             date: new Date().toString(),
-            duration: '10',
+            duration: 10,
             player1: 'test',
             player1Points: 60,
             player2: 'test2',

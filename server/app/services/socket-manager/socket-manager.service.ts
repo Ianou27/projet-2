@@ -38,7 +38,7 @@ export class SocketManager {
             });
 
             socket.on('createSoloGame', async (informations: CreateSoloRoomInformations) => {
-                informations.botName = await this.roomManager.getRandomBotName(informations.username, this.databaseService, informations.botType);;
+                informations.botName = await this.roomManager.getRandomBotName(informations.username, this.databaseService, informations.botType);
                 informations.socketId = socket.id;
                 this.roomManager.createSoloGame(informations, this.identification, this.sio, this.databaseService);
                 socket.join(informations.username);
@@ -200,7 +200,6 @@ export class SocketManager {
             });
 
             socket.on('convertToSoloGame', (modeLog: boolean) => {
-  
                 this.roomManager.convertMultiToSolo(modeLog, this.identification, this.sio, this.databaseService, socket.id);
             });
             socket.on('disconnect', async (reason) => {
@@ -209,11 +208,11 @@ export class SocketManager {
                     const game = this.identification.getGame(socket.id);
 
                     if (game.player2 !== undefined && !game.gameState.gameFinished) {
-                        let human: string = this.identification.surrender(socket.id);
-                        let botName:string = await this.roomManager.getRandomBotName(human, this.databaseService, BotType.Beginner);
+                        const human: string = this.identification.surrender(socket.id);
+                        const botName: string = await this.roomManager.getRandomBotName(human, this.databaseService, BotType.Beginner);
                         game.surrender(human, botName);
                         this.sio.to(room).emit('playerDc');
-                    };
+                    }
 
                     socket.leave(room);
                     this.roomManager.deleteRoom(socket.id, this.identification);

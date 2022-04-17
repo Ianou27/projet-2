@@ -24,7 +24,7 @@ describe('Game Manager', () => {
     const databaseService: DatabaseService = new DatabaseService();
     beforeEach(() => {
         game = new Game();
-        game.player1Join({ username: 'a', id: '1', room: 'room1' }, '60', databaseService, false);
+        game.player1Join({ username: 'a', id: '1', room: 'room1' }, '60', databaseService, false, 'default-dictionary');
         game.player2 = new Player(game.reserveLetters.randomLettersInitialization(), true, 'player2', { username: 'b', id: '2', room: 'room1' });
         const lettersPlayer1 = ['A', 'L', 'L', '', 'E', 'E', 'V'];
         for (const letter of lettersPlayer1) {

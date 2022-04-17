@@ -39,12 +39,13 @@ describe('Room Manager tests', () => {
 
     it('should  join Game', () => {
         const game = new Game();
-        game.player1Join({ username: 'rt', id: '1', room: 'room1' }, '60', databaseService, false);
+        game.player1Join({ username: 'rt', id: '1', room: 'room1' }, '60', databaseService, false, 'default-dictionary');
         const room: Room = {
             player1: 'rt',
             player2: '',
             time: '60',
             mode2990: false,
+            dictionary: 'default-dictionary',
         };
         sinon.replace(idManager, 'getGame', () => {
             return game;
@@ -91,14 +92,14 @@ describe('Room Manager tests', () => {
     it('convertMultiToSolo should call create SoloGame', () => {
         sinon.replace(idManager, 'getGame', () => {
             const game = new Game();
-            game.player1Join({ username: 'rt', id: '1', room: 'room1' }, '60', databaseService, false);
+            game.player1Join({ username: 'rt', id: '1', room: 'room1' }, '60', databaseService, false, 'default-dictionary');
 
             return game;
         });
         sinon.replace(roomManager, 'cancelCreation', () => {});
         sinon.replace(roomManager, 'createSoloGame', () => {});
         const getUserSpy = sinon.spy(roomManager, 'convertMultiToSolo');
-        const informations: CreateSoloRoomInformations = {
+        /* const informations: CreateSoloRoomInformations = {
             username: '',
             socketId: 'test',
             room: '',
@@ -106,8 +107,9 @@ describe('Room Manager tests', () => {
             modeLog: false,
             botType: BotType.Beginner,
             botName: '',
-        };
-        roomManager.convertMultiToSolo(informations, idManager, sio, databaseService);
+            dictionary: 'default-dictionary',
+        };*/
+        roomManager.convertMultiToSolo(false, idManager, sio, databaseService, 'test');
         assert(getUserSpy.called);
     });
 
@@ -120,6 +122,7 @@ describe('Room Manager tests', () => {
             modeLog: false,
             botType: BotType.Beginner,
             botName: 'botName',
+            dictionary: 'default-dictionary',
         };
         roomManager.createSoloGame(informations, idManager, sio, databaseService);
 
@@ -139,6 +142,7 @@ describe('Room Manager tests', () => {
             player2: '',
             time: '60',
             mode2990: false,
+            dictionary: 'default-dictionary',
         };
         idManager.rooms.push(room);
         const deleteSpy = sinon.stub(roomManager, 'deleteRoom');
@@ -153,6 +157,7 @@ describe('Room Manager tests', () => {
             player2: 'username',
             time: '60',
             mode2990: false,
+            dictionary: 'default-dictionary',
         };
         idManager.rooms.push(room);
         roomManager.deleteRoom(socketId, idManager);
@@ -165,6 +170,7 @@ describe('Room Manager tests', () => {
             player2: 'username',
             time: '60',
             mode2990: false,
+            dictionary: 'default-dictionary',
         };
         idManager.rooms.push(room);
         roomManager.deleteRoom(socketId, idManager);
@@ -179,6 +185,7 @@ describe('Room Manager tests', () => {
             player2: '',
             time: '60',
             mode2990: false,
+            dictionary: 'default-dictionary',
         };
         idManager.rooms.push(room);
         roomManager.deleteRoom(socketId, idManager);
@@ -193,6 +200,7 @@ describe('Room Manager tests', () => {
             player2: '-2',
             time: '60',
             mode2990: false,
+            dictionary: 'default-dictionary',
         };
         idManager.rooms.push(room);
         roomManager.deleteRoom(socketId, idManager);
@@ -206,6 +214,7 @@ describe('Room Manager tests', () => {
             player2: 'player2',
             time: '60',
             mode2990: false,
+            dictionary: 'default-dictionary',
         };
         idManager.rooms.push(room);
         roomManager.deleteRoom(socketId, idManager);
@@ -221,6 +230,7 @@ describe('Room Manager tests', () => {
             room: 'room',
             timer: '60',
             modeLog: false,
+            dictionary: 'default-dictionary',
         };
         roomManager.createRoom(informations, idManager, databaseService);
         assert(usersSpy.called);

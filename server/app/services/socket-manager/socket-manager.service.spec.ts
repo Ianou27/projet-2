@@ -47,6 +47,7 @@ describe('SocketManager service tests', () => {
             room: 'testRoom',
             timer: '60',
             modeLog: false,
+            dictionary: 'default-dictionary',
         };
         sinon.replace(service.roomManager, 'createRoom', () => {});
         const spy = sinon.spy(service.roomManager, 'createRoom');
@@ -68,6 +69,7 @@ describe('SocketManager service tests', () => {
             player2: '',
             time: '',
             mode2990: false,
+            dictionary: 'default-dictionary',
         };
         service.identification.rooms.push(roomObj);
         const tiles: Tile[][] = [];
@@ -92,6 +94,7 @@ describe('SocketManager service tests', () => {
             player2: '',
             time: '60',
             mode2990: false,
+            dictionary: 'default-dictionary',
         };
         service.identification.rooms.push(roomObj);
         clientSocket.emit('askJoin', username, roomObj);
@@ -107,6 +110,7 @@ describe('SocketManager service tests', () => {
             player2: 's',
             time: '60',
             mode2990: false,
+            dictionary: 'default-dictionary',
         };
         service.identification.rooms = [roomObject];
         const infoObj = {
@@ -130,6 +134,7 @@ describe('SocketManager service tests', () => {
             player2: 's',
             time: '60',
             mode2990: false,
+            dictionary: 'default-dictionary',
         };
         service.identification.rooms = [roomObject];
         const infoObj = {
@@ -168,6 +173,7 @@ describe('SocketManager service tests', () => {
             player2: 'user2',
             time: '60',
             mode2990: false,
+            dictionary: 'default-dictionary',
         };
         service.identification.rooms = [roomObject];
         service.identification.roomMessages['room'] = [];
@@ -196,6 +202,7 @@ describe('SocketManager service tests', () => {
             player2: 'user2',
             time: '60',
             mode2990: false,
+            dictionary: 'default-dictionary',
         };
         service.identification.rooms = [roomObject];
         service.identification.roomMessages['room'] = [];
@@ -223,6 +230,7 @@ describe('SocketManager service tests', () => {
             player2: '',
             time: '60',
             mode2990: false,
+            dictionary: 'default-dictionary',
         };
         service.identification.rooms.push(roomObj);
         clientSocket.emit('updateRoom');
@@ -243,7 +251,7 @@ describe('SocketManager service tests', () => {
 
     it('should handle a createSoloGame event', (done) => {
         sinon.replace(service.roomManager, 'createSoloGame', () => {});
-        sinon.replace(service.roomManager, 'getRandomBotName', () => {
+        sinon.replace(service.roomManager, 'getRandomBotName', async () => {
             return 'bot';
         });
         const spy = sinon.spy(service.roomManager, 'createSoloGame');
@@ -255,6 +263,7 @@ describe('SocketManager service tests', () => {
             modeLog: false,
             botType: BotType.Beginner,
             botName: 'name',
+            dictionary: 'default-dictionary',
         };
         clientSocket.emit('createSoloGame', informations);
         setTimeout(() => {
@@ -331,7 +340,7 @@ describe('SocketManager service tests', () => {
     });
 
     it('should handle convertToSoloGame event', (done) => {
-        sinon.replace(service.roomManager, 'convertMultiToSolo', () => {});
+        sinon.replace(service.roomManager, 'convertMultiToSolo', async () => {});
         const spy = sinon.spy(service.roomManager, 'convertMultiToSolo');
 
         clientSocket.emit('convertToSoloGame');
