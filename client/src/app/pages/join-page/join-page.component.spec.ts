@@ -112,6 +112,7 @@ describe('JoinPageComponent', () => {
             player2: 'player2',
             time: '60',
             mode2990: false,
+            dictionary: 'dictionnaire',
         };
         component.clientSocketHandler.allRooms = [room];
         component.randomJoin();
@@ -125,6 +126,7 @@ describe('JoinPageComponent', () => {
             player2: 'player2',
             time: '60',
             mode2990: true,
+            dictionary: 'dictionnaire',
         };
         component.clientSocketHandler.allRooms = [room];
         component.randomJoin();

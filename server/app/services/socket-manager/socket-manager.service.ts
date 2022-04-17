@@ -202,7 +202,7 @@ export class SocketManager {
             socket.on('convertToSoloGame', (modeLog: boolean) => {
                 this.roomManager.convertMultiToSolo(modeLog, this.identification, this.sio, this.databaseService, socket.id);
             });
-            socket.on('disconnect', async (reason) => {
+            socket.on('disconnect', async () => {
                 const room = this.identification.getRoom(socket.id);
                 if (room !== '') {
                     const game = this.identification.getGame(socket.id);

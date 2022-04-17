@@ -75,6 +75,7 @@ describe('ChatService', () => {
             player2: '',
             time: '60',
             mode2990: false,
+            dictionary: 'dictionnaire',
         };
         const emitSpy = spyOn(service.socketService.socket, 'emit');
         service.askJoin('test', room);
@@ -108,6 +109,7 @@ describe('ChatService', () => {
             room: 'testRoom',
             timer: '60',
             modeLog: false,
+            dictionary: 'dictionnaire',
         };
         service.createRoom(informations);
         expect(emitSpy).toHaveBeenCalled();
@@ -124,6 +126,7 @@ describe('ChatService', () => {
             modeLog: false,
             botName: 'username',
             botType: BotType.Beginner,
+            dictionary: 'dictionnaire',
         };
         service.createSoloGame(informations);
         expect(emitSpy).toHaveBeenCalled();
@@ -140,6 +143,7 @@ describe('ChatService', () => {
             player2: '',
             time: '60',
             mode2990: false,
+            dictionary: 'dictionnaire',
         };
         const info: InfoToJoin = {
             username: 'username',
@@ -253,18 +257,9 @@ describe('ChatService', () => {
 
     it('convertToSoloGame() should emit the convertToSoloGame event', () => {
         const emitSpy = spyOn(service.socketService.socket, 'emit');
-        const informations: CreateSoloRoomInformations = {
-            username: 'test',
-            socketId: 'test',
-            room: 'testRoom',
-            timer: '60',
-            modeLog: false,
-            botType: BotType.Beginner,
-            botName: 'name',
-        };
-        service.convertToSoloGame(informations);
+        service.convertToSoloGame(false);
         expect(emitSpy).toHaveBeenCalled();
-        expect(emitSpy).toHaveBeenCalledWith('convertToSoloGame', informations);
+        expect(emitSpy).toHaveBeenCalledWith('convertToSoloGame', false);
     });
     it('should update numberOfRooms without mode2990 when an empty room is added', () => {
         service.allRooms = [
@@ -273,12 +268,14 @@ describe('ChatService', () => {
                 player2: '',
                 time: '60',
                 mode2990: false,
+                dictionary: 'dictionnaire',
             },
             {
                 player1: 'player1',
                 player2: '',
                 time: '60',
                 mode2990: true,
+                dictionary: 'dictionnaire',
             },
         ];
 
@@ -465,6 +462,7 @@ describe('ChatService', () => {
                 player2: 'player2',
                 time: '60',
                 mode2990: false,
+                dictionary: 'dictionnaire',
             };
 
             const rooms: Room[] = [];
@@ -509,6 +507,7 @@ describe('ChatService', () => {
                 player2: '',
                 time: '60',
                 mode2990: false,
+                dictionary: 'dictionnaire',
             };
             const info: InfoToJoin = {
                 username: 'username',
@@ -525,6 +524,7 @@ describe('ChatService', () => {
                 player2: '',
                 time: '60',
                 mode2990: false,
+                dictionary: 'dictionnaire',
             };
             const info: InfoToJoin = {
                 username: 'username',

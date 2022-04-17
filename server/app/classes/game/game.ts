@@ -315,7 +315,6 @@ export class Game {
             }
         }
         await this.databaseService.start();
-        
         await this.databaseService.updateScore(this);
         this.registerGame();
         await this.databaseService.closeConnection();

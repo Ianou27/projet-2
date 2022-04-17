@@ -1,20 +1,18 @@
 import * as io from 'socket.io';
-import { DictionaryManager } from '../dictionary-manager/dictionary-manager.service';
 import { DatabaseService } from './../database/database.services';
+import { DictionaryManager } from './../dictionary-manager/dictionary-manager.service';
 
 export class AdminManager {
     async getAdminInformations(sio: io.Server, databaseService: DatabaseService, socketId: string) {
-       
-            await databaseService.start();
-            sio.to(socketId).emit(
-                'getAdminInfo',
-                await databaseService.getDictionaryInfo(),
-                await databaseService.getGameHistory(),
-                await databaseService.getVirtualPlayers(),
-            );
+        await databaseService.start();
+        sio.to(socketId).emit(
+            'getAdminInfo',
+            await databaseService.getDictionaryInfo(),
+            await databaseService.getGameHistory(),
+            await databaseService.getVirtualPlayers(),
+        );
 
-            await databaseService.closeConnection();
-       
+        await databaseService.closeConnection();
     }
 
     async addVirtualPlayerNames(sio: io.Server, databaseService: DatabaseService, socketId: string, name: string, type: string) {

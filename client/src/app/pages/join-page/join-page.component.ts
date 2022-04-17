@@ -139,5 +139,4 @@ export class JoinPageComponent implements OnInit {
         dictionaryList.forEach((dict: Dic) => descriptions.push(dict.description));
         return descriptions;
     }
-  
 }

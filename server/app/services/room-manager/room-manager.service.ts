@@ -1,9 +1,8 @@
-
 import { BotType } from '@common/botType';
 import { GoalInformations } from '@common/constants/goal-information';
 import { GoalType } from '@common/constants/goal-type';
 import { Tile } from '@common/tile/Tile';
-import {CreateRoomInformations, CreateSoloRoomInformations, Room } from '@common/types';
+import { CreateRoomInformations, CreateSoloRoomInformations, Room } from '@common/types';
 import { Bot } from 'assets/type';
 import * as io from 'socket.io';
 import { Game } from './../../classes/game/game';
@@ -62,11 +61,11 @@ export class RoomManager {
     }
     async convertMultiToSolo(modeLog: boolean, identification: IdManager, sio: io.Server, databaseService: DatabaseService, socketId: string) {
         const game = identification.getGame(socketId);
-        const botName = await this.getRandomBotName(game.player1.user.username,databaseService, BotType.Beginner);
+        const botName = await this.getRandomBotName(game.player1.user.username, databaseService, BotType.Beginner);
         this.cancelCreation(socketId, identification);
         const informations: CreateSoloRoomInformations = {
             username: game.player1.user.username,
-            socketId: socketId,
+            socketId,
             room: game.player1.user.room,
             timer: game.timer.timerMax.toString(),
             modeLog,
@@ -158,18 +157,18 @@ export class RoomManager {
         });
     }
 
-    async getRandomBotName(username: string, databaseService:DatabaseService, botType:string): Promise<string> {
+    async getRandomBotName(username: string, databaseService: DatabaseService, botType: string): Promise<string> {
         await databaseService.start();
-        let type:string;
-        if(botType === BotType.Beginner){
+        let type: string;
+        if (botType === BotType.Beginner) {
             type = 'beginner';
-        }else {
+        } else {
             type = 'expert';
         }
-        
+
         const botsNames: Bot[] = await databaseService.getVirtualPlayers();
         const botsNamesArray: string[] = [];
-        botsNames.forEach((bot :Bot) => {
+        botsNames.forEach((bot: Bot) => {
             if (bot.type === type) {
                 botsNamesArray.push(bot.name);
             }
