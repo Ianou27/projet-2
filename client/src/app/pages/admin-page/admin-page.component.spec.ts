@@ -309,14 +309,9 @@ describe('AdminPageComponent', () => {
     });
 
     it('submit should call other methods', () => {
-        component.reloadPage = () => {
-            return;
-        };
-        const reloadSpy = spyOn(component, 'reloadPage');
         const snackBarSpy = spyOn(component, 'openSnackBar');
         component.selectedFile = '{"title": "test", "description": "ce dictionnaire est seulement un test  ss", "words":["aa","aalenien"]}';
         component.submit();
-        expect(reloadSpy).toHaveBeenCalled();
         expect(snackBarSpy).toHaveBeenCalled();
     });
 
