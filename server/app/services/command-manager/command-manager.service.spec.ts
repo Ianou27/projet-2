@@ -7,6 +7,7 @@ import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
 import { io as ioClient, Socket } from 'socket.io-client';
 import { Container } from 'typedi';
+import { RoomManager } from './../room-manager/room-manager.service';
 import { SocketManager } from './../socket-manager/socket-manager.service';
 import { CommandManager } from './command-manager.service';
 
@@ -15,7 +16,7 @@ describe('CommandManager service tests', () => {
     let service: SocketManager;
     let server: Server;
     let clientSocket: Socket;
-
+    let gameObj: Game;
     const RESPONSE_DELAY = 200;
 
     const urlString = 'http://localhost:3000';
@@ -26,6 +27,19 @@ describe('CommandManager service tests', () => {
         service = server['socketManger'];
         clientSocket = ioClient(urlString);
         commandManager = new CommandManager();
+        gameObj = new Game();
+        const user1 = {
+            username: 'player1',
+            id: '1',
+            room: 'room1',
+        };
+        const user2 = {
+            username: 'player2',
+            id: 'b',
+            room: 'room1',
+        };
+        gameObj.player1 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user1);
+        gameObj.player2 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user2);
     });
 
     afterEach(() => {
@@ -54,21 +68,6 @@ describe('CommandManager service tests', () => {
         sinon.replace(service.gameManager, 'reserveCommandValid', () => {
             return false;
         });
-        const gameObj = new Game();
-
-        const a: boolean = clientSocket.disconnected;
-        const user1 = {
-            username: 'player1',
-            id: a.toString(),
-            room: 'room1',
-        };
-        const user2 = {
-            username: 'player2',
-            id: 'b',
-            room: 'room1',
-        };
-        gameObj.player1 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user1);
-        gameObj.player2 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user2);
         sinon.replace(service.identification, 'getGame', () => {
             return gameObj;
         });
@@ -84,21 +83,6 @@ describe('CommandManager service tests', () => {
         sinon.replace(service.gameManager, 'helpCommandValid', () => {
             return false;
         });
-        const gameObj = new Game();
-
-        const a: boolean = clientSocket.disconnected;
-        const user1 = {
-            username: 'player1',
-            id: a.toString(),
-            room: 'room1',
-        };
-        const user2 = {
-            username: 'player2',
-            id: 'b',
-            room: 'room1',
-        };
-        gameObj.player1 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user1);
-        gameObj.player2 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user2);
         sinon.replace(service.identification, 'getGame', () => {
             return gameObj;
         });
@@ -114,21 +98,6 @@ describe('CommandManager service tests', () => {
         sinon.replace(service.gameManager, 'helpCommandValid', () => {
             return true;
         });
-        const gameObj = new Game();
-
-        const a: boolean = clientSocket.disconnected;
-        const user1 = {
-            username: 'player1',
-            id: a.toString(),
-            room: 'room1',
-        };
-        const user2 = {
-            username: 'player2',
-            id: 'b',
-            room: 'room1',
-        };
-        gameObj.player1 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user1);
-        gameObj.player2 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user2);
         sinon.replace(service.identification, 'getGame', () => {
             return gameObj;
         });
@@ -141,19 +110,6 @@ describe('CommandManager service tests', () => {
     });
 
     it('should handle passer Event valid turn', (done) => {
-        const gameObj = new Game();
-        const user1 = {
-            username: 'player1',
-            id: 'a',
-            room: 'room1',
-        };
-        const user2 = {
-            username: 'player2',
-            id: 'b',
-            room: 'room1',
-        };
-        gameObj.player1 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user1);
-        gameObj.player2 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user2);
         sinon.replace(service.identification, 'getGame', () => {
             return gameObj;
         });
@@ -166,19 +122,6 @@ describe('CommandManager service tests', () => {
     });
 
     it('should handle passer Event Invalid turn', (done) => {
-        const gameObj = new Game();
-        const user1 = {
-            username: 'player1',
-            id: 'a',
-            room: 'room1',
-        };
-        const user2 = {
-            username: 'player2',
-            id: 'b',
-            room: 'room1',
-        };
-        gameObj.player1 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user1);
-        gameObj.player2 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user2);
         sinon.replace(gameObj, 'playerTurnValid', () => {
             return true;
         });
@@ -198,21 +141,6 @@ describe('CommandManager service tests', () => {
     });
 
     it('should handle valid place command', (done) => {
-        const gameObj = new Game();
-
-        const a: boolean = clientSocket.disconnected;
-        const user1 = {
-            username: 'player1',
-            id: a.toString(),
-            room: 'room1',
-        };
-        const user2 = {
-            username: 'player2',
-            id: 'b',
-            room: 'room1',
-        };
-        gameObj.player1 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user1);
-        gameObj.player2 = new Player(gameObj.reserveLetters.randomLettersInitialization(), false, 'player2', user2);
         sinon.replace(gameObj, 'playerTurnValid', () => {
             return true;
         });
@@ -238,22 +166,107 @@ describe('CommandManager service tests', () => {
         }, RESPONSE_DELAY);
     });
 
-    it('should handle valid place command if it is player 2', (done) => {
-        const gameObj = new Game();
+    it('should handle invalid place command if it is not the right turn', (done) => {
+        sinon.replace(gameObj, 'playerTurnValid', () => {
+            return false;
+        });
+        sinon.replace(service.gameManager, 'pass', () => {});
 
-        const a: boolean = clientSocket.disconnected;
-        const user1 = {
-            username: 'player1',
-            id: a.toString(),
-            room: 'room1',
-        };
-        const user2 = {
-            username: 'player2',
-            id: 'b',
-            room: 'room1',
-        };
-        gameObj.player1 = new Player(gameObj.reserveLetters.randomLettersInitialization(), false, 'player1', user1);
-        gameObj.player2 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player2', user2);
+        sinon.replace(service.identification, 'getGame', () => {
+            return gameObj;
+        });
+        const passerSpy = sinon.spy(service.identification, 'getGame');
+        commandManager.commandPlace(service.sio, service.identification, service.gameManager, '1', '!placer aaa'.split(' '));
+        setTimeout(() => {
+            assert(passerSpy.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
+    it('should handle valid place command if it is player 1', (done) => {
+        sinon.replace(gameObj, 'playerTurnValid', () => {
+            return true;
+        });
+        sinon.replace(service.gameManager, 'placeVerification', () => {
+            return 'valide';
+        });
+        sinon.replace(service.gameManager, 'placeWord', () => {
+            return 'placer';
+        });
+        sinon.replace(service.gameManager, 'pass', () => {});
+        sinon.replace(gameObj, 'playerTurn', () => {
+            return gameObj.player1;
+        });
+
+        sinon.replace(service.identification, 'getGame', () => {
+            return gameObj;
+        });
+        const spyRoomManager = sinon.stub(RoomManager, 'getGoalsPlayer');
+        const spy = sinon.spy(service.identification, 'getGame');
+        commandManager.commandPlace(service.sio, service.identification, service.gameManager, '1', '!placer ccaaaa'.split(' '));
+
+        setTimeout(() => {
+            assert(spy.called);
+            assert(spyRoomManager.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
+    it('should handle valid place command but impossible command if it is player 1', (done) => {
+        sinon.replace(gameObj, 'playerTurnValid', () => {
+            return true;
+        });
+        sinon.replace(service.gameManager, 'placeVerification', () => {
+            return 'invalide';
+        });
+        sinon.replace(service.gameManager, 'placeWord', () => {
+            return 'placer';
+        });
+        sinon.replace(service.gameManager, 'pass', () => {});
+        sinon.replace(gameObj, 'playerTurn', () => {
+            return gameObj.player1;
+        });
+
+        sinon.replace(service.identification, 'getGame', () => {
+            return gameObj;
+        });
+        const spy = sinon.spy(service.identification, 'getGame');
+        commandManager.commandPlace(service.sio, service.identification, service.gameManager, '1', '!placer ccaaaa'.split(' '));
+
+        setTimeout(() => {
+            assert(spy.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
+    it('should handle invalid place command if it is player 1', (done) => {
+        sinon.replace(gameObj, 'playerTurnValid', () => {
+            return true;
+        });
+        sinon.replace(service.gameManager, 'placeVerification', () => {
+            return 'valide';
+        });
+        sinon.replace(service.gameManager, 'placeWord', () => {
+            return 'no';
+        });
+        sinon.replace(service.gameManager, 'pass', () => {});
+        sinon.replace(gameObj, 'playerTurn', () => {
+            return gameObj.player2;
+        });
+
+        sinon.replace(service.identification, 'getGame', () => {
+            return gameObj;
+        });
+        const spy = sinon.spy(service.identification, 'getGame');
+        commandManager.commandPlace(service.sio, service.identification, service.gameManager, '1', '!placer ccaaaa'.split(' '));
+
+        setTimeout(() => {
+            assert(spy.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
+    it('should handle valid place command if it is player 2', (done) => {
         sinon.replace(gameObj, 'playerTurnValid', () => {
             return true;
         });
@@ -280,19 +293,6 @@ describe('CommandManager service tests', () => {
     });
 
     it('should handle invalid place command', (done) => {
-        const gameObj = new Game();
-        const user1 = {
-            username: 'player1',
-            id: clientSocket.id,
-            room: 'room1',
-        };
-        const user2 = {
-            username: 'player2',
-            id: clientSocket.id,
-            room: 'room1',
-        };
-        gameObj.player1 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user1);
-        gameObj.player2 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user2);
         sinon.replace(gameObj, 'playerTurnValid', () => {
             return false;
         });
@@ -308,19 +308,6 @@ describe('CommandManager service tests', () => {
     });
 
     it('should handle invalid place command if not placer', (done) => {
-        const gameObj = new Game();
-        const user1 = {
-            username: 'player1',
-            id: clientSocket.id,
-            room: 'room1',
-        };
-        const user2 = {
-            username: 'player2',
-            id: clientSocket.id,
-            room: 'room1',
-        };
-        gameObj.player1 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user1);
-        gameObj.player2 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user2);
         sinon.replace(gameObj, 'playerTurnValid', () => {
             return true;
         });
@@ -346,19 +333,6 @@ describe('CommandManager service tests', () => {
     });
 
     it('should handle invalid place command if not placer2', (done) => {
-        const gameObj = new Game();
-        const user1 = {
-            username: 'player1',
-            id: clientSocket.id,
-            room: 'room1',
-        };
-        const user2 = {
-            username: 'player2',
-            id: clientSocket.id,
-            room: 'room1',
-        };
-        gameObj.player1 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user1);
-        gameObj.player2 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user2);
         sinon.replace(gameObj, 'playerTurnValid', () => {
             return true;
         });
@@ -384,21 +358,6 @@ describe('CommandManager service tests', () => {
     });
 
     it('should handle valid echanger command', (done) => {
-        const gameObj = new Game();
-
-        const a: boolean = clientSocket.disconnected;
-        const user1 = {
-            username: 'player1',
-            id: a.toString(),
-            room: 'room1',
-        };
-        const user2 = {
-            username: 'player2',
-            id: 'b',
-            room: 'room1',
-        };
-        gameObj.player1 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user1);
-        gameObj.player2 = new Player(gameObj.reserveLetters.randomLettersInitialization(), false, 'player1', user2);
         sinon.replace(gameObj, 'playerTurnValid', () => {
             return true;
         });
@@ -421,22 +380,30 @@ describe('CommandManager service tests', () => {
         }, RESPONSE_DELAY);
     });
 
-    it('should handle Invalid echanger command', (done) => {
-        const gameObj = new Game();
+    it('should handle valid echanger command if it is player 1', (done) => {
+        sinon.replace(gameObj, 'playerTurnValid', () => {
+            return true;
+        });
+        sinon.replace(service.gameManager, 'exchangeVerification', () => {
+            return 'valide';
+        });
 
-        const a: boolean = clientSocket.disconnected;
-        const user1 = {
-            username: 'player1',
-            id: 'b',
-            room: 'room1',
-        };
-        const user2 = {
-            username: 'player2',
-            id: a.toString(),
-            room: 'room1',
-        };
-        gameObj.player1 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user1);
-        gameObj.player2 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user2);
+        sinon.replace(service.gameManager, 'exchange', () => {});
+        sinon.replace(gameObj, 'playerTurn', () => {
+            return gameObj.player1;
+        });
+        sinon.replace(service.identification, 'getGame', () => {
+            return gameObj;
+        });
+        const exchangeSpy = sinon.spy(service.identification, 'getGame');
+        commandManager.commandExchange(service.sio, service.identification, service.gameManager, '1', '!échanger a'.split(' '));
+        setTimeout(() => {
+            assert(exchangeSpy.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
+    it('should handle Invalid echanger command', (done) => {
         sinon.replace(gameObj, 'playerTurnValid', () => {
             return true;
         });
@@ -461,21 +428,6 @@ describe('CommandManager service tests', () => {
     });
 
     it('should handle valid echanger command not turn', (done) => {
-        const gameObj = new Game();
-
-        const a: boolean = clientSocket.disconnected;
-        const user1 = {
-            username: 'player1',
-            id: a.toString(),
-            room: 'room1',
-        };
-        const user2 = {
-            username: 'player2',
-            id: 'b',
-            room: 'room1',
-        };
-        gameObj.player1 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user1);
-        gameObj.player2 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user2);
         sinon.replace(gameObj, 'playerTurnValid', () => {
             return false;
         });
@@ -500,20 +452,6 @@ describe('CommandManager service tests', () => {
     });
 
     it('should call gameManager methods on indice event when everything is valid', (done) => {
-        const gameObj = new Game();
-        const a: boolean = clientSocket.disconnected;
-        const user1 = {
-            username: 'player1',
-            id: a.toString(),
-            room: 'room1',
-        };
-        const user2 = {
-            username: 'player2',
-            id: 'b',
-            room: 'room1',
-        };
-        gameObj.player1 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user1);
-        gameObj.player2 = new Player(gameObj.reserveLetters.randomLettersInitialization(), false, 'player2', user2);
         sinon.replace(service.identification, 'getGame', () => {
             return gameObj;
         });
@@ -547,20 +485,6 @@ describe('CommandManager service tests', () => {
     });
 
     it('should call gameManager methods on indice event', (done) => {
-        const gameObj = new Game();
-        const a: boolean = clientSocket.disconnected;
-        const user1 = {
-            username: 'player1',
-            id: a.toString(),
-            room: 'room1',
-        };
-        const user2 = {
-            username: 'player2',
-            id: 'b',
-            room: 'room1',
-        };
-        gameObj.player1 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user1);
-        gameObj.player2 = new Player(gameObj.reserveLetters.randomLettersInitialization(), false, 'player2', user2);
         sinon.replace(service.identification, 'getGame', () => {
             return gameObj;
         });
@@ -584,20 +508,6 @@ describe('CommandManager service tests', () => {
     });
 
     it('should call gameManager methods on indice event when command not valid', (done) => {
-        const gameObj = new Game();
-        const a: boolean = clientSocket.disconnected;
-        const user1 = {
-            username: 'player1',
-            id: a.toString(),
-            room: 'room1',
-        };
-        const user2 = {
-            username: 'player2',
-            id: 'b',
-            room: 'room1',
-        };
-        gameObj.player1 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user1);
-        gameObj.player2 = new Player(gameObj.reserveLetters.randomLettersInitialization(), false, 'player2', user2);
         sinon.replace(service.identification, 'getGame', () => {
             return gameObj;
         });
@@ -626,20 +536,6 @@ describe('CommandManager service tests', () => {
     });
 
     it('should call gameManager methods on indice event when command its not the turn', (done) => {
-        const gameObj = new Game();
-        const a: boolean = clientSocket.disconnected;
-        const user1 = {
-            username: 'player1',
-            id: a.toString(),
-            room: 'room1',
-        };
-        const user2 = {
-            username: 'player2',
-            id: 'b',
-            room: 'room1',
-        };
-        gameObj.player1 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user1);
-        gameObj.player2 = new Player(gameObj.reserveLetters.randomLettersInitialization(), false, 'player2', user2);
         sinon.replace(service.identification, 'getGame', () => {
             return gameObj;
         });

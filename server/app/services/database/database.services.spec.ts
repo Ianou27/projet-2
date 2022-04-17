@@ -232,9 +232,9 @@ describe('Database service', () => {
         databaseService.db = client.db('Database');
         await databaseService.insertDictionary(dictionary);
         await databaseService.insertDictionary(dictionaryTest);
-        // await databaseService.resetDictionary();
+        await databaseService.resetDictionary();
         const dic = await databaseService.getDictionary();
-        expect(dic.length).to.equal(3);
+        expect(dic.length).to.equal(0);
     });
 
     it(' should reset updateScore ', async () => {
