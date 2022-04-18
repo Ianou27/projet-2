@@ -51,6 +51,7 @@ export class ClientSocketHandler {
     virtualPlayerNameList: any[] = [];
     gameHistory: any[] = [];
     dictionaryToDownload: string = '';
+    errorHandler:string = '';
 
     constructor(public socketService: SocketClientService, public boardService: BoardService, public tileHolderService: TileHolderService) {}
 
@@ -76,7 +77,12 @@ export class ClientSocketHandler {
             if (board) this.boardService.board = board;
             if (tileHolder) this.tileHolderService.tileHolder = tileHolder;
         });
-
+        this.socketService.socket.on( 'connect', () => {
+            this.errorHandler='';
+        });
+        this.socketService.on("connect_error", (err:Error) => {
+           this.errorHandler='IMPOSSIBLE DE SE CONNECTER AU SERVEUR';
+          });
         this.socketService.socket.on('tileHolder', (letters: Tile[], goalPlayer: GoalInformations[]) => {
             this.tileHolderService.tileHolder = letters;
             this.goals = goalPlayer;

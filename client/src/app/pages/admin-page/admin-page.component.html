@@ -2,7 +2,7 @@
     <a mat-icon-button href="">
         <mat-icon>home</mat-icon>
     </a>
-    <span [style.font-size.px]="30">Administration</span>
+    <span [style.font-size.px]="30">Administration</span> <span class="error" *ngIf="socketHandler.errorHandler ">  {{socketHandler.errorHandler}}</span>
 </mat-toolbar>
 
 <section>

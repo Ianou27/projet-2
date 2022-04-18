@@ -1,7 +1,6 @@
 import { Game } from '@app/classes/game/game';
 import { INDEX_OF_NOT_FOUND, NUMBER_ELEMENTS_DATABASE } from '@common/constants/general-constants';
 import { BestScore, Dic, GameHistory } from '@common/types';
-import * as fs from 'fs';
 import { Db, MongoClient } from 'mongodb';
 import 'reflect-metadata';
 import * as io from 'socket.io';
@@ -21,7 +20,6 @@ export class DatabaseService {
     db: Db;
     client: MongoClient;
 
-    dictionaryArray: JSON = JSON.parse(fs.readFileSync('./assets/dictionnary.json').toString());
     async start(url: string = DATABASE_URL): Promise<MongoClient | null> {
         try {
             const client = await MongoClient.connect(url);
@@ -29,6 +27,7 @@ export class DatabaseService {
             this.db = client.db(DATABASE_NAME);
         } catch {
             throw new Error('Database connection error');
+            
         }
 
         if ((await this.db.collection(DATABASE_COLLECTION_CLASSIC).countDocuments()) === 0) {
