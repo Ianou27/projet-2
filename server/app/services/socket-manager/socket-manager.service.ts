@@ -23,30 +23,30 @@ export class SocketManager {
         this.sio = new io.Server(server, { maxHttpBufferSize: 15e6, cors: { origin: '*', methods: ['GET', 'POST'] } });
         this.gameManager = new GameManager();
         this.identification = new IdManager();
-        this.roomManager = new RoomManager();
+        this.roomManager = new RoomManager(this.sio, this.identification, this.databaseService);
         this.dictionaryManager = new DictionaryManager();
-        this.commandManager = new CommandManager();
-        this.adminManager = new AdminManager();
+        this.commandManager = new CommandManager(this.sio, this.identification, this.gameManager);
+        this.adminManager = new AdminManager(this.sio, this.databaseService);
     }
 
     async handleSockets(): Promise<void> {
         this.sio.on('connection', (socket) => {
             socket.on('createRoom', (informations: CreateRoomInformations) => {
                 informations.socketId = socket.id;
-                this.roomManager.createRoom(informations, this.identification, this.databaseService);
+                this.roomManager.createRoom(informations);
                 socket.join(informations.room);
             });
 
             socket.on('createSoloGame', async (informations: CreateSoloRoomInformations) => {
-                informations.botName = await this.roomManager.getRandomBotName(informations.username, this.databaseService, informations.botType);
+                informations.botName = await this.roomManager.getRandomBotName(informations.username, informations.botType);
                 informations.socketId = socket.id;
-                this.roomManager.createSoloGame(informations, this.identification, this.sio, this.databaseService);
+                this.roomManager.createSoloGame(informations);
                 socket.join(informations.username);
             });
 
             socket.on('joinRoom', (username: string, roomObj: Room) => {
                 const player1Id = this.identification.getId(roomObj.player1);
-                const letters = this.roomManager.joinRoom(username, roomObj, socket.id, this.identification, this.sio);
+                const letters = this.roomManager.joinRoom(username, roomObj, socket.id);
                 const game = this.identification.getGame(player1Id);
                 socket.join(roomObj.player1);
                 this.sio.to(game.player1.user.id).emit('tileHolder', letters[0], RoomManager.getGoalsPlayer(game, game.player1));
@@ -113,18 +113,18 @@ export class SocketManager {
                 this.sio.sockets.emit('rooms', this.identification.rooms);
             });
             socket.on('placer', (command: string[]) => {
-                this.commandManager.commandPlace(this.sio, this.identification, this.gameManager, socket.id, command);
+                this.commandManager.commandPlace(socket.id, command);
             });
             socket.on('passer', () => {
-                this.commandManager.commandPass(this.sio, this.identification, this.gameManager, socket.id);
+                this.commandManager.commandPass(socket.id);
             });
 
             socket.on('réserve', (command: string[]) => {
-                this.commandManager.commandReserve(this.sio, this.identification, this.gameManager, socket.id, command);
+                this.commandManager.commandReserve(socket.id, command);
             });
 
             socket.on('aide', (command: string[]) => {
-                this.commandManager.commandHelp(this.sio, this.identification, this.gameManager, socket.id, command);
+                this.commandManager.commandHelp(socket.id, command);
             });
 
             socket.on('forceDisconnect', async () => {
@@ -137,26 +137,26 @@ export class SocketManager {
             });
 
             socket.on('getAdminInfo', async () => {
-                await this.adminManager.getAdminInformations(this.sio, this.databaseService, socket.id);
+                await this.adminManager.getAdminInformations(socket.id);
             });
             socket.on('addVirtualPlayerNames', async (name: string, type: string) => {
-                await this.adminManager.addVirtualPlayerNames(this.sio, this.databaseService, socket.id, name, type);
+                await this.adminManager.addVirtualPlayerNames(socket.id, name, type);
             });
 
             socket.on('deleteVirtualPlayerName', async (name: string) => {
-                await this.adminManager.deleteVirtualPlayerName(this.sio, this.databaseService, socket.id, name);
+                await this.adminManager.deleteVirtualPlayerName(socket.id, name);
             });
 
             socket.on('modifyVirtualPlayerNames', async (oldName: string, newName: string) => {
-                await this.adminManager.modifyVirtualPlayerNames(this.sio, this.databaseService, socket.id, oldName, newName);
+                await this.adminManager.modifyVirtualPlayerNames(socket.id, oldName, newName);
             });
 
             socket.on('resetAll', async () => {
-                await this.adminManager.resetAll(this.sio, this.databaseService, socket.id, this.dictionaryManager);
+                await this.adminManager.resetAll(socket.id, this.dictionaryManager);
             });
 
             socket.on('resetVirtualPlayers', async () => {
-                await this.adminManager.resetVirtualPlayers(this.sio, this.databaseService, socket.id);
+                await this.adminManager.resetVirtualPlayers(socket.id);
             });
 
             socket.on('resetDictionary', async () => {
@@ -179,7 +179,7 @@ export class SocketManager {
             });
 
             socket.on('resetGameHistory', async () => {
-                await this.adminManager.resetGameHistory(this.sio, this.databaseService, socket.id);
+                await this.adminManager.resetGameHistory(socket.id);
             });
 
             socket.on('resetBestScore', async () => {
@@ -189,18 +189,18 @@ export class SocketManager {
             });
 
             socket.on('indice', (command: string[]) => {
-                this.commandManager.commandClue(this.sio, this.identification, this.gameManager, socket.id, command);
+                this.commandManager.commandClue(socket.id, command);
             });
 
             socket.on('echanger', (command: string[]) => {
-                this.commandManager.commandExchange(this.sio, this.identification, this.gameManager, socket.id, command);
+                this.commandManager.commandExchange(socket.id, command);
             });
             socket.on('cancelCreation', () => {
-                this.roomManager.cancelCreation(socket.id, this.identification);
+                this.roomManager.cancelCreation(socket.id);
             });
 
             socket.on('convertToSoloGame', (modeLog: boolean) => {
-                this.roomManager.convertMultiToSolo(modeLog, this.identification, this.sio, this.databaseService, socket.id);
+                this.roomManager.convertMultiToSolo(modeLog, socket.id);
             });
             socket.on('disconnect', async () => {
                 const room = this.identification.getRoom(socket.id);
@@ -209,13 +209,13 @@ export class SocketManager {
 
                     if (game.player2 !== undefined && !game.gameState.gameFinished) {
                         const human: string = this.identification.surrender(socket.id);
-                        const botName: string = await this.roomManager.getRandomBotName(human, this.databaseService, BotType.Beginner);
+                        const botName: string = await this.roomManager.getRandomBotName(human, BotType.Beginner);
                         game.surrender(human, botName);
                         this.sio.to(room).emit('playerDc');
                     }
 
                     socket.leave(room);
-                    this.roomManager.deleteRoom(socket.id, this.identification);
+                    this.roomManager.deleteRoom(socket.id);
                     this.sio.sockets.emit('rooms', this.identification.rooms);
                 }
                 this.identification.deleteUser(socket.id);

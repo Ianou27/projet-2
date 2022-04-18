@@ -27,7 +27,6 @@ export class DatabaseService {
             this.db = client.db(DATABASE_NAME);
         } catch {
             throw new Error('Database connection error');
-            
         }
 
         if ((await this.db.collection(DATABASE_COLLECTION_CLASSIC).countDocuments()) === 0) {

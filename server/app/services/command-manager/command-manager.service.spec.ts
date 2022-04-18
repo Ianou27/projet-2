@@ -26,7 +26,7 @@ describe('CommandManager service tests', () => {
         // eslint-disable-next-line dot-notation
         service = server['socketManger'];
         clientSocket = ioClient(urlString);
-        commandManager = new CommandManager();
+        commandManager = new CommandManager(service.sio, service.identification, service.gameManager);
         gameObj = new Game();
         const user1 = {
             username: 'player1',
@@ -57,7 +57,7 @@ describe('CommandManager service tests', () => {
             return true;
         });
         const reserveSpy = sinon.spy(service.gameManager, 'reserveCommandValid');
-        commandManager.commandReserve(service.sio, service.identification, service.gameManager, '', '!réserve'.split(' '));
+        commandManager.commandReserve('', '!réserve'.split(' '));
         setTimeout(() => {
             expect(reserveSpy.called);
             done();
@@ -72,7 +72,7 @@ describe('CommandManager service tests', () => {
             return gameObj;
         });
         const reserveSpy = sinon.spy(service.gameManager, 'reserveCommandValid');
-        commandManager.commandReserve(service.sio, service.identification, service.gameManager, '', '!réserve'.split(' '));
+        commandManager.commandReserve('', '!réserve'.split(' '));
         setTimeout(() => {
             expect(reserveSpy.called);
             done();
@@ -87,7 +87,7 @@ describe('CommandManager service tests', () => {
             return gameObj;
         });
         const reserveSpy = sinon.spy(service.gameManager, 'helpCommandValid');
-        commandManager.commandHelp(service.sio, service.identification, service.gameManager, '', '!aide'.split(' '));
+        commandManager.commandHelp('', '!aide'.split(' '));
         setTimeout(() => {
             expect(reserveSpy.called);
             done();
@@ -102,7 +102,7 @@ describe('CommandManager service tests', () => {
             return gameObj;
         });
         const reserveSpy = sinon.spy(service.gameManager, 'helpCommandValid');
-        commandManager.commandHelp(service.sio, service.identification, service.gameManager, '', '!aide'.split(' '));
+        commandManager.commandHelp('', '!aide'.split(' '));
         setTimeout(() => {
             expect(reserveSpy.called);
             done();
@@ -114,7 +114,7 @@ describe('CommandManager service tests', () => {
             return gameObj;
         });
         const passerSpy = sinon.spy(service.identification, 'getGame');
-        commandManager.commandPass(service.sio, service.identification, service.gameManager, '');
+        commandManager.commandPass('');
         setTimeout(() => {
             assert(passerSpy.called);
             done();
@@ -133,7 +133,7 @@ describe('CommandManager service tests', () => {
             return gameObj;
         });
         const passerSpy = sinon.spy(service.identification, 'getGame');
-        commandManager.commandPass(service.sio, service.identification, service.gameManager, '');
+        commandManager.commandPass('');
         setTimeout(() => {
             assert(passerSpy.called);
             done();
@@ -159,7 +159,7 @@ describe('CommandManager service tests', () => {
             return gameObj;
         });
         const passerSpy = sinon.spy(service.identification, 'getGame');
-        commandManager.commandPlace(service.sio, service.identification, service.gameManager, '', '!placer aaa'.split(' '));
+        commandManager.commandPlace('', '!placer aaa'.split(' '));
         setTimeout(() => {
             assert(passerSpy.called);
             done();
@@ -176,7 +176,7 @@ describe('CommandManager service tests', () => {
             return gameObj;
         });
         const passerSpy = sinon.spy(service.identification, 'getGame');
-        commandManager.commandPlace(service.sio, service.identification, service.gameManager, '1', '!placer aaa'.split(' '));
+        commandManager.commandPlace('1', '!placer aaa'.split(' '));
         setTimeout(() => {
             assert(passerSpy.called);
             done();
@@ -203,7 +203,7 @@ describe('CommandManager service tests', () => {
         });
         const spyRoomManager = sinon.stub(RoomManager, 'getGoalsPlayer');
         const spy = sinon.spy(service.identification, 'getGame');
-        commandManager.commandPlace(service.sio, service.identification, service.gameManager, '1', '!placer ccaaaa'.split(' '));
+        commandManager.commandPlace('1', '!placer ccaaaa'.split(' '));
 
         setTimeout(() => {
             assert(spy.called);
@@ -231,7 +231,7 @@ describe('CommandManager service tests', () => {
             return gameObj;
         });
         const spy = sinon.spy(service.identification, 'getGame');
-        commandManager.commandPlace(service.sio, service.identification, service.gameManager, '1', '!placer ccaaaa'.split(' '));
+        commandManager.commandPlace('1', '!placer ccaaaa'.split(' '));
 
         setTimeout(() => {
             assert(spy.called);
@@ -258,7 +258,7 @@ describe('CommandManager service tests', () => {
             return gameObj;
         });
         const spy = sinon.spy(service.identification, 'getGame');
-        commandManager.commandPlace(service.sio, service.identification, service.gameManager, '1', '!placer ccaaaa'.split(' '));
+        commandManager.commandPlace('1', '!placer ccaaaa'.split(' '));
 
         setTimeout(() => {
             assert(spy.called);
@@ -285,7 +285,7 @@ describe('CommandManager service tests', () => {
             return gameObj;
         });
         const spy = sinon.spy(service.identification, 'getGame');
-        commandManager.commandPlace(service.sio, service.identification, service.gameManager, 'b', '!placer aaa'.split(' '));
+        commandManager.commandPlace('b', '!placer aaa'.split(' '));
         setTimeout(() => {
             assert(spy.called);
             done();
@@ -300,7 +300,7 @@ describe('CommandManager service tests', () => {
             return gameObj;
         });
         const passerSpy = sinon.spy(service.identification, 'getGame');
-        commandManager.commandPlace(service.sio, service.identification, service.gameManager, '', '!placer '.split(' '));
+        commandManager.commandPlace('', '!placer '.split(' '));
         setTimeout(() => {
             assert(passerSpy.called);
             done();
@@ -325,7 +325,7 @@ describe('CommandManager service tests', () => {
             return gameObj;
         });
         const passerSpy = sinon.spy(service.identification, 'getGame');
-        commandManager.commandPlace(service.sio, service.identification, service.gameManager, '', '!placer '.split(' '));
+        commandManager.commandPlace('', '!placer '.split(' '));
         setTimeout(() => {
             assert(passerSpy.called);
             done();
@@ -350,7 +350,7 @@ describe('CommandManager service tests', () => {
             return gameObj;
         });
         const passerSpy = sinon.spy(service.identification, 'getGame');
-        commandManager.commandPlace(service.sio, service.identification, service.gameManager, '', '!placer aaa'.split(' '));
+        commandManager.commandPlace('', '!placer aaa'.split(' '));
         setTimeout(() => {
             assert(passerSpy.called);
             done();
@@ -373,7 +373,7 @@ describe('CommandManager service tests', () => {
             return gameObj;
         });
         const exchangeSpy = sinon.spy(service.identification, 'getGame');
-        commandManager.commandExchange(service.sio, service.identification, service.gameManager, 'ABA', '!échanger a'.split(' '));
+        commandManager.commandExchange('ABA', '!échanger a'.split(' '));
         setTimeout(() => {
             assert(exchangeSpy.called);
             done();
@@ -396,7 +396,7 @@ describe('CommandManager service tests', () => {
             return gameObj;
         });
         const exchangeSpy = sinon.spy(service.identification, 'getGame');
-        commandManager.commandExchange(service.sio, service.identification, service.gameManager, '1', '!échanger a'.split(' '));
+        commandManager.commandExchange('1', '!échanger a'.split(' '));
         setTimeout(() => {
             assert(exchangeSpy.called);
             done();
@@ -420,7 +420,7 @@ describe('CommandManager service tests', () => {
             return gameObj;
         });
         const passerSpy = sinon.spy(service.identification, 'getGame');
-        commandManager.commandExchange(service.sio, service.identification, service.gameManager, '', '!échanger aaa'.split(' '));
+        commandManager.commandExchange('', '!échanger aaa'.split(' '));
         setTimeout(() => {
             assert(passerSpy.called);
             done();
@@ -444,7 +444,7 @@ describe('CommandManager service tests', () => {
             return gameObj;
         });
         const passerSpy = sinon.spy(service.identification, 'getGame');
-        commandManager.commandExchange(service.sio, service.identification, service.gameManager, '', '!échanger aaa'.split(' '));
+        commandManager.commandExchange('', '!échanger aaa'.split(' '));
         setTimeout(() => {
             assert(passerSpy.called);
             done();
@@ -473,7 +473,7 @@ describe('CommandManager service tests', () => {
         });
         const clueFormatSpy = sinon.spy(service.gameManager, 'formatClueCommand');
 
-        commandManager.commandClue(service.sio, service.identification, service.gameManager, '', '!indice'.split(' '));
+        commandManager.commandClue('', '!indice'.split(' '));
         setTimeout(() => {
             assert(getGameSpy.called);
             assert(getPlayerSpy.called);
@@ -498,7 +498,7 @@ describe('CommandManager service tests', () => {
         });
         const gamePlayerTurnSpy = sinon.spy(gameObj, 'playerTurnValid');
 
-        commandManager.commandClue(service.sio, service.identification, service.gameManager, '', '!indice'.split(' '));
+        commandManager.commandClue('', '!indice'.split(' '));
         setTimeout(() => {
             assert(getGameSpy.called);
             assert(getPlayerSpy.called);
@@ -525,7 +525,7 @@ describe('CommandManager service tests', () => {
         });
         const clueCommandSpy = sinon.spy(service.gameManager, 'clueCommandValid');
 
-        commandManager.commandClue(service.sio, service.identification, service.gameManager, '', '!indice'.split(' '));
+        commandManager.commandClue('', '!indice'.split(' '));
         setTimeout(() => {
             assert(getGameSpy.called);
             assert(getPlayerSpy.called);
@@ -553,7 +553,7 @@ describe('CommandManager service tests', () => {
         });
         const clueCommandSpy = sinon.spy(service.gameManager, 'clueCommandValid');
 
-        commandManager.commandClue(service.sio, service.identification, service.gameManager, '2', '!indice'.split(' '));
+        commandManager.commandClue('2', '!indice'.split(' '));
         setTimeout(() => {
             assert(getGameSpy.called);
             assert(getPlayerSpy.called);

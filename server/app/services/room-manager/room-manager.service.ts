@@ -10,6 +10,16 @@ import { Player } from './../../classes/player/player';
 import { DatabaseService } from './../database/database.services';
 import { IdManager } from './../id-manager/id-manager.service';
 export class RoomManager {
+    sio: io.Server;
+    identification: IdManager;
+    databaseService: DatabaseService;
+
+    constructor(sio: io.Server, identification: IdManager, databaseService: DatabaseService) {
+        this.sio = sio;
+        this.identification = identification;
+        this.databaseService = databaseService;
+    }
+
     static getGoalsPlayer(game: Game, player: Player): GoalInformations[] {
         const goals = game.goals;
         const goalsPlayer: GoalInformations[] = [];
@@ -39,17 +49,17 @@ export class RoomManager {
         return copyGoalsPlayer;
     }
 
-    createRoom(informations: CreateRoomInformations, identification: IdManager, databaseService: DatabaseService) {
+    createRoom(informations: CreateRoomInformations) {
         const user = {
             username: informations.username,
             id: informations.socketId,
             room: informations.room,
         };
-        identification.users.push(user);
-        identification.roomMessages[informations.room] = [];
+        this.identification.users.push(user);
+        this.identification.roomMessages[informations.room] = [];
         const game = new Game();
-        game.player1Join(user, informations.timer, databaseService, informations.modeLog, informations.dictionary);
-        identification.games.push(game);
+        game.player1Join(user, informations.timer, this.databaseService, informations.modeLog, informations.dictionary);
+        this.identification.games.push(game);
         const roomObj = {
             player1: informations.username,
             player2: '',
@@ -57,12 +67,12 @@ export class RoomManager {
             mode2990: informations.modeLog,
             dictionary: informations.dictionary,
         };
-        identification.rooms.push(roomObj);
+        this.identification.rooms.push(roomObj);
     }
-    async convertMultiToSolo(modeLog: boolean, identification: IdManager, sio: io.Server, databaseService: DatabaseService, socketId: string) {
-        const game = identification.getGame(socketId);
-        const botName = await this.getRandomBotName(game.player1.user.username, databaseService, BotType.Beginner);
-        this.cancelCreation(socketId, identification);
+    async convertMultiToSolo(modeLog: boolean, socketId: string) {
+        const game = this.identification.getGame(socketId);
+        const botName = await this.getRandomBotName(game.player1.user.username, BotType.Beginner);
+        this.cancelCreation(socketId);
         const informations: CreateSoloRoomInformations = {
             username: game.player1.user.username,
             socketId,
@@ -73,9 +83,9 @@ export class RoomManager {
             botName,
             dictionary: game.dictionaryName,
         };
-        this.createSoloGame(informations, identification, sio, databaseService);
+        this.createSoloGame(informations);
     }
-    createSoloGame(informations: CreateSoloRoomInformations, identification: IdManager, sio: io.Server, databaseService: DatabaseService) {
+    createSoloGame(informations: CreateSoloRoomInformations) {
         const user = {
             username: informations.username,
             id: informations.socketId,
@@ -88,17 +98,17 @@ export class RoomManager {
             mode2990: informations.modeLog,
             dictionary: informations.dictionary,
         };
-        identification.rooms.push(roomObj);
-        identification.users.push(user);
-        identification.roomMessages[informations.username] = [];
+        this.identification.rooms.push(roomObj);
+        this.identification.users.push(user);
+        this.identification.roomMessages[informations.username] = [];
         const game = new Game();
-        game.startSoloGame(user, sio, databaseService, informations);
-        identification.games.push(game);
+        game.startSoloGame(user, this.sio, this.databaseService, informations);
+        this.identification.games.push(game);
     }
 
-    joinRoom(username: string, roomObj: Room, socketId: string, identification: IdManager, sio: io.Server): Tile[][] {
+    joinRoom(username: string, roomObj: Room, socketId: string): Tile[][] {
         let tiles: Tile[][] = [];
-        identification.rooms.forEach((element: Room) => {
+        this.identification.rooms.forEach((element: Room) => {
             if (roomObj.player1 === element.player1) {
                 const room = roomObj.player1;
                 if (element.player2.length === 0) {
@@ -107,10 +117,10 @@ export class RoomManager {
                         id: socketId,
                         room,
                     };
-                    identification.users.push(user);
+                    this.identification.users.push(user);
                     element.player2 = username;
-                    const game: Game = identification.getGame(identification.getId(roomObj.player1));
-                    game.player2Join(user, sio);
+                    const game: Game = this.identification.getGame(this.identification.getId(roomObj.player1));
+                    game.player2Join(user, this.sio);
 
                     tiles = [game.player1.getLetters(), game.player2.getLetters()];
                 }
@@ -119,37 +129,37 @@ export class RoomManager {
 
         return tiles;
     }
-    cancelCreation(socketId: string, identification: IdManager) {
-        const username = identification.getUsername(socketId);
-        identification.rooms.forEach((element) => {
+    cancelCreation(socketId: string) {
+        const username = this.identification.getUsername(socketId);
+        this.identification.rooms.forEach((element) => {
             if (username === element.player1) {
                 element.player2 = '-2';
 
-                this.deleteRoom(socketId, identification);
-                identification.deleteUser(socketId);
+                this.deleteRoom(socketId);
+                this.identification.deleteUser(socketId);
             }
         });
 
-        identification.deleteGame(socketId);
+        this.identification.deleteGame(socketId);
     }
-    deleteRoom(socketId: string, identification: IdManager) {
-        const username = identification.getUsername(socketId);
+    deleteRoom(socketId: string) {
+        const username = this.identification.getUsername(socketId);
 
-        identification.rooms.forEach((element) => {
+        this.identification.rooms.forEach((element) => {
             if (username === element.player1) {
                 if (element.player2 === '') {
-                    const index = identification.rooms.indexOf(element);
-                    identification.rooms.splice(index, 1);
+                    const index = this.identification.rooms.indexOf(element);
+                    this.identification.rooms.splice(index, 1);
                 } else if (element.player2 === '-2') {
-                    const index = identification.rooms.indexOf(element);
-                    identification.rooms.splice(index, 1);
+                    const index = this.identification.rooms.indexOf(element);
+                    this.identification.rooms.splice(index, 1);
                 } else {
                     element.player1 = '-2';
                 }
             } else if (username === element.player2) {
                 if (element.player1 === '-2') {
-                    const index = identification.rooms.indexOf(element);
-                    identification.rooms.splice(index, 1);
+                    const index = this.identification.rooms.indexOf(element);
+                    this.identification.rooms.splice(index, 1);
                 } else {
                     element.player2 = '-2';
                 }
@@ -157,8 +167,8 @@ export class RoomManager {
         });
     }
 
-    async getRandomBotName(username: string, databaseService: DatabaseService, botType: string): Promise<string> {
-        await databaseService.start();
+    async getRandomBotName(username: string, botType: string): Promise<string> {
+        await this.databaseService.start();
         let type: string;
         if (botType === BotType.Beginner) {
             type = 'beginner';
@@ -166,7 +176,7 @@ export class RoomManager {
             type = 'expert';
         }
 
-        const botsNames: Bot[] = await databaseService.getVirtualPlayers();
+        const botsNames: Bot[] = await this.databaseService.getVirtualPlayers();
         const botsNamesArray: string[] = [];
         botsNames.forEach((bot: Bot) => {
             if (bot.type === type) {
@@ -177,7 +187,7 @@ export class RoomManager {
         while (randomName === username) {
             randomName = botsNamesArray[Math.floor(Math.random() * botsNamesArray.length)];
         }
-        databaseService.closeConnection();
+        this.databaseService.closeConnection();
         return randomName.concat(' ' + botType);
     }
 }

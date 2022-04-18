@@ -13,11 +13,10 @@ import { DatabaseService } from './../database/database.services';
 import { IdManager } from './../id-manager/id-manager.service';
 
 describe('Room Manager tests', () => {
-    const roomManager = new RoomManager();
     const idManager = new IdManager();
     const sio = new io.Server();
     const databaseService: DatabaseService = new DatabaseService();
-
+    const roomManager = new RoomManager(sio, idManager, databaseService);
     beforeEach(() => {
         const user: User = {
             username: 'username',
@@ -52,7 +51,7 @@ describe('Room Manager tests', () => {
         });
         sinon.replace(game, 'startGame', () => {});
         idManager.rooms.push(room);
-        roomManager.joinRoom('rta', room, '12', idManager, sio);
+        roomManager.joinRoom('rta', room, '12');
 
         expect(idManager.rooms[0].player2).to.equal('rta');
     });
@@ -109,7 +108,7 @@ describe('Room Manager tests', () => {
             botName: '',
             dictionary: 'default-dictionary',
         };*/
-        roomManager.convertMultiToSolo(false, idManager, sio, databaseService, 'test');
+        roomManager.convertMultiToSolo(false, 'test');
         assert(getUserSpy.called);
     });
 
@@ -124,14 +123,14 @@ describe('Room Manager tests', () => {
             botName: 'botName',
             dictionary: 'default-dictionary',
         };
-        roomManager.createSoloGame(informations, idManager, sio, databaseService);
+        roomManager.createSoloGame(informations);
 
         expect(idManager.games.length).to.equal(1);
     });
 
     it('cancelCreation should call getUsername', () => {
         const getUserSpy = sinon.stub(idManager, 'getUsername');
-        roomManager.cancelCreation('test', idManager);
+        roomManager.cancelCreation('test');
         assert(getUserSpy.called);
     });
 
@@ -146,7 +145,7 @@ describe('Room Manager tests', () => {
         };
         idManager.rooms.push(room);
         const deleteSpy = sinon.stub(roomManager, 'deleteRoom');
-        roomManager.cancelCreation(socketId, idManager);
+        roomManager.cancelCreation(socketId);
         assert(deleteSpy.called);
     });
 
@@ -160,7 +159,7 @@ describe('Room Manager tests', () => {
             dictionary: 'default-dictionary',
         };
         idManager.rooms.push(room);
-        roomManager.deleteRoom(socketId, idManager);
+        roomManager.deleteRoom(socketId);
     });
 
     it('deleteRoom should set player1 to -2 if player2 = username and player1 is different than -2', () => {
@@ -173,7 +172,7 @@ describe('Room Manager tests', () => {
             dictionary: 'default-dictionary',
         };
         idManager.rooms.push(room);
-        roomManager.deleteRoom(socketId, idManager);
+        roomManager.deleteRoom(socketId);
         expect(room.player2).to.equal('-2');
     });
 
@@ -188,7 +187,7 @@ describe('Room Manager tests', () => {
             dictionary: 'default-dictionary',
         };
         idManager.rooms.push(room);
-        roomManager.deleteRoom(socketId, idManager);
+        roomManager.deleteRoom(socketId);
         assert(spliceSpy.called);
     });
 
@@ -203,7 +202,7 @@ describe('Room Manager tests', () => {
             dictionary: 'default-dictionary',
         };
         idManager.rooms.push(room);
-        roomManager.deleteRoom(socketId, idManager);
+        roomManager.deleteRoom(socketId);
         assert(spliceSpy.called);
     });
 
@@ -217,7 +216,7 @@ describe('Room Manager tests', () => {
             dictionary: 'default-dictionary',
         };
         idManager.rooms.push(room);
-        roomManager.deleteRoom(socketId, idManager);
+        roomManager.deleteRoom(socketId);
         expect(room.player1).to.equal('-2');
     });
 
@@ -232,7 +231,7 @@ describe('Room Manager tests', () => {
             modeLog: false,
             dictionary: 'default-dictionary',
         };
-        roomManager.createRoom(informations, idManager, databaseService);
+        roomManager.createRoom(informations);
         assert(usersSpy.called);
         assert(roomsSpy.called);
     });

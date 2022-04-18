@@ -3,88 +3,110 @@ import { DatabaseService } from './../database/database.services';
 import { DictionaryManager } from './../dictionary-manager/dictionary-manager.service';
 
 export class AdminManager {
-    async getAdminInformations(sio: io.Server, databaseService: DatabaseService, socketId: string) {
-        await databaseService.start();
-        sio.to(socketId).emit(
-            'getAdminInfo',
-            await databaseService.getDictionaryInfo(),
-            await databaseService.getGameHistory(),
-            await databaseService.getVirtualPlayers(),
-        );
+    sio: io.Server;
+    databaseService: DatabaseService;
 
-        await databaseService.closeConnection();
+    constructor(sio: io.Server, databaseService: DatabaseService) {
+        this.sio = sio;
+        this.databaseService = databaseService;
     }
 
-    async addVirtualPlayerNames(sio: io.Server, databaseService: DatabaseService, socketId: string, name: string, type: string) {
-        await databaseService.start();
-        await databaseService.addVirtualPlayer(name, type);
-        sio.to(socketId).emit(
-            'getAdminInfo',
-            await databaseService.getDictionaryInfo(),
-            await databaseService.getGameHistory(),
-            await databaseService.getVirtualPlayers(),
-        );
-        await databaseService.closeConnection();
+    async getAdminInformations(socketId: string) {
+        await this.databaseService.start();
+        this.sio
+            .to(socketId)
+            .emit(
+                'getAdminInfo',
+                await this.databaseService.getDictionaryInfo(),
+                await this.databaseService.getGameHistory(),
+                await this.databaseService.getVirtualPlayers(),
+            );
+
+        await this.databaseService.closeConnection();
     }
 
-    async deleteVirtualPlayerName(sio: io.Server, databaseService: DatabaseService, socketId: string, name: string) {
-        await databaseService.start();
-        await databaseService.deleteVirtualPlayer(name);
-        sio.to(socketId).emit(
-            'getAdminInfo',
-            await databaseService.getDictionaryInfo(),
-            await databaseService.getGameHistory(),
-            await databaseService.getVirtualPlayers(),
-        );
-        await databaseService.closeConnection();
+    async addVirtualPlayerNames(socketId: string, name: string, type: string) {
+        await this.databaseService.start();
+        await this.databaseService.addVirtualPlayer(name, type);
+        this.sio
+            .to(socketId)
+            .emit(
+                'getAdminInfo',
+                await this.databaseService.getDictionaryInfo(),
+                await this.databaseService.getGameHistory(),
+                await this.databaseService.getVirtualPlayers(),
+            );
+        await this.databaseService.closeConnection();
     }
 
-    async modifyVirtualPlayerNames(sio: io.Server, databaseService: DatabaseService, socketId: string, oldName: string, newName: string) {
-        await databaseService.start();
-        await databaseService.modifyVirtualPlayer(oldName, newName);
-        sio.to(socketId).emit(
-            'getAdminInfo',
-            await databaseService.getDictionaryInfo(),
-            await databaseService.getGameHistory(),
-            await databaseService.getVirtualPlayers(),
-        );
-        await databaseService.closeConnection();
+    async deleteVirtualPlayerName(socketId: string, name: string) {
+        await this.databaseService.start();
+        await this.databaseService.deleteVirtualPlayer(name);
+        this.sio
+            .to(socketId)
+            .emit(
+                'getAdminInfo',
+                await this.databaseService.getDictionaryInfo(),
+                await this.databaseService.getGameHistory(),
+                await this.databaseService.getVirtualPlayers(),
+            );
+        await this.databaseService.closeConnection();
     }
 
-    async resetAll(sio: io.Server, databaseService: DatabaseService, socketId: string, dictionaryManager: DictionaryManager) {
+    async modifyVirtualPlayerNames(socketId: string, oldName: string, newName: string) {
+        await this.databaseService.start();
+        await this.databaseService.modifyVirtualPlayer(oldName, newName);
+        this.sio
+            .to(socketId)
+            .emit(
+                'getAdminInfo',
+                await this.databaseService.getDictionaryInfo(),
+                await this.databaseService.getGameHistory(),
+                await this.databaseService.getVirtualPlayers(),
+            );
+        await this.databaseService.closeConnection();
+    }
+
+    async resetAll(socketId: string, dictionaryManager: DictionaryManager) {
         dictionaryManager.deleteAllDictionaries();
-        await databaseService.start();
-        await databaseService.resetAll();
-        sio.to(socketId).emit(
-            'getAdminInfo',
-            await databaseService.getDictionaryInfo(),
-            await databaseService.getGameHistory(),
-            await databaseService.getVirtualPlayers(),
-        );
-        await databaseService.closeConnection();
+        await this.databaseService.start();
+        await this.databaseService.resetAll();
+        this.sio
+            .to(socketId)
+            .emit(
+                'getAdminInfo',
+                await this.databaseService.getDictionaryInfo(),
+                await this.databaseService.getGameHistory(),
+                await this.databaseService.getVirtualPlayers(),
+            );
+        await this.databaseService.closeConnection();
     }
 
-    async resetGameHistory(sio: io.Server, databaseService: DatabaseService, socketId: string) {
-        await databaseService.start();
-        await databaseService.resetGameHistory();
-        sio.to(socketId).emit(
-            'getAdminInfo',
-            await databaseService.getDictionaryInfo(),
-            await databaseService.getGameHistory(),
-            await databaseService.getVirtualPlayers(),
-        );
-        await databaseService.closeConnection();
+    async resetGameHistory(socketId: string) {
+        await this.databaseService.start();
+        await this.databaseService.resetGameHistory();
+        this.sio
+            .to(socketId)
+            .emit(
+                'getAdminInfo',
+                await this.databaseService.getDictionaryInfo(),
+                await this.databaseService.getGameHistory(),
+                await this.databaseService.getVirtualPlayers(),
+            );
+        await this.databaseService.closeConnection();
     }
 
-    async resetVirtualPlayers(sio: io.Server, databaseService: DatabaseService, socketId: string) {
-        await databaseService.start();
-        await databaseService.resetVirtualPlayers();
-        sio.to(socketId).emit(
-            'getAdminInfo',
-            await databaseService.getDictionaryInfo(),
-            await databaseService.getGameHistory(),
-            await databaseService.getVirtualPlayers(),
-        );
-        await databaseService.closeConnection();
+    async resetVirtualPlayers(socketId: string) {
+        await this.databaseService.start();
+        await this.databaseService.resetVirtualPlayers();
+        this.sio
+            .to(socketId)
+            .emit(
+                'getAdminInfo',
+                await this.databaseService.getDictionaryInfo(),
+                await this.databaseService.getGameHistory(),
+                await this.databaseService.getVirtualPlayers(),
+            );
+        await this.databaseService.closeConnection();
     }
 }

@@ -295,9 +295,4 @@ describe('Database service', () => {
         const dic = await databaseService.getDictionary();
         expect(dic[0].title).to.equal('test');
     });
-    
-   
-
-    
 });
-
