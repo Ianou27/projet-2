@@ -30,4 +30,22 @@ describe('CommunicationAreaComponent', () => {
     it('ngOnInit should call init', () => {
         expect(clientSocketHandlerSpy.init).toHaveBeenCalledTimes(1);
     });
+
+    it('method subdivisionCommand should return all the message if it doesnt contain pour', () => {
+        const message = 'Bonjour à tous';
+        const result = component.subdivisionCommand(true, message);
+        expect(message).toEqual(result);
+    });
+
+    it('method subdivisionCommand with true as beforeFor should return everything before the first pour', () => {
+        const message = 'Bonjour à tous pour tout le monde';
+        const result = component.subdivisionCommand(true, message);
+        expect('Bonjour à tous ').toEqual(result);
+    });
+
+    it('method subdivisionCommand with false as beforeFor should return everything after the first pour including pour', () => {
+        const message = 'Bonjour à tous pour tout le monde';
+        const result = component.subdivisionCommand(false, message);
+        expect('pour tout le monde').toEqual(result);
+    });
 });
