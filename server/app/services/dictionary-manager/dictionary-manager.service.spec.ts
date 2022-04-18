@@ -7,7 +7,7 @@ import { Dic } from '@common/types';
 
 
 
-describe('Dictionary Manager Test', () => {
+describe('DictionaryManager', () => {
     const dictionaryManager = new DictionaryManager();
     const sio = new io.Server();
     const socketID ='test';
