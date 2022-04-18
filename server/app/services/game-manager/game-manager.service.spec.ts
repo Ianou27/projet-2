@@ -1,9 +1,11 @@
+import { ClueCommand } from '@app/classes/clue-command/clue-command';
 import { ExchangeCommand } from '@app/classes/exchange-command/exchange-command';
 import { PassCommand } from '@app/classes/pass-command/pass-command';
 import { ReserveCommand } from '@app/classes/reserve-command/reserve-command';
 import { CaseProperty } from '@common/assets/case-property';
 import { letterValue } from '@common/assets/reserve-letters';
 import { Tile } from '@common/tile/Tile';
+import { PlacementScore } from '@common/types';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
 import { Game } from './../../classes/game/game';
@@ -226,5 +228,18 @@ describe('Game Manager', () => {
         gameManager.helpCommandValid(helpCommand);
         assert(spy.called);
         assert(spy.calledWith(helpCommand));
+    });
+
+    it('formatClueCommand should call find clues', () => {
+        sinon.replace(ClueCommand, 'findClues', () => {
+            const placement: PlacementScore = {
+                score: 5,
+                command: 'allo',
+            };
+            return [placement];
+        });
+        const spy = sinon.spy(ClueCommand, 'findClues');
+        gameManager.formatClueCommand(game);
+        expect(spy.called);
     });
 });
