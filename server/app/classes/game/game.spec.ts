@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable max-lines */
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 /* eslint-disable max-len */
@@ -291,21 +292,47 @@ describe('Game', () => {
         expect(game.gameState.gameFinished).to.equal(true);
     });
 
-    /* it('method surrender should change player1 in bot if player1 surrender first', async () => {
-        sinon.replace(game, 'endGame', async () => {
-            return;
-        });
-        await game.surrender('player1');
-        expect(game.player2.hisBot).to.equal(true);
-    });*/
+    it('method surrender should stop the timer and registerGame if player 1 is a bot', async () => {
+        game.player1.hisBot = true;
+        const spy1 = sinon.stub(game.timer, 'stop');
+        const spy2 = sinon.stub(game, 'registerGame');
+        sinon.replace(game.databaseService, 'insertGame', async () => {});
+        await game.surrender('', '');
+        assert(spy1.called);
+        assert(spy2.called);
+    });
 
-    /* it('method surrender should change player2 in bot if player2 surrender first', async () => {
-        sinon.replace(game, 'endGame', async () => {
-            return;
-        });
-        await game.surrender('player2');
-        expect(game.player1.hisBot).to.equal(true);
-    });*/
+    it('method surrender should change player2 to a bot if player2 surrender', async () => {
+        await game.surrender(game.player1.user.username, 'bot');
+        expect(game.player2.hisBot).equal(true);
+        expect(game.player2.user.username).equal('bot');
+        expect(game.player2.typeBot).equal(BotType.Beginner);
+    });
+
+    it('method surrender should change player1 to a bot if player1 surrender', async () => {
+        await game.surrender(game.player2.user.username, 'bot');
+        expect(game.player1.hisBot).equal(true);
+        expect(game.player1.user.username).equal('bot');
+        expect(game.player1.typeBot).equal(BotType.Beginner);
+    });
+
+    it('method surrender should changeTurnTwoPlayers if player2.hisTurn is true and player2 is a bot', async () => {
+        game.player1.hisTurn = false;
+        game.player2.hisTurn = true;
+        sinon.replace(game, 'changeTurnTwoPlayers', async () => {});
+        const spy = sinon.stub(game, 'changeTurnTwoPlayers');
+        await game.surrender(game.player1.user.username, 'bot');
+        assert(spy.called);
+    });
+
+    it('method surrender should changeTurnTwoPlayers if player1.hisTurn is true and player1 is a bot', async () => {
+        game.player2.hisTurn = false;
+        game.player1.hisTurn = true;
+        sinon.replace(game, 'changeTurnTwoPlayers', async () => {});
+        const spy = sinon.stub(game, 'changeTurnTwoPlayers');
+        await game.surrender(game.player2.user.username, 'bot');
+        assert(spy.called);
+    });
 
     it('method actionVirtualBeginnerPlayer with probability 10 or less should return command pass', () => {
         const command = game.actionVirtualBeginnerPlayer(10);
