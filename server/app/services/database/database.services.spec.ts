@@ -285,4 +285,19 @@ describe('Database service', () => {
         expect(players.length).to.equal(0);
         expect(scores.length).to.equal(5);
     });
+
+    it(' should modify the dictionary ', async () => {
+        const mongoUri = await mongoServer.getUri();
+        const client = await MongoClient.connect(mongoUri);
+        databaseService.db = client.db('Database');
+        await databaseService.insertDictionary(dictionary);
+        await databaseService.modifyDictionary('Mon dictionnaire', 'test', 'test');
+        const dic = await databaseService.getDictionary();
+        expect(dic[0].title).to.equal('test');
+    });
+    
+   
+
+    
 });
+
