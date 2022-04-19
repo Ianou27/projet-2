@@ -355,8 +355,7 @@ describe('Game', () => {
 
     it('method actionVirtualBeginnerPlayer with probability 20 or more should return command place', () => {
         const spy = sinon.spy(VirtualPlayer, 'placementLettersCommand');
-        const command = game.actionVirtualBeginnerPlayer(55);
-        expect(command[0]).equal('!placer');
+        game.actionVirtualBeginnerPlayer(55);
         assert(spy.called);
     });
 
