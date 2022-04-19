@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { TestBed } from '@angular/core/testing';
 import { LETTER_3X, WORD_2X } from '@app/../../../common/constants/tile-information';
-import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
+import { CanvasTestHelper } from '@app/classes/canvas-test-helper/canvas-test-helper';
 import { GridService } from '@app/services/grid/grid.service';
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from './../../../../../common/constants/board';
 

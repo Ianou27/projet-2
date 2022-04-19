@@ -7,7 +7,7 @@ import { WaitingPlayerTwoComponent } from '@app/components/waiting-player-two/wa
 import { FormatTimePipe } from '@app/pipes/format-time.pipe';
 import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
 import { Room } from './../../../../../common/types';
-import { MyErrorStateMatcher } from './../../classes/errorStateMatcher/error-state-matcher';
+import { MyErrorStateMatcher } from './../../classes/my-error-state-matcher/my-error-state-matcher';
 import { JoinPageComponent } from './join-page.component';
 import SpyObj = jasmine.SpyObj;
 

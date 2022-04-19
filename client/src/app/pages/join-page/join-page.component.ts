@@ -4,9 +4,9 @@ import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { WaitingPlayerDialogComponent } from '@app/components/waiting-player-dialog/waiting-player-dialog.component';
 import { WaitingPlayerTwoComponent } from '@app/components/waiting-player-two/waiting-player-two.component';
 import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
-import { BotType } from './../../../../../common/botType';
+import { BotType } from './../../../../../common/bot-type';
 import { CreateRoomInformations, CreateSoloRoomInformations, Dic } from './../../../../../common/types';
-import { MyErrorStateMatcher } from './../../classes/errorStateMatcher/error-state-matcher';
+import { MyErrorStateMatcher } from './../../classes/my-error-state-matcher/my-error-state-matcher';
 
 @Component({
     selector: 'app-join-page',
@@ -66,21 +66,23 @@ export class JoinPageComponent implements OnInit {
         else this.mode2990 = false;
     }
 
-    myError = (controlName: string, errorName: string) => {
-        // eslint-disable-next-line no-invalid-this
+    myError(controlName: string, errorName: string) {
         return this.form.controls[controlName].hasError(errorName);
-    };
+    }
+
     openWait() {
         this.waitDialog.open(WaitingPlayerDialogComponent, {
             disableClose: true,
             data: this.data,
         });
     }
+
     openWaitToJoin() {
         this.waitDialog.open(WaitingPlayerTwoComponent, {
             disableClose: true,
         });
     }
+
     randomJoin() {
         const mode2990Rooms = this.clientSocketHandler.allRooms.filter((room) => room.mode2990 === true);
         const classicModeRooms = this.clientSocketHandler.allRooms.filter((room) => room.mode2990 === false);

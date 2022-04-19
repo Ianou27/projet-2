@@ -89,7 +89,7 @@ export class ClientSocketHandler {
         this.socketService.socket.on('connect', () => {
             this.errorHandler = '';
         });
-        this.socketService.on('connect_error', (err: Error) => {
+        this.socketService.on('connect_error', () => {
             this.errorHandler = 'IMPOSSIBLE DE SE CONNECTER AU SERVEUR';
         });
         this.socketService.socket.on('tileHolder', (letters: Tile[], goalPlayer: GoalInformations[]) => {

@@ -1,4 +1,4 @@
-import { BotType } from './botType';
+import { BotType } from './bot-type';
 import { Orientation } from './orientation';
 import { Tile } from './tile/Tile';
 
@@ -54,7 +54,7 @@ export type VirtualPlayer = {
 };
 
 export type Scoring = {
-    id: string;
+    id?: string;
     player: string;
     points: number;
 };

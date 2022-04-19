@@ -7,7 +7,7 @@ import { DownloadDialogComponent } from '@app/components/download-dialog/downloa
 import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
 import { ONE_SECOND_MS } from './../../../../../common/constants/general-constants';
 import { Dic, VirtualPlayer } from './../../../../../common/types';
-import { MyErrorStateMatcher } from './../../classes/errorStateMatcher/error-state-matcher';
+import { MyErrorStateMatcher } from './../../classes/my-error-state-matcher/my-error-state-matcher';
 
 @Component({
     selector: 'app-admin-page',
@@ -21,15 +21,15 @@ export class AdminPageComponent implements OnInit {
     displayedColumns: string[] = ['date', 'duration', 'player1', 'player1Points', 'player2', 'player2Points', 'gameMode'];
     displayedNames: string[] = [];
     displayedFixedNames: string[] = [];
-    selectedFile: string;
+    selectedFile: string = '';
     newName: string = '';
     defaultBeginnerNames: VirtualPlayer[] = [];
     addedBeginnerNames: VirtualPlayer[] = [];
     defaultExpertNames: VirtualPlayer[] = [];
     addedExpertNames: VirtualPlayer[] = [];
     resetSelected: string = 'all';
-    titleValue: string = '';
-    descriptionValue: string = '';
+    titleValue: string = 'default dictionary';
+    descriptionValue: string = 'Description de base';
     formModify: FormGroup;
     formAdd: FormGroup;
     alphaNumericRegex = /^[a-zA-Z]*$/;
@@ -39,8 +39,6 @@ export class AdminPageComponent implements OnInit {
     constructor(public socketHandler: ClientSocketHandler, public snackBar: MatSnackBar, public dialog: MatDialog) {
         socketHandler.connect();
         socketHandler.getAdminPageInfo();
-        this.titleValue = 'default dictionary';
-        this.descriptionValue = 'Description de base';
     }
 
     ngOnInit(): void {
@@ -52,15 +50,13 @@ export class AdminPageComponent implements OnInit {
         });
     }
 
-    myErrorModify = (controlName: string, errorName: string) => {
-        // eslint-disable-next-line no-invalid-this
+    myErrorModify(controlName: string, errorName: string) {
         return this.formModify.controls[controlName].hasError(errorName);
-    };
+    }
 
-    myErrorAdd = (controlName: string, errorName: string) => {
-        // eslint-disable-next-line no-invalid-this
+    myErrorAdd(controlName: string, errorName: string) {
         return this.formAdd.controls[controlName].hasError(errorName);
-    };
+    }
 
     onTabChange(event: MatTabChangeEvent) {
         const tab = event.tab.textLabel;

@@ -2,7 +2,8 @@
     <a mat-icon-button href="">
         <mat-icon>home</mat-icon>
     </a>
-    <span [style.font-size.px]="30">Administration</span> <span class="error" *ngIf="socketHandler.errorHandler ">  {{socketHandler.errorHandler}}</span>
+    <span [style.font-size.px]="30">Administration</span>
+    <span class="error" *ngIf="socketHandler.errorHandler"> {{ socketHandler.errorHandler }}</span>
 </mat-toolbar>
 
 <section>
@@ -114,9 +115,9 @@
                             formControlName="modifiedName"
                         />
                         <mat-hint align="end">Minimum 3 lettres</mat-hint>
-                        <mat-error *ngIf="myErrorModify('modifiedName', 'required')">Veuillez entrer un nom</mat-error>
-                        <mat-error *ngIf="myErrorModify('modifiedName', 'minlength')">Veuillez entrer un nom d'au moins 3 lettres</mat-error>
-                        <mat-error *ngIf="myErrorModify('modifiedName', 'pattern')">Pas de chiffres et/ou caractères spéciaux</mat-error>
+                        <mat-error *ngIf="this.myErrorModify('modifiedName', 'required')">Veuillez entrer un nom</mat-error>
+                        <mat-error *ngIf="this.myErrorModify('modifiedName', 'minlength')">Veuillez entrer un nom d'au moins 3 lettres</mat-error>
+                        <mat-error *ngIf="this.myErrorModify('modifiedName', 'pattern')">Pas de chiffres et/ou caractères spéciaux</mat-error>
                     </mat-form-field>
                     <button
                         mat-stroked-button
@@ -140,9 +141,9 @@
                         <mat-label>Nom du joueur virtuel</mat-label>
                         <input matInput placeholder="Bob" [(ngModel)]="virtualPlayerName" [errorStateMatcher]="matcher" formControlName="newName" />
                         <mat-hint align="end">Assurez-vous que votre nom ne figure pas déjà dans une des 2 listes</mat-hint>
-                        <mat-error *ngIf="myErrorAdd('newName', 'required')">Veuillez entrer un nom</mat-error>
-                        <mat-error *ngIf="myErrorAdd('newName', 'minlength')">Veuillez entrer un nom d'au moins 3 lettres</mat-error>
-                        <mat-error *ngIf="myErrorAdd('newName', 'pattern')">Pas de chiffres et/ou caractères spéciaux</mat-error>
+                        <mat-error *ngIf="this.myErrorAdd('newName', 'required')">Veuillez entrer un nom</mat-error>
+                        <mat-error *ngIf="this.myErrorAdd('newName', 'minlength')">Veuillez entrer un nom d'au moins 3 lettres</mat-error>
+                        <mat-error *ngIf="this.myErrorAdd('newName', 'pattern')">Pas de chiffres et/ou caractères spéciaux</mat-error>
                     </mat-form-field>
                     <button mat-stroked-button [disabled]="formAdd.invalid" (click)="addNewPlayer(); showCard = !showCard">Ajouter</button>
                     <button mat-stroked-button (click)="showCard = !showCard">Fermer</button>
@@ -170,7 +171,7 @@
                     <!-- Duration Column -->
                     <ng-container matColumnDef="duration">
                         <th mat-header-cell *matHeaderCellDef>Durée</th>
-                        <td mat-cell *matCellDef="let element">{{ element.duration |formatTime}}</td>
+                        <td mat-cell *matCellDef="let element">{{ element.duration | formatTime }}</td>
                     </ng-container>
                     <!-- Player1 Column -->
                     <ng-container matColumnDef="player1">

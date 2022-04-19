@@ -21,9 +21,9 @@
                                         required
                                     />
                                     <mat-hint align="end">Minimum 3 lettres</mat-hint>
-                                    <mat-error *ngIf="myError('name', 'required')">Veuillez entrer un nom</mat-error>
-                                    <mat-error *ngIf="myError('name', 'minLength')">Veuillez entrer un nom d'au moins 3 lettre</mat-error>
-                                    <mat-error *ngIf="myError('name', 'pattern')">Pas de chiffres et/ou caractères spéciaux</mat-error>
+                                    <mat-error *ngIf="this.myError('name', 'required')">Veuillez entrer un nom</mat-error>
+                                    <mat-error *ngIf="this.myError('name', 'minLength')">Veuillez entrer un nom d'au moins 3 lettre</mat-error>
+                                    <mat-error *ngIf="this.myError('name', 'pattern')">Pas de chiffres et/ou caractères spéciaux</mat-error>
                                 </mat-form-field>
                             </td>
                             <td>
@@ -98,9 +98,9 @@
                                     required
                                 />
                                 <mat-hint align="end">Minimum 3 lettres</mat-hint>
-                                <mat-error *ngIf="myError('name', 'required')">Veuillez entrer un nom</mat-error>
-                                <mat-error *ngIf="myError('name', 'minLength')">Veuillez entrer un nom d'au moins 3 lettre</mat-error>
-                                <mat-error *ngIf="myError('name', 'pattern')">Pas de chiffres et/ou caractères spéciaux</mat-error>
+                                <mat-error *ngIf="this.myError('name', 'required')">Veuillez entrer un nom</mat-error>
+                                <mat-error *ngIf="this.myError('name', 'minLength')">Veuillez entrer un nom d'au moins 3 lettre</mat-error>
+                                <mat-error *ngIf="this.myError('name', 'pattern')">Pas de chiffres et/ou caractères spéciaux</mat-error>
                             </mat-form-field>
                         </mat-card-content>
                         <h2>Minuterie</h2>
@@ -179,9 +179,9 @@
                                             required
                                         />
                                         <mat-hint align="end">Minimum 3 lettres</mat-hint>
-                                        <mat-error *ngIf="myError('name', 'required')">Veuillez entrer un nom</mat-error>
-                                        <mat-error *ngIf="myError('name', 'minLength')">Veuillez entrer un nom d'au moins 3 lettres</mat-error>
-                                        <mat-error *ngIf="myError('name', 'pattern')">Pas de chiffres et/ou caractères spéciaux</mat-error>
+                                        <mat-error *ngIf="this.myError('name', 'required')">Veuillez entrer un nom</mat-error>
+                                        <mat-error *ngIf="this.myError('name', 'minLength')">Veuillez entrer un nom d'au moins 3 lettres</mat-error>
+                                        <mat-error *ngIf="this.myError('name', 'pattern')">Pas de chiffres et/ou caractères spéciaux</mat-error>
                                     </mat-form-field>
                                 </form>
                                 <p><b>Choisir un nom différent que celui du joueur 1</b></p>

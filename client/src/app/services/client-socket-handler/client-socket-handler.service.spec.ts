@@ -5,12 +5,20 @@
 import { TestBed } from '@angular/core/testing';
 import { SocketTestHelper } from '@app/classes/socket-test-helper';
 import { Socket } from 'socket.io-client';
-// eslint-disable-next-line no-restricted-imports
-import { Tile } from '../../../../../common/tile/Tile';
 import { LetterScore } from './../../../../../common/assets/reserve-letters';
-import { BotType } from './../../../../../common/botType';
+import { BotType } from './../../../../../common/bot-type';
 import { GoalInformations } from './../../../../../common/constants/goal-information';
-import { CreateRoomInformations, CreateSoloRoomInformations, InfoToJoin, Message, Room } from './../../../../../common/types';
+import { Tile } from './../../../../../common/tile/Tile';
+import {
+    CreateRoomInformations,
+    CreateSoloRoomInformations,
+    Dic,
+    InfoToJoin,
+    Message,
+    Room,
+    Scoring,
+    VirtualPlayer,
+} from './../../../../../common/types';
 import { ClientSocketHandler } from './client-socket-handler.service';
 
 describe('ChatService', () => {
@@ -567,24 +575,24 @@ describe('ChatService', () => {
         });
 
         it('should handle getBestScore event and set both array to their own specific values', () => {
-            const bestScoresClassic: unknown[] = [
+            const bestScoresClassic: Scoring[] = [
                 {
                     player: 'Luffy',
-                    score: 20,
+                    points: 20,
                 },
                 {
                     player: 'Zoro',
-                    score: 18,
+                    points: 18,
                 },
             ];
-            const bestScoresLog: unknown[] = [
+            const bestScoresLog: Scoring[] = [
                 {
                     player: 'Nami',
-                    score: 15,
+                    points: 15,
                 },
                 {
                     player: 'TonyTonyChopper',
-                    score: 10,
+                    points: 10,
                 },
             ];
             socketTestHelper.peerEmitTwoParams('getBestScore', bestScoresClassic, bestScoresLog);
@@ -593,11 +601,21 @@ describe('ChatService', () => {
         });
 
         it('should get admin page related info', () => {
-            const dictionaryNameList = ['Dictionnaire1', 'Dictionnaire2'];
-            const virtualPlayerNames = ['Riad', 'Richard'];
+            const dictionaryNameList: Dic[] = [
+                {
+                    title: 'default-dictionary',
+                    description: 'Description de base',
+                },
+            ];
+            const virtualPlayerNames: VirtualPlayer[] = [
+                {
+                    name: 'Richard',
+                    type: 'Expert',
+                },
+            ];
             const history: any[] = ['history'];
             socketTestHelper.peerEmitThreeParams('getAdminInfo', dictionaryNameList, history, virtualPlayerNames);
-            expect(service.dictInfoList).toEqual(dictionaryNameList);
+            expect(service.dictInfoList[0]).toEqual(dictionaryNameList[0]);
             expect(service.virtualPlayerNameList).toEqual(virtualPlayerNames);
             expect(service.gameHistory).toEqual(history);
         });

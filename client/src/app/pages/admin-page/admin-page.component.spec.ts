@@ -149,7 +149,8 @@ describe('AdminPageComponent', () => {
     });
 
     it('reload page should call reload', () => {
-        const reloadSpy = spyOn<any>(window.location, 'reload').and.stub();
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        const reloadSpy = spyOn<any>(window.location, 'reload').and.callFake(() => {});
         component.reloadPage();
         expect(reloadSpy).toHaveBeenCalled();
     });

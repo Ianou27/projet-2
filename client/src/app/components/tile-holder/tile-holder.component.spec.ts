@@ -1,3 +1,5 @@
+/* eslint-disable dot-notation */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 /* eslint-disable max-lines */
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
@@ -67,9 +69,7 @@ describe('TileHolderComponent', () => {
         const buttonEvent = {
             key: expectedKey,
         } as KeyboardEvent;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const findIndexSpy = spyOn<any>(component, 'findLetterIndexes');
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const addOnKeySpy = spyOn<any>(component, 'addIdOnKey');
         component.buttonDetect(buttonEvent);
         expect(findIndexSpy).toHaveBeenCalled();
@@ -85,7 +85,6 @@ describe('TileHolderComponent', () => {
         const buttonEvent = {
             key: expectedKey,
         } as KeyboardEvent;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const handleSideSpy = spyOn<any>(component, 'handleSide');
         component.buttonDetect(buttonEvent);
         fixture.whenStable().then(() => {
@@ -103,7 +102,7 @@ describe('TileHolderComponent', () => {
         const buttonEvent = {
             key: expectedKey,
         } as KeyboardEvent;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
         const handleSideSpy = spyOn<any>(component, 'handleSide');
         component.buttonDetect(buttonEvent);
         fixture.whenStable().then(() => {
@@ -121,7 +120,6 @@ describe('TileHolderComponent', () => {
         const buttonEvent = {
             key: expectedKey,
         } as KeyboardEvent;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const clearIdSpy = spyOn<any>(component, 'clearAllIds');
         component.buttonDetect(buttonEvent);
         fixture.whenStable().then(() => {
@@ -146,7 +144,6 @@ describe('TileHolderComponent', () => {
     it('right clicking on a tile should change its id', (done) => {
         const tile = fixture.debugElement.nativeElement.children[0].children[0].children[0] as HTMLElement;
         const exchangeSpy = spyOn(component, 'addExchangeId').and.callThrough();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const clearSelectedSpy = spyOn<any>(component, 'clearSelectedId');
         tile.dispatchEvent(new MouseEvent('contextmenu'));
         fixture.whenStable().then(() => {
@@ -180,7 +177,6 @@ describe('TileHolderComponent', () => {
         const tile = fixture.debugElement.nativeElement.children[0].children[0].children[0] as HTMLElement;
         const cancel = fixture.debugElement.nativeElement.children[0].children[1].children[0] as HTMLElement;
         const clearSpy = spyOn(component, 'clearAllIds').and.callThrough();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const emptySpy = spyOn<any>(component, 'emptyArray');
         cancel.dispatchEvent(new MouseEvent('mousedown'));
         fixture.whenStable().then(() => {
@@ -200,7 +196,6 @@ describe('TileHolderComponent', () => {
         fixture.debugElement.nativeElement.children[0].children[1].children[1].disabled = false;
         const exchange = fixture.debugElement.nativeElement.children[0].children[1].children[1] as HTMLElement;
         const exchangeSpy = spyOn(component, 'exchange').and.callThrough();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const emptySpy = spyOn<any>(component, 'emptyArray');
         exchange.dispatchEvent(new MouseEvent('mousedown'));
         fixture.whenStable().then(() => {
@@ -237,7 +232,6 @@ describe('TileHolderComponent', () => {
         const tile = fixture.debugElement.nativeElement.children[0].children[0].children[0] as HTMLElement;
         tile.dispatchEvent(new MouseEvent('contextmenu'));
         fixture.whenStable().then(() => {
-            // eslint-disable-next-line dot-notation
             expect(component['checkForID']()).toEqual(true);
             done();
         });
@@ -245,7 +239,6 @@ describe('TileHolderComponent', () => {
 
     it('checkForId() should return false if tiles have no id', (done) => {
         fixture.whenStable().then(() => {
-            // eslint-disable-next-line dot-notation
             expect(component['checkForID']()).toEqual(false);
             done();
         });
@@ -254,11 +247,8 @@ describe('TileHolderComponent', () => {
     it('clearAllIds() should remove ids and  reset classes for all tiles', (done) => {
         const tile = fixture.debugElement.nativeElement.children[0].children[0].children[0] as HTMLElement;
         tile.dispatchEvent(new MouseEvent('contextmenu'));
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const emptySpy = spyOn<any>(component, 'emptyArray');
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const checkSpy = spyOn<any>(component, 'checkForID');
-        // eslint-disable-next-line dot-notation
         component['clearAllIds']();
         fixture.whenStable().then(() => {
             expect(emptySpy).toHaveBeenCalled();
@@ -272,7 +262,6 @@ describe('TileHolderComponent', () => {
     it('clearSelectedId() should remove id and reset class', (done) => {
         const tile = fixture.debugElement.nativeElement.children[0].children[0].children[0] as HTMLElement;
         tile.click();
-        // eslint-disable-next-line dot-notation
         component['clearSelectedId']();
         fixture.whenStable().then(() => {
             expect(tile.id).toEqual('');
@@ -283,16 +272,12 @@ describe('TileHolderComponent', () => {
 
     it('handleSide() should call endToEnd() if tile is at extremity', (done) => {
         const tile = fixture.debugElement.nativeElement.children[0].children[0].children[0] as HTMLElement;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const extremitySpy = spyOn<any>(component, 'isAtExtremity').and.callThrough(); // need to call through to get the answer for the if
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const endToEndSpy = spyOn<any>(component, 'endToEnd');
         tile.click();
         swapper = document.getElementById('swap-selected') as HTMLElement;
-        // eslint-disable-next-line dot-notation
         component['handleSide']('Left', swapper);
         fixture.whenStable().then(() => {
-            // eslint-disable-next-line dot-notation
             expect(extremitySpy).toHaveBeenCalled();
             expect(endToEndSpy).toHaveBeenCalled();
             expect(endToEndSpy).toHaveBeenCalledWith(swapper);
@@ -302,16 +287,12 @@ describe('TileHolderComponent', () => {
 
     it('handleSide() should call swap() if tile is not at extremity', (done) => {
         const tile = fixture.debugElement.nativeElement.children[0].children[0].children[2] as HTMLElement;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const extremitySpy = spyOn<any>(component, 'isAtExtremity').and.callThrough(); // need to call through to get the answer for the if
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const swapSpy = spyOn<any>(component, 'swap');
         tile.click();
         swapper = document.getElementById('swap-selected') as HTMLElement;
-        // eslint-disable-next-line dot-notation
         component['handleSide']('Left', swapper);
         fixture.whenStable().then(() => {
-            // eslint-disable-next-line dot-notation
             expect(extremitySpy).toHaveBeenCalled();
             expect(swapSpy).toHaveBeenCalled();
             done();
@@ -327,10 +308,8 @@ describe('TileHolderComponent', () => {
             insertBeforeSpy = spyOn(swapper.parentElement, 'insertBefore');
         }
         component.buttonPressed = 'ArrowRight';
-        // eslint-disable-next-line dot-notation
         component['swap']();
         fixture.whenStable().then(() => {
-            // eslint-disable-next-line dot-notation
             expect(insertBeforeSpy).toHaveBeenCalled();
             done();
         });
@@ -340,10 +319,8 @@ describe('TileHolderComponent', () => {
         const tile = fixture.debugElement.nativeElement.children[0].children[0].children[1] as HTMLElement;
         tile.click();
         component.buttonPressed = 'ArrowLeft';
-        // eslint-disable-next-line dot-notation
         component['swap']();
         fixture.whenStable().then(() => {
-            // eslint-disable-next-line dot-notation
             expect(component['getLettersOnHolder']()).toEqual(['B', 'A', 'C', 'D', 'E', 'F', 'G']);
             done();
         });
@@ -353,10 +330,8 @@ describe('TileHolderComponent', () => {
         const tile = fixture.debugElement.nativeElement.children[0].children[0].children[1] as HTMLElement;
         tile.click();
         component.buttonPressed = 'ArrowRight';
-        // eslint-disable-next-line dot-notation
         component['swap']();
         fixture.whenStable().then(() => {
-            // eslint-disable-next-line dot-notation
             expect(component['getLettersOnHolder']()).toEqual(['A', 'C', 'B', 'D', 'E', 'F', 'G']);
             done();
         });
@@ -371,10 +346,8 @@ describe('TileHolderComponent', () => {
             insertBeforeSpy = spyOn(swapper.parentElement, 'insertBefore');
         }
         component.buttonPressed = 'ArrowRight';
-        // eslint-disable-next-line dot-notation
         component['endToEnd'](swapper);
         fixture.whenStable().then(() => {
-            // eslint-disable-next-line dot-notation
             expect(insertBeforeSpy).toHaveBeenCalled();
             done();
         });
@@ -385,10 +358,8 @@ describe('TileHolderComponent', () => {
         tile.click();
         swapper = document.getElementById('swap-selected') as HTMLElement;
         component.buttonPressed = 'ArrowLeft';
-        // eslint-disable-next-line dot-notation
         component['endToEnd'](swapper);
         fixture.whenStable().then(() => {
-            // eslint-disable-next-line dot-notation
             expect(component['getLettersOnHolder']()).toEqual(['B', 'C', 'D', 'E', 'F', 'G', 'A']);
             done();
         });
@@ -399,10 +370,8 @@ describe('TileHolderComponent', () => {
         tile.click();
         swapper = document.getElementById('swap-selected') as HTMLElement;
         component.buttonPressed = 'ArrowRight';
-        // eslint-disable-next-line dot-notation
         component['endToEnd'](swapper);
         fixture.whenStable().then(() => {
-            // eslint-disable-next-line dot-notation
             expect(component['getLettersOnHolder']()).toEqual(['G', 'A', 'B', 'C', 'D', 'E', 'F']);
             done();
         });
@@ -410,53 +379,43 @@ describe('TileHolderComponent', () => {
 
     it('isAtExtremity() should return Left if element is at the left extremity of the tile holder', () => {
         const tile = fixture.debugElement.nativeElement.children[0].children[0].children[0] as HTMLElement;
-        // eslint-disable-next-line dot-notation
         expect(component['isAtExtremity'](tile)).toEqual('Left');
     });
 
     it('isAtExtremity() should return Right if element is at the right extremity of the tile holder', () => {
         const tile = fixture.debugElement.nativeElement.children[0].children[0].children[6] as HTMLElement;
-        // eslint-disable-next-line dot-notation
         expect(component['isAtExtremity'](tile)).toEqual('Right');
     });
 
     it('isAtExtremity() should return empty string if element is not at an extremity of the tile holder', () => {
         const tile = fixture.debugElement.nativeElement.children[0].children[0].children[3] as HTMLElement;
-        // eslint-disable-next-line dot-notation
         expect(component['isAtExtremity'](tile)).toEqual('');
     });
 
     it('getLettersOnHolder() should return the letters on the tile holder', () => {
-        // eslint-disable-next-line dot-notation
         expect(component['getLettersOnHolder']()).toEqual(['A', 'B', 'C', 'D', 'E', 'F', 'G']);
     });
 
     it('findLetterIndexes() should return all indexes of a letter if in tile holder', () => {
-        // eslint-disable-next-line dot-notation
         expect(component['findLetterIndexes']('A')).toEqual([0]);
     });
 
     it('findLetterIndexes() should return empty array if letter not on tile holder', () => {
-        // eslint-disable-next-line dot-notation
         expect(component['findLetterIndexes']('Z')).toEqual([]);
     });
 
     it('findLetterIndexes() should call getLettersOnHolder()', () => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const getLetterSpy = spyOn<any>(component, 'getLettersOnHolder').and.callThrough(); // need to call through to get the letters for the method
-        // eslint-disable-next-line dot-notation
+        const getLetterSpy = spyOn<any>(component, 'getLettersOnHolder').and.callThrough();
         component['findLetterIndexes']('A');
         expect(getLetterSpy).toHaveBeenCalled();
     });
 
     it('addIdOnKey() should add an id to the tile associated with letter and call getLastKey', () => {
         component.buttonPressed = 'a';
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const lastKeySpy = spyOn<any>(component, 'getLastKey').and.callFake(() => {
             return 'a';
         });
         const firstTile = fixture.debugElement.nativeElement.children[0].children[0].children[0] as HTMLElement;
-        // eslint-disable-next-line dot-notation
         component['addIdOnKey']([0]);
         expect(component.count).toEqual(0);
         expect(lastKeySpy).toHaveBeenCalled();
@@ -468,7 +427,6 @@ describe('TileHolderComponent', () => {
         tiles = [];
         const letters = ['A', 'A', 'A', 'D', 'E', 'F', 'G'];
         component.buttonPressed = 'a';
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(component, 'getLastKey').and.callFake(() => {
             return 'a';
         });
@@ -479,7 +437,6 @@ describe('TileHolderComponent', () => {
             tiles.push(tile);
         }
         const firstTile = fixture.debugElement.nativeElement.children[0].children[0].children[0] as HTMLElement;
-        // eslint-disable-next-line dot-notation
         component['addIdOnKey']([0, 1, 2]);
         expect(component.count).toEqual(1);
         expect(firstTile.id).toEqual('swap-selected');
@@ -490,7 +447,6 @@ describe('TileHolderComponent', () => {
         tiles = [];
         const letters = ['A', 'A', 'A', 'D', 'E', 'F', 'G'];
         component.buttonPressed = 'a';
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(component, 'getLastKey').and.callFake(() => {
             return 'a';
         });
@@ -504,7 +460,6 @@ describe('TileHolderComponent', () => {
         firstTile.dispatchEvent(new MouseEvent('contextmenu'));
         fixture.detectChanges();
         const secondTile = fixture.debugElement.nativeElement.children[0].children[0].children[1] as HTMLElement;
-        // eslint-disable-next-line dot-notation
         component['addIdOnKey']([0, 1, 2]);
         expect(component.count).toEqual(2);
         expect(secondTile.id).toEqual('swap-selected');
@@ -515,7 +470,6 @@ describe('TileHolderComponent', () => {
         tiles = [];
         const letters = ['A', 'A', 'A', 'D', 'E', 'F', 'G'];
         component.buttonPressed = 'a';
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(component, 'getLastKey').and.callFake(() => {
             return 'z';
         });
@@ -526,7 +480,6 @@ describe('TileHolderComponent', () => {
             tiles.push(tile);
         }
         const firstTile = fixture.debugElement.nativeElement.children[0].children[0].children[0] as HTMLElement;
-        // eslint-disable-next-line dot-notation
         component['addIdOnKey']([0, 1, 2]);
         expect(component.count).toEqual(1);
         expect(firstTile.id).toEqual('swap-selected');
@@ -535,21 +488,18 @@ describe('TileHolderComponent', () => {
 
     it('getLastKey() should return the last key that was pressed', () => {
         component.lastKeys = ['a'];
-        // eslint-disable-next-line dot-notation
         expect(component['getLastKey']()).toBe('a');
     });
 
     it('getLastKey() should call shift if the lastKeys array length is bigger than 2', () => {
         component.lastKeys = ['a', 'a', 'a'];
         const shiftSpy = spyOn(component.lastKeys, 'shift');
-        // eslint-disable-next-line dot-notation
         component['getLastKey']();
         expect(shiftSpy).toHaveBeenCalled();
     });
 
     it('emptyArray() should empty the lettersToExchange array', () => {
         component.lettersToExchange = ['A', 'B', 'C'];
-        // eslint-disable-next-line dot-notation
         component['emptyArray']();
         expect(component.lettersToExchange).toEqual([]);
     });
