@@ -140,7 +140,6 @@ export class VirtualPlayer {
         const playerLetters = game.playerTurn().lettersToStringArray();
         const placementPossible = this.findAllPositionGameBoard(game).slice(0, NUMBER_WORDS_LIMIT_BOT);
         let commandPlacements: PlacementScore[] = [];
-
         if (placementPossible.length === 0) return [];
         for (const placement of placementPossible) {
             const letters = playerLetters.concat(placement.tile.letter);

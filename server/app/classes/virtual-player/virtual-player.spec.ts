@@ -299,4 +299,28 @@ describe('Virtual Player', () => {
             expect(lettersPlayer).includes(element.toUpperCase());
         });
     });
+
+    it('method findAllPlacementCommands should stop when commandPlacements is 15 of length', () => {
+        const array: PlacementScore[] = [];
+        for (let i = 0; i < 20; i++) {
+            array.push({ score: 12, command: '!placer h8h pose' });
+        }
+        sinon.replace(VirtualPlayer, 'findPlacementCommand', () => {
+            return array;
+        });
+        const tile: Tile = new Tile(CaseProperty.Normal, 0, 0);
+        const tilePlacementPossible: TilePlacementPossible[] = [
+            {
+                tile,
+                orientation: Orientation.h,
+            },
+        ];
+        sinon.replace(VirtualPlayer, 'findAllPositionGameBoard', () => {
+            return tilePlacementPossible;
+        });
+        const result = VirtualPlayer.findAllPlacementCommands(game);
+        result.forEach((element) => {
+            expect(array).to.include(element);
+        });
+    });
 });
