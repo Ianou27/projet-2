@@ -206,7 +206,7 @@ describe('Virtual Player', () => {
         assert(spy.called);
     });
 
-    it('method findLettersPosition should return the new tile place by the command place', () => {
+    it('method findLettersPosition should return the new tile place by the command place with letters on board', () => {
         const placementInformations: PlacementInformations = {
             row: 7,
             column: 7,
@@ -234,6 +234,40 @@ describe('Virtual Player', () => {
 
         expect(result[4].letter).equal(placementInformations.letters[4]);
         expect(result[4].positionX).equal(placementInformations.row + 4);
+        expect(result[4].positionY).equal(placementInformations.column);
+    });
+
+    it('method findLettersPosition should return the new tile place by the command place', () => {
+        game.gameBoard.cases[7][7].letter = 'A';
+        game.gameBoard.cases[7][7].value = 1;
+
+        const placementInformations: PlacementInformations = {
+            row: 7,
+            column: 7,
+            letters: ['A', 'R', 'B', 'R', 'E'],
+            orientation: Orientation.h,
+            numberLetters: 5,
+        };
+        const result = VirtualPlayer.findLettersPosition(placementInformations, game);
+        expect(result.length).equal(placementInformations.numberLetters);
+        expect(result[0].letter).equal(placementInformations.letters[0]);
+        expect(result[0].positionX).equal(placementInformations.row + 1);
+        expect(result[0].positionY).equal(placementInformations.column);
+
+        expect(result[1].letter).equal(placementInformations.letters[1]);
+        expect(result[1].positionX).equal(placementInformations.row + 2);
+        expect(result[1].positionY).equal(placementInformations.column);
+
+        expect(result[2].letter).equal(placementInformations.letters[2]);
+        expect(result[2].positionX).equal(placementInformations.row + 3);
+        expect(result[2].positionY).equal(placementInformations.column);
+
+        expect(result[3].letter).equal(placementInformations.letters[3]);
+        expect(result[3].positionX).equal(placementInformations.row + 4);
+        expect(result[3].positionY).equal(placementInformations.column);
+
+        expect(result[4].letter).equal(placementInformations.letters[4]);
+        expect(result[4].positionX).equal(placementInformations.row + 5);
         expect(result[4].positionY).equal(placementInformations.column);
     });
 
