@@ -48,6 +48,7 @@ export type BestScore = {
 };
 
 export type VirtualPlayer = {
+    id?: string;
     name: string;
     type: string;
 };

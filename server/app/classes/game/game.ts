@@ -73,8 +73,9 @@ export class Game {
 
     gameStateUpdate() {
         const endGameValidation =
-            this.gameState.passesCount === MAXIMUM_PASSES_COUNT ||
-            (this.reserveLetters.letters.length === 0 && (this.player1.getNumberLetters() === 0 || this.player2.getNumberLetters() === 0));
+            (this.gameState.passesCount === MAXIMUM_PASSES_COUNT ||
+                (this.reserveLetters.letters.length === 0 && (this.player1.getNumberLetters() === 0 || this.player2.getNumberLetters() === 0))) &&
+            !this.gameState.gameFinished;
         if (endGameValidation) {
             this.endGame();
             this.setWinner();
@@ -188,10 +189,9 @@ export class Game {
                 this.passTurn();
                 this.sio.to(this.roomName).emit('roomMessage', {
                     username: 'Server',
-                    message: playerBot.user.username + ' a passé son tour ',
+                    message: playerBot.user.username + ' a passé son tour',
                     player: 'server',
                 });
-                this.sio.to(this.roomName).emit('modification', this.gameBoard.cases, this.playerTurn().name);
                 break;
             }
             case CommandType.place: {
@@ -204,11 +204,13 @@ export class Game {
                     message: playerBot.user.username + ' a placé les lettres ' + command[2] + ' en ' + command[1],
                     player: 'server',
                 });
-                this.sio.to(this.roomName).emit('modification', this.gameBoard.cases, this.playerTurn().name, this.goals);
+                this.sio.to(this.roomName).emit('modification', this.gameBoard.cases, this.playerTurn().name);
                 this.sio.to(this.roomName).emit('updatePoint', playerBotString, playerBot.points);
                 break;
             }
         }
+        this.sio.to(this.player1.user.id).emit('tileHolder', this.player1.getLetters(), RoomManager.getGoalsPlayer(this, this.player1));
+        this.sio.to(this.player2.user.id).emit('tileHolder', this.player2.getLetters(), RoomManager.getGoalsPlayer(this, this.player2));
     }
     playerTurn(): Player {
         if (this.player1.getHisTurn()) {

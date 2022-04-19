@@ -26,4 +26,4 @@ export interface Bot extends WithId<Document> {
     id: ObjectId;
     type: string;
     name: string;
-};
+}

@@ -5,7 +5,17 @@ import { CommandType } from './../../../../../common/command-type';
 import { NUMBER_MAXIMUM_CLUE_COMMAND } from './../../../../../common/constants/general-constants';
 import { GoalInformations } from './../../../../../common/constants/goal-information';
 import { Tile } from './../../../../../common/tile/Tile';
-import { CreateRoomInformations, CreateSoloRoomInformations, Dic, InfoToJoin, Message, Room, Scoring } from './../../../../../common/types';
+import {
+    CreateRoomInformations,
+    CreateSoloRoomInformations,
+    Dic,
+    GameHistory,
+    InfoToJoin,
+    Message,
+    Room,
+    Scoring,
+    VirtualPlayer,
+} from './../../../../../common/types';
 import { INITIAL_NUMBER_LETTERS_RESERVE, NUMBER_LETTER_TILEHOLDER } from './../../constants/general-constants';
 import { BoardService } from './../board/board.service';
 import { SocketClientService } from './../socket-client/socket-client.service';
@@ -47,9 +57,9 @@ export class ClientSocketHandler {
     numberOfRoomsClassic: number = 0;
     numberOfRoomsLog: number = 0;
     goals: GoalInformations[];
-    dictInfoList: any[] = [];
-    virtualPlayerNameList: any[] = [];
-    gameHistory: any[] = [];
+    dictInfoList: Dic[] = [];
+    virtualPlayerNameList: VirtualPlayer[] = [];
+    gameHistory: GameHistory[] = [];
     dictionaryToDownload: string = '';
     errorHandler: string = '';
 
@@ -84,10 +94,9 @@ export class ClientSocketHandler {
             this.errorHandler = 'IMPOSSIBLE DE SE CONNECTER AU SERVEUR';
         });
         this.socketService.socket.on('tileHolder', (letters: Tile[], goalPlayer: GoalInformations[]) => {
-            this.tileHolderService.tileHolder = letters;
+            if (letters) this.tileHolderService.tileHolder = letters;
             this.goals = goalPlayer;
         });
-
         this.socketService.socket.on('modification', (updatedBoard: Tile[][], playerTurn: string) => {
             this.boardService.board = updatedBoard;
             if (playerTurn === 'player1') {
@@ -98,7 +107,6 @@ export class ClientSocketHandler {
                 this.player2Turn = 'tour';
             }
         });
-
         this.socketService.on('reserveLetters', (reserve: LetterScore) => {
             for (const letter in reserve) {
                 if (Object.prototype.hasOwnProperty.call(reserve, letter)) {
@@ -107,7 +115,6 @@ export class ClientSocketHandler {
                 }
             }
         });
-
         this.socketService.on('cluesMessage', (clues: string[]) => {
             if (clues.length < NUMBER_MAXIMUM_CLUE_COMMAND)
                 this.roomMessages.push({ player: '', username: '', message: 'Moins de 3 placements possibles' });
@@ -131,27 +138,22 @@ export class ClientSocketHandler {
         this.socketService.on('roomMessage', (roomMessage: Message) => {
             this.roomMessages.push(roomMessage);
         });
-
         this.socketService.on('rooms', (rooms: Room[]) => {
             this.allRooms = rooms;
             this.updateRoomView();
         });
-
         this.socketService.on('didJoin', (didJoin: boolean) => {
             this.playerJoined = didJoin;
         });
-
         this.socketService.socket.on('getBestScore', (scoresClassic: Scoring[], scoresLog: Scoring[]) => {
             this.bestClassicScores = scoresClassic;
             this.bestLog2990Scores = scoresLog;
         });
-
-        this.socketService.socket.on('getAdminInfo', (dictionaryNameList: any[], history: any[], virtualPlayerNames: any[]) => {
+        this.socketService.socket.on('getAdminInfo', (dictionaryNameList: Dic[], history: GameHistory[], virtualPlayerNames: VirtualPlayer[]) => {
             this.dictInfoList = dictionaryNameList;
             this.virtualPlayerNameList = virtualPlayerNames;
             this.gameHistory = history;
         });
-
         this.socketService.on('joining', (obj: InfoToJoin) => {
             this.gotAccepted = true;
             this.informationToJoin = obj;
@@ -202,7 +204,6 @@ export class ClientSocketHandler {
             }
         });
     }
-
     updateRooms() {
         this.socketService.send('updateRoom');
     }
@@ -230,7 +231,6 @@ export class ClientSocketHandler {
     async modifyVirtualPlayerNames(oldName: string, newName: string) {
         this.socketService.socket.emit('modifyVirtualPlayerNames', oldName, newName);
     }
-
     async getAdminPageInfo() {
         this.socketService.socket.emit('getAdminInfo');
     }
@@ -251,11 +251,9 @@ export class ClientSocketHandler {
     async resetBestScores() {
         this.socketService.socket.emit('resetBestScore');
     }
-
     createSoloGame(informations: CreateSoloRoomInformations) {
         this.socketService.socket.emit('createSoloGame', informations);
     }
-
     joinRoom() {
         this.socketService.socket.emit('joinRoom', this.informationToJoin.username, this.informationToJoin.roomObj);
         this.updateRooms();
@@ -298,10 +296,8 @@ export class ClientSocketHandler {
         } else if (this.roomMessage !== '' && this.roomMessage[0] !== '!') {
             this.socketService.send('roomMessage', this.roomMessage);
         }
-
         this.roomMessage = '';
     }
-
     askJoin(username: string, room: Room) {
         this.socketService.socket.emit('askJoin', username, room);
         this.gotRefused = false;
