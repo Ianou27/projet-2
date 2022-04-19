@@ -16,7 +16,7 @@ export class DictionaryManager {
             description: dictionary.description,
         };
         fs.writeFile('./assets/dictionaries/' + dictionary.title + '.json', JSON.stringify(dictionary), async () => {
-           
+            return;
         });
         await this.databaseService.insertDictionary(dictObject);
         sio.to(socketId).emit(
@@ -31,7 +31,7 @@ export class DictionaryManager {
     async deleteDictionary(title: string, sio: io.Server, socketId: string) {
         await this.databaseService.start();
         fs.unlink('./assets/dictionaries/' + title + '.json', async () => {
-            
+            return;
         });
         await this.databaseService.deleteDictionary(title);
         sio.to(socketId).emit(
@@ -55,16 +55,15 @@ export class DictionaryManager {
     async modifyDictionary(oldTitle: string, newTitle: string, description: string, sio: io.Server, socketId: string) {
         await this.databaseService.start();
         await fs.rename('./assets/dictionaries/' + oldTitle + '.json', './assets/dictionaries/' + newTitle + '.json', async () => {
-            
+            return;
         });
 
         await fs.readFile('./assets/dictionaries/' + newTitle + '.json', async (err, data) => {
-           
             const dictionary = JSON.parse(data.toString());
             dictionary.title = newTitle;
             dictionary.description = description;
             await fs.writeFile('./assets/dictionaries/' + newTitle + '.json', JSON.stringify(dictionary), async () => {
-                
+                return;
             });
         });
 
