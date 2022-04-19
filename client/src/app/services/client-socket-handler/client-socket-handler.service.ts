@@ -51,7 +51,7 @@ export class ClientSocketHandler {
     virtualPlayerNameList: any[] = [];
     gameHistory: any[] = [];
     dictionaryToDownload: string = '';
-    errorHandler:string = '';
+    errorHandler: string = '';
 
     constructor(public socketService: SocketClientService, public boardService: BoardService, public tileHolderService: TileHolderService) {}
 
@@ -77,12 +77,12 @@ export class ClientSocketHandler {
             if (board) this.boardService.board = board;
             if (tileHolder) this.tileHolderService.tileHolder = tileHolder;
         });
-        this.socketService.socket.on( 'connect', () => {
-            this.errorHandler='';
+        this.socketService.socket.on('connect', () => {
+            this.errorHandler = '';
         });
-        this.socketService.on("connect_error", (err:Error) => {
-           this.errorHandler='IMPOSSIBLE DE SE CONNECTER AU SERVEUR';
-          });
+        this.socketService.on('connect_error', (err: Error) => {
+            this.errorHandler = 'IMPOSSIBLE DE SE CONNECTER AU SERVEUR';
+        });
         this.socketService.socket.on('tileHolder', (letters: Tile[], goalPlayer: GoalInformations[]) => {
             this.tileHolderService.tileHolder = letters;
             this.goals = goalPlayer;
@@ -115,13 +115,11 @@ export class ClientSocketHandler {
                 this.roomMessages.push({ player: 'clue', username: '', message: clue });
             });
         });
-
         this.socketService.on('helpInformation', (commands: string[]) => {
             commands.forEach((command) => {
                 this.roomMessages.push({ player: '', username: '', message: command });
             });
         });
-
         this.socketService.socket.on('updateReserve', (reserve: number, player1: number, player2: number) => {
             this.player1ChevaletLetters = player1;
             this.player2ChevaletLetters = player2;
@@ -130,7 +128,6 @@ export class ClientSocketHandler {
         this.socketService.on('turn', (turn: boolean) => {
             this.myTurn = turn;
         });
-
         this.socketService.on('roomMessage', (roomMessage: Message) => {
             this.roomMessages.push(roomMessage);
         });
@@ -189,7 +186,6 @@ export class ClientSocketHandler {
                 roomObj,
             };
         });
-
         this.socketService.on('playerDc', () => {
             this.roomMessages.push({
                 username: 'Server',
@@ -198,7 +194,6 @@ export class ClientSocketHandler {
             });
             this.updateRooms();
         });
-        // possible de reduire quelque ligne en emettant tous les points possible de faire un interface
         this.socketService.socket.on('updatePoint', (player: string, point: number) => {
             if (player === 'player1') {
                 this.player1Point = point;
