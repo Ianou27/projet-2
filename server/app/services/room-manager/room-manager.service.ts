@@ -144,7 +144,6 @@ export class RoomManager {
     }
     deleteRoom(socketId: string) {
         const username = this.identification.getUsername(socketId);
-
         this.identification.rooms.forEach((element) => {
             if (username === element.player1) {
                 if (element.player2 === '') {

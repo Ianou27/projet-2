@@ -105,18 +105,18 @@ export class BoardComponent implements OnInit {
             if (posX === MAXIMUM_ROW_COLUMN) return;
             if (board.children[posX + 1].children[posY].children[0].getElementsByTagName('p')[0]) {
                 this.nextTile(board.children[posX + 1].children[posY].children[0]);
-            } else {
-                board.children[posX + 1].children[posY].children[0].setAttribute('class', 'writing');
-                board.children[posX + 1].children[posY].children[0].children[0].id = 'arrow-right';
+                return;
             }
+            board.children[posX + 1].children[posY].children[0].setAttribute('class', 'writing');
+            board.children[posX + 1].children[posY].children[0].children[0].id = 'arrow-right';
+            return;
+        }
+        if (posY === MAXIMUM_ROW_COLUMN) return;
+        if (board.children[posX].children[posY + 1].children[0].getElementsByTagName('p')[0]) {
+            this.nextTile(board.children[posX].children[posY + 1].children[0]);
         } else {
-            if (posY === MAXIMUM_ROW_COLUMN) return;
-            if (board.children[posX].children[posY + 1].children[0].getElementsByTagName('p')[0]) {
-                this.nextTile(board.children[posX].children[posY + 1].children[0]);
-            } else {
-                board.children[posX].children[posY + 1].children[0].setAttribute('class', 'writing');
-                board.children[posX].children[posY + 1].children[0].children[0].id = 'arrow-down';
-            }
+            board.children[posX].children[posY + 1].children[0].setAttribute('class', 'writing');
+            board.children[posX].children[posY + 1].children[0].children[0].id = 'arrow-down';
         }
     }
 
@@ -132,11 +132,9 @@ export class BoardComponent implements OnInit {
         const value = Number(tileHolder?.children[keyInTileHolder[1]].getElementsByTagName('p')[1].innerHTML);
         this.boardService.setLetter(posX, posY, letter, value);
         lastWrittenTile.setAttribute('class', 'written');
-        if (letter === letter.toUpperCase()) {
-            this.letterPlaced.push('*');
-        } else {
-            this.letterPlaced.push(letter);
-        }
+        if (letter === letter.toUpperCase()) this.letterPlaced.push('*');
+        else this.letterPlaced.push(letter);
+
         this.clientSocketHandler.tileHolderService.removeLetter(letter);
     }
 
@@ -175,12 +173,13 @@ export class BoardComponent implements OnInit {
         if (alreadyWriting) return false;
         for (let i = 0; i < board.childElementCount; i++) {
             for (let j = 0; j < board.children[i].childElementCount; j++) {
-                if (board.children[i].children[j].children[0].id === 'currentSelection') {
-                    if (board.children[i].children[j].children[0] !== currentSelection) {
-                        board.children[i].children[j].children[0].id = '';
-                        board.children[i].children[j].children[0].className = '';
-                        this.clearSelection(board.children[i].children[j].children[0]);
-                    }
+                if (
+                    board.children[i].children[j].children[0].id === 'currentSelection' &&
+                    board.children[i].children[j].children[0] !== currentSelection
+                ) {
+                    board.children[i].children[j].children[0].id = '';
+                    board.children[i].children[j].children[0].className = '';
+                    this.clearSelection(board.children[i].children[j].children[0]);
                 }
             }
         }

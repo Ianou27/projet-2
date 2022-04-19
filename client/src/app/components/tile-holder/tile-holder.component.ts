@@ -30,21 +30,22 @@ export class TileHolderComponent {
         const swapper = document.getElementById('swap-selected');
         this.buttonPressed = event.key;
         this.scrollDirection = 0;
+
+        const lettersNotOnHolder =
+            swapper &&
+            !this.getLettersOnHolder().includes(this.buttonPressed.toUpperCase()) &&
+            !(this.buttonPressed === 'ArrowLeft') &&
+            !(this.buttonPressed === 'ArrowRight');
+
         if (this.buttonPressed === 'ArrowLeft' && swapper) {
             this.handleSide('Left', swapper);
-        }
-        if (this.buttonPressed === 'ArrowRight' && swapper) {
+        } else if (this.buttonPressed === 'ArrowRight' && swapper) {
             this.handleSide('Right', swapper);
         }
         if (this.getLettersOnHolder().includes(this.buttonPressed.toUpperCase())) {
             const indexes = this.findLetterIndexes(this.buttonPressed.toUpperCase());
             this.addIdOnKey(indexes);
-        } else if (
-            swapper &&
-            !this.getLettersOnHolder().includes(this.buttonPressed.toUpperCase()) &&
-            !(this.buttonPressed === 'ArrowLeft') &&
-            !(this.buttonPressed === 'ArrowRight')
-        ) {
+        } else if (lettersNotOnHolder) {
             this.count = 0;
             this.clearAllIds();
         }
@@ -56,8 +57,7 @@ export class TileHolderComponent {
         this.scrollDirection = event.deltaY;
         if (this.scrollDirection < 0 && swapper) {
             this.handleSide('Left', swapper);
-        }
-        if (this.scrollDirection > 0 && swapper) {
+        } else if (this.scrollDirection > 0 && swapper) {
             this.handleSide('Right', swapper);
         }
     }

@@ -151,10 +151,7 @@ export class DatabaseService {
     }
 
     async deleteVirtualPlayer(name: string) {
-        if (EXPERT_BOT.includes(name) || BEGINNER_BOT.includes(name)) {
-            return;
-        }
-
+        if (EXPERT_BOT.includes(name) || BEGINNER_BOT.includes(name)) return;
         await this.db.collection(DATABASE_COLLECTION_VIRTUAL).deleteOne({ name });
     }
 
@@ -165,13 +162,10 @@ export class DatabaseService {
         }
     }
     async modifyVirtualPlayer(oldName: string, newName: string) {
-        if (EXPERT_BOT.includes(oldName) || BEGINNER_BOT.includes(oldName) || EXPERT_BOT.includes(newName) || BEGINNER_BOT.includes(newName)) {
-            return;
-        }
+        if (EXPERT_BOT.includes(oldName) || BEGINNER_BOT.includes(oldName) || EXPERT_BOT.includes(newName) || BEGINNER_BOT.includes(newName)) return;
         const db = await this.db.collection(DATABASE_COLLECTION_VIRTUAL).find().toArray();
-        if (db.some((player) => player.name === oldName)) {
+        if (db.some((player) => player.name === oldName))
             await this.db.collection(DATABASE_COLLECTION_VIRTUAL).updateOne({ name: oldName }, { $set: { name: newName } });
-        }
     }
 
     async resetVirtualPlayers() {

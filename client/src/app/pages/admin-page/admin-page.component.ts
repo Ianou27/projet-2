@@ -96,10 +96,9 @@ export class AdminPageComponent implements OnInit {
         ) {
             this.error = 'Veuillez au moins changer une valeur et ne pas laisser de valeur vide';
             return false;
-        } else {
-            this.socketHandler.modifyDictionary(oldTitle, title, description);
-            this.reloadPage();
         }
+        this.socketHandler.modifyDictionary(oldTitle, title, description);
+        this.reloadPage();
         return true;
     }
 
@@ -177,18 +176,19 @@ export class AdminPageComponent implements OnInit {
         const dictObject = JSON.parse(dict);
         const dictInfoList = this.socketHandler.dictInfoList;
         const dictInfoListFiltered = dictInfoList.filter((dictInfo: Dictionary) => dictInfo.title === dictObject.title);
-        if (dictInfoListFiltered.length !== 0) {
-            this.error = 'Ce dictionnaire existe déjà';
-            return false;
-        } else if (
+        const dictWordsValidated =
             typeof dictObject.title === 'string' &&
             dictObject.title !== '' &&
             typeof dictObject.description === 'string' &&
             dictObject.description !== '' &&
             Array.isArray(dictObject.words) &&
             dictObject.words.length !== 0 &&
-            dictObject.words.every((word: string) => typeof word === 'string' && word !== '' && word.match(/^[a-zA-Z]+$/))
-        ) {
+            dictObject.words.every((word: string) => typeof word === 'string' && word !== '' && word.match(/^[a-zA-Z]+$/));
+
+        if (dictInfoListFiltered.length !== 0) {
+            this.error = 'Ce dictionnaire existe déjà';
+            return false;
+        } else if (dictWordsValidated) {
             return true;
         }
         this.error = 'FORMAT INVALIDE\n Il faut un titre, une description, un tableau de mots valide sans espace';

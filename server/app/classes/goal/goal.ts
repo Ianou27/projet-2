@@ -16,6 +16,7 @@ export class Goal {
         let bonusPoints = 0;
         for (const goal in game.goals) {
             if (!this.turnVerification(goal, game) || !game.goals[goal].isInGame || game.goals[goal].isDone) continue;
+            console.log('im in');
             switch (game.goals[goal].name) {
                 case 'tripleE': {
                     bonusPoints += this.tripleE(words, game);
