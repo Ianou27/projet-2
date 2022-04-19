@@ -163,37 +163,30 @@
             <div class="tab-content">
                 <h1>Historique des parties jouées</h1>
                 <table mat-table [dataSource]="this.socketHandler.gameHistory" class="mat-elevation-z8">
-                    <!-- Date Column -->
                     <ng-container matColumnDef="date">
                         <th mat-header-cell *matHeaderCellDef>Date et heure du début de la partie</th>
                         <td mat-cell *matCellDef="let element">{{ element.date }}</td>
                     </ng-container>
-                    <!-- Duration Column -->
                     <ng-container matColumnDef="duration">
                         <th mat-header-cell *matHeaderCellDef>Durée</th>
                         <td mat-cell *matCellDef="let element">{{ element.duration | formatTime }}</td>
                     </ng-container>
-                    <!-- Player1 Column -->
                     <ng-container matColumnDef="player1">
                         <th mat-header-cell *matHeaderCellDef>Joueur 1</th>
                         <td mat-cell *matCellDef="let element">{{ element.player1 }}</td>
                     </ng-container>
-                    <!-- Score 1 Column -->
                     <ng-container matColumnDef="player1Points">
                         <th mat-header-cell *matHeaderCellDef>Score joueur 1</th>
                         <td mat-cell *matCellDef="let element">{{ element.player1Points }}</td>
                     </ng-container>
-                    <!-- Player 2 Column -->
                     <ng-container matColumnDef="player2">
                         <th mat-header-cell *matHeaderCellDef>Joueur 2</th>
                         <td mat-cell *matCellDef="let element">{{ element.player2 }}</td>
                     </ng-container>
-                    <!-- Score 2 Column -->
                     <ng-container matColumnDef="player2Points">
                         <th mat-header-cell *matHeaderCellDef>Score joueur 2</th>
                         <td mat-cell *matCellDef="let element">{{ element.player2Points }}</td>
                     </ng-container>
-                    <!-- Mode Column -->
                     <ng-container matColumnDef="gameMode">
                         <th mat-header-cell *matHeaderCellDef>Mode</th>
                         <td mat-cell *matCellDef="let element">{{ element.gameMode }}</td>

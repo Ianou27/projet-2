@@ -24,7 +24,7 @@ export type GameHistory = {
     player2Points: number;
     gameMode: string;
 };
-export type Dic = {
+export type Dictionary = {
     title: string;
     description: string;
     words?: string[];

@@ -12,7 +12,7 @@ import { Tile } from './../../../../../common/tile/Tile';
 import {
     CreateRoomInformations,
     CreateSoloRoomInformations,
-    Dic,
+    Dictionary,
     InfoToJoin,
     Message,
     Room,
@@ -592,7 +592,7 @@ describe('ChatService', () => {
         });
 
         it('should get admin page related info', () => {
-            const dictionaryNameList: Dic[] = [
+            const dictionaryNameList: Dictionary[] = [
                 {
                     title: 'default-dictionary',
                     description: 'Description de base',

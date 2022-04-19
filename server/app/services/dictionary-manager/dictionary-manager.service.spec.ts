@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import { Dic } from '@common/types';
+import { Dictionary } from '@common/types';
 import { expect } from 'chai';
 import * as fs from 'fs';
 import * as sinon from 'sinon';
@@ -12,7 +12,7 @@ describe('DictionaryManager', () => {
     const dictionaryManager = new DictionaryManager();
     const sio = new io.Server();
     const socketID = 'test';
-    const dictionary: Dic = {
+    const dictionary: Dictionary = {
         title: 'test',
         description: 'test',
     };

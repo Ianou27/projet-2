@@ -1,4 +1,4 @@
-import { Dic } from '@common/types';
+import { Dictionary } from '@common/types';
 import * as fs from 'fs';
 import * as io from 'socket.io';
 import { DatabaseService } from './../database/database.services';
@@ -9,9 +9,9 @@ export class DictionaryManager {
         this.databaseService = new DatabaseService();
     }
 
-    async uploadDictionary(sio: io.Server, socketId: string, dictionary: Dic) {
+    async uploadDictionary(sio: io.Server, socketId: string, dictionary: Dictionary) {
         await this.databaseService.start();
-        const dictObject: Dic = {
+        const dictObject: Dictionary = {
             title: dictionary.title,
             description: dictionary.description,
         };

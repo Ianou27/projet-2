@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 import { Game } from '@app/classes/game/game';
-import type { Dic } from '@common/types';
+import type { Dictionary } from '@common/types';
 import { fail } from 'assert';
 import { expect } from 'chai';
 import { describe } from 'mocha';
@@ -12,11 +12,11 @@ describe('Database service', () => {
     let databaseService: DatabaseService;
     let mongoServer: MongoMemoryServer;
     let game: Game;
-    const dictionary: Dic = {
+    const dictionary: Dictionary = {
         title: 'Mon dictionnaire',
         description: 'Description de mon dictionnaire',
     };
-    const dictionaryTest: Dic = {
+    const dictionaryTest: Dictionary = {
         title: 'Mon dictionnaire test',
         description: 'Description de mon dictionnaire test',
     };

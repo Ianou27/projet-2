@@ -7,7 +7,7 @@ import { Tile } from './../../../../../common/tile/Tile';
 import {
     CreateRoomInformations,
     CreateSoloRoomInformations,
-    Dic,
+    Dictionary,
     GameHistory,
     InfoToJoin,
     Message,
@@ -55,7 +55,7 @@ export class ClientSocketHandler {
     numberOfRoomsClassic: number = 0;
     numberOfRoomsLog: number = 0;
     goals: GoalInformations[];
-    dictInfoList: Dic[] = [];
+    dictInfoList: Dictionary[] = [];
     virtualPlayerNameList: VirtualPlayer[] = [];
     gameHistory: GameHistory[] = [];
     dictionaryToDownload: string = '';
@@ -147,11 +147,14 @@ export class ClientSocketHandler {
             this.bestClassicScores = scoresClassic;
             this.bestLog2990Scores = scoresLog;
         });
-        this.socketService.socket.on('getAdminInfo', (dictionaryNameList: Dic[], history: GameHistory[], virtualPlayerNames: VirtualPlayer[]) => {
-            this.dictInfoList = dictionaryNameList;
-            this.virtualPlayerNameList = virtualPlayerNames;
-            this.gameHistory = history;
-        });
+        this.socketService.socket.on(
+            'getAdminInfo',
+            (dictionaryNameList: Dictionary[], history: GameHistory[], virtualPlayerNames: VirtualPlayer[]) => {
+                this.dictInfoList = dictionaryNameList;
+                this.virtualPlayerNameList = virtualPlayerNames;
+                this.gameHistory = history;
+            },
+        );
         this.socketService.on('joining', (obj: InfoToJoin) => {
             this.gotAccepted = true;
             this.informationToJoin = obj;
@@ -300,7 +303,7 @@ export class ClientSocketHandler {
         this.socketService.socket.emit('askJoin', username, room);
         this.gotRefused = false;
     }
-    uploadDictionary(file: Dic) {
+    uploadDictionary(file: Dictionary) {
         this.socketService.socket.emit('uploadDictionary', file);
     }
     deleteDic(title: string) {

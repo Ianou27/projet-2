@@ -6,7 +6,7 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { DownloadDialogComponent } from '@app/components/download-dialog/download-dialog.component';
 import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
 import { ONE_SECOND_MS } from './../../../../../common/constants/general-constants';
-import { Dic, VirtualPlayer } from './../../../../../common/types';
+import { Dictionary, VirtualPlayer } from './../../../../../common/types';
 import { MyErrorStateMatcher } from './../../classes/my-error-state-matcher/my-error-state-matcher';
 
 @Component({
@@ -82,7 +82,7 @@ export class AdminPageComponent implements OnInit {
     }
 
     modifyDict(oldTitle: string, title: string, description: string): boolean {
-        const dictionaryList: Dic[] = this.socketHandler.dictInfoList;
+        const dictionaryList: Dictionary[] = this.socketHandler.dictInfoList;
 
         for (const dict of dictionaryList) {
             if (dict.title !== oldTitle && dict.title === title) {
@@ -149,14 +149,14 @@ export class AdminPageComponent implements OnInit {
     displayDictNames(): string[] {
         const names: string[] = [];
         const dictionaryList = this.socketHandler.dictInfoList;
-        dictionaryList.forEach((dict: Dic) => names.push(dict.title));
+        dictionaryList.forEach((dict: Dictionary) => names.push(dict.title));
         return names;
     }
 
     displayDictDescription(name: string): string[] {
         const descriptions: string[] = [];
         const dictionaryList = this.socketHandler.dictInfoList;
-        dictionaryList.forEach((dict: Dic) => {
+        dictionaryList.forEach((dict: Dictionary) => {
             if (dict.title === name) descriptions.push(dict.description);
         });
         return descriptions;
@@ -177,7 +177,7 @@ export class AdminPageComponent implements OnInit {
     verifyDict(dict: string): boolean {
         const dictObject = JSON.parse(dict);
         const dictInfoList = this.socketHandler.dictInfoList;
-        const dictInfoListFiltered = dictInfoList.filter((dictInfo: Dic) => dictInfo.title === dictObject.title);
+        const dictInfoListFiltered = dictInfoList.filter((dictInfo: Dictionary) => dictInfo.title === dictObject.title);
         if (dictInfoListFiltered.length !== 0) {
             this.error = 'Ce dictionnaire existe déjà';
             return false;
@@ -199,7 +199,7 @@ export class AdminPageComponent implements OnInit {
 
     submit() {
         try {
-            const object: Dic = JSON.parse(this.selectedFile.toString());
+            const object: Dictionary = JSON.parse(this.selectedFile.toString());
             if (this.verifyDict(this.selectedFile)) {
                 this.socketHandler.uploadDictionary(object);
 

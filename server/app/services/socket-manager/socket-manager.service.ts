@@ -1,5 +1,5 @@
 import { BotType } from '@common/bot-type';
-import { CreateRoomInformations, CreateSoloRoomInformations, Dic, InfoToJoin, Room } from '@common/types';
+import { CreateRoomInformations, CreateSoloRoomInformations, Dictionary, InfoToJoin, Room } from '@common/types';
 import * as http from 'http';
 import * as io from 'socket.io';
 import { AdminManager } from './../admin-manager/admin-manager.service';
@@ -16,7 +16,6 @@ export class SocketManager {
     roomManager: RoomManager;
     dictionaryManager: DictionaryManager;
     sio: io.Server;
-    timeLeft: number;
     commandManager: CommandManager;
     adminManager: AdminManager;
     constructor(server: http.Server, readonly databaseService: DatabaseService) {
@@ -163,7 +162,7 @@ export class SocketManager {
                 await this.dictionaryManager.resetDictionary(this.sio, socket.id);
             });
 
-            socket.on('uploadDictionary', async (file: Dic) => {
+            socket.on('uploadDictionary', async (file: Dictionary) => {
                 await this.dictionaryManager.uploadDictionary(this.sio, socket.id, file);
             });
 

@@ -5,7 +5,7 @@ import { WaitingPlayerDialogComponent } from '@app/components/waiting-player-dia
 import { WaitingPlayerTwoComponent } from '@app/components/waiting-player-two/waiting-player-two.component';
 import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
 import { BotType } from './../../../../../common/bot-type';
-import { CreateRoomInformations, CreateSoloRoomInformations, Dic } from './../../../../../common/types';
+import { CreateRoomInformations, CreateSoloRoomInformations, Dictionary } from './../../../../../common/types';
 import { MyErrorStateMatcher } from './../../classes/my-error-state-matcher/my-error-state-matcher';
 
 @Component({
@@ -127,14 +127,14 @@ export class JoinPageComponent implements OnInit {
     displayDictNames(): string[] {
         const names: string[] = [];
         const dictionaryList = this.clientSocketHandler.dictInfoList;
-        dictionaryList.forEach((dict: Dic) => names.push(dict.title));
+        dictionaryList.forEach((dict: Dictionary) => names.push(dict.title));
         return names;
     }
 
     displayDescriptions(): string[] {
         const descriptions: string[] = [];
         const dictionaryList = this.clientSocketHandler.dictInfoList;
-        dictionaryList.forEach((dict: Dic) => descriptions.push(dict.description));
+        dictionaryList.forEach((dict: Dictionary) => descriptions.push(dict.description));
         return descriptions;
     }
 }
