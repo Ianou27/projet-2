@@ -48,6 +48,16 @@ describe('Game', () => {
         });
         game.timer = new Timer('60');
         game.goals = allGoals;
+        sinon.replace(game.databaseService, 'start', async () => {
+            return null;
+        });
+        sinon.replace(game.databaseService, 'insertGame', async () => {});
+        sinon.replace(game.databaseService, 'updateScore', async () => {});
+        sinon.replace(game.databaseService, 'closeConnection', async () => {});
+    });
+
+    afterEach(() => {
+        sinon.restore();
     });
 
     it('constructor should construct a game with two players named player1 and player2', () => {
@@ -284,9 +294,6 @@ describe('Game', () => {
 
     it('method surrender should update dataBase and end game', async () => {
         const spy = sinon.stub(game.databaseService, 'updateScore');
-        sinon.replace(game.databaseService, 'start', async () => {
-            return null;
-        });
         await game.endGame();
         assert(spy.called);
         expect(game.gameState.gameFinished).to.equal(true);
@@ -296,7 +303,6 @@ describe('Game', () => {
         game.player1.hisBot = true;
         const spy1 = sinon.stub(game.timer, 'stop');
         const spy2 = sinon.stub(game, 'registerGame');
-        sinon.replace(game.databaseService, 'insertGame', async () => {});
         await game.surrender('', '');
         assert(spy1.called);
         assert(spy2.called);
