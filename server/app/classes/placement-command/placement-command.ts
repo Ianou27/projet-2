@@ -229,7 +229,7 @@ export class PlacementCommand {
         return game.gameBoard.tileContainsLetter(positionX, positionY);
     }
 
-    static newWordsValid(commandInformations: string[], game: Game, letterPositions: Tile[]): number {
+    static newWordsValid(commandInformations: string[], game: Game, letterPositions: Tile[], isValidation: boolean): number {
         const placementInformations = this.separatePlaceCommandInformations(commandInformations);
         let wordsFormed: Tile[][] = [];
         if (placementInformations.numberLetters === 1 && game.gameState.firstTurn) return 0;
@@ -245,7 +245,9 @@ export class PlacementCommand {
             if (game.gameState.modeLog && game.goals.scrabble.isInGame && !game.goals.scrabble.isDone && wordString === 'SCRABBLE') continue;
             if (!this.validatedWordDictionary(wordString, game.dictionaryArray)) return 0;
         }
-        return PointsCalculator.calculatedPointsPlacement(wordsFormed, letterPositions) + Goal.validationGoal(wordsFormed, game);
+        let score = 0;
+        if (!isValidation) score += Goal.validationGoal(wordsFormed, game);
+        return score + PointsCalculator.calculatedPointsPlacement(wordsFormed, letterPositions);
     }
 
     static verifyWordsFormed(wordsFormed: Tile[][], letterPositions: Tile[]): Tile[][] {
@@ -297,7 +299,7 @@ export class PlacementCommand {
         const placementInformations = PlacementCommand.separatePlaceCommandInformations(commandInformations);
         let letterPositions: Tile[] = [];
         letterPositions = PlacementCommand.place(placementInformations, game);
-        const placementScore = PlacementCommand.newWordsValid(commandInformations, game, letterPositions);
+        const placementScore = PlacementCommand.newWordsValid(commandInformations, game, letterPositions, false);
         if (placementScore === 0) {
             PlacementCommand.restoreBoard(game, letterPositions);
             return false;

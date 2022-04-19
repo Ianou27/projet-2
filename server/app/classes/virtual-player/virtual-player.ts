@@ -98,7 +98,7 @@ export class VirtualPlayer {
                     rowLetter[tileStart.positionY] + (tileStart.positionX + 1).toString() + placement.orientation + ' ' + wordWithoutLetter,
                 );
                 const lettersPosition = this.findLettersPosition(PlacementCommand.separatePlaceCommandInformations(command.split(' ')), game);
-                const score = PlacementCommand.newWordsValid(command.split(' '), game, lettersPosition);
+                const score = PlacementCommand.newWordsValid(command.split(' '), game, lettersPosition, true);
                 if (score > 0) {
                     const placementScore: PlacementScore = {
                         score,

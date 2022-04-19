@@ -131,7 +131,7 @@ describe('Placement Command', () => {
     it('method newWordsValid should return 0 for a one letter placement on first move', () => {
         const firstWordCommandNotValid = '!placer h8h a';
         game.gameState.firstTurn = true;
-        const result = PlacementCommand.newWordsValid(firstWordCommandNotValid.split(' '), game, []);
+        const result = PlacementCommand.newWordsValid(firstWordCommandNotValid.split(' '), game, [], false);
         expect(result).to.equal(0);
     });
 
