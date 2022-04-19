@@ -63,7 +63,7 @@ describe('DictionaryManager', () => {
 
     it('should modify  dictionary', async () => {
         await dictionaryManager.uploadDictionary(sio, socketID, dictionary);
-        await dictionaryManager.modifyDictionary('test', 'test', 'test', sio, socketID);
+        await dictionaryManager.modifyDictionary('test', 'nouveau', 'test', sio, socketID);
 
         expect(fs.existsSync('./assets/dictionaries/' + 'test' + '.json')).to.be.false;
     });
