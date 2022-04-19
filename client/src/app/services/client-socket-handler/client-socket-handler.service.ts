@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@angular/core';
 import { LetterScore } from './../../../../../common/assets/reserve-letters';
 import { CommandType } from './../../../../../common/command-type';
