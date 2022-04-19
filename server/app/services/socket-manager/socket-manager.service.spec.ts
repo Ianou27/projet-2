@@ -28,6 +28,10 @@ describe('SocketManager service tests', () => {
         // eslint-disable-next-line dot-notation
         service = server['socketManger'];
         clientSocket = ioClient(urlString);
+        sinon.replace(service.databaseService, 'start', async () => {
+            return null;
+        });
+        sinon.replace(service.databaseService, 'closeConnection', async () => {});
     });
 
     afterEach(() => {
@@ -351,9 +355,6 @@ describe('SocketManager service tests', () => {
     });
 
     it('should handle forceDisconnect event', (done) => {
-        sinon.replace(service.databaseService, 'closeConnection', async () => {
-            return;
-        });
         const spy = sinon.spy(service.databaseService, 'closeConnection');
 
         clientSocket.emit('forceDisconnect');

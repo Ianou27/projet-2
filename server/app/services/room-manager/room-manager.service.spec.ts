@@ -11,9 +11,9 @@ import { assert, expect } from 'chai';
 import { ObjectId } from 'mongodb';
 import * as sinon from 'sinon';
 import * as io from 'socket.io';
-import { Timer } from '../timer-manager/timer-manager.service';
 import { DatabaseService } from './../database/database.services';
 import { IdManager } from './../id-manager/id-manager.service';
+import { Timer } from './../timer-manager/timer-manager.service';
 
 describe('Room Manager tests', () => {
     const idManager = new IdManager();
@@ -27,6 +27,10 @@ describe('Room Manager tests', () => {
             room: 'room',
         };
         idManager.users.push(user);
+        sinon.replace(databaseService, 'start', async () => {
+            return null;
+        });
+        sinon.replace(databaseService, 'closeConnection', async () => {});
     });
 
     afterEach(() => {
@@ -73,7 +77,7 @@ describe('Room Manager tests', () => {
         const goals = RoomManager.getGoalsPlayer(game, game.player2);
         expect(goals.includes(game.goals.palindrome)).to.equal(true);
         expect(goals.includes(game.goals.twoStars)).to.equal(true);
-        expect(goals.includes(game.goals.scrabble)).to.equal(false);
+        expect(goals.includes(game.goals.scrabble)).to.equal(true);
     });
 
     it('method getGoalsPlayer should return goals of player1', () => {
