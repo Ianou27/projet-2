@@ -85,15 +85,10 @@ export class BoardComponent implements OnInit {
         const lastWrittenLetter = writtenLetters[writtenLetters.length - 1];
         if (!lastWrittenLetter) return;
         lastWrittenLetter.setAttribute('class', 'writing');
-        let lastArrow;
-        if (this.orientation === Orientation.h) {
-            lastArrow = document.getElementById('arrow-right');
-        } else {
-            lastArrow = document.getElementById('arrow-down');
-        }
-        if (lastArrow) {
-            lastArrow.id = '';
-        }
+        const lastArrow = this.orientation === Orientation.h ? document.getElementById('arrow-right') : document.getElementById('arrow-down');
+
+        if (lastArrow) lastArrow.id = '';
+
         const position = this.getPosition(lastWrittenLetter);
         this.boardService.removeLetter(position[0], position[1]);
         if (this.orientation === Orientation.h) {

@@ -268,9 +268,8 @@ export class Game {
             return CommandType.pass.split(' ');
         } else if (probability <= PROBABILITY_EXCHANGE_COMMAND_BOT) {
             return VirtualPlayer.exchangeLettersCommand(this);
-        } else {
-            return VirtualPlayer.placementLettersCommand(VirtualPlayer.getProbability(), this);
         }
+        return VirtualPlayer.placementLettersCommand(VirtualPlayer.getProbability(), this);
     }
     actionVirtualExpertPlayer(): string[] {
         return VirtualPlayer.commandExpertPlayer(this);
@@ -323,10 +322,8 @@ export class Game {
     }
     private setWinner() {
         if (this.player1.points > this.player2.points) this.gameState.winner = this.player1.user.username;
-        else if (this.player1.points < this.player2.points) this.gameState.winner = this.player2.user.username;
-        else {
-            this.gameState.winner = 'tie';
-        }
+        else this.gameState.winner = this.player1.points < this.player2.points ? this.player2.user.username : 'tie';
+
         this.sio.to(this.roomName).emit('updatePoint', 'player1', this.player1.points);
         this.sio.to(this.roomName).emit('updatePoint', 'player2', this.player2.points);
         if (this.player1.lettersToStringArray().length > 0) {

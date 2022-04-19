@@ -109,13 +109,7 @@ export class CommandManager {
             this.sio.to(socketId).emit('commandValidated', " Ce n'est pas ton tour");
         } else {
             const verification: string = this.gameManager.exchangeVerification(command, game);
-            let player2: string;
-
-            if (socketId === game.player1.user.id) {
-                player2 = game.player2.user.id;
-            } else {
-                player2 = game.player1.user.id;
-            }
+            const player2: string = socketId === game.player1.user.id ? game.player2.user.id : game.player1.user.id;
 
             if (verification === 'valide') {
                 this.sio.to(socketId).emit('roomMessage', {

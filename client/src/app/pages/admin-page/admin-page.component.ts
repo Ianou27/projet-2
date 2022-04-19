@@ -59,8 +59,7 @@ export class AdminPageComponent implements OnInit {
     }
 
     onTabChange(event: MatTabChangeEvent) {
-        const tab = event.tab.textLabel;
-        if (tab === 'Joueurs virtuels') {
+        if (event.tab.textLabel === 'Joueurs virtuels') {
             this.initialNameDisplay();
         } else {
             this.showCard = false;
@@ -191,10 +190,9 @@ export class AdminPageComponent implements OnInit {
             dictObject.words.every((word: string) => typeof word === 'string' && word !== '' && word.match(/^[a-zA-Z]+$/))
         ) {
             return true;
-        } else {
-            this.error = 'FORMAT INVALIDE\n Il faut un titre, une description, un tableau de mots valide sans espace';
-            return false;
         }
+        this.error = 'FORMAT INVALIDE\n Il faut un titre, une description, un tableau de mots valide sans espace';
+        return false;
     }
 
     submit() {

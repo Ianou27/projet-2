@@ -10,12 +10,7 @@ import { ReserveCommand } from './../../classes/reserve-command/reserve-command'
 
 export class GameManager {
     placeWord(command: string[], game: Game): string {
-        let message = 'placer';
-        if (!PlacementCommand.placeWord(command, game)) {
-            message = 'commande impossible à realisé';
-        }
-
-        return message;
+        return PlacementCommand.placeWord(command, game) ? 'placer' : 'commande impossible à realisé';
     }
 
     clueCommandValid(command: string[]): boolean {
@@ -64,11 +59,7 @@ export class GameManager {
     }
 
     messageVerification(message: string): string {
-        let validation = 'valide';
-        if (!this.messageLengthVerification(message)) {
-            validation = 'Message trop long';
-        }
-        return validation;
+        return this.messageLengthVerification(message) ? 'valide' : 'Message trop long';
     }
 
     placeVerification(command: string[], game: Game): string {
@@ -92,11 +83,7 @@ export class GameManager {
     }
 
     passVerification(command: string[]): string {
-        let message = 'valide';
-        if (!this.passCommandValid(command)) {
-            message = 'Format non valide';
-        }
-        return message;
+        return this.passCommandValid(command) ? 'valide' : 'Format non valide';
     }
 
     formatClueCommand(game: Game): string[] {

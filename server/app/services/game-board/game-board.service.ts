@@ -27,6 +27,15 @@ export class GameBoardService {
         }
     }
 
+    isTopOrRight(currentTile: Tile, orientation: Orientation): boolean {
+        if (orientation === Orientation.h) {
+            if (currentTile.positionX === COLUMN_ROWS_MINIMUM) return true;
+        } else if (currentTile.positionY === COLUMN_ROWS_MINIMUM) {
+            return true;
+        }
+        return false;
+    }
+
     tileContainsLetter(positionX: number, positionY: number): boolean {
         return this.cases[positionX][positionY].letter !== '';
     }
@@ -44,30 +53,16 @@ export class GameBoardService {
     nextTile(currentTile: Tile, orientation: Orientation, revert: boolean): Tile {
         let nextTile: Tile;
         if (orientation === Orientation.h) {
-            if (revert) {
-                nextTile = this.cases[currentTile.positionX - 1][currentTile.positionY];
-            } else {
-                nextTile = this.cases[currentTile.positionX + 1][currentTile.positionY];
-            }
+            nextTile = revert
+                ? this.cases[currentTile.positionX - 1][currentTile.positionY]
+                : (nextTile = this.cases[currentTile.positionX + 1][currentTile.positionY]);
         } else {
-            if (revert) {
-                nextTile = this.cases[currentTile.positionX][currentTile.positionY - 1];
-            } else {
-                nextTile = this.cases[currentTile.positionX][currentTile.positionY + 1];
-            }
+            nextTile = revert
+                ? this.cases[currentTile.positionX][currentTile.positionY - 1]
+                : this.cases[currentTile.positionX][currentTile.positionY + 1];
         }
         return nextTile;
     }
-
-    isTopOrRight(currentTile: Tile, orientation: Orientation): boolean {
-        if (orientation === Orientation.h) {
-            if (currentTile.positionX === COLUMN_ROWS_MINIMUM) return true;
-        } else if (currentTile.positionY === COLUMN_ROWS_MINIMUM) {
-            return true;
-        }
-        return false;
-    }
-
     isBottomOrLeft(currentTile: Tile, orientation: Orientation): boolean {
         if (orientation === Orientation.h) {
             if (currentTile.positionX === MAXIMUM_ROW_COLUMN) return true;

@@ -60,8 +60,7 @@ export class JoinPageComponent implements OnInit {
         this.form = new FormGroup({
             name: new FormControl('', [Validators.required, Validators.minLength(3), Validators.pattern(this.alphaNumericRegex)]),
         });
-        if (this.data === 'mode2990') this.mode2990 = true;
-        else this.mode2990 = false;
+        this.mode2990 = this.data === 'mode2990' ? true : false;
     }
 
     myError(controlName: string, errorName: string): boolean {

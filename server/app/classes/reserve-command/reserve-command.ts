@@ -9,11 +9,7 @@ export class ReserveCommand {
     static reserve(reserveLetters: string[]): LetterScore {
         const currentReserve: LetterScore = {};
         reserveLetters.forEach((letter) => {
-            if (currentReserve[letter] === undefined) {
-                currentReserve[letter] = 1;
-            } else {
-                currentReserve[letter] = currentReserve[letter] + 1;
-            }
+            currentReserve[letter] = currentReserve[letter] === undefined ? 1 : currentReserve[letter] + 1;
         });
         return currentReserve;
     }
