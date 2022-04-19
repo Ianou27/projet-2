@@ -5,6 +5,7 @@
 import { TestBed } from '@angular/core/testing';
 import { SocketTestHelper } from '@app/classes/socket-test-helper';
 import { Socket } from 'socket.io-client';
+import { CaseProperty } from '../../../../../common/assets/case-property';
 import { LetterScore } from './../../../../../common/assets/reserve-letters';
 import { BotType } from './../../../../../common/bot-type';
 import { GoalInformations } from './../../../../../common/constants/goal-information';
@@ -429,6 +430,16 @@ describe('ChatService', () => {
             expect(pushSpy).toHaveBeenCalled();
         });
 
+        it('should handle commandValidated event', () => {
+            const board: Tile[][] = new Array([new Tile(CaseProperty.Normal, 0, 0)]);
+            const tileHolder: Tile[] = [new Tile(CaseProperty.Normal, 0, 0)];
+            const pushSpy = spyOn(service.roomMessages, 'push');
+            socketTestHelper.peerEmitThreeParams('commandValidated', 'hello', board, tileHolder);
+            expect(pushSpy).toHaveBeenCalled();
+            expect(service.boardService.board).toBe(board);
+            expect(service.tileHolderService.tileHolder).toBe(tileHolder);
+        });
+
         it('should handle reserveLetters event and not push if reserve is empty', () => {
             const pushSpy = spyOn(service.roomMessages, 'push');
             socketTestHelper.peerSideEmit('reserveLetters');
@@ -445,6 +456,11 @@ describe('ChatService', () => {
         it('should handle connect event', () => {
             socketTestHelper.peerEmitTwoParams('connect');
             expect(service.errorHandler).toBe('');
+        });
+
+        it('should handle connect_error event', () => {
+            socketTestHelper.peerEmitTwoParams('connect_error');
+            expect(service.errorHandler).toBe('IMPOSSIBLE DE SE CONNECTER AU SERVEUR');
         });
 
         it('should handle modification event for player1', () => {
