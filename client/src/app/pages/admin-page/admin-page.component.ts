@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -7,7 +6,7 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { DownloadDialogComponent } from '@app/components/download-dialog/download-dialog.component';
 import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
 import { ONE_SECOND_MS } from './../../../../../common/constants/general-constants';
-import { Dic } from './../../../../../common/types';
+import { Dic, VirtualPlayer } from './../../../../../common/types';
 import { MyErrorStateMatcher } from './../../classes/errorStateMatcher/error-state-matcher';
 
 @Component({
@@ -24,10 +23,10 @@ export class AdminPageComponent implements OnInit {
     displayedFixedNames: string[] = [];
     selectedFile: string;
     newName: string = '';
-    defaultBeginnerNames: any[] = [];
-    addedBeginnerNames: any[] = [];
-    defaultExpertNames: any[] = [];
-    addedExpertNames: any[] = [];
+    defaultBeginnerNames: VirtualPlayer[] = [];
+    addedBeginnerNames: VirtualPlayer[] = [];
+    defaultExpertNames: VirtualPlayer[] = [];
+    addedExpertNames: VirtualPlayer[] = [];
     resetSelected: string = 'all';
     titleValue: string = '';
     descriptionValue: string = '';
@@ -36,7 +35,6 @@ export class AdminPageComponent implements OnInit {
     alphaNumericRegex = /^[a-zA-Z]*$/;
     matcher = new MyErrorStateMatcher();
     error: string = '';
-    downloadJsonHref: any;
 
     constructor(public socketHandler: ClientSocketHandler, public snackBar: MatSnackBar, public dialog: MatDialog) {
         socketHandler.connect();

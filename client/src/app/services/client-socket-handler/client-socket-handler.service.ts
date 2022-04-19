@@ -5,7 +5,7 @@ import { CommandType } from './../../../../../common/command-type';
 import { NUMBER_MAXIMUM_CLUE_COMMAND } from './../../../../../common/constants/general-constants';
 import { GoalInformations } from './../../../../../common/constants/goal-information';
 import { Tile } from './../../../../../common/tile/Tile';
-import { CreateRoomInformations, CreateSoloRoomInformations, Dic, InfoToJoin, Message, Room } from './../../../../../common/types';
+import { CreateRoomInformations, CreateSoloRoomInformations, Dic, InfoToJoin, Message, Room, Scoring } from './../../../../../common/types';
 import { INITIAL_NUMBER_LETTERS_RESERVE, NUMBER_LETTER_TILEHOLDER } from './../../constants/general-constants';
 import { BoardService } from './../board/board.service';
 import { SocketClientService } from './../socket-client/socket-client.service';
@@ -29,8 +29,8 @@ export class ClientSocketHandler {
     informationToJoin: InfoToJoin;
     gotAccepted: boolean = false;
     gotRefused: boolean = false;
-    bestClassicScores: any[] = [];
-    bestLog2990Scores: any[] = [];
+    bestClassicScores: Scoring[] = [];
+    bestLog2990Scores: Scoring[] = [];
     myTurn: boolean = true;
     player1Point: number = 0;
     player2Point: number = 0;
@@ -141,7 +141,7 @@ export class ClientSocketHandler {
             this.playerJoined = didJoin;
         });
 
-        this.socketService.socket.on('getBestScore', (scoresClassic: any[], scoresLog: any[]) => {
+        this.socketService.socket.on('getBestScore', (scoresClassic: Scoring[], scoresLog: Scoring[]) => {
             this.bestClassicScores = scoresClassic;
             this.bestLog2990Scores = scoresLog;
         });

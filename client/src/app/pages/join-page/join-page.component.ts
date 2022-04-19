@@ -25,8 +25,6 @@ export class JoinPageComponent implements OnInit {
     matcher: MyErrorStateMatcher;
     mode2990: boolean;
     dictionary: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    dictionaries: any[];
 
     time: { value: string; text: string }[];
 

@@ -47,6 +47,17 @@ export type BestScore = {
     score: number;
 };
 
+export type VirtualPlayer = {
+    name: string;
+    type: string;
+};
+
+export type Scoring = {
+    id: string;
+    player: string;
+    points: number;
+};
+
 export interface TilePlacementPossible {
     tile: Tile;
     orientation: Orientation;
