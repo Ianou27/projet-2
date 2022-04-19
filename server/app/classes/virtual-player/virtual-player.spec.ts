@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 import { DatabaseService } from '@app/services/database/database.services';
 import { Timer } from '@app/services/timer-manager/timer-manager.service';
@@ -282,6 +283,7 @@ describe('Virtual Player', () => {
     });
 
     it('method findPlacementCommand should return valid command place', () => {
+        game.gameState.firstTurn = false;
         const tilePlacementPossible: TilePlacementPossible = {
             tile: game.gameBoard.cases[7][7],
             orientation: Orientation.h,
