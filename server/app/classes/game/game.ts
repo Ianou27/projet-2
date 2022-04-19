@@ -1,6 +1,6 @@
 import { DatabaseService } from '@app/services/database/database.services';
 import { RoomManager } from '@app/services/room-manager/room-manager.service';
-import { BotType } from '@common/botType';
+import { BotType } from '@common/bot-type';
 import { GoalType } from '@common/constants/goal-type';
 import { allGoals, Goals } from '@common/constants/goals';
 import * as fs from 'fs';
@@ -15,7 +15,7 @@ import {
     TOTAL_GOALS,
     TWENTY_SECONDS_MS,
 } from './../../../../common/constants/general-constants';
-import { GameState } from './../../../../common/gameState';
+import { GameState } from './../../../../common/game-state';
 import { CreateSoloRoomInformations, GameHistory, User } from './../../../../common/types';
 import { GameBoardService } from './../../services/game-board/game-board.service';
 import { Timer } from './../../services/timer-manager/timer-manager.service';

@@ -10,13 +10,10 @@ export class ExchangeCommand {
     }
 
     static validatedExchangeCommandFormat(commandInformations: string[]): boolean {
-        if (commandInformations.length !== 2) {
-            return false;
-        }
         const command: string = commandInformations.join(' ');
         const exchangeValidation = /^!échanger ([a-z]|[*])+$/;
         const lengthExchangeCommand = /^.{11,17}$/;
 
-        return exchangeValidation.test(command) && lengthExchangeCommand.test(command);
+        return commandInformations.length === 2 && exchangeValidation.test(command) && lengthExchangeCommand.test(command);
     }
 }

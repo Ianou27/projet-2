@@ -361,15 +361,6 @@ describe('ChatService', () => {
         expect(emitSpy).toHaveBeenCalledWith('resetBestScore');
     });
 
-    /* it('uploadDictionary() should emit the uploadDictionary event', () => {
-        const emitSpy = spyOn(service.socketService.socket, 'emit');
-        let file = '';
-        file: JSON = JSON.parse(file);
-        service.uploadDictionary(file);
-        expect(emitSpy).toHaveBeenCalled();
-        expect(emitSpy).toHaveBeenCalledWith('uploadDictionary');
-    }); */
-
     it('deleteDic() should emit the deleteDic event', () => {
         const emitSpy = spyOn(service.socketService.socket, 'emit');
         service.deleteDic('test');

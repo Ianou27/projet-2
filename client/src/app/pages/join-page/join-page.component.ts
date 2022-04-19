@@ -15,7 +15,6 @@ import { MyErrorStateMatcher } from './../../classes/my-error-state-matcher/my-e
 })
 export class JoinPageComponent implements OnInit {
     name: string;
-    confirmName: string;
     form: FormGroup;
     alphaNumericRegex: RegExp;
     selectedDico: string;
@@ -25,10 +24,8 @@ export class JoinPageComponent implements OnInit {
     matcher: MyErrorStateMatcher;
     mode2990: boolean;
     dictionary: string;
-
     time: { value: string; text: string }[];
-
-    botType = [{ value: BotType.Beginner }, { value: BotType.Expert }];
+    botType: { value: BotType }[];
 
     constructor(
         public waitDialog: MatDialog,
@@ -56,6 +53,7 @@ export class JoinPageComponent implements OnInit {
         this.selectedDico = 'Dictionnaire par defaut';
         this.alphaNumericRegex = /^[a-zA-Z]*$/;
         this.dictionary = 'default-dictionary';
+        this.botType = [{ value: BotType.Beginner }, { value: BotType.Expert }];
     }
 
     ngOnInit(): void {
@@ -66,7 +64,7 @@ export class JoinPageComponent implements OnInit {
         else this.mode2990 = false;
     }
 
-    myError(controlName: string, errorName: string) {
+    myError(controlName: string, errorName: string): boolean {
         return this.form.controls[controlName].hasError(errorName);
     }
 
@@ -126,14 +124,14 @@ export class JoinPageComponent implements OnInit {
         this.waitDialog.closeAll();
     }
 
-    displayDictNames() {
+    displayDictNames(): string[] {
         const names: string[] = [];
         const dictionaryList = this.clientSocketHandler.dictInfoList;
         dictionaryList.forEach((dict: Dic) => names.push(dict.title));
         return names;
     }
 
-    displayDescriptions() {
+    displayDescriptions(): string[] {
         const descriptions: string[] = [];
         const dictionaryList = this.clientSocketHandler.dictInfoList;
         dictionaryList.forEach((dict: Dic) => descriptions.push(dict.description));

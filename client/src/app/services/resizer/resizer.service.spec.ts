@@ -16,16 +16,14 @@ describe('ResizerService', () => {
     });
 
     it('changeFont should call changeLetterSizeValue if param is valid', () => {
-        service.startLetterSize = 16;
-        service.letterFontSize = new BehaviorSubject<number>(service.startLetterSize);
+        service.letterFontSize = new BehaviorSubject<number>(16);
         const changeLetterSizeValueSpy = spyOn(service, 'changeLetterSizeValue');
         service.changeFont('+');
         expect(changeLetterSizeValueSpy).toHaveBeenCalled();
     });
 
     it('changeFont should call changeLetterSizeValue if param is valid', () => {
-        service.startLetterSize = 16;
-        service.letterFontSize = new BehaviorSubject<number>(service.startLetterSize);
+        service.letterFontSize = new BehaviorSubject<number>(16);
         const changeLetterSizeValueSpy = spyOn(service, 'changeLetterSizeValue');
         service.changeFont('-');
         expect(changeLetterSizeValueSpy).toHaveBeenCalled();
@@ -44,8 +42,7 @@ describe('ResizerService', () => {
     });
 
     it('changeFont should call changeLetterSizeValue if param is valid', () => {
-        service.startLetterSize = 16;
-        service.letterFontSize = new BehaviorSubject<number>(service.startLetterSize);
+        service.letterFontSize = new BehaviorSubject<number>(16);
         const nextSpy = spyOn(service.letterFontSize, 'next');
         service.changeLetterSizeValue(17);
         expect(nextSpy).toHaveBeenCalled();

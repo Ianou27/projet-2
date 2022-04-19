@@ -2,7 +2,7 @@
 import { Game } from '@app/classes/game/game';
 import { Player } from '@app/classes/player/player';
 import { RoomManager } from '@app/services/room-manager/room-manager.service';
-import { BotType } from '@common/botType';
+import { BotType } from '@common/bot-type';
 import { GoalType } from '@common/constants/goal-type';
 import { allGoals } from '@common/constants/goals';
 import { CreateRoomInformations, CreateSoloRoomInformations, Room, User } from '@common/types';
@@ -98,16 +98,6 @@ describe('Room Manager tests', () => {
         sinon.replace(roomManager, 'cancelCreation', () => {});
         sinon.replace(roomManager, 'createSoloGame', () => {});
         const getUserSpy = sinon.spy(roomManager, 'convertMultiToSolo');
-        /* const informations: CreateSoloRoomInformations = {
-            username: '',
-            socketId: 'test',
-            room: '',
-            timer: '',
-            modeLog: false,
-            botType: BotType.Beginner,
-            botName: '',
-            dictionary: 'default-dictionary',
-        };*/
         roomManager.convertMultiToSolo(false, 'test');
         assert(getUserSpy.called);
     });

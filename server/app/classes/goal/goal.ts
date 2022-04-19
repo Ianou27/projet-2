@@ -174,7 +174,6 @@ export class Goal {
     static turnVerification(goal: string, game: Game): boolean {
         if (game.goals[goal].type === GoalType.Public) return true;
         else if (game.goals[goal].type === GoalType.PrivatePlayer1 && game.playerTurn() === game.player1) return true;
-        else if (game.goals[goal].type === GoalType.PrivatePlayer2 && game.playerTurn() === game.player2) return true;
-        return false;
+        return game.goals[goal].type === GoalType.PrivatePlayer2 && game.playerTurn() === game.player2;
     }
 }

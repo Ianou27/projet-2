@@ -6,7 +6,6 @@ import { BehaviorSubject } from 'rxjs';
     providedIn: 'root',
 })
 export class ResizerService {
-    startLetterSize = DEFAULT_LETTER_SIZE;
     letterFontSize = new BehaviorSubject<number>(DEFAULT_LETTER_SIZE);
 
     changeFont(operator: string) {

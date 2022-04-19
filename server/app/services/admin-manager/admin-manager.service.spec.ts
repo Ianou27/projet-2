@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import { assert } from 'chai';
 import * as sinon from 'sinon';
 import * as io from 'socket.io';

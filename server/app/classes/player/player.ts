@@ -1,4 +1,4 @@
-import { BotType } from '@common/botType';
+import { BotType } from '@common/bot-type';
 import { letterValue } from './../../../../common/assets/reserve-letters';
 import { Tile } from './../../../../common/tile/Tile';
 import { User } from './../../../../common/types';
@@ -95,7 +95,7 @@ export class Player {
         return false;
     }
 
-    private isUpper(letter: string) {
+    private isUpper(letter: string): boolean {
         return /[A-Z]/.test(letter);
     }
 }

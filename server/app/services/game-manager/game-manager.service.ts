@@ -64,11 +64,11 @@ export class GameManager {
     }
 
     messageVerification(message: string): string {
-        let erreur = 'valide';
+        let validation = 'valide';
         if (!this.messageLengthVerification(message)) {
-            erreur = 'Message trop long';
+            validation = 'Message trop long';
         }
-        return erreur;
+        return validation;
     }
 
     placeVerification(command: string[], game: Game): string {
@@ -109,7 +109,7 @@ export class GameManager {
         return text;
     }
 
-    helpCommandValid(command: string[]) {
+    helpCommandValid(command: string[]): boolean {
         return HelpCommand.validatedFormat(command);
     }
 }

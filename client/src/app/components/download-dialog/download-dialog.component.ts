@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { ClientSocketHandler } from '@app/services/client-socket-handler/client-socket-handler.service';
 
 @Component({
@@ -9,7 +9,7 @@ import { ClientSocketHandler } from '@app/services/client-socket-handler/client-
 })
 export class DownloadDialogComponent {
     dicName: string;
-    downloadJsonHref: unknown;
+    downloadJsonHref: SafeUrl;
 
     constructor(public socketHandler: ClientSocketHandler, private sanitizer: DomSanitizer) {
         this.dicName = 'dict';

@@ -17,7 +17,6 @@ describe('AdminPageComponent', () => {
     let component: AdminPageComponent;
     let fixture: ComponentFixture<AdminPageComponent>;
     let clientSocketHandlerSpy: SpyObj<ClientSocketHandler>;
-    let windowMock: any;
 
     beforeEach(() => {
         clientSocketHandlerSpy = jasmine.createSpyObj(
@@ -53,7 +52,6 @@ describe('AdminPageComponent', () => {
                 dictInfoList: [{ title: 'titre', description: 'description' }],
             },
         );
-        windowMock = { location: { reload: jasmine.createSpy('reload') } };
     });
 
     beforeEach(async () => {
@@ -74,7 +72,6 @@ describe('AdminPageComponent', () => {
                         },
                     },
                 },
-                { provide: Window, useValue: windowMock },
             ],
         }).compileComponents();
     });
@@ -145,13 +142,6 @@ describe('AdminPageComponent', () => {
         };
         const reloadSpy = spyOn(component, 'reloadPage');
         component.deleteDict('titre');
-        expect(reloadSpy).toHaveBeenCalled();
-    });
-
-    it('reload page should call reload', () => {
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        const reloadSpy = spyOn<any>(window.location, 'reload').and.callFake(() => {});
-        component.reloadPage();
         expect(reloadSpy).toHaveBeenCalled();
     });
 
@@ -305,8 +295,8 @@ describe('AdminPageComponent', () => {
 
         fixture.detectChanges();
 
-        expect(component.error).toEqual('');
-        expect(component.selectedFile).toBeUndefined();
+        expect(component.error).toBe('');
+        expect(component.selectedFile).toBe('');
     });
 
     it('submit should call other methods', () => {

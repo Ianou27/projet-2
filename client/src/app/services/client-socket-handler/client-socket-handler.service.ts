@@ -25,7 +25,6 @@ import { TileHolderService } from './../tile-holder/tile-holder.service';
 })
 export class ClientSocketHandler {
     username: string = '';
-    room: string = '';
 
     allRooms: Room[] = [];
     roomMessage: string = '';
@@ -64,7 +63,7 @@ export class ClientSocketHandler {
 
     constructor(public socketService: SocketClientService, public boardService: BoardService, public tileHolderService: TileHolderService) {}
 
-    get socketId() {
+    get socketId(): string {
         return this.socketService.socket.id ? this.socketService.socket.id : '';
     }
 

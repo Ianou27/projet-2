@@ -50,11 +50,11 @@ export class AdminPageComponent implements OnInit {
         });
     }
 
-    myErrorModify(controlName: string, errorName: string) {
+    myErrorModify(controlName: string, errorName: string): boolean {
         return this.formModify.controls[controlName].hasError(errorName);
     }
 
-    myErrorAdd(controlName: string, errorName: string) {
+    myErrorAdd(controlName: string, errorName: string): boolean {
         return this.formAdd.controls[controlName].hasError(errorName);
     }
 
@@ -146,7 +146,7 @@ export class AdminPageComponent implements OnInit {
         this.setDisplayedNames();
     }
 
-    displayDictNames() {
+    displayDictNames(): string[] {
         const names: string[] = [];
         const dictionaryList = this.socketHandler.dictInfoList;
         dictionaryList.forEach((dict: Dic) => names.push(dict.title));

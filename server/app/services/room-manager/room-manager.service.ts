@@ -1,4 +1,4 @@
-import { BotType } from '@common/botType';
+import { BotType } from '@common/bot-type';
 import { GoalInformations } from '@common/constants/goal-information';
 import { GoalType } from '@common/constants/goal-type';
 import { Tile } from '@common/tile/Tile';

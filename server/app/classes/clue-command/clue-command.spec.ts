@@ -57,16 +57,4 @@ describe('ClueCommand', () => {
         ClueCommand.findClues(game);
         assert(spy.call);
     });
-
-    /* it('method findClues should return 3 placements on the first placement', () => {
-        const placements = ClueCommand.findClues(game);
-        expect(placements.length).to.equal(3);
-    });
-
-    it('method findClues should return 3 placements on the second placement', () => {
-        // PlacementCommand.placeWord('!placer h8v arbre'.split(' '), game);
-        const placements = ClueCommand.findClues(game);
-        console.log(placements);
-        expect(placements.length).to.equal(3);
-    });*/
 });

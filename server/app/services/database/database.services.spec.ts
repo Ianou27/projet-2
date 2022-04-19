@@ -2,12 +2,9 @@
 import { Game } from '@app/classes/game/game';
 import type { Dic } from '@common/types';
 import { fail } from 'assert';
-// import * as chai from 'chai';
 import { expect } from 'chai';
-// import * as chaiAsPromised from 'chai-as-promised';
 import { describe } from 'mocha';
 import { MongoClient } from 'mongodb';
-// import { MongoClient } from 'mongodb';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { Player } from './../../classes/player/player';
 import { DatabaseService } from './database.services';

@@ -242,7 +242,7 @@ export class VirtualPlayer {
         array[pos2] = temp;
     }
 
-    static getCombinations(chars: string[]) {
+    static getCombinations(chars: string[]): string[] {
         const combinations: string[] = [];
         if (chars.indexOf('*') !== INDEX_OF_NOT_FOUND) {
             chars[chars.indexOf('*')] = this.getRandomLetterForBlank();

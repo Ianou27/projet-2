@@ -9,7 +9,6 @@ import { GoalType } from './../../../../../common/constants/goal-type';
     styleUrls: ['./goals.component.scss'],
 })
 export class GoalsComponent {
-    goals: GoalInformations[];
     constructor(public clientSocketHandler: ClientSocketHandler) {}
 
     getType(goal: GoalInformations): string {

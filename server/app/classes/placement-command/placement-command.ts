@@ -102,7 +102,7 @@ export class PlacementCommand {
             orientation = Orientation.v;
             column = Number(positionOrientation[1] + positionOrientation[2]) - 1;
         } else if (numberLetters === 1 && numberLettersCommand === MAXIMUM_LETTERS_PLACE_COMMAND) {
-            orientation = Orientation.h /* positionOrientation[positionOrientation.length - 1]*/;
+            orientation = Orientation.h;
             column = Number(positionOrientation[1] + positionOrientation[2]) - 1;
         } else if (numberLettersCommand === 3) {
             if (positionOrientation[2] === 'h') orientation = Orientation.h;

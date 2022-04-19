@@ -7,7 +7,7 @@ import { GameBoardService } from '@app/services/game-board/game-board.service';
 import { Timer } from '@app/services/timer-manager/timer-manager.service';
 import { CaseProperty } from '@common/assets/case-property';
 import { letterValue } from '@common/assets/reserve-letters';
-import { BotType } from '@common/botType';
+import { BotType } from '@common/bot-type';
 import { allGoals } from '@common/constants/goals';
 import { Tile } from '@common/tile/Tile';
 import { CreateSoloRoomInformations } from '@common/types';

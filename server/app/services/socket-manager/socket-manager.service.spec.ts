@@ -3,7 +3,7 @@
 /* eslint-disable max-lines */
 import { Game } from '@app/classes/game/game';
 import { Player } from '@app/classes/player/player';
-import { BotType } from '@common/botType';
+import { BotType } from '@common/bot-type';
 import { Tile } from '@common/tile/Tile';
 import { CreateRoomInformations, CreateSoloRoomInformations, Room } from '@common/types';
 import { Server } from 'app/server';

@@ -1,4 +1,4 @@
-import { BotType } from '@common/botType';
+import { BotType } from '@common/bot-type';
 import { CreateRoomInformations, CreateSoloRoomInformations, Dic, InfoToJoin, Room } from '@common/types';
 import * as http from 'http';
 import * as io from 'socket.io';

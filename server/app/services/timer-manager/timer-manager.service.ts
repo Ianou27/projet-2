@@ -6,11 +6,12 @@ import { RoomManager } from './../room-manager/room-manager.service';
 export class Timer {
     timeLeft: number;
     timerMax: number;
-    gameTime: number = 0;
+    gameTime: number;
 
     constructor(maxTime: string) {
         this.timerMax = +maxTime;
         this.timeLeft = +maxTime;
+        this.gameTime = 0;
     }
     start(game: Game, sio: io.Server) {
         setInterval(() => {
