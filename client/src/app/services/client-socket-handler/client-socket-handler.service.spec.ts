@@ -368,6 +368,17 @@ describe('ChatService', () => {
         expect(emitSpy).toHaveBeenCalledWith('deleteDic', 'test');
     });
 
+    it('uploadDictionary() should emit the uploadDictionary event', () => {
+        const emitSpy = spyOn(service.socketService.socket, 'emit');
+        const dictionary: Dictionary = {
+            title: 'ABC',
+            description: 'abc',
+        };
+        service.uploadDictionary(dictionary);
+        expect(emitSpy).toHaveBeenCalled();
+        expect(emitSpy).toHaveBeenCalledWith('uploadDictionary', dictionary);
+    });
+
     it('modifyDictionary() should emit the modifyDictionary event', () => {
         const emitSpy = spyOn(service.socketService.socket, 'emit');
         service.modifyDictionary('test', 'dictionnaire', 'dictionnaire de scrabble');
@@ -429,6 +440,11 @@ describe('ChatService', () => {
             const goalPlayer: GoalInformations[] = [];
             socketTestHelper.peerEmitTwoParams('tileHolder', letters, goalPlayer);
             expect(service.tileHolderService.tileHolder).toBe(letters);
+        });
+
+        it('should handle connect event', () => {
+            socketTestHelper.peerEmitTwoParams('connect');
+            expect(service.errorHandler).toBe('');
         });
 
         it('should handle modification event for player1', () => {
