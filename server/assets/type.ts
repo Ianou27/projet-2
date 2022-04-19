@@ -23,7 +23,7 @@ export interface History extends WithId<Document> {
     gameMode: string;
 }
 export interface Bot extends WithId<Document> {
-    id: ObjectId;
+    id?: ObjectId;
     type: string;
     name: string;
 }

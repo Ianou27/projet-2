@@ -6,9 +6,12 @@ import { BotType } from '@common/bot-type';
 import { GoalType } from '@common/constants/goal-type';
 import { allGoals } from '@common/constants/goals';
 import { CreateRoomInformations, CreateSoloRoomInformations, Room, User } from '@common/types';
+import { Bot } from 'assets/type';
 import { assert, expect } from 'chai';
+import { ObjectId } from 'mongodb';
 import * as sinon from 'sinon';
 import * as io from 'socket.io';
+import { Timer } from '../timer-manager/timer-manager.service';
 import { DatabaseService } from './../database/database.services';
 import { IdManager } from './../id-manager/id-manager.service';
 
@@ -66,6 +69,7 @@ describe('Room Manager tests', () => {
         game.goals.twoStars.isInGame = true;
         game.goals.scrabble.isInGame = true;
         game.goals.scrabble.type = GoalType.PrivatePlayer1;
+        game.goals.scrabble.isDone = true;
         const goals = RoomManager.getGoalsPlayer(game, game.player2);
         expect(goals.includes(game.goals.palindrome)).to.equal(true);
         expect(goals.includes(game.goals.twoStars)).to.equal(true);
@@ -224,5 +228,51 @@ describe('Room Manager tests', () => {
         roomManager.createRoom(informations);
         assert(usersSpy.called);
         assert(roomsSpy.called);
+    });
+
+    it('method getRandomBotName should return a name from the database', async () => {
+        const bot: Bot[] = [
+            {
+                _id: new ObjectId('5b681f5b61020f2d8ad4768d'),
+                type: 'expert',
+                name: 'bob',
+            },
+        ];
+        sinon.replace(databaseService, 'getVirtualPlayers', async () => {
+            return bot;
+        });
+        const result = await roomManager.getRandomBotName('', 'expert');
+        expect(result).to.equal(bot[0].name + ' ' + bot[0].type);
+    });
+
+    it('method convertMultiToSolo should call getRandomBotName, cancelCreation and createSoloGame', async () => {
+        const game = new Game();
+        game.player1 = new Player([], true, 'player1', { username: 'rt', id: '1', room: 'room1' });
+        game.timer = new Timer('60');
+        game.dictionaryName = 'dictionnaire';
+        const bot: Bot[] = [
+            {
+                _id: new ObjectId('5b681f5b61020f2d8ad4768d'),
+                type: 'expert',
+                name: 'bob',
+            },
+        ];
+        sinon.replace(databaseService, 'getVirtualPlayers', async () => {
+            return bot;
+        });
+        sinon.replace(roomManager.identification, 'getGame', () => {
+            return game;
+        });
+        sinon.replace(roomManager, 'cancelCreation', () => {
+            return;
+        });
+        const spy1 = sinon.stub(roomManager, 'getRandomBotName');
+        const spy2 = sinon.stub(roomManager, 'cancelCreation');
+        const spy3 = sinon.stub(roomManager, 'createSoloGame');
+
+        await roomManager.convertMultiToSolo(false, '123');
+        assert(spy1.called);
+        assert(spy2.called);
+        assert(spy3.called);
     });
 });

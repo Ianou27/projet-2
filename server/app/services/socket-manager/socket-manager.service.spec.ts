@@ -497,4 +497,30 @@ describe('SocketManager service tests', () => {
             done();
         }, RESPONSE_DELAY);
     });
+
+    it('should handle disconnect event', (done) => {
+        const game = new Game();
+        game.player1 = new Player(lettersTilePlayer, true, 'player1', { username: 'rt', id: '1', room: 'room1' });
+        game.player2 = new Player(lettersTilePlayer, false, 'player2', { username: 'aa', id: '2', room: 'room1' });
+        sinon.replace(service.identification, 'getRoom', () => {
+            return 'room';
+        });
+        sinon.replace(service.identification, 'getGame', () => {
+            return game;
+        });
+        sinon.replace(service.roomManager, 'getRandomBotName', async () => {
+            return 'bot';
+        });
+        const spy1 = sinon.stub(game, 'surrender');
+        const spy2 = sinon.stub(service.identification, 'surrender');
+        const spy3 = sinon.stub(service.roomManager, 'getRandomBotName');
+
+        clientSocket.emit('forceDisconnect');
+        setTimeout(() => {
+            assert(spy1.called);
+            assert(spy2.called);
+            assert(spy3.called);
+            done();
+        }, RESPONSE_DELAY);
+    });
 });
