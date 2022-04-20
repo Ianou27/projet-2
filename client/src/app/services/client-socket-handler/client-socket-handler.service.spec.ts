@@ -5,7 +5,7 @@
 import { TestBed } from '@angular/core/testing';
 import { SocketTestHelper } from '@app/classes/socket-test-helper';
 import { Socket } from 'socket.io-client';
-import { CaseProperty } from '../../../../../common/assets/case-property';
+import { CaseProperty } from './../../../../../common/assets/case-property';
 import { LetterScore } from './../../../../../common/assets/reserve-letters';
 import { BotType } from './../../../../../common/bot-type';
 import { GoalInformations } from './../../../../../common/constants/goal-information';
