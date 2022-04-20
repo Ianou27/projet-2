@@ -1,5 +1,4 @@
 import { Orientation } from '@common/orientation';
-import * as fs from 'fs';
 import { letterValue } from './../../../../common/assets/reserve-letters';
 import { rowNumber } from './../../../../common/assets/row';
 import {
@@ -13,11 +12,10 @@ import {
 import { Tile } from './../../../../common/tile/Tile';
 import { PlacementInformations } from './../../../assets/placement-informations';
 import { Game } from './../game/game';
+import { Goal } from './../goal/goal';
 import { PointsCalculator } from './../points-calculator/points-calculator';
 
 export class PlacementCommand {
-    static dictionaryArray: string[] = JSON.parse(fs.readFileSync('./assets/dictionnary.json').toString()).words;
-
     static validatedPlaceCommandFormat(commandInformations: string[]): boolean {
         if (commandInformations.length !== 3) return false;
         const command: string = commandInformations.join(' ');
@@ -48,7 +46,8 @@ export class PlacementCommand {
 
     static restoreBoard(game: Game, letterPositions: Tile[]) {
         for (const tile of letterPositions) {
-            game.playerTurn().changeLetter('', game.gameBoard.cases[tile.positionX][tile.positionY].letter);
+            const letterToChange = tile.value === 0 ? '*' : game.gameBoard.cases[tile.positionX][tile.positionY].letter;
+            game.playerTurn().changeLetter('', letterToChange);
             game.gameBoard.cases[tile.positionX][tile.positionY].letter = '';
             game.gameBoard.cases[tile.positionX][tile.positionY].value = 0;
         }
@@ -69,8 +68,8 @@ export class PlacementCommand {
                 tile.value = letterValue[letterPlace.toUpperCase()];
             }
             tile.letter = letterPlace.toUpperCase();
-
             positions.push(tile);
+            if (game.gameBoard.isBottomOrLeft(tile, placementInformations.orientation)) break;
             tile = game.gameBoard.nextTile(tile, placementInformations.orientation, false);
             game.playerTurn().changeLetter(letterPlace, '');
             lettersIter++;
@@ -103,7 +102,7 @@ export class PlacementCommand {
             orientation = Orientation.v;
             column = Number(positionOrientation[1] + positionOrientation[2]) - 1;
         } else if (numberLetters === 1 && numberLettersCommand === MAXIMUM_LETTERS_PLACE_COMMAND) {
-            orientation = Orientation.h /* positionOrientation[positionOrientation.length - 1]*/;
+            orientation = Orientation.h;
             column = Number(positionOrientation[1] + positionOrientation[2]) - 1;
         } else if (numberLettersCommand === 3) {
             if (positionOrientation[2] === 'h') orientation = Orientation.h;
@@ -149,7 +148,7 @@ export class PlacementCommand {
     }
 
     static insideBoardGame(placementInformations: PlacementInformations, game: Game): boolean {
-        let numberLettersToPlace = placementInformations.numberLetters;
+        let numberLettersToPlace = placementInformations.numberLetters - 1;
         let tile: Tile = game.gameBoard.cases[placementInformations.column][placementInformations.row];
         while (numberLettersToPlace > 0) {
             try {
@@ -230,7 +229,7 @@ export class PlacementCommand {
         return game.gameBoard.tileContainsLetter(positionX, positionY);
     }
 
-    static newWordsValid(commandInformations: string[], game: Game, letterPositions: Tile[]): number {
+    static newWordsValid(commandInformations: string[], game: Game, letterPositions: Tile[], isValidation: boolean): number {
         const placementInformations = this.separatePlaceCommandInformations(commandInformations);
         let wordsFormed: Tile[][] = [];
         if (placementInformations.numberLetters === 1 && game.gameState.firstTurn) return 0;
@@ -243,9 +242,12 @@ export class PlacementCommand {
             for (const wordLetter of word) {
                 wordString = wordString.concat(wordLetter.letter);
             }
-            if (!this.validatedWordDictionary(wordString, this.dictionaryArray)) return 0;
+            if (game.gameState.modeLog && game.goals.scrabble.isInGame && !game.goals.scrabble.isDone && wordString === 'SCRABBLE') continue;
+            if (!this.validatedWordDictionary(wordString, game.dictionaryArray)) return 0;
         }
-        return PointsCalculator.calculatedPointsPlacement(wordsFormed, letterPositions);
+        let score = 0;
+        if (!isValidation) score += Goal.validationGoal(wordsFormed, game);
+        return score + PointsCalculator.calculatedPointsPlacement(wordsFormed, letterPositions);
     }
 
     static verifyWordsFormed(wordsFormed: Tile[][], letterPositions: Tile[]): Tile[][] {
@@ -297,7 +299,7 @@ export class PlacementCommand {
         const placementInformations = PlacementCommand.separatePlaceCommandInformations(commandInformations);
         let letterPositions: Tile[] = [];
         letterPositions = PlacementCommand.place(placementInformations, game);
-        const placementScore = PlacementCommand.newWordsValid(commandInformations, game, letterPositions);
+        const placementScore = PlacementCommand.newWordsValid(commandInformations, game, letterPositions, false);
         if (placementScore === 0) {
             PlacementCommand.restoreBoard(game, letterPositions);
             return false;

@@ -4,7 +4,7 @@ import { IdManager } from '@app/services/id-manager/id-manager.service';
 import { Room, User } from '@common/types';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
-import { DatabaseService } from './../best-score/best-score.services';
+import { DatabaseService } from './../database/database.services';
 
 describe('IdManager tests', () => {
     const idManager = new IdManager();
@@ -15,9 +15,9 @@ describe('IdManager tests', () => {
     idManager.games.push(game);
     idManager.games.push(game2);
     beforeEach(() => {
-        game.player1Join({ username: 'rt', id: '1', room: 'room1' }, '60', databaseService);
+        game.player1Join({ username: 'rt', id: '1', room: 'room1' }, '60', databaseService, false, 'default-dictionary');
         game.player2 = new Player(game.reserveLetters.randomLettersInitialization(), false, 'player2', { username: 'rta', id: '2', room: 'room1' });
-        game2.player1Join({ username: 'u', id: '3', room: 'room2' }, '60', databaseService);
+        game2.player1Join({ username: 'u', id: '3', room: 'room2' }, '60', databaseService, false, 'default-dictionary');
         game2.player2 = new Player(game.reserveLetters.randomLettersInitialization(), false, 'player2', { username: 'u2', id: '4', room: 'room2' });
         const user: User = {
             username: 'username',
@@ -76,6 +76,8 @@ describe('IdManager tests', () => {
             player1: 'user',
             player2: 'username',
             time: '60',
+            mode2990: false,
+            dictionary: 'default-dictionary',
         };
         idManager.rooms.push(room);
 
@@ -92,6 +94,8 @@ describe('IdManager tests', () => {
                 player1: 'user',
                 player2: 'username',
                 time: '60',
+                mode2990: false,
+                dictionary: 'default-dictionary',
             },
         ];
 
@@ -104,6 +108,8 @@ describe('IdManager tests', () => {
             player1: 'rt',
             player2: 'rta',
             time: '60',
+            mode2990: false,
+            dictionary: 'default-dictionary',
         };
         idManager.rooms.push(room);
         sinon.replace(idManager, 'getUsername', () => {
@@ -118,6 +124,8 @@ describe('IdManager tests', () => {
             player1: 'rt',
             player2: 'rta',
             time: '60',
+            mode2990: false,
+            dictionary: 'default-dictionary',
         };
         idManager.rooms.push(room);
         sinon.replace(idManager, 'getUsername', () => {

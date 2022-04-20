@@ -1,3 +1,4 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LETTER_FONT_SIZE, VALUE_FONT_SIZE } from '@app/constants/general-constants';
 import { ResizerService } from '@app/services/resizer/resizer.service';
@@ -18,6 +19,7 @@ describe('SizeSelectorComponent', () => {
         await TestBed.configureTestingModule({
             declarations: [SizeSelectorComponent],
             providers: [{ provide: ResizerService, useValue: resizerServiceSpy }],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
     });
 

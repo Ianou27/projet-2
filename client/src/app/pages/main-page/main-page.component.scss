@@ -2,7 +2,9 @@
     min-height: 100vh;
     height: auto;
     margin-top: 20rm;
-    background-color: #d2b48c;
+    background-image: url('https://wallpaperaccess.com/full/2891081.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .justified {
@@ -12,18 +14,22 @@
     align-items: center;
 }
 
+::ng-deep .tooltip {
+    font-size: 25px;
+}
+
+.rectangle {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-bottom: 10rem;
+}
+
 button {
     padding: 15px 30px;
     text-align: center;
     font-size: 250%;
     margin-bottom: 1.5rem;
-    margin-left: 1.5rem;
     width: 25rem;
     border-radius: 15px;
-}
-
-h2 {
-    font-family: 'Lucida Handwriting';
-    margin-bottom: 10rem;
-    font-size: 700%;
 }

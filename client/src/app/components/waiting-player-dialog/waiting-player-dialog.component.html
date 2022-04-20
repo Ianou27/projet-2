@@ -16,4 +16,4 @@
         </div>
     </section>
 </div>
-<button mat-raised-button color="primary" id="convert" mat-dialog-close="true" (click)="convertToSolo()">Convertir en mode solo</button>
+<button disabled="{{this.clientSocketHandler.playerJoined}}" mat-raised-button color="primary" id="convert" mat-dialog-close="true" (click)="convertToSolo()">Convertir en mode solo</button>

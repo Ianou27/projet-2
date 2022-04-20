@@ -47,7 +47,7 @@ export class IdManager {
         this.games.forEach((game) => {
             if (username === game.player1.user.username) {
                 player = 'player1';
-            } else if (username === game.player2.user.username) {
+            } else if (game.player2 !== undefined && username === game.player2.user.username) {
                 player = 'player2';
             }
         });
@@ -68,10 +68,8 @@ export class IdManager {
         for (const game of this.games) {
             if (game.player1.user.id === socketId) {
                 gameToFind = game;
-            } else if (game.player2 !== undefined) {
-                if (game.player2.user.id === socketId) {
-                    gameToFind = game;
-                }
+            } else if (game.player2 !== undefined && game.player2.user.id === socketId) {
+                gameToFind = game;
             }
         }
 
@@ -82,11 +80,9 @@ export class IdManager {
             if (game.player1.user.id === socketId) {
                 const index = this.games.indexOf(game);
                 this.games.splice(index, 1);
-            } else if (game.player2 !== undefined) {
-                if (game.player2.user.id === socketId) {
-                    const index = this.games.indexOf(game);
-                    this.games.splice(index, 1);
-                }
+            } else if (game.player2 !== undefined && game.player2.user.id === socketId) {
+                const index = this.games.indexOf(game);
+                this.games.splice(index, 1);
             }
         }
     }

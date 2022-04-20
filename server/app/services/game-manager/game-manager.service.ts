@@ -1,4 +1,5 @@
 import { ClueCommand } from '@app/classes/clue-command/clue-command';
+import { HelpCommand } from '@app/classes/help-command/help-command';
 import { LetterScore } from './../../../../common/assets/reserve-letters';
 import { MAXIMUM_CHARACTERS_MESSAGE } from './../../../../common/constants/general-constants';
 import { ExchangeCommand } from './../../classes/exchange-command/exchange-command';
@@ -9,12 +10,7 @@ import { ReserveCommand } from './../../classes/reserve-command/reserve-command'
 
 export class GameManager {
     placeWord(command: string[], game: Game): string {
-        let message = 'placer';
-        if (!PlacementCommand.placeWord(command, game)) {
-            message = 'commande impossible à realisé';
-        }
-
-        return message;
+        return PlacementCommand.placeWord(command, game) ? 'placer' : 'commande impossible à realisé';
     }
 
     clueCommandValid(command: string[]): boolean {
@@ -62,16 +58,8 @@ export class GameManager {
         return message.length > MAXIMUM_CHARACTERS_MESSAGE ? false : true;
     }
 
-    characterVerification(message: string): boolean {
-        return message.trim().length === 0 ? false : true;
-    }
-
     messageVerification(message: string): string {
-        let erreur = 'valide';
-        if (!this.messageLengthVerification(message)) {
-            erreur = 'Message trop long';
-        }
-        return erreur;
+        return this.messageLengthVerification(message) ? 'valide' : 'Message trop long';
     }
 
     placeVerification(command: string[], game: Game): string {
@@ -95,19 +83,20 @@ export class GameManager {
     }
 
     passVerification(command: string[]): string {
-        let message = 'valide';
-        if (!this.passCommandValid(command)) {
-            message = 'Format non valide';
-        }
-        return message;
+        return this.passCommandValid(command) ? 'valide' : 'Format non valide';
     }
 
     formatClueCommand(game: Game): string[] {
         const clues = ClueCommand.findClues(game);
-        const text: string[] = ['Possibilités de placements'];
+        const text: string[] = ['\n', 'Possibilités de placements : ', '\n'];
         for (const clue of clues) {
             text.push(clue.command + ' pour ' + clue.score.toString() + ' points');
         }
+        text.push('\n');
         return text;
+    }
+
+    helpCommandValid(command: string[]): boolean {
+        return HelpCommand.validatedFormat(command);
     }
 }

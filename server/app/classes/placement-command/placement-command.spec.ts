@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 /* eslint-disable max-lines */
-import { DatabaseService } from '@app/services/best-score/best-score.services';
+import { DatabaseService } from '@app/services/database/database.services';
 import { CaseProperty } from '@common/assets/case-property';
 import { letterValue } from '@common/assets/reserve-letters';
 import { Tile } from '@common/tile/Tile';
@@ -18,13 +18,12 @@ describe('Placement Command', () => {
     let lettersTilePlayer2: Tile[] = [];
     const lettersPlayer1 = ['A', 'L', 'L', '*', 'E', 'E', 'V'];
     const lettersPlayer2 = ['B', 'A', 'T', '*', 'E', 'V', 'A'];
-    const dictionaryArray: string[] = JSON.parse(fs.readFileSync('./assets/dictionnary.json').toString()).words;
+    const dictionaryArray: string[] = JSON.parse(fs.readFileSync('./assets/dictionaries/default-dictionary.json').toString()).words;
     const databaseService: DatabaseService = new DatabaseService();
 
     beforeEach(() => {
         game = new Game();
-        game.player1Join({ username: 'rt1', id: '1', room: 'room1' }, '60', databaseService);
-        // game.player1 = new Player(game.reserveLetters.randomLettersInitialization(), true, 'player1', { username: 'rt1', id: '1', room: 'room1' });
+        game.player1Join({ username: 'rt1', id: '1', room: 'room1' }, '60', databaseService, false, 'default-dictionary');
         game.player2 = new Player(game.reserveLetters.randomLettersInitialization(), true, 'player2', { username: 'rta', id: '2', room: 'room1' });
         for (const letter of lettersPlayer1) {
             const tile1: Tile = new Tile(CaseProperty.Normal, 0, 0);
@@ -45,6 +44,7 @@ describe('Placement Command', () => {
     afterEach(() => {
         lettersTilePlayer1 = [];
         lettersTilePlayer2 = [];
+        sinon.restore();
     });
 
     it('method validatedPlaceCommandFormat should return false if it compose of 3 terms', () => {
@@ -131,7 +131,7 @@ describe('Placement Command', () => {
     it('method newWordsValid should return 0 for a one letter placement on first move', () => {
         const firstWordCommandNotValid = '!placer h8h a';
         game.gameState.firstTurn = true;
-        const result = PlacementCommand.newWordsValid(firstWordCommandNotValid.split(' '), game, []);
+        const result = PlacementCommand.newWordsValid(firstWordCommandNotValid.split(' '), game, [], false);
         expect(result).to.equal(0);
     });
 

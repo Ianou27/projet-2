@@ -1,0 +1,53 @@
+.tab-content {
+    padding: 20px;
+}
+
+.player-list {
+    margin-bottom: 10px;
+}
+
+.add-player {
+    display: block;
+    width: 200px;
+    margin-bottom: 20px;
+}
+
+.input {
+    margin-bottom: 20px;
+}
+
+mat-form-field {
+    padding-right: 20px;
+}
+
+textarea {
+    height: 15px;
+}
+
+mat-divider {
+    margin: 5px 0;
+}
+
+button {
+    margin: 0 10px 10px 0;
+}
+
+table {
+    width: 100%;
+}
+
+.dic {
+    display: flex;
+}
+
+.download-button {
+    height: 35px;
+}
+
+.error {
+    color: red;
+    font-weight: bold;
+    text-align: center;
+    margin-left: 380px;
+    font-size: 40px;
+}

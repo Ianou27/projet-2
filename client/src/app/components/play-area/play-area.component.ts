@@ -12,10 +12,13 @@ import { ResizerService } from '@app/services/resizer/resizer.service';
 export class PlayAreaComponent implements AfterViewInit, OnInit, OnDestroy {
     @ViewChild('gridCanvas', { static: false }) private gridCanvas!: ElementRef<HTMLCanvasElement>;
     letterFontSize: number;
-    mousePosition: Vec2 = { x: 0, y: 0 };
-    private canvasSize = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
+    mousePosition: Vec2;
+    private canvasSize: Vec2;
 
-    constructor(private readonly gridService: GridService, private resizer: ResizerService) {}
+    constructor(private readonly gridService: GridService, private resizer: ResizerService) {
+        this.canvasSize = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
+        this.mousePosition = { x: 0, y: 0 };
+    }
 
     ngOnInit(): void {
         this.resizer.letterFontSize.subscribe((letterFontSize) => {

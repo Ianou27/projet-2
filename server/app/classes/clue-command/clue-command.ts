@@ -4,9 +4,8 @@ import { VirtualPlayer } from './../virtual-player/virtual-player';
 
 export class ClueCommand {
     static verifyFormat(commandInformations: string[]): boolean {
-        if (commandInformations.length !== 1) return false;
         const commandFormat = /^!indice$/;
-        return commandFormat.test(commandInformations[0]);
+        return commandInformations.length === 1 && commandFormat.test(commandInformations[0]);
     }
 
     static findClues(game: Game): PlacementScore[] {

@@ -1,5 +1,6 @@
+/* eslint-disable max-lines */
 /* eslint-disable @typescript-eslint/no-magic-numbers */
-import { DatabaseService } from '@app/services/best-score/best-score.services';
+import { DatabaseService } from '@app/services/database/database.services';
 import { Timer } from '@app/services/timer-manager/timer-manager.service';
 import { CaseProperty } from '@common/assets/case-property';
 import { letterValue } from '@common/assets/reserve-letters';
@@ -40,7 +41,7 @@ describe('Virtual Player', () => {
         }
         game = new Game();
         game.sio = new io.Server();
-        game.player1Join({ username: 'player1', id: '1', room: 'room1' }, '60', databaseService);
+        game.player1Join({ username: 'player1', id: '1', room: 'room1' }, '60', databaseService, false, 'default-dictionary');
         game.player1.letters = lettersTilePlayer1;
         game.player2 = new Player(game.reserveLetters.randomLettersInitialization(), false, 'player2', {
             username: 'player2',
@@ -206,7 +207,7 @@ describe('Virtual Player', () => {
         assert(spy.called);
     });
 
-    it('method findLettersPosition should return the new tile place by the command place', () => {
+    it('method findLettersPosition should return the new tile place by the command place with letters on board', () => {
         const placementInformations: PlacementInformations = {
             row: 7,
             column: 7,
@@ -237,6 +238,40 @@ describe('Virtual Player', () => {
         expect(result[4].positionY).equal(placementInformations.column);
     });
 
+    it('method findLettersPosition should return the new tile place by the command place', () => {
+        game.gameBoard.cases[7][7].letter = 'A';
+        game.gameBoard.cases[7][7].value = 1;
+
+        const placementInformations: PlacementInformations = {
+            row: 7,
+            column: 7,
+            letters: ['A', 'R', 'B', 'R', 'E'],
+            orientation: Orientation.h,
+            numberLetters: 5,
+        };
+        const result = VirtualPlayer.findLettersPosition(placementInformations, game);
+        expect(result.length).equal(placementInformations.numberLetters);
+        expect(result[0].letter).equal(placementInformations.letters[0]);
+        expect(result[0].positionX).equal(placementInformations.row + 1);
+        expect(result[0].positionY).equal(placementInformations.column);
+
+        expect(result[1].letter).equal(placementInformations.letters[1]);
+        expect(result[1].positionX).equal(placementInformations.row + 2);
+        expect(result[1].positionY).equal(placementInformations.column);
+
+        expect(result[2].letter).equal(placementInformations.letters[2]);
+        expect(result[2].positionX).equal(placementInformations.row + 3);
+        expect(result[2].positionY).equal(placementInformations.column);
+
+        expect(result[3].letter).equal(placementInformations.letters[3]);
+        expect(result[3].positionX).equal(placementInformations.row + 4);
+        expect(result[3].positionY).equal(placementInformations.column);
+
+        expect(result[4].letter).equal(placementInformations.letters[4]);
+        expect(result[4].positionX).equal(placementInformations.row + 5);
+        expect(result[4].positionY).equal(placementInformations.column);
+    });
+
     it('method findPlacementCommand should call findLettersPosition', () => {
         const spy = sinon.spy(VirtualPlayer, 'findLettersPosition');
         const tilePlacementPossible: TilePlacementPossible = {
@@ -248,6 +283,9 @@ describe('Virtual Player', () => {
     });
 
     it('method findPlacementCommand should return valid command place', () => {
+        game.gameState.firstTurn = false;
+        game.gameBoard.cases[7][7].letter = 'c';
+        game.gameBoard.cases[7][7].value = 3;
         const tilePlacementPossible: TilePlacementPossible = {
             tile: game.gameBoard.cases[7][7],
             orientation: Orientation.h,
@@ -268,6 +306,59 @@ describe('Virtual Player', () => {
 
         results.forEach((element) => {
             expect(expectedElement).includes(element);
+        });
+    });
+
+    it('method exchangeAllLetters should return a command pass if the reserve is empty', () => {
+        game.reserveLetters.letters = [];
+        const command = VirtualPlayer.exchangeAllLetters(game);
+        expect(command[0]).equal('!passer');
+    });
+
+    it('method exchangeAllLetters should return a command exchange with 7 letters if they are more than 7 in the reserve', () => {
+        const command = VirtualPlayer.exchangeAllLetters(game);
+        expect(command[0]).equal('!échanger');
+        expect(command[1].length).equal(7);
+    });
+
+    it('method exchangeAllLetters should return a command exchange with the number of letters in the reserve if they are less than 7 of them', () => {
+        const lettersReserve = ['A', 'B', 'B', 'C'];
+        game.reserveLetters.letters = lettersReserve;
+        const command = VirtualPlayer.exchangeAllLetters(game);
+        expect(command[0]).equal('!échanger');
+        expect(command[1].length).equal(lettersReserve.length);
+    });
+
+    it('method exchangeAllLetters should return a command exchange with only the letters of the player', () => {
+        const command = VirtualPlayer.exchangeAllLetters(game);
+        const lettersPlayer = game.playerTurn().lettersToStringArray();
+        expect(command[0]).equal('!échanger');
+        command[1].split('').forEach((element) => {
+            expect(lettersPlayer).includes(element.toUpperCase());
+        });
+    });
+
+    it('method findAllPlacementCommands should stop when commandPlacements is 15 of length', () => {
+        const array: PlacementScore[] = [];
+        for (let i = 0; i < 20; i++) {
+            array.push({ score: 12, command: '!placer h8h pose' });
+        }
+        sinon.replace(VirtualPlayer, 'findPlacementCommand', () => {
+            return array;
+        });
+        const tile: Tile = new Tile(CaseProperty.Normal, 0, 0);
+        const tilePlacementPossible: TilePlacementPossible[] = [
+            {
+                tile,
+                orientation: Orientation.h,
+            },
+        ];
+        sinon.replace(VirtualPlayer, 'findAllPositionGameBoard', () => {
+            return tilePlacementPossible;
+        });
+        const result = VirtualPlayer.findAllPlacementCommands(game);
+        result.forEach((element) => {
+            expect(array).to.include(element);
         });
     });
 });

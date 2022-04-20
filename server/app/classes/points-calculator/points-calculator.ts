@@ -8,8 +8,11 @@ import {
 } from './../../../../common/constants/general-constants';
 import { Tile } from './../../../../common/tile/Tile';
 export class PointsCalculator {
-    static calculatedPointsPlacement(wordsFormed: Tile[][], newTile: Tile[]) {
+    static calculatedPointsPlacement(wordsFormed: Tile[][], newTile: Tile[]): number {
         let total = 0;
+        if (newTile.length === NUMBER_TILE_HOLDER) {
+            total += POINTS_SEVEN_LETTERS_PLACEMENT;
+        }
         for (const word of wordsFormed) {
             let totalOneWord = 0;
             let wordMultiplier = WORD_LETTER_NO_MULTIPLIER;
@@ -23,9 +26,7 @@ export class PointsCalculator {
             }
             total += totalOneWord * wordMultiplier;
         }
-        if (newTile.length === NUMBER_TILE_HOLDER) {
-            total += POINTS_SEVEN_LETTERS_PLACEMENT;
-        }
+
         return total;
     }
 

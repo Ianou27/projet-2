@@ -20,9 +20,12 @@ import { TileHolderComponent } from './components/tile-holder/tile-holder.compon
 import { TileComponent } from './components/tile/tile.component';
 import { WaitingPlayerDialogComponent } from './components/waiting-player-dialog/waiting-player-dialog.component';
 import { WaitingPlayerTwoComponent } from './components/waiting-player-two/waiting-player-two.component';
+import { AdminPageComponent } from './pages/admin-page/admin-page.component';
+import { BestScoreComponent } from './pages/best-score/best-score.component';
 import { JoinPageComponent } from './pages/join-page/join-page.component';
 import { FormatTimePipe } from './pipes/format-time.pipe';
-import { BestScoreComponent } from './pages/best-score/best-score.component';
+import { GoalsComponent } from './components/goals/goals.component';
+import { DownloadDialogComponent } from './components/download-dialog/download-dialog.component';
 
 /**
  * Main module that is used in main.ts.
@@ -50,6 +53,9 @@ import { BestScoreComponent } from './pages/best-score/best-score.component';
         WaitingPlayerTwoComponent,
         BoardComponent,
         BestScoreComponent,
+        AdminPageComponent,
+        GoalsComponent,
+        DownloadDialogComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule, MatDialogModule],
     providers: [],

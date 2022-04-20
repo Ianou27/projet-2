@@ -10,34 +10,42 @@ import { INDEX_OF_NOT_FOUND, NUMBER_TILE_HOLDER } from './../../../../../common/
     styleUrls: ['./tile-holder.component.scss'],
 })
 export class TileHolderComponent {
-    buttonPressed = '';
-    scrollDirection = 0;
-    count = 0;
-    lastKeys: string[] = [];
-    lettersToExchange: string[] = [];
-    showButtonsBool: boolean = false;
-    constructor(public tileHolderService: TileHolderService, public clientSocketHandler: ClientSocketHandler) {}
+    buttonPressed: string;
+    scrollDirection: number;
+    count: number;
+    lastKeys: string[];
+    lettersToExchange: string[];
+    showButtonsBool: boolean;
+    constructor(public tileHolderService: TileHolderService, public clientSocketHandler: ClientSocketHandler) {
+        this.buttonPressed = '';
+        this.scrollDirection = 0;
+        this.count = 0;
+        this.lastKeys = [];
+        this.lettersToExchange = [];
+        this.showButtonsBool = false;
+    }
 
     @HostListener('keydown', ['$event'])
     buttonDetect(event: KeyboardEvent) {
         const swapper = document.getElementById('swap-selected');
         this.buttonPressed = event.key;
         this.scrollDirection = 0;
+
+        const lettersNotOnHolder =
+            swapper &&
+            !this.getLettersOnHolder().includes(this.buttonPressed.toUpperCase()) &&
+            !(this.buttonPressed === 'ArrowLeft') &&
+            !(this.buttonPressed === 'ArrowRight');
+
         if (this.buttonPressed === 'ArrowLeft' && swapper) {
             this.handleSide('Left', swapper);
-        }
-        if (this.buttonPressed === 'ArrowRight' && swapper) {
+        } else if (this.buttonPressed === 'ArrowRight' && swapper) {
             this.handleSide('Right', swapper);
         }
         if (this.getLettersOnHolder().includes(this.buttonPressed.toUpperCase())) {
             const indexes = this.findLetterIndexes(this.buttonPressed.toUpperCase());
             this.addIdOnKey(indexes);
-        } else if (
-            swapper &&
-            !this.getLettersOnHolder().includes(this.buttonPressed.toUpperCase()) &&
-            !(this.buttonPressed === 'ArrowLeft') &&
-            !(this.buttonPressed === 'ArrowRight')
-        ) {
+        } else if (lettersNotOnHolder) {
             this.count = 0;
             this.clearAllIds();
         }
@@ -49,8 +57,7 @@ export class TileHolderComponent {
         this.scrollDirection = event.deltaY;
         if (this.scrollDirection < 0 && swapper) {
             this.handleSide('Left', swapper);
-        }
-        if (this.scrollDirection > 0 && swapper) {
+        } else if (this.scrollDirection > 0 && swapper) {
             this.handleSide('Right', swapper);
         }
     }
@@ -104,7 +111,7 @@ export class TileHolderComponent {
         this.emptyArray();
     }
 
-    private checkForID() {
+    private checkForID(): boolean {
         const parent = document.getElementById('tile-holder');
         if (parent) {
             for (let i = 0; i < parent.childElementCount; i++) {
@@ -162,7 +169,7 @@ export class TileHolderComponent {
         }
     }
 
-    private isAtExtremity(node: HTMLElement) {
+    private isAtExtremity(node: HTMLElement): string {
         const parent = node.parentElement;
         const lastChild = parent?.lastElementChild;
         const firstChild = parent?.firstElementChild;
@@ -173,8 +180,8 @@ export class TileHolderComponent {
         return '';
     }
 
-    private getLettersOnHolder() {
-        const letterArray = [];
+    private getLettersOnHolder(): (string | null)[] {
+        const letterArray: (string | null)[] = [];
         const tileHolder = document.getElementById('tile-holder');
         if (tileHolder) {
             for (let i = 0; i < tileHolder.childElementCount; i++) {
@@ -186,7 +193,7 @@ export class TileHolderComponent {
         return letterArray;
     }
 
-    private findLetterIndexes(letter: string) {
+    private findLetterIndexes(letter: string): number[] {
         const letterArray = this.getLettersOnHolder();
         const indexes = letterArray
             .map((x, index) => {
@@ -225,7 +232,7 @@ export class TileHolderComponent {
         }
     }
 
-    private getLastKey() {
+    private getLastKey(): string {
         this.lastKeys.push(this.buttonPressed);
         if (this.lastKeys.length > 2) {
             this.lastKeys.shift();

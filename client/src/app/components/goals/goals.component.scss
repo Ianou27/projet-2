@@ -1,0 +1,17 @@
+.goal {
+    display: flex;
+    width: 400px;
+    height: max-content;
+    margin-bottom: 3%;
+    top: 150px;
+    left: 150px;
+    align-items: center;
+}
+
+.false {
+    background-color: rgba(255, 0, 34, 0.197);
+}
+
+.true {
+    background-color: rgba(0, 128, 0, 0.258);
+}

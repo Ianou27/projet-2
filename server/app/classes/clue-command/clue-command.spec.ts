@@ -4,9 +4,9 @@ import { CaseProperty } from '@common/assets/case-property';
 import { letterValue } from '@common/assets/reserve-letters';
 import { Tile } from '@common/tile/Tile';
 import { assert, expect } from 'chai';
+import * as fs from 'fs';
 import * as sinon from 'sinon';
 import { Game } from './../game/game';
-import { PlacementCommand } from './../placement-command/placement-command';
 import { Player } from './../player/player';
 import { VirtualPlayer } from './../virtual-player/virtual-player';
 import { ClueCommand } from './clue-command';
@@ -29,6 +29,7 @@ describe('ClueCommand', () => {
         game.player1 = new Player(lettersTilePlayer, true, 'player1', { username: 'rt', id: '1', room: 'room1' });
         game.player2 = new Player(lettersTilePlayer, false, 'player2', { username: 'aa', id: '2', room: 'room1' });
         game.timer = new Timer('60');
+        game.dictionaryArray = JSON.parse(fs.readFileSync('./assets/dictionaries/default-dictionary.json').toString()).words;
     });
 
     afterEach(() => {
@@ -57,16 +58,5 @@ describe('ClueCommand', () => {
         const spy = sinon.spy(VirtualPlayer, 'findAllPlacementCommands');
         ClueCommand.findClues(game);
         assert(spy.call);
-    });
-
-    it('method findClues should return 3 placements on the first placement', () => {
-        const placements = ClueCommand.findClues(game);
-        expect(placements.length).to.equal(3);
-    });
-
-    it('method findClues should return 3 placements on the second placement', () => {
-        PlacementCommand.placeWord('!placer h8v arbre'.split(' '), game);
-        const placements = ClueCommand.findClues(game);
-        expect(placements.length).to.equal(3);
     });
 });

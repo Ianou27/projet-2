@@ -1,13 +1,25 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-lines */
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 import { TestBed } from '@angular/core/testing';
 import { SocketTestHelper } from '@app/classes/socket-test-helper';
 import { Socket } from 'socket.io-client';
-// eslint-disable-next-line no-restricted-imports
-import { Tile } from '../../../../../common/tile/Tile';
+import { CaseProperty } from './../../../../../common/assets/case-property';
 import { LetterScore } from './../../../../../common/assets/reserve-letters';
-import { InfoToJoin, Message, Room } from './../../../../../common/types';
+import { BotType } from './../../../../../common/bot-type';
+import { GoalInformations } from './../../../../../common/constants/goal-information';
+import { Tile } from './../../../../../common/tile/Tile';
+import {
+    CreateRoomInformations,
+    CreateSoloRoomInformations,
+    Dictionary,
+    InfoToJoin,
+    Message,
+    Room,
+    Scoring,
+    VirtualPlayer,
+} from './../../../../../common/types';
 import { ClientSocketHandler } from './client-socket-handler.service';
 
 describe('ChatService', () => {
@@ -71,6 +83,8 @@ describe('ChatService', () => {
             player1: 'player1',
             player2: '',
             time: '60',
+            mode2990: false,
+            dictionary: 'dictionnaire',
         };
         const emitSpy = spyOn(service.socketService.socket, 'emit');
         service.askJoin('test', room);
@@ -98,16 +112,34 @@ describe('ChatService', () => {
     it('createRoom() should emit an event and call updateRooms()', () => {
         const updateRoomSpy = spyOn(service, 'updateRooms');
         const emitSpy = spyOn(service.socketService.socket, 'emit');
-        service.createRoom('test', 'testRoom', '60');
+        const informations: CreateRoomInformations = {
+            username: 'test',
+            socketId: 'test',
+            room: 'testRoom',
+            timer: '60',
+            modeLog: false,
+            dictionary: 'dictionnaire',
+        };
+        service.createRoom(informations);
         expect(emitSpy).toHaveBeenCalled();
-        expect(emitSpy).toHaveBeenCalledWith('createRoom', 'test', 'testRoom', '60');
+        expect(emitSpy).toHaveBeenCalledWith('createRoom', informations);
         expect(updateRoomSpy).toHaveBeenCalled();
     });
     it('createSoloGame() should emit an event createSoloGame', () => {
         const emitSpy = spyOn(service.socketService.socket, 'emit');
-        service.createSoloGame('test', '60');
+        const informations: CreateSoloRoomInformations = {
+            username: 'test',
+            socketId: 'test',
+            room: 'testRoom',
+            timer: '60',
+            modeLog: false,
+            botName: 'username',
+            botType: BotType.Beginner,
+            dictionary: 'dictionnaire',
+        };
+        service.createSoloGame(informations);
         expect(emitSpy).toHaveBeenCalled();
-        expect(emitSpy).toHaveBeenCalledWith('createSoloGame', 'test', '60');
+        expect(emitSpy).toHaveBeenCalledWith('createSoloGame', informations);
     });
     it('updateRoom() should send an event and updateRooms ', () => {
         const sendSpy = spyOn(service.socketService, 'send');
@@ -119,6 +151,8 @@ describe('ChatService', () => {
             player1: 'player1',
             player2: '',
             time: '60',
+            mode2990: false,
+            dictionary: 'dictionnaire',
         };
         const info: InfoToJoin = {
             username: 'username',
@@ -178,6 +212,15 @@ describe('ChatService', () => {
         expect(service.roomMessage).toBe('');
     });
 
+    it('sendToRoom() when !aide', () => {
+        const command = '!aide ';
+        service.roomMessage = command;
+        const sendSpy = spyOn(service.socketService, 'send');
+        service.sendToRoom();
+        expect(sendSpy).toHaveBeenCalledWith('aide', command.split(' '));
+        expect(service.roomMessage).toBe('');
+    });
+
     it('sendToRoom() if invalid command', () => {
         const command = '!resorve ';
         service.roomMessage = command;
@@ -223,22 +266,132 @@ describe('ChatService', () => {
 
     it('convertToSoloGame() should emit the convertToSoloGame event', () => {
         const emitSpy = spyOn(service.socketService.socket, 'emit');
-        service.convertToSoloGame();
+        service.convertToSoloGame(false);
         expect(emitSpy).toHaveBeenCalled();
-        expect(emitSpy).toHaveBeenCalledWith('convertToSoloGame');
+        expect(emitSpy).toHaveBeenCalledWith('convertToSoloGame', false);
     });
-    it('should update numberOfRooms when ann empty room is added', () => {
+    it('should update numberOfRooms without mode2990 when an empty room is added', () => {
         service.allRooms = [
             {
                 player1: 'player1',
                 player2: '',
                 time: '60',
+                mode2990: false,
+                dictionary: 'dictionnaire',
+            },
+            {
+                player1: 'player1',
+                player2: '',
+                time: '60',
+                mode2990: true,
+                dictionary: 'dictionnaire',
             },
         ];
 
         service.updateRoomView();
 
-        expect(service.numberOfRooms).toBe(1);
+        expect(service.numberOfRoomsClassic).toBe(1);
+        expect(service.numberOfRoomsLog).toBe(1);
+    });
+
+    it('addVirtualPlayerNames() should emit the addVirtualPlayerNames event', () => {
+        const name = 'player';
+        const type = 'beginner';
+        const emitSpy = spyOn(service.socketService.socket, 'emit');
+        service.addVirtualPlayerNames(name, type);
+        expect(emitSpy).toHaveBeenCalled();
+        expect(emitSpy).toHaveBeenCalledWith('addVirtualPlayerNames', name, type);
+    });
+
+    it('deleteVirtualPlayerName() should emit the deleteVirtualPlayerName event', () => {
+        const name = 'player';
+        const emitSpy = spyOn(service.socketService.socket, 'emit');
+        service.deleteVirtualPlayerName(name);
+        expect(emitSpy).toHaveBeenCalled();
+        expect(emitSpy).toHaveBeenCalledWith('deleteVirtualPlayerName', name);
+    });
+
+    it('modifyVirtualPlayerNames() should emit the modifyVirtualPlayerNames event', () => {
+        const name = 'player';
+        const name2 = 'player';
+        const emitSpy = spyOn(service.socketService.socket, 'emit');
+        service.modifyVirtualPlayerNames(name, name2);
+        expect(emitSpy).toHaveBeenCalled();
+        expect(emitSpy).toHaveBeenCalledWith('modifyVirtualPlayerNames', name, name2);
+    });
+
+    it('getAdminPageInfo() should emit the getAdminPageInfo event', () => {
+        const emitSpy = spyOn(service.socketService.socket, 'emit');
+        service.getAdminPageInfo();
+        expect(emitSpy).toHaveBeenCalled();
+        expect(emitSpy).toHaveBeenCalledWith('getAdminInfo');
+    });
+
+    it('resetAll() should emit the resetAll event', () => {
+        const emitSpy = spyOn(service.socketService.socket, 'emit');
+        service.resetAll();
+        expect(emitSpy).toHaveBeenCalled();
+        expect(emitSpy).toHaveBeenCalledWith('resetAll');
+    });
+
+    it('resetVirtualPlayers() should emit the resetVirtualPlayers event', () => {
+        const emitSpy = spyOn(service.socketService.socket, 'emit');
+        service.resetVirtualPlayers();
+        expect(emitSpy).toHaveBeenCalled();
+        expect(emitSpy).toHaveBeenCalledWith('resetVirtualPlayers');
+    });
+
+    it('resetDictionary() should emit the resetDictionary event', () => {
+        const emitSpy = spyOn(service.socketService.socket, 'emit');
+        service.resetDictionary();
+        expect(emitSpy).toHaveBeenCalled();
+        expect(emitSpy).toHaveBeenCalledWith('resetDictionary');
+    });
+
+    it('resetGameHistory() should emit the resetGameHistory event', () => {
+        const emitSpy = spyOn(service.socketService.socket, 'emit');
+        service.resetGameHistory();
+        expect(emitSpy).toHaveBeenCalled();
+        expect(emitSpy).toHaveBeenCalledWith('resetGameHistory');
+    });
+
+    it('resetBestScores() should emit the resetBestScores event', () => {
+        const emitSpy = spyOn(service.socketService.socket, 'emit');
+        service.resetBestScores();
+        expect(emitSpy).toHaveBeenCalled();
+        expect(emitSpy).toHaveBeenCalledWith('resetBestScore');
+    });
+
+    it('deleteDic() should emit the deleteDic event', () => {
+        const emitSpy = spyOn(service.socketService.socket, 'emit');
+        service.deleteDic('test');
+        expect(emitSpy).toHaveBeenCalled();
+        expect(emitSpy).toHaveBeenCalledWith('deleteDic', 'test');
+    });
+
+    it('uploadDictionary() should emit the uploadDictionary event', () => {
+        const emitSpy = spyOn(service.socketService.socket, 'emit');
+        const dictionary: Dictionary = {
+            title: 'ABC',
+            description: 'abc',
+        };
+        service.uploadDictionary(dictionary);
+        expect(emitSpy).toHaveBeenCalled();
+        expect(emitSpy).toHaveBeenCalledWith('uploadDictionary', dictionary);
+    });
+
+    it('modifyDictionary() should emit the modifyDictionary event', () => {
+        const emitSpy = spyOn(service.socketService.socket, 'emit');
+        service.modifyDictionary('test', 'dictionnaire', 'dictionnaire de scrabble');
+        expect(emitSpy).toHaveBeenCalled();
+        expect(emitSpy).toHaveBeenCalledWith('modifyDictionary', 'test', 'dictionnaire', 'dictionnaire de scrabble');
+    });
+
+    it('downloadDictionary() should emit the downloadDictionary event', () => {
+        const emitSpy = spyOn(service.socketService.socket, 'emit');
+        service.downloadDictionary('test');
+        expect(emitSpy).toHaveBeenCalled();
+        expect(emitSpy).toHaveBeenCalledWith('downloadDic', 'test');
     });
 
     describe('Receiving events', () => {
@@ -262,12 +415,29 @@ describe('ChatService', () => {
             expect(pushSpy).toHaveBeenCalled();
         });
 
+        it('should handle helpInformation event', () => {
+            const pushSpy = spyOn(service.roomMessages, 'push');
+            const commands: string[] = ['', ''];
+            socketTestHelper.peerSideEmit('helpInformation', commands);
+            expect(pushSpy).toHaveBeenCalled();
+        });
+
         it('should handle commandValidated event', () => {
             const board: Tile[][] = [];
             const tileHolder: Tile[] = [];
             const pushSpy = spyOn(service.roomMessages, 'push');
             socketTestHelper.peerEmitThreeParams('commandValidated', 'hello', board, tileHolder);
             expect(pushSpy).toHaveBeenCalled();
+        });
+
+        it('should handle commandValidated event', () => {
+            const board: Tile[][] = new Array([new Tile(CaseProperty.Normal, 0, 0)]);
+            const tileHolder: Tile[] = [new Tile(CaseProperty.Normal, 0, 0)];
+            const pushSpy = spyOn(service.roomMessages, 'push');
+            socketTestHelper.peerEmitThreeParams('commandValidated', 'hello', board, tileHolder);
+            expect(pushSpy).toHaveBeenCalled();
+            expect(service.boardService.board).toBe(board);
+            expect(service.tileHolderService.tileHolder).toBe(tileHolder);
         });
 
         it('should handle reserveLetters event and not push if reserve is empty', () => {
@@ -278,8 +448,19 @@ describe('ChatService', () => {
 
         it('should handle tileHolder event', () => {
             const letters: Tile[] = [];
-            socketTestHelper.peerSideEmit('tileHolder', letters);
+            const goalPlayer: GoalInformations[] = [];
+            socketTestHelper.peerEmitTwoParams('tileHolder', letters, goalPlayer);
             expect(service.tileHolderService.tileHolder).toBe(letters);
+        });
+
+        it('should handle connect event', () => {
+            socketTestHelper.peerEmitTwoParams('connect');
+            expect(service.errorHandler).toBe('');
+        });
+
+        it('should handle connect_error event', () => {
+            socketTestHelper.peerEmitTwoParams('connect_error');
+            expect(service.errorHandler).toBe('IMPOSSIBLE DE SE CONNECTER AU SERVEUR');
         });
 
         it('should handle modification event for player1', () => {
@@ -311,6 +492,8 @@ describe('ChatService', () => {
                 player1: 'player1',
                 player2: 'player2',
                 time: '60',
+                mode2990: false,
+                dictionary: 'dictionnaire',
             };
 
             const rooms: Room[] = [];
@@ -354,6 +537,8 @@ describe('ChatService', () => {
                 player1: 'player1',
                 player2: '',
                 time: '60',
+                mode2990: false,
+                dictionary: 'dictionnaire',
             };
             const info: InfoToJoin = {
                 username: 'username',
@@ -369,6 +554,8 @@ describe('ChatService', () => {
                 player1: 'player1',
                 player2: '',
                 time: '60',
+                mode2990: false,
+                dictionary: 'dictionnaire',
             };
             const info: InfoToJoin = {
                 username: 'username',
@@ -392,11 +579,9 @@ describe('ChatService', () => {
 
         it('should handle playerDc event', () => {
             const pushSpy = spyOn(service.roomMessages, 'push');
-            const sendSpy = spyOn(service.socketService, 'send');
             const updateSpy = spyOn(service, 'updateRooms');
             socketTestHelper.peerSideEmit('playerDc');
             expect(pushSpy).toHaveBeenCalled();
-            expect(sendSpy).toHaveBeenCalled();
             expect(updateSpy).toHaveBeenCalled();
         });
         it('should handle updatePoint event and set player1 points', () => {
@@ -413,29 +598,55 @@ describe('ChatService', () => {
         });
 
         it('should handle getBestScore event and set both array to their own specific values', () => {
-            const bestScoresClassic: unknown[] = [
+            const bestScoresClassic: Scoring[] = [
                 {
-                    player: 'Bob',
-                    score: 20,
-                },
-                {
-                    player: 'Jack',
-                    score: 18,
-                },
-            ];
-            const bestScoresLog: unknown[] = [
-                {
-                    player: 'Ricky',
-                    score: 15,
+                    player: 'Luffy',
+                    points: 20,
                 },
                 {
                     player: 'Zoro',
-                    score: 10,
+                    points: 18,
+                },
+            ];
+            const bestScoresLog: Scoring[] = [
+                {
+                    player: 'Nami',
+                    points: 15,
+                },
+                {
+                    player: 'TonyTonyChopper',
+                    points: 10,
                 },
             ];
             socketTestHelper.peerEmitTwoParams('getBestScore', bestScoresClassic, bestScoresLog);
             expect(service.bestClassicScores).toEqual(bestScoresClassic);
             expect(service.bestLog2990Scores).toEqual(bestScoresLog);
+        });
+
+        it('should get admin page related info', () => {
+            const dictionaryNameList: Dictionary[] = [
+                {
+                    title: 'default-dictionary',
+                    description: 'Description de base',
+                },
+            ];
+            const virtualPlayerNames: VirtualPlayer[] = [
+                {
+                    name: 'Richard',
+                    type: 'Expert',
+                },
+            ];
+            const history: any[] = ['history'];
+            socketTestHelper.peerEmitThreeParams('getAdminInfo', dictionaryNameList, history, virtualPlayerNames);
+            expect(service.dictInfoList[0]).toEqual(dictionaryNameList[0]);
+            expect(service.virtualPlayerNameList).toEqual(virtualPlayerNames);
+            expect(service.gameHistory).toEqual(history);
+        });
+
+        it('should handle handle downloadDic', () => {
+            const dictionary = 'Dictionnaire1';
+            socketTestHelper.peerSideEmit('downloadDic', 'Dictionnaire1');
+            expect(service.dictionaryToDownload).toEqual(dictionary);
         });
     });
 });

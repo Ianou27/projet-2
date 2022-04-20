@@ -1,0 +1,11 @@
+<div *ngFor="let goal of this.clientSocketHandler.goals">
+    <mat-card *ngIf="goal.isInGame" class="goal {{ goal.isDone.toString() }}">
+        <div>
+            <mat-card-title>{{ this.getType(goal) }} : {{ goal.title }}</mat-card-title>
+            <mat-card-content>
+                <p>{{ goal.description }}</p>
+                <p>Valeur : {{ goal.value }} points</p>
+            </mat-card-content>
+        </div>
+    </mat-card>
+</div>

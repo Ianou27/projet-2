@@ -13,7 +13,7 @@ export class SizeSelectorComponent implements OnInit, OnDestroy {
         this.resizer.letterFontSize.subscribe((letterFontSize) => (this.letterFontSize = letterFontSize));
     }
 
-    changeFont(operator: string) {
+    changeFont(operator: string): void {
         this.resizer.changeFont(operator);
     }
 

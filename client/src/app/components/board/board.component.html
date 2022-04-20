@@ -1,4 +1,4 @@
-<div class="tile-container" tabindex="0">
+<div class="tile-container" tabindex="0" (blur)="this.clearAll()">
     <div *ngFor="let row of this.boardService.board">
         <div *ngFor="let tile of row; let j">
             <app-tile

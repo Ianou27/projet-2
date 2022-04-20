@@ -1,13 +1,23 @@
 .tile {
     position: relative;
     z-index: 1;
-    margin: 1px;
-    height: 48px;
-    width: 48px;
+    height: 50px;
+    width: 50px;
     border-radius: 5px;
     background-color: #f7d8b5;
     display: grid;
     grid-template-rows: 20px 10px;
+}
+
+.tileTitle {
+    position: relative;
+    z-index: 1;
+    height: 90px;
+    width: 90px;
+    border-radius: 5px;
+    background-color: #f7d8b5;
+    display: grid;
+    grid-template-rows: 50px 40px;
 }
 
 #value {
@@ -19,12 +29,31 @@
     right: 2px;
 }
 
+#valueTitle {
+    display: flex;
+    font-family: 'Courier New';
+    font-weight: bold;
+    position: relative;
+    justify-content: right;
+    right: 2px;
+    align-items: flex-end;
+}
+
 #letter {
     font-family: 'Courier New';
     font-weight: bold;
     position: relative;
     display: flex;
     justify-content: center;
+}
+
+#letterTitle {
+    font-family: 'Courier New';
+    font-weight: bold;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
 }
 
 .tileEmpty {

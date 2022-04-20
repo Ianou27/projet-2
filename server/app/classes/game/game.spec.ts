@@ -1,11 +1,16 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable max-lines */
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 /* eslint-disable max-len */
-import { DatabaseService } from '@app/services/best-score/best-score.services';
+import { DatabaseService } from '@app/services/database/database.services';
 import { GameBoardService } from '@app/services/game-board/game-board.service';
 import { Timer } from '@app/services/timer-manager/timer-manager.service';
 import { CaseProperty } from '@common/assets/case-property';
 import { letterValue } from '@common/assets/reserve-letters';
+import { BotType } from '@common/bot-type';
+import { allGoals } from '@common/constants/goals';
 import { Tile } from '@common/tile/Tile';
+import { CreateSoloRoomInformations } from '@common/types';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
 import * as io from 'socket.io';
@@ -35,13 +40,24 @@ describe('Game', () => {
     beforeEach(() => {
         game = new Game();
         game.sio = new io.Server();
-        game.player1Join({ username: 'player1', id: '1', room: 'room1' }, '60', databaseService);
+        game.player1Join({ username: 'player1', id: '1', room: 'room1' }, '60', databaseService, false, 'default-dictionary');
         game.player2 = new Player(game.reserveLetters.randomLettersInitialization(), false, 'player2', {
             username: 'player2',
             id: '2',
             room: 'room1',
         });
         game.timer = new Timer('60');
+        game.goals = allGoals;
+        sinon.replace(game.databaseService, 'start', async () => {
+            return null;
+        });
+        sinon.replace(game.databaseService, 'insertGame', async () => {});
+        sinon.replace(game.databaseService, 'updateScore', async () => {});
+        sinon.replace(game.databaseService, 'closeConnection', async () => {});
+    });
+
+    afterEach(() => {
+        sinon.restore();
     });
 
     it('constructor should construct a game with two players named player1 and player2', () => {
@@ -78,14 +94,56 @@ describe('Game', () => {
         assert(spy.called);
     });
 
+    it('method player1Join should call method setGoals if mode2990 is true', () => {
+        const spy = sinon.spy(game, 'setGoals');
+        game.player1Join({ username: 'player1', id: '1', room: 'room1' }, '60', databaseService, true, 'default-dictionary');
+        assert(spy.called);
+    });
+
+    it('method startSoloGame should call method setGoals if mode2990 is true', () => {
+        const spy = sinon.spy(game, 'setGoals');
+        const informations: CreateSoloRoomInformations = {
+            username: '',
+            socketId: '',
+            room: '',
+            timer: '60',
+            modeLog: true,
+            botType: BotType.Beginner,
+            botName: 'botname',
+            dictionary: 'default-dictionary',
+        };
+        game.startSoloGame(game.player1.user, game.sio, databaseService, informations);
+        assert(spy.called);
+    });
+
     it('method startSoloGame should set the value true to hisBot of the player2', () => {
         expect(game.player2.hisBot).equal(false);
-        game.startSoloGame(game.player1.user, game.sio, '60', databaseService, 'botname');
+        const informations: CreateSoloRoomInformations = {
+            username: '',
+            socketId: '',
+            room: '',
+            timer: '60',
+            modeLog: true,
+            botType: BotType.Beginner,
+            botName: 'botname',
+            dictionary: 'default-dictionary',
+        };
+        game.startSoloGame(game.player1.user, game.sio, databaseService, informations);
         expect(game.player2.hisBot).equal(true);
     });
 
     it('method startSoloGame should initialize the attributes of game', () => {
-        game.startSoloGame(game.player1.user, game.sio, '60', databaseService, 'botname');
+        const informations: CreateSoloRoomInformations = {
+            username: '',
+            socketId: '',
+            room: '',
+            timer: '60',
+            modeLog: true,
+            botType: BotType.Beginner,
+            botName: 'botname',
+            dictionary: 'default-dictionary',
+        };
+        game.startSoloGame(game.player1.user, game.sio, databaseService, informations);
         expect(game.roomName).equal(game.player1.user.room);
         expect(game.timer.timerMax).equal(60);
     });
@@ -206,6 +264,24 @@ describe('Game', () => {
         expect(game.gameState.winner).to.equal('player1');
     });
 
+    it('method getCommandBot should call actionVirtualBeginnerPlayer if typeBot is equal to beginner', () => {
+        const spy = sinon.spy(game, 'actionVirtualBeginnerPlayer');
+        game.getCommandBot(BotType.Beginner, 100);
+        assert(spy.called);
+    });
+
+    it('method getCommandBot should call actionVirtualExpertPlayer if typeBot is equal to expert', () => {
+        const spy = sinon.spy(game, 'actionVirtualExpertPlayer');
+        game.getCommandBot(BotType.Expert, 100);
+        assert(spy.called);
+    });
+
+    it('method actionVirtualExpertPlayer should call commandExpertPlayer from VirtualPlayer', () => {
+        const spy = sinon.spy(VirtualPlayer, 'commandExpertPlayer');
+        game.actionVirtualExpertPlayer();
+        assert(spy.called);
+    });
+
     it('method passTurn should change turn and call gameStateUpdate', () => {
         const spy = sinon.spy(game, 'gameStateUpdate');
         expect(game.player1.getHisTurn()).to.equal(true);
@@ -217,16 +293,51 @@ describe('Game', () => {
     });
 
     it('method surrender should update dataBase and end game', async () => {
-        sinon.replace(game.databaseService, 'updateBesScoreClassic', async () => {
-            return;
-        });
-
-        sinon.replace(game.databaseService, 'start', async () => {
-            return null;
-        });
-        await game.surrender('player1');
-        await game.surrender('player2');
+        const spy = sinon.stub(game.databaseService, 'updateScore');
+        await game.endGame();
+        assert(spy.called);
         expect(game.gameState.gameFinished).to.equal(true);
+    });
+
+    it('method surrender should stop the timer and registerGame if player 1 is a bot', async () => {
+        game.player1.hisBot = true;
+        const spy1 = sinon.stub(game.timer, 'stop');
+        const spy2 = sinon.stub(game, 'registerGame');
+        await game.surrender('', '');
+        assert(spy1.called);
+        assert(spy2.called);
+    });
+
+    it('method surrender should change player2 to a bot if player2 surrender', async () => {
+        await game.surrender(game.player1.user.username, 'bot');
+        expect(game.player2.hisBot).equal(true);
+        expect(game.player2.user.username).equal('bot');
+        expect(game.player2.typeBot).equal(BotType.Beginner);
+    });
+
+    it('method surrender should change player1 to a bot if player1 surrender', async () => {
+        await game.surrender(game.player2.user.username, 'bot');
+        expect(game.player1.hisBot).equal(true);
+        expect(game.player1.user.username).equal('bot');
+        expect(game.player1.typeBot).equal(BotType.Beginner);
+    });
+
+    it('method surrender should changeTurnTwoPlayers if player2.hisTurn is true and player2 is a bot', async () => {
+        game.player1.hisTurn = false;
+        game.player2.hisTurn = true;
+        sinon.replace(game, 'changeTurnTwoPlayers', async () => {});
+        const spy = sinon.stub(game, 'changeTurnTwoPlayers');
+        await game.surrender(game.player1.user.username, 'bot');
+        assert(spy.called);
+    });
+
+    it('method surrender should changeTurnTwoPlayers if player1.hisTurn is true and player1 is a bot', async () => {
+        game.player2.hisTurn = false;
+        game.player1.hisTurn = true;
+        sinon.replace(game, 'changeTurnTwoPlayers', async () => {});
+        const spy = sinon.stub(game, 'changeTurnTwoPlayers');
+        await game.surrender(game.player2.user.username, 'bot');
+        assert(spy.called);
     });
 
     it('method actionVirtualBeginnerPlayer with probability 10 or less should return command pass', () => {
@@ -244,8 +355,7 @@ describe('Game', () => {
 
     it('method actionVirtualBeginnerPlayer with probability 20 or more should return command place', () => {
         const spy = sinon.spy(VirtualPlayer, 'placementLettersCommand');
-        const command = game.actionVirtualBeginnerPlayer(55);
-        expect(command[0]).equal('!placer');
+        game.actionVirtualBeginnerPlayer(55);
         assert(spy.called);
     });
 
@@ -268,5 +378,34 @@ describe('Game', () => {
         const command = '!placer h8v car';
         game.placementBot(command.split(' '));
         assert(spy.called);
+    });
+
+    it('method setGoals should initialize goals', () => {
+        game.setGoals();
+        expect(game.goals).not.equal(allGoals);
+    });
+
+    it('method setGoals should call changeGoal 4 times and change 4 goals', () => {
+        const spy = sinon.spy(game, 'changeGoal');
+        game.setGoals();
+        expect(spy.callCount).equal(4);
+    });
+
+    it('method setGoals should call verifyGoalsTaken', () => {
+        const spy = sinon.spy(game, 'verifyGoalsTaken');
+        game.setGoals();
+        assert(spy.called);
+    });
+
+    it('method verifyGoalsTaken should return false if goals is not present in array', () => {
+        const goalsTaken = [1, 2, 3];
+        const result = game.verifyGoalsTaken(goalsTaken, 4);
+        expect(result).equal(false);
+    });
+
+    it('method verifyGoalsTaken should return true if goals is present in array', () => {
+        const goalsTaken = [1, 2, 3];
+        const result = game.verifyGoalsTaken(goalsTaken, 3);
+        expect(result).equal(true);
     });
 });

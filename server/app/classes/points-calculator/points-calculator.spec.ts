@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-magic-numbers */
 import { WORD_LETTER_2X_MULTIPLIER, WORD_LETTER_3X_MULTIPLIER, WORD_LETTER_NO_MULTIPLIER } from '@common/constants/general-constants';
 import { Orientation } from '@common/orientation';
 import { Tile } from '@common/tile/Tile';
@@ -74,6 +75,20 @@ describe('Points Calculator', () => {
         const letter = game.gameBoard.cases[placementInformations.column][placementInformations.row];
         const isNew = PointsCalculator.newLetterOnBoard(letter, letterTile);
         expect(isNew).to.equal(true);
+    });
+
+    it('method calculatedPointsPlacement should add 50 points to a 7 letters placement', () => {
+        const newLettersString: string[] = ['A', 'A', 'A', 'A', 'A', 'A', 'A'];
+        const newLettersTile: Tile[] = [];
+        const newWords: Tile[][] = [];
+        for (let i = 0; i < newLettersString.length; i++) {
+            const tile = new Tile(WORD_LETTER_NO_MULTIPLIER, 0, i);
+            tile.letter = newLettersString[i];
+            tile.value = 0;
+            newLettersTile.push(tile);
+        }
+        const result = PointsCalculator.calculatedPointsPlacement(newWords, newLettersTile);
+        expect(result).to.equal(50);
     });
 
     it('method newLetterOnBoard should return false if the letter was just placed', () => {

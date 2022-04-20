@@ -1,15 +1,18 @@
+import { ClueCommand } from '@app/classes/clue-command/clue-command';
 import { ExchangeCommand } from '@app/classes/exchange-command/exchange-command';
 import { PassCommand } from '@app/classes/pass-command/pass-command';
 import { ReserveCommand } from '@app/classes/reserve-command/reserve-command';
 import { CaseProperty } from '@common/assets/case-property';
 import { letterValue } from '@common/assets/reserve-letters';
 import { Tile } from '@common/tile/Tile';
+import { PlacementScore } from '@common/types';
 import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
 import { Game } from './../../classes/game/game';
+import { HelpCommand } from './../../classes/help-command/help-command';
 import { PlacementCommand } from './../../classes/placement-command/placement-command';
 import { Player } from './../../classes/player/player';
-import { DatabaseService } from './../best-score/best-score.services';
+import { DatabaseService } from './../database/database.services';
 import { GameManager } from './game-manager.service';
 
 describe('Game Manager', () => {
@@ -18,11 +21,12 @@ describe('Game Manager', () => {
     const placeCommand = ['!placer', 'H8v', 'all'];
     const exchangeCommand = ['!echanger', 'all'];
     const passCommand = ['!passer'];
+    const helpCommand = ['!aide'];
     let lettersTilePlayer1: Tile[] = [];
     const databaseService: DatabaseService = new DatabaseService();
     beforeEach(() => {
         game = new Game();
-        game.player1Join({ username: 'a', id: '1', room: 'room1' }, '60', databaseService);
+        game.player1Join({ username: 'a', id: '1', room: 'room1' }, '60', databaseService, false, 'default-dictionary');
         game.player2 = new Player(game.reserveLetters.randomLettersInitialization(), true, 'player2', { username: 'b', id: '2', room: 'room1' });
         const lettersPlayer1 = ['A', 'L', 'L', '', 'E', 'E', 'V'];
         for (const letter of lettersPlayer1) {
@@ -115,16 +119,6 @@ describe('Game Manager', () => {
         expect(gameManager.messageLengthVerification(message)).to.equal(true);
     });
 
-    it('method characterVerification should return false if message has only spaces', () => {
-        const message = '       ';
-        expect(gameManager.characterVerification(message)).to.equal(false);
-    });
-
-    it('method characterVerification should return true if message does not have only spaces', () => {
-        const message = 'abcde';
-        expect(gameManager.characterVerification(message)).to.equal(true);
-    });
-
     it('method messageVerification should call lengthVerification and return "message trop long" if it has more than 512 characters', () => {
         let testMessageLong = 'ABCDEFGHIJKLMNOP';
         // eslint-disable-next-line @typescript-eslint/no-magic-numbers
@@ -177,6 +171,14 @@ describe('Game Manager', () => {
         assert(spyBoard.notCalled);
     });
 
+    it('method exchangeVerification should return Entrée invalide if format is exchangeFormatValid return false', () => {
+        sinon.replace(gameManager, 'exchangeFormatValid', () => {
+            return false;
+        });
+        const wrongCommand = ['!placer', 'Z0h', 'abz'];
+        expect(gameManager.exchangeVerification(wrongCommand, game)).to.equal('Entrée invalide');
+    });
+
     it('method exchangeVerification should call exchangeFormatValid and exchangeTileHolderValid if command is valid and return "valide"', () => {
         sinon.replace(gameManager, 'exchangeFormatValid', () => {
             return true;
@@ -219,5 +221,25 @@ describe('Game Manager', () => {
         const wrongCommand = ['!passer', 'lol'];
         const validation = gameManager.passVerification(wrongCommand);
         expect(validation).to.equal('Format non valide');
+    });
+
+    it('method helpCommandValid should call HelpCommandValid.validatedFormat', () => {
+        const spy = sinon.stub(HelpCommand, 'validatedFormat');
+        gameManager.helpCommandValid(helpCommand);
+        assert(spy.called);
+        assert(spy.calledWith(helpCommand));
+    });
+
+    it('formatClueCommand should call find clues', () => {
+        sinon.replace(ClueCommand, 'findClues', () => {
+            const placement: PlacementScore = {
+                score: 5,
+                command: 'allo',
+            };
+            return [placement];
+        });
+        const spy = sinon.spy(ClueCommand, 'findClues');
+        gameManager.formatClueCommand(game);
+        expect(spy.called);
     });
 });
