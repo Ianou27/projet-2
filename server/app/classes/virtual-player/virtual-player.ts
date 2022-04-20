@@ -21,15 +21,13 @@ import { Orientation } from '@common/orientation';
 import { Tile } from '@common/tile/Tile';
 import { PlacementScore, TilePlacementPossible } from '@common/types';
 import { PlacementInformations } from 'assets/placement-informations';
-import * as fs from 'fs';
 import { rowLetter } from './../../../../common/assets/row';
 import { CommandType } from './../../../../common/command-type';
 import { Game } from './../game/game';
 import { PlacementCommand } from './../placement-command/placement-command';
 
 export class VirtualPlayer {
-    static findAllWords(letters: string[], letterOnBoard: string): string[] {
-        const dictionaryArray: string[] = JSON.parse(fs.readFileSync('./assets/dictionnary.json').toString()).words;
+    static findAllWords(letters: string[], letterOnBoard: string, dictionaryArray: string[]): string[] {
         let validWords: string[] = [];
         let words: string[] = [];
         let combinations = this.getCombinations(letters.map((letter) => letter.toLowerCase())).filter((item) => {
@@ -143,7 +141,7 @@ export class VirtualPlayer {
         if (placementPossible.length === 0) return [];
         for (const placement of placementPossible) {
             const letters = playerLetters.concat(placement.tile.letter);
-            const words = this.findAllWords(letters, placement.tile.letter);
+            const words = this.findAllWords(letters, placement.tile.letter, game.dictionaryArray);
             commandPlacements = commandPlacements.concat(this.findPlacementCommand(words, placement, game));
             if (commandPlacements.length >= NUMBER_WORDS_LIMIT_BOT) {
                 break;

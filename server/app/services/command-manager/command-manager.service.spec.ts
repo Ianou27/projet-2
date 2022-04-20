@@ -4,6 +4,7 @@ import { Game } from '@app/classes/game/game';
 import { Player } from '@app/classes/player/player';
 import { Server } from 'app/server';
 import { assert, expect } from 'chai';
+import * as fs from 'fs';
 import * as sinon from 'sinon';
 import { io as ioClient, Socket } from 'socket.io-client';
 import { Container } from 'typedi';
@@ -40,6 +41,7 @@ describe('CommandManager service tests', () => {
         };
         gameObj.player1 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user1);
         gameObj.player2 = new Player(gameObj.reserveLetters.randomLettersInitialization(), true, 'player1', user2);
+        gameObj.dictionaryArray = JSON.parse(fs.readFileSync('./assets/dictionaries/default-dictionary.json').toString()).words;
     });
 
     afterEach(() => {

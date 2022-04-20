@@ -38,7 +38,6 @@ describe('DictionaryManager', () => {
     });
 
     afterEach(() => {
-       
         sinon.restore();
     });
     it('should upload a dictionary', async () => {
@@ -67,8 +66,6 @@ describe('DictionaryManager', () => {
         expect(fs.existsSync('./assets/dictionaries/' + dictionary.title + '.json')).to.be.false;
     });
 
-
-  
     it('should resetAll  dictionary', async () => {
         await dictionaryManager.resetDictionary(sio, socketID);
         expect(fs.existsSync('./assets/dictionaries/' + dictionary.title + '.json')).to.be.false;

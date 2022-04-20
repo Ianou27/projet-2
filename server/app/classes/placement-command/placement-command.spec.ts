@@ -18,7 +18,7 @@ describe('Placement Command', () => {
     let lettersTilePlayer2: Tile[] = [];
     const lettersPlayer1 = ['A', 'L', 'L', '*', 'E', 'E', 'V'];
     const lettersPlayer2 = ['B', 'A', 'T', '*', 'E', 'V', 'A'];
-    const dictionaryArray: string[] = JSON.parse(fs.readFileSync('./assets/dictionnary.json').toString()).words;
+    const dictionaryArray: string[] = JSON.parse(fs.readFileSync('./assets/dictionaries/default-dictionary.json').toString()).words;
     const databaseService: DatabaseService = new DatabaseService();
 
     beforeEach(() => {

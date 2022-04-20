@@ -75,6 +75,7 @@ export class DictionaryManager {
             await this.databaseService.getGameHistory(),
             await this.databaseService.getVirtualPlayers(),
         );
+
         await this.databaseService.closeConnection();
     }
 
@@ -92,6 +93,7 @@ export class DictionaryManager {
             await this.databaseService.getGameHistory(),
             await this.databaseService.getVirtualPlayers(),
         );
+
         await this.databaseService.closeConnection();
     }
 }

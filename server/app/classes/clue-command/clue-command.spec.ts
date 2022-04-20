@@ -4,6 +4,7 @@ import { CaseProperty } from '@common/assets/case-property';
 import { letterValue } from '@common/assets/reserve-letters';
 import { Tile } from '@common/tile/Tile';
 import { assert, expect } from 'chai';
+import * as fs from 'fs';
 import * as sinon from 'sinon';
 import { Game } from './../game/game';
 import { Player } from './../player/player';
@@ -28,6 +29,7 @@ describe('ClueCommand', () => {
         game.player1 = new Player(lettersTilePlayer, true, 'player1', { username: 'rt', id: '1', room: 'room1' });
         game.player2 = new Player(lettersTilePlayer, false, 'player2', { username: 'aa', id: '2', room: 'room1' });
         game.timer = new Timer('60');
+        game.dictionaryArray = JSON.parse(fs.readFileSync('./assets/dictionaries/default-dictionary.json').toString()).words;
     });
 
     afterEach(() => {
