@@ -284,6 +284,8 @@ describe('Virtual Player', () => {
 
     it('method findPlacementCommand should return valid command place', () => {
         game.gameState.firstTurn = false;
+        game.gameBoard.cases[7][7].letter = 'c';
+        game.gameBoard.cases[7][7].value = 3;
         const tilePlacementPossible: TilePlacementPossible = {
             tile: game.gameBoard.cases[7][7],
             orientation: Orientation.h,
